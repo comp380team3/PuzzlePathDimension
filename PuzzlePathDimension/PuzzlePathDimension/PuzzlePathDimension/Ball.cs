@@ -71,7 +71,8 @@ namespace PuzzlePathDimensionSampleDemo
             {
                 ballXVelocity = -ballXVelocity;
             }
-            else if ((Position.Y + BallTexture.Height / 2) > viewport.Height)
+            
+            if ((Position.Y + BallTexture.Height / 2) > viewport.Height)
             {
                 ballYVelocity = -ballYVelocity;
             }
