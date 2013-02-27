@@ -28,7 +28,17 @@ namespace PuzzlePathDimensionSampleDemo
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            // Sets the resolution to 800x600
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.ApplyChanges();
+
+            // Tells the game where the Content directory is
             Content.RootDirectory = "Content";
+
+            // Makes the mouse cursor visible.
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -100,9 +110,11 @@ namespace PuzzlePathDimensionSampleDemo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
+            // Allows the game to exit (for the Xbox 360 controller only)
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
                 this.Exit();
+            }
 
             // TODO: Add your update logic here
             // Update the balls position
