@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimensionSampleDemo", "PuzzlePathDimension\PuzzlePathDimension\PuzzlePathDimensionSampleDemo.csproj", "{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimension", "PuzzlePathDimension\PuzzlePathDimension.csproj", "{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimensionContent", "PuzzlePathDimension\PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj", "{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}"
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "PuzzlePathDimensionContent", "PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj", "{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
