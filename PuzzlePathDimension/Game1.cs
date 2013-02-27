@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace PuzzlePathDimensionSampleDemo
+namespace PuzzlePathDimension
 {
     /// <summary>
     /// This is the main type for your game
@@ -19,16 +19,19 @@ namespace PuzzlePathDimensionSampleDemo
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        // The ball for our game
-        Ball ball;
-        // The platforms for the game
-        Platform platform1;
-        Platform platform2;
+        //The screens and the current screen
+        ControllerDetectScreen mControllerScreen;
+        TitleScreen mTitleScreen;
+        GameScreen mGameScreen;
+        Screen mCurrentScreen;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            this.graphics.PreferredBackBufferWidth = 800;
+            this.graphics.PreferredBackBufferHeight = 600;
         }
 
         /// <summary>
@@ -40,13 +43,6 @@ namespace PuzzlePathDimensionSampleDemo
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
-            // Create a new ball
-            ball = new Ball();
-
-            // Create a new platform
-            platform1 = new Platform();
-            platform2 = new Platform();
 
             base.Initialize();
         }
@@ -62,25 +58,14 @@ namespace PuzzlePathDimensionSampleDemo
 
             // TODO: use this.Content to load your game content here
 
-            // Find a safe position to place the ball
-            Vector2 ballPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X + GraphicsDevice.Viewport.TitleSafeArea.Width / 2, 
-                GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
-            // Create a new ball 
-            ball.Initialize(GraphicsDevice.Viewport, Content.Load<Texture2D>("Ball"), ballPosition);
+            //Initialize the various screens in the game
+            mControllerScreen = new ControllerDetectScreen(this.Content, new EventHandler(ControllerDetectScreenEvent));
+            mTitleScreen = new TitleScreen(this.Content, new EventHandler(TitleScreenEvent));
+            mGameScreen = new GameScreen(this.Content, GraphicsDevice.Viewport, new EventHandler(GameScreenEvent));
 
-            // Find a safe position to place the platform
-            Vector2 platform1Position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Width / 5,
-                GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+            //Set the current screen
+            mCurrentScreen = mControllerScreen;
 
-            // Create a new platform
-            platform1.Initialize(Content.Load<Texture2D>("platform"), platform1Position);
-
-            // Find a safe position to place the platform
-            Vector2 platform2Position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Width / 1.5f,
-                GraphicsDevice.Viewport.TitleSafeArea.Height / 5);
-
-            // Create a new platform
-            platform2.Initialize(Content.Load<Texture2D>("platform"), platform2Position);
 
         }
 
@@ -105,68 +90,12 @@ namespace PuzzlePathDimensionSampleDemo
                 this.Exit();
 
             // TODO: Add your update logic here
-            // Update the balls position
-            ball.Update();
-            
-            // Update the collision
-            UpdateCollision();
+            //By taking advantage of Polymorphism, we can call update on the current screen class,
+            //but the Update in the subclass is the one that will be executed.
+
+            mCurrentScreen.Update(gameTime);
 
             base.Update(gameTime);
-        }
-
-        private void UpdateCollision()
-        {
-            // Use the Rectangle's built-in intersect function to
-            // determine if two objects collide
-            Rectangle ballRectangle;
-            Rectangle platformRectangle;
-
-            ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
-
-            platformRectangle = new Rectangle((int)platform1.Position.X, (int)platform1.Position.Y, platform1.Width, platform1.Height);
-
-            if (ballRectangle.Intersects(platformRectangle))
-            {
-                if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.ballYVelocity < 0)
-                {
-                    ball.flipYDirection();
-                }
-                else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.ballYVelocity > 0))
-                {
-                    ball.flipYDirection();
-                }
-                else if ((ballRectangle.Right) <= (platformRectangle.Left))
-                {
-                    ball.flipXDirection();
-                }
-                else if (ballRectangle.Left >= (platformRectangle.Right))
-                {
-                    ball.flipXDirection();
-                }
-            }
-
-            platformRectangle = new Rectangle((int)platform2.Position.X, (int)platform2.Position.Y, platform2.Width, platform2.Height);
-
-            if (ballRectangle.Intersects(platformRectangle))
-            {
-                if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.ballYVelocity < 0)
-                {
-                    ball.flipYDirection();
-                }
-                else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.ballYVelocity > 0))
-                {
-                    ball.flipYDirection();
-                }
-                else if ((ballRectangle.Right) <= (platformRectangle.Left))
-                {
-                    ball.flipXDirection();
-                }
-                else if (ballRectangle.Left >= (platformRectangle.Right))
-                {
-                    ball.flipXDirection();
-                }
-            }
-
         }
 
         /// <summary>
@@ -175,21 +104,36 @@ namespace PuzzlePathDimensionSampleDemo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-
-            // Draw the platform on the canvas
-            platform1.Draw(spriteBatch);
-            platform2.Draw(spriteBatch);
-
-            // Draw the ball onto the canvas
-            ball.Draw(spriteBatch);
-
+            //Again, using Polymorphism, we can call draw on the current screen class
+            //and the Draw in the subclass is the one that will be executed.
+            mCurrentScreen.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        //This event fires when the Controller detect screen is returing control back to the main game class
+        public void ControllerDetectScreenEvent(Object obj, EventArgs e)
+        {
+            //Switch to the title screen, the Controller detect screen is finished being displayed
+            mCurrentScreen = mTitleScreen;
+        }
+
+        //Thid event is fired when the Title screen is returning control back to the main game class
+        public void TitleScreenEvent(Object obj, EventArgs e)
+        {
+            //Switch to the controller detect screen, the Title screen is finished being displayed
+            mCurrentScreen = mGameScreen;
+        }
+
+        public void GameScreenEvent(Object obj, EventArgs e)
+        {
+            //Switch to the title screen, the Title screen is finished being displayed
+            mCurrentScreen = mTitleScreen;
         }
     }
 }
