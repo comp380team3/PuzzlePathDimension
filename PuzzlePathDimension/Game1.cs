@@ -27,6 +27,8 @@ namespace PuzzlePathDimension {
     // The platforms for the game
     Platform platform1;
     Platform platform2;
+    // The goal for the game;
+    Goal goal;
 
     /// <summary>
     /// Contains all loaded assets.
@@ -167,7 +169,7 @@ namespace PuzzlePathDimension {
 
       // Adds a platform to the level
       platform1 = new Platform();
-      Vector2 platformPos = new Vector2(5 * GridSize,  5* GridSize);
+      Vector2 platformPos = new Vector2(5 * GridSize,  5 * GridSize);
       Vector2 platformLen = new Vector2(20 * GridSize, 2 * GridSize);
       platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
@@ -176,6 +178,11 @@ namespace PuzzlePathDimension {
       platformPos = new Vector2(30 * GridSize, 20 * GridSize);
       platformLen = new Vector2(5 * GridSize, 5 * GridSize);
       platform2.Initialize(_graphicContent["platform"], platformPos, platformLen);
+
+      // Adds a goal to the level
+      goal = new Goal();
+      Vector2 goalPos = new Vector2(10 * GridSize, 1 * GridSize);
+      goal.Initialize(_graphicContent["goal"], goalPos);
     }
 
     private void UpdateCollision() {
@@ -225,6 +232,9 @@ namespace PuzzlePathDimension {
 
       // TODO: Add your drawing code here
       spriteBatch.Begin();
+
+      // Draw the goal on the canvas
+      goal.Draw(spriteBatch);
 
       // Draw the platform on the canvas
       platform1.Draw(spriteBatch);

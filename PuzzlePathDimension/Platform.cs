@@ -13,7 +13,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The texture that the platform uses.
     /// </summary>
-    private Texture2D _platformTexture;
+    private Texture2D _texture;
 
     /// <summary>
     /// The pixel coordinates of the upper left corner of the platform.
@@ -65,7 +65,7 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Gets or sets the active state of the platform.
+    /// Gets whether the platform is active.
     /// </summary>
     public bool Active {
       get { return _active; }
@@ -95,8 +95,8 @@ namespace PuzzlePathDimension {
       }
 
       // Routine stuff.
-      _platformTexture = texture;
-      Active = true;
+      _texture = texture;
+      _active = true;
 
       // The upper left corner is easy to figure out.
       _upperLeftCorner = origin;
@@ -121,7 +121,7 @@ namespace PuzzlePathDimension {
       Vector2 scale = new Vector2(Width / 20, Height / 20);
 
       // Draw it!
-      spriteBatch.Draw(_platformTexture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_texture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
     }
 
     /// <summary>

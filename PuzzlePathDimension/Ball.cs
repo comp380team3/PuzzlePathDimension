@@ -10,7 +10,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The texture that the ball uses.
     /// </summary>
-    private Texture2D BallTexture;
+    private Texture2D _texture;
 
     /// <summary>
     /// The position of the ball.
@@ -48,14 +48,14 @@ namespace PuzzlePathDimension {
     /// Gets the height of the ball.
     /// </summary>
     public int Height {
-      get { return BallTexture.Height; }
+      get { return _texture.Height; }
     }
 
     /// <summary>
     /// Gets the width of the ball.
     /// </summary>
     public int Width {
-      get { return BallTexture.Width; }
+      get { return _texture.Width; }
     }
 
     /// <summary>
@@ -73,24 +73,31 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Gets or sets the active state of the ball.
+    /// Gets whether the ball is active.
     /// </summary>
     public bool Active {
       get { return _active; }
-      set { _active = value; }
     }
 
+    /// <summary>
+    /// Initializes a ball.
+    /// </summary>
+    /// <param name="viewport">The screen that the ball will be drawn on.</param>
+    /// <param name="texture">The texture that the ball will be drawn with.</param>
+    /// <param name="position">The initial position of the ball.</param>
     public void Initialize(Viewport viewport, Texture2D texture, Vector2 position) {
+      // TODO: add exceptions
+
       // Set the texture of the ball
-      BallTexture = texture;
+      _texture = texture;
 
       // Set the position of the ball
       _position = position;
 
-      // Ball will be active to move
-      Active = true;
+      // Ball will be stationary at first
+      _active = false;
 
-      this._viewport = viewport;
+      _viewport = viewport;
 
       // Ball's velocity
       _xVelocity = 0f;
@@ -105,13 +112,13 @@ namespace PuzzlePathDimension {
       _position.Y = Position.Y + _yVelocity;
 
       // Check if the ball is heading off the screen
-      if ((Position.X + BallTexture.Width / 2) > _viewport.Width) {
+      if ((Position.X + _texture.Width / 2) > _viewport.Width) {
         _xVelocity = -1 * _xVelocity;
       } else if (Position.X <= 0) {
         _xVelocity = -1 * _xVelocity;
       }
 
-      if ((Position.Y + BallTexture.Height / 2) > _viewport.Height) {
+      if ((Position.Y + _texture.Height / 2) > _viewport.Height) {
         _yVelocity = -1 * _yVelocity;
       } else if (Position.Y <= 0) {
         _yVelocity = -1 * _yVelocity;
@@ -125,7 +132,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.Draw(BallTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_texture, _position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
     }
 
     /// <summary>
@@ -146,6 +153,8 @@ namespace PuzzlePathDimension {
     /// Launches the ball.
     /// </summary>
     public void LaunchBall() {
+      _active = true;
+
       _xVelocity = 5f;
       _yVelocity = 5f;
     }
