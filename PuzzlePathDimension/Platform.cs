@@ -71,25 +71,18 @@ namespace PuzzlePathDimensionSampleDemo {
     /// <summary>
     /// Initializes a platform.
     /// </summary>
-    /// <param name="texture">The texture to use as a platform.</param>
-    /// <param name="origin">The position of the upper-left corner of the vector 
-    /// in pixel coordinates. </param>
+    /// <param name="texture">The texture to use for the platform.</param>
+    /// <param name="origin">The position of the upper-left corner of the vector in pixel coordinates. </param>
     /// <param name="length">The length of the platform, in pixels, in both directions.</param>
     public void Initialize(Texture2D texture, Vector2 origin, Vector2 length) {
-      // Well...yeah. :p
+      // Complain if something's wrong.
       if (texture == null || origin == null || length == null) {
         throw new ArgumentNullException("Please don't pass in a null value :( -Jorenz");
-      }
-
-      if (!InBounds(origin)) {
+      } else if (!InBounds(origin)) {
         throw new ArgumentOutOfRangeException("The origin of the platform must be in bounds.");
-      }
-
-      // You can't have a platform that is of zero length in either direction;
-      // a platform needs to occupy at least one 20x20 tile.
-      if (length.X < 20) {
+      } else if (length.X < 1 * Game1.GridSize) { // You can't have a platform of length 0.
         throw new ArgumentOutOfRangeException("Please check the Vector2's X value; it must be at least 20.");
-      } else if (length.Y < 20) {
+      } else if (length.Y < 1 * Game1.GridSize) {
         throw new ArgumentOutOfRangeException("Please check the Vector2's Y value; it must be at least 20.");
       }
 
@@ -103,6 +96,9 @@ namespace PuzzlePathDimensionSampleDemo {
       _lowerRightCorner = _upperLeftCorner + length;
     }
 
+    /// <summary>
+    /// Updates the state of the platform.
+    /// </summary>
     public void Update() {
     }
 
@@ -124,6 +120,7 @@ namespace PuzzlePathDimensionSampleDemo {
     /// <param name="v">The origin.</param>
     /// <returns>Whether the origin of the platform is inside the level.</returns>
     private bool InBounds(Vector2 v) {
+      // It's probably best if these numbers aren't hard-coded.
       return v.X >= 0 && v.X <= 799 && v.Y >= 0 && v.Y <= 599;
     }
   }
