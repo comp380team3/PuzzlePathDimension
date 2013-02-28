@@ -42,14 +42,14 @@ namespace PuzzlePathDimensionSampleDemo {
     /// Gets the height of the platform in pixels.
     /// </summary>
     public int Height {
-      get { return (int) Math.Abs(_upperLeftCorner.Y - _lowerRightCorner.Y); }
+      get { return (int)Math.Abs(_upperLeftCorner.Y - _lowerRightCorner.Y); }
     }
 
     /// <summary>
     /// Gets the width of the platform in pixels.
     /// </summary>
     public int Width {
-      get { return (int) Math.Abs(_upperLeftCorner.X - _lowerRightCorner.X); }
+      get { return (int)Math.Abs(_upperLeftCorner.X - _lowerRightCorner.X); }
     }
 
     /// <summary>
@@ -59,19 +59,15 @@ namespace PuzzlePathDimensionSampleDemo {
 
     // Shouldn't the below code be in a constructor? Or am I missing something?
     // Also, should the Initialize() method accept grid coordinates or pixel
-    // coordinates? I have it accepting grid coordinates right now, but if you
-    // make sure that anything you pass into Initialize() is divisible by 20,
-    // then I can easily change the code to do that instead. -Jorenz
+    // coordinates? I have it accepting pixel coordinates right now... -Jorenz
 
     /// <summary>
     /// Initializes a platform.
     /// </summary>
     /// <param name="texture">The texture to use as a platform.</param>
-    /// <param name="origin">The position of the upper-left corner of the vector.
-    /// This must be between (0, 0) and (39, 29); in other words, it must be in the
-    /// 40x30 grid. </param>
-    /// <param name="length">The length of the platform in both directions.
-    /// Again, this must correspond to the 40x30 grid.</param>
+    /// <param name="origin">The position of the upper-left corner of the vector 
+    /// in pixel coordinates. </param>
+    /// <param name="length">The length of the platform, in pixels, in both directions.</param>
     public void Initialize(Texture2D texture, Vector2 origin, Vector2 length) {
       // Well...yeah. :p
       if (texture == null || origin == null || length == null) {
@@ -84,20 +80,15 @@ namespace PuzzlePathDimensionSampleDemo {
 
       // You can't have a platform that is of zero length in either direction;
       // a platform needs to occupy at least one 20x20 tile.
-      if (length.X < 1) {
-        throw new ArgumentOutOfRangeException("Please check the Vector2's X value; it must be at least 1.");
-      } else if (length.Y < 1) {
-        throw new ArgumentOutOfRangeException("Please check the Vector2's Y value; it must be at least 1.");
+      if (length.X < 20) {
+        throw new ArgumentOutOfRangeException("Please check the Vector2's X value; it must be at least 20.");
+      } else if (length.Y < 20) {
+        throw new ArgumentOutOfRangeException("Please check the Vector2's Y value; it must be at least 20.");
       }
 
       // Routine stuff.
       PlatformTexture = texture;
       Active = true;
-
-      // Convert both vectors to the pixel coordinates by multiplying each vector
-      // by a scalar of 20.
-      origin = origin * 20;
-      length = length * 20;
 
       // The upper left corner is easy to figure out.
       _upperLeftCorner = origin;
@@ -126,7 +117,7 @@ namespace PuzzlePathDimensionSampleDemo {
     /// <param name="v">The origin.</param>
     /// <returns>Whether the origin of the platform is inside the level.</returns>
     private bool InBounds(Vector2 v) {
-      return v.X >= 0 && v.X <= 39 && v.Y >= 0 && v.Y <= 29;
+      return v.X >= 0 && v.X <= 799 && v.Y >= 0 && v.Y <= 599;
     }
   }
 }

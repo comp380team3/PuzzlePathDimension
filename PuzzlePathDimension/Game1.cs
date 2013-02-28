@@ -14,6 +14,11 @@ namespace PuzzlePathDimensionSampleDemo {
   /// This is the main type for your game
   /// </summary>
   public class Game1 : Microsoft.Xna.Framework.Game {
+    /// <summary>
+    /// The size of one square on the level grid.
+    /// </summary>
+    public static readonly float GridSize = 20f;
+
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
 
@@ -133,7 +138,7 @@ namespace PuzzlePathDimensionSampleDemo {
           Keyboard.GetState().IsKeyDown(Keys.Escape)) {
         this.Exit();
       }
-      // TODO: remove this test code
+        // TODO: remove this test code
       else if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
         ball.LaunchBall();
       }
@@ -161,14 +166,14 @@ namespace PuzzlePathDimensionSampleDemo {
 
       // Adds a platform to the level
       platform1 = new Platform();
-      Vector2 platformPos = new Vector2(10, 20);
-      Vector2 platformLen = new Vector2(1, 3);
+      Vector2 platformPos = new Vector2(10 * GridSize, 20 * GridSize);
+      Vector2 platformLen = new Vector2(1 * GridSize, 3 * GridSize);
       platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
       // ...and another one.
       platform2 = new Platform();
-      platformPos = new Vector2(30, 20);
-      platformLen = new Vector2(5, 5);
+      platformPos = new Vector2(30 * GridSize, 20 * GridSize);
+      platformLen = new Vector2(5 * GridSize, 5 * GridSize);
       platform2.Initialize(_graphicContent["platform"], platformPos, platformLen);
     }
 
