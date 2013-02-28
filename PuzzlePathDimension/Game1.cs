@@ -189,28 +189,28 @@ namespace PuzzlePathDimension {
       platformRectangle = new Rectangle((int)platform1.Position.X, (int)platform1.Position.Y, platform1.Width, platform1.Height);
 
       if (ballRectangle.Intersects(platformRectangle)) {
-        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.ballYVelocity < 0) {
-          ball.flipYDirection();
-        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.ballYVelocity > 0)) {
-          ball.flipYDirection();
+        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.YVelocity < 0) {
+          ball.FlipYDirection();
+        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.YVelocity > 0)) {
+          ball.FlipYDirection();
         } else if ((ballRectangle.Right) <= (platformRectangle.Left)) {
-          ball.flipXDirection();
+          ball.FlipXDirection();
         } else if (ballRectangle.Left >= (platformRectangle.Right)) {
-          ball.flipXDirection();
+          ball.FlipXDirection();
         }
       }
 
       platformRectangle = new Rectangle((int)platform2.Position.X, (int)platform2.Position.Y, platform2.Width, platform2.Height);
 
       if (ballRectangle.Intersects(platformRectangle)) {
-        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.ballYVelocity < 0) {
-          ball.flipYDirection();
-        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.ballYVelocity > 0)) {
-          ball.flipYDirection();
+        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.YVelocity < 0) {
+          ball.FlipYDirection();
+        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.YVelocity > 0)) {
+          ball.FlipYDirection();
         } else if ((ballRectangle.Right) <= (platformRectangle.Left)) {
-          ball.flipXDirection();
+          ball.FlipXDirection();
         } else if (ballRectangle.Left >= (platformRectangle.Right)) {
-          ball.flipXDirection();
+          ball.FlipXDirection();
         }
       }
 

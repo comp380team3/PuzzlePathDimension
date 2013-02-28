@@ -13,7 +13,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The texture that the platform uses.
     /// </summary>
-    public Texture2D PlatformTexture;
+    private Texture2D _platformTexture;
 
     /// <summary>
     /// The pixel coordinates of the upper left corner of the platform.
@@ -95,17 +95,19 @@ namespace PuzzlePathDimension {
       }
 
       // Routine stuff.
-      PlatformTexture = texture;
+      _platformTexture = texture;
       Active = true;
 
       // The upper left corner is easy to figure out.
       _upperLeftCorner = origin;
       // For the lower right corner, the length needs to be added.
       _lowerRightCorner = _upperLeftCorner + length;
+
+      // TODO: Clip platform sizes to the 20x20 grid.
     }
 
     /// <summary>
-    /// Updates the state of the platform.
+    /// Updates the platform's state.
     /// </summary>
     public void Update() {
     }
@@ -113,13 +115,13 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the platform to the screen.
     /// </summary>
-    /// <param name="spriteBatch"></param>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
       // Scale the texture appropriately to the platform's size.
       Vector2 scale = new Vector2(Width / 20, Height / 20);
 
       // Draw it!
-      spriteBatch.Draw(PlatformTexture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_platformTexture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
     }
 
     /// <summary>
@@ -128,7 +130,7 @@ namespace PuzzlePathDimension {
     /// <param name="v">The origin.</param>
     /// <returns>Whether the origin of the platform is inside the level.</returns>
     private bool InBounds(Vector2 v) {
-      // It's probably best if these numbers aren't hard-coded.
+      // It's probably best if these numbers aren't hard-coded. -Jorenz
       return v.X >= 0 && v.X <= 799 && v.Y >= 0 && v.Y <= 599;
     }
   }
