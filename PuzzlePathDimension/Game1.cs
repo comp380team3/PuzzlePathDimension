@@ -87,9 +87,10 @@ namespace PuzzlePathDimension {
 
       // Add all the graphic assets to the dictionary.
       _graphicContent = new Dictionary<string, Texture2D>();
-      _graphicContent.Add("ball", Content.Load<Texture2D>("Ball"));
-      // "platform2" is the 20x20 texture
-      _graphicContent.Add("platform", Content.Load<Texture2D>("platform2"));
+      _graphicContent.Add("ball", Content.Load<Texture2D>("ball_new"));
+      _graphicContent.Add("platform", Content.Load<Texture2D>("platform_new"));
+      _graphicContent.Add("goal", Content.Load<Texture2D>("goal"));
+      _graphicContent.Add("launcher", Content.Load<Texture2D>("launcher"));
 
       // TODO: use this.Content to load your game content here
 

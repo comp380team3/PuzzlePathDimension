@@ -68,6 +68,7 @@ namespace PuzzlePathDimension {
       } else if ((Position.Y) <= 0) {
         ballYVelocity = -ballYVelocity;
       }
+
     }
 
     public void Draw(SpriteBatch spriteBatch) {

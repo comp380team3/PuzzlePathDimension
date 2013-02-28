@@ -25,6 +25,11 @@ namespace PuzzlePathDimension {
     private Vector2 _lowerRightCorner;
 
     /// <summary>
+    /// Whether the platform is active.
+    /// </summary>
+    private bool _active;
+
+    /// <summary>
     /// Gets the position, which is the upper-left corner, of the platform.
     /// </summary>
     public Vector2 Position {
@@ -60,9 +65,12 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Whether the platform is active.
+    /// Gets or sets the active state of the platform.
     /// </summary>
-    public bool Active;
+    public bool Active {
+      get { return _active; }
+      set { _active = value; }
+    }
 
     // Shouldn't the below code be in a constructor? Or am I missing something?
     // Also, should the Initialize() method accept grid coordinates or pixel
