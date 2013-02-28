@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PuzzlePathDimensionSampleDemo {
+namespace PuzzlePathDimension {
   class Ball {
     // Animation representing the ball
     public Texture2D BallTexture;

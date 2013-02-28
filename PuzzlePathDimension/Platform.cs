@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PuzzlePathDimensionSampleDemo {
+namespace PuzzlePathDimension {
   /// <summary>
   /// The Platform class describes a platform.
   /// </summary>
