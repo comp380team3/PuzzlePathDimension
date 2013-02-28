@@ -32,6 +32,7 @@ namespace PuzzlePathDimension
 
             this.graphics.PreferredBackBufferWidth = 800;
             this.graphics.PreferredBackBufferHeight = 600;
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
