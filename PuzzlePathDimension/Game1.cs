@@ -148,7 +148,7 @@ namespace PuzzlePathDimensionSampleDemo {
       ball.Update();
 
       // Update the collision
-      // UpdateCollision();
+      UpdateCollision();
 
       base.Update(gameTime);
     }
@@ -166,8 +166,8 @@ namespace PuzzlePathDimensionSampleDemo {
 
       // Adds a platform to the level
       platform1 = new Platform();
-      Vector2 platformPos = new Vector2(10 * GridSize, 20 * GridSize);
-      Vector2 platformLen = new Vector2(1 * GridSize, 3 * GridSize);
+      Vector2 platformPos = new Vector2(5 * GridSize,  5* GridSize);
+      Vector2 platformLen = new Vector2(20 * GridSize, 2 * GridSize);
       platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
       // ...and another one.
@@ -177,7 +177,7 @@ namespace PuzzlePathDimensionSampleDemo {
       platform2.Initialize(_graphicContent["platform"], platformPos, platformLen);
     }
 
-    /*private void UpdateCollision() {
+    private void UpdateCollision() {
       // Use the Rectangle's built-in intersect function to
       // determine if two objects collide
       Rectangle ballRectangle;
@@ -213,7 +213,7 @@ namespace PuzzlePathDimensionSampleDemo {
         }
       }
 
-    }*/
+    }
 
     /// <summary>
     /// This is called when the game should draw itself.

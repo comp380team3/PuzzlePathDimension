@@ -25,14 +25,21 @@ namespace PuzzlePathDimensionSampleDemo {
     private Vector2 _lowerRightCorner;
 
     /// <summary>
-    /// Gets the pixel coordinates of the upper left corner of the platform.
+    /// Gets the position, which is the upper-left corner, of the platform.
+    /// </summary>
+    public Vector2 Position {
+      get { return _upperLeftCorner; }
+    }
+
+    /// <summary>
+    /// Gets the pixel coordinates of the upper-left corner of the platform.
     /// </summary>
     public Vector2 UpperLeftCorner {
       get { return _upperLeftCorner; }
     }
 
     /// <summary>
-    /// Gets the pixel coordinates of the lower right corner of the platform.
+    /// Gets the pixel coordinates of the lower-right corner of the platform.
     /// </summary>
     public Vector2 LowerRightCorner {
       get { return _lowerRightCorner; }
