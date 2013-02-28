@@ -48,8 +48,8 @@ namespace PuzzlePathDimensionSampleDemo {
       this.viewport = viewport;
 
       // Ball's velocity
-      ballXVelocity = 5f;
-      ballYVelocity = 5f;
+      ballXVelocity = 0f;
+      ballYVelocity = 0f;
     }
 
     public void Update() {
@@ -80,6 +80,14 @@ namespace PuzzlePathDimensionSampleDemo {
 
     public void flipYDirection() {
       ballYVelocity = -ballYVelocity;
+    }
+
+    /// <summary>
+    /// Launches the ball.
+    /// </summary>
+    public void LaunchBall() {
+      ballXVelocity = 5f;
+      ballYVelocity = 5f;
     }
   }
 }
