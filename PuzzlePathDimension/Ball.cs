@@ -152,11 +152,11 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Launches the ball.
     /// </summary>
-    public void LaunchBall() {
+    public void Launch(float x, float y) {
       _active = true;
 
-      _xVelocity = 5f;
-      _yVelocity = 5f;
+      _xVelocity = x;
+      _yVelocity = y;
     }
   }
 }

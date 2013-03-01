@@ -27,8 +27,10 @@ namespace PuzzlePathDimension {
     // The platforms for the game
     Platform platform1;
     Platform platform2;
-    // The goal for the game;
+    // The goal for the game
     Goal goal;
+    // The launcher for the game
+    Launcher launcher;
 
     /// <summary>
     /// Contains all loaded assets.
@@ -143,7 +145,14 @@ namespace PuzzlePathDimension {
       }
         // TODO: remove this test code
       else if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
-        ball.LaunchBall();
+        // TODO: finish this part
+        ball.Launch(5f, 5f);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
+        launcher.AdjustAngle((float) Math.PI / 64);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
+        launcher.AdjustAngle((float) -Math.PI / 64);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.F)) {
+        launcher.CalculateTipPos();
       }
 
       // TODO: Add your update logic here
@@ -162,6 +171,11 @@ namespace PuzzlePathDimension {
     private void SetupTestLevel() {
       Started = true;
 
+      // Adds a launcher to the level
+      launcher = new Launcher();
+      Vector2 launchPos = new Vector2(10 * GridSize, 29 * GridSize);
+      launcher.Initialize(_graphicContent["launcher"], launchPos);
+
       // Adds a ball to the level
       ball = new Ball();
       Vector2 ballPos = new Vector2(400f, 300f);
@@ -175,8 +189,8 @@ namespace PuzzlePathDimension {
 
       // ...and another one.
       platform2 = new Platform();
-      platformPos = new Vector2(30 * GridSize, 20 * GridSize);
-      platformLen = new Vector2(5 * GridSize, 5 * GridSize);
+      platformPos = new Vector2(20 * GridSize, 20 * GridSize);
+      platformLen = new Vector2(10 * GridSize, 8 * GridSize);
       platform2.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
       // Adds a goal to the level
@@ -200,9 +214,9 @@ namespace PuzzlePathDimension {
           ball.FlipYDirection();
         } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.YVelocity > 0)) {
           ball.FlipYDirection();
-        } else if ((ballRectangle.Right) <= (platformRectangle.Left)) {
+        } else if ((ballRectangle.Right) >= (platformRectangle.Left)) {
           ball.FlipXDirection();
-        } else if (ballRectangle.Left >= (platformRectangle.Right)) {
+        } else if (ballRectangle.Left <= (platformRectangle.Right)) {
           ball.FlipXDirection();
         }
       }
@@ -214,9 +228,9 @@ namespace PuzzlePathDimension {
           ball.FlipYDirection();
         } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.YVelocity > 0)) {
           ball.FlipYDirection();
-        } else if ((ballRectangle.Right) <= (platformRectangle.Left)) {
+        } else if ((ballRectangle.Right) >= (platformRectangle.Left)) {
           ball.FlipXDirection();
-        } else if (ballRectangle.Left >= (platformRectangle.Right)) {
+        } else if (ballRectangle.Left <= (platformRectangle.Right)) {
           ball.FlipXDirection();
         }
       }
@@ -241,7 +255,12 @@ namespace PuzzlePathDimension {
       platform2.Draw(spriteBatch);
 
       // Draw the ball onto the canvas
-      ball.Draw(spriteBatch);
+      if (ball.Active) {
+        ball.Draw(spriteBatch);
+      }
+
+      // Draw the launcher on the canvas
+      launcher.Draw(spriteBatch);
 
       spriteBatch.End();
 
