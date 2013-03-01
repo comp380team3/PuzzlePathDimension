@@ -38,10 +38,11 @@ namespace PuzzlePathDimension {
     private float _yVelocity;
 
     /// <summary>
-    /// Gets the position of the ball.
+    /// Gets or sets the position of the ball.
     /// </summary>
     public Vector2 Position {
       get { return _position; }
+      set { _position = value; }
     }
 
     /// <summary>
@@ -112,19 +113,27 @@ namespace PuzzlePathDimension {
       _position.Y = Position.Y + _yVelocity;
 
       // Check if the ball is heading off the screen
-      if ((Position.X + _texture.Width / 2) > _viewport.Width) {
+      if (Position.X + _texture.Width / 2 > _viewport.Width) {
         _xVelocity = -1 * _xVelocity;
       } else if (Position.X <= 0) {
         _xVelocity = -1 * _xVelocity;
       }
 
-      if ((Position.Y + _texture.Height / 2) > _viewport.Height) {
+      if (Position.Y + _texture.Height / 2 > _viewport.Height) {
         _yVelocity = -1 * _yVelocity;
       } else if (Position.Y <= 0) {
         _yVelocity = -1 * _yVelocity;
       }
 
-      // TODO: add friction
+      // TODO: make this friction better
+      if (Math.Abs(_xVelocity) < 0.01f) {
+        _xVelocity = 0;
+      }
+      if (Math.Abs(_yVelocity) < 0.01f) {
+        _yVelocity = 0;
+      }
+      _xVelocity *= 0.998f;
+      _yVelocity *= 0.998f;
     }
 
     /// <summary>
@@ -157,6 +166,24 @@ namespace PuzzlePathDimension {
 
       _xVelocity = x;
       _yVelocity = y;
+    }
+
+    /// <summary>
+    /// Stops the ball.
+    /// </summary>
+    public void Stop() {
+      _active = false;
+      _xVelocity = 0f;
+      _yVelocity = 0f;
+    }
+
+    /// <summary>
+    /// Returns a string representation of the Ball object.
+    /// </summary>
+    /// <returns>Information about the ball.</returns>
+    public override string ToString() {
+      return "Position: " + _position.X + ", " + _position.Y + " | " +
+        "Velocity: " + _xVelocity + ", " + _yVelocity;
     }
   }
 }

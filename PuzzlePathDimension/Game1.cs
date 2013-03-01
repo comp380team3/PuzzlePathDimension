@@ -134,7 +134,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Update(GameTime gameTime) {
-      if (!Started) { // TODO: remove this test code
+      if (!Started) { // TODO: remove this test level
         SetupTestLevel();
       }
 
@@ -143,19 +143,27 @@ namespace PuzzlePathDimension {
           Keyboard.GetState().IsKeyDown(Keys.Escape)) {
         this.Exit();
       }
-        // TODO: remove this test code
+      // TODO: remove this test code
       else if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
-        // TODO: finish this part
-        ball.Launch(5f, 5f);
+        launcher.LaunchBall();
       } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
-        launcher.AdjustAngle((float) Math.PI / 64);
+        launcher.AdjustAngle((float)Math.PI / 64);
       } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
-        launcher.AdjustAngle((float) -Math.PI / 64);
+        launcher.AdjustAngle((float)-Math.PI / 64);
       } else if (Keyboard.GetState().IsKeyDown(Keys.F)) {
-        launcher.CalculateTipPos();
+        Console.WriteLine(launcher);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
+        Console.WriteLine(ball);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.R)) {
+        if (!launcher.Active) { // Some crude restart mechanism
+          ball.Stop();
+          launcher.LoadBall(ball);
+        }
       }
 
       // TODO: Add your update logic here
+      // Update the launcher's state
+      launcher.Update();
       // Update the ball's position
       ball.Update();
 
@@ -180,10 +188,12 @@ namespace PuzzlePathDimension {
       ball = new Ball();
       Vector2 ballPos = new Vector2(400f, 300f);
       ball.Initialize(GraphicsDevice.Viewport, _graphicContent["ball"], ballPos);
+      // Load the ball into the launcher
+      launcher.LoadBall(ball);
 
       // Adds a platform to the level
       platform1 = new Platform();
-      Vector2 platformPos = new Vector2(5 * GridSize,  5 * GridSize);
+      Vector2 platformPos = new Vector2(5 * GridSize, 5 * GridSize);
       Vector2 platformLen = new Vector2(20 * GridSize, 2 * GridSize);
       platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
@@ -255,9 +265,7 @@ namespace PuzzlePathDimension {
       platform2.Draw(spriteBatch);
 
       // Draw the ball onto the canvas
-      if (ball.Active) {
-        ball.Draw(spriteBatch);
-      }
+      ball.Draw(spriteBatch);
 
       // Draw the launcher on the canvas
       launcher.Draw(spriteBatch);
