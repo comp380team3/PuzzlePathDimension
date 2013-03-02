@@ -5,81 +5,185 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PuzzlePathDimensionSampleDemo {
+namespace PuzzlePathDimension {
   class Ball {
-    // Animation representing the ball
-    public Texture2D BallTexture;
+    /// <summary>
+    /// The texture that the ball uses.
+    /// </summary>
+    private Texture2D _texture;
 
-    // The position of the ball
-    public Vector2 Position;
+    /// <summary>
+    /// The position of the ball.
+    /// </summary>
+    private Vector2 _position;
 
-    // The size of the window where the ball will bounce
-    public Viewport viewport;
+    /// <summary>
+    /// The Viewport object that the ball will be drawn to.
+    /// </summary>
+    private Viewport _viewport;
 
-    // The heigt of the ball
+    /// <summary>
+    /// Whether the ball is active.
+    /// </summary>
+    private bool _active;
+
+    /// <summary>
+    /// The ball's horizontal speed.
+    /// </summary>
+    private float _xVelocity;
+
+    /// <summary>
+    /// The ball's vertical speed.
+    /// </summary>
+    private float _yVelocity;
+
+    /// <summary>
+    /// Gets or sets the position of the ball.
+    /// </summary>
+    public Vector2 Position {
+      get { return _position; }
+      set { _position = value; }
+    }
+
+    /// <summary>
+    /// Gets the height of the ball.
+    /// </summary>
     public int Height {
-      get { return BallTexture.Height; }
+      get { return _texture.Height; }
     }
 
-    // The width of the ball
+    /// <summary>
+    /// Gets the width of the ball.
+    /// </summary>
     public int Width {
-      get { return BallTexture.Width; }
+      get { return _texture.Width; }
     }
 
-    // The balls vertical speed
-    public float ballXVelocity;
+    /// <summary>
+    /// Gets the ball's horizontal speed.
+    /// </summary>
+    public float XVelocity {
+      get { return _xVelocity; }
+    }
 
-    // The balls horizontal speed
-    public float ballYVelocity;
+    /// <summary>
+    /// Gets the ball's vertical speed.
+    /// </summary>
+    public float YVelocity {
+      get { return _yVelocity; }
+    }
 
-    // The ball is active
-    public bool Active;
+    /// <summary>
+    /// Gets whether the ball is active.
+    /// </summary>
+    public bool Active {
+      get { return _active; }
+    }
 
+    /// <summary>
+    /// Initializes a ball.
+    /// </summary>
+    /// <param name="viewport">The screen that the ball will be drawn on.</param>
+    /// <param name="texture">The texture that the ball will be drawn with.</param>
+    /// <param name="position">The initial position of the ball.</param>
     public void Initialize(Viewport viewport, Texture2D texture, Vector2 position) {
+      // TODO: add exceptions
+
       // Set the texture of the ball
-      BallTexture = texture;
+      _texture = texture;
 
       // Set the position of the ball
-      Position = position;
+      _position = position;
 
-      // Ball will be active to move
-      Active = true;
+      // Ball will be stationary at first
+      _active = false;
 
-      this.viewport = viewport;
+      _viewport = viewport;
 
       // Ball's velocity
-      ballXVelocity = 5f;
-      ballYVelocity = 5f;
+      _xVelocity = 0f;
+      _yVelocity = 0f;
     }
 
+    /// <summary>
+    /// Updates the ball's state.
+    /// </summary>
     public void Update() {
-      Position.X = Position.X + ballXVelocity;
-      Position.Y = Position.Y + ballYVelocity;
+      _position.X = Position.X + _xVelocity;
+      _position.Y = Position.Y + _yVelocity;
 
       // Check if the ball is heading off the screen
-      if ((Position.X + BallTexture.Width / 2) > viewport.Width) {
-        ballXVelocity = -ballXVelocity;
-      } else if ((Position.X) <= 0) {
-        ballXVelocity = -ballXVelocity;
+      if (Position.X + _texture.Width / 2 > _viewport.Width) {
+        _xVelocity = -1 * _xVelocity;
+      } else if (Position.X <= 0) {
+        _xVelocity = -1 * _xVelocity;
       }
 
-      if ((Position.Y + BallTexture.Height / 2) > viewport.Height) {
-        ballYVelocity = -ballYVelocity;
-      } else if ((Position.Y) <= 0) {
-        ballYVelocity = -ballYVelocity;
+      if (Position.Y + _texture.Height / 2 > _viewport.Height) {
+        _yVelocity = -1 * _yVelocity;
+      } else if (Position.Y <= 0) {
+        _yVelocity = -1 * _yVelocity;
       }
+
+      // TODO: make this friction better
+      if (Math.Abs(_xVelocity) < 0.01f) {
+        _xVelocity = 0;
+      }
+      if (Math.Abs(_yVelocity) < 0.01f) {
+        _yVelocity = 0;
+      }
+      _xVelocity *= 0.998f;
+      _yVelocity *= 0.998f;
     }
 
+    /// <summary>
+    /// Draws the ball to the screen.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.Draw(BallTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_texture, _position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
     }
 
-    public void flipXDirection() {
-      ballXVelocity = -ballXVelocity;
+    /// <summary>
+    /// Flips the ball's velocity on the X axis.
+    /// </summary>
+    public void FlipXDirection() {
+      _xVelocity = -1 * _xVelocity;
     }
 
-    public void flipYDirection() {
-      ballYVelocity = -ballYVelocity;
+    /// <summary>
+    /// Flips the ball's velocity on the Y axis.
+    /// </summary>
+    public void FlipYDirection() {
+      _yVelocity = -1 * _yVelocity;
+    }
+
+    /// <summary>
+    /// Launches the ball.
+    /// </summary>
+    public void Launch(float x, float y) {
+      _active = true;
+
+      _xVelocity = x;
+      _yVelocity = y;
+    }
+
+    /// <summary>
+    /// Stops the ball.
+    /// </summary>
+    public void Stop() {
+      _active = false;
+      _xVelocity = 0f;
+      _yVelocity = 0f;
+    }
+
+    /// <summary>
+    /// Returns a string representation of the Ball object.
+    /// </summary>
+    /// <returns>Information about the ball.</returns>
+    public override string ToString() {
+      return "Position: " + _position.X + ", " + _position.Y + " | " +
+        "Velocity: " + _xVelocity + ", " + _yVelocity;
     }
   }
 }
