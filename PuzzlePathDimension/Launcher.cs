@@ -15,6 +15,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     private Texture2D _texture;
 
+    private Texture2D _testTexture;
+
     /// <summary>
     /// The position of the launcher.
     /// </summary>
@@ -167,32 +169,37 @@ namespace PuzzlePathDimension {
        * But what is the center of the circle? That question is why the launcher's position
        * is added to both the X and Y components of the tip. Think of it as an offset.
        * The launcher's position, however, is technically the upper-left corner of the launcher.
-       * This is not a problem on the x-axis, but it makes the y-coordinate inaccurate. Adding half
-       * of the launcher's height to the y-coordinate solves that. Subtracting is wrong since
-       * the y-axis is inverted, which means that 0 is the top of the screen and 600 is the bottom.
+       * This, therefore, introduces some inaccuracy, but subtracting half of the launcher's height 
+       * to both coordinates solves this problem. (TODO: check this)
        * 
        * The flipped y-axis is also the reason why the angle passed to Math.Sin() is multiplied by -1.
        * 
        * I think that helps you and my future self figure out what's going on here :p 
        * After all, who knows if we have to change this later? -Jorenz
        */
-      _tip.X = (float)(_texture.Width * Math.Cos(_angle) + _position.X);
-      _tip.Y = (float)(_texture.Width * Math.Sin(-1 * _angle) + _position.Y + _texture.Height / 2.0);
+      _tip.X = (float)(_texture.Width * Math.Cos(_angle) + _position.X - _texture.Height / 2.0);
+      _tip.Y = (float)(_texture.Width * Math.Sin(-1 * _angle) + _position.Y - _texture.Height / 2.0);
     }
 
     /// <summary>
     /// Draws the launcher to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when launching the ball.</param>
-    public void Draw(SpriteBatch spriteBatch) {
+    /// <param name="test">If not null, draws a texture at the tip of the launcher. For testing purposes.</param>
+    public void Draw(SpriteBatch spriteBatch, Texture2D test) {
       // The unit circle goes counter-clockwise, but the rotation parameter goes clockwise, so flip it.
       float rotateAngle = -1 * _angle;
 
       // Rotate at the midpoint of the upper-left and lower-left corners, for better precision
-      Vector2 rotatePos = new Vector2(0f, _texture.Height / 2);
+      Vector2 rotatePos = new Vector2(0f, _texture.Height / 2.0f);
 
       // Draw the launcher!
       spriteBatch.Draw(_texture, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
+
+      // If not null, draw a dot at the tip's location for testing purposes.
+      if (test != null) {
+        spriteBatch.Draw(test, _tip, null, Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
+      }
     }
 
     /// <summary>

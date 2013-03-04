@@ -268,7 +268,7 @@ namespace PuzzlePathDimension {
       ball.Draw(spriteBatch);
 
       // Draw the launcher on the canvas
-      launcher.Draw(spriteBatch);
+      launcher.Draw(spriteBatch, _graphicContent["platform"]);
 
       spriteBatch.End();
 
