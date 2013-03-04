@@ -180,7 +180,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when launching the ball.</param>
     /// <param name="test">If not null, draws a texture at the tip of the launcher. For testing purposes.</param>
-    public void Draw(SpriteBatch spriteBatch, Texture2D test) {
+    public void Draw(SpriteBatch spriteBatch/*, Texture2D test*/) {
       // The unit circle goes counter-clockwise, but the rotation parameter goes clockwise, so flip it.
       float rotateAngle = -1 * _angle;
 
@@ -191,9 +191,9 @@ namespace PuzzlePathDimension {
       spriteBatch.Draw(_texture, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
 
       // If not null, draw a dot at the tip's location for testing purposes.
-      if (test != null) {
+      /*if (test != null) {
         spriteBatch.Draw(test, _tip, null, Color.White, 0f, new Vector2(10f, 10f), 0.25f, SpriteEffects.None, 0f);
-      }
+      }*/
     }
 
     /// <summary>
