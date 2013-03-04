@@ -16,6 +16,11 @@ namespace PuzzlePathDimension {
     private Texture2D _texture;
 
     /// <summary>
+    /// The texture's color data.
+    /// </summary>
+    private Color[] _colorData;
+
+    /// <summary>
     /// The position of the goal.
     /// </summary>
     private Vector2 _position;
@@ -54,12 +59,27 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets the texture's color data.
+    /// </summary>
+    /// <returns>The texture's color data as an array.</returns>
+    public Color[] GetColorData() {
+      // See http://msdn.microsoft.com/en-us/library/0fss9skc.aspx for why
+      // this is not a property.
+      return (Color[])_colorData.Clone();
+    }
+
+    /// <summary>
     /// Initializes a goal.
     /// </summary>
     /// <param name="texture">The texture that the goal will be drawn with.</param>
     /// <param name="position">The position of the goal.</param>
     public void Initialize(Texture2D texture, Vector2 position) {
       _texture = texture;
+
+      // Get the texture's color data, which is used for per-pixel collision
+      _colorData = new Color[_texture.Width * _texture.Height];
+      _texture.GetData<Color>(_colorData);
+
       _position = position;
       _active = true;
     }

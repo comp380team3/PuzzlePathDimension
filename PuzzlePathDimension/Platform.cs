@@ -16,6 +16,11 @@ namespace PuzzlePathDimension {
     private Texture2D _texture;
 
     /// <summary>
+    /// The texture's color data.
+    /// </summary>
+    private Color[] _colorData;
+
+    /// <summary>
     /// The pixel coordinates of the upper left corner of the platform.
     /// </summary>
     private Vector2 _upperLeftCorner;
@@ -72,6 +77,16 @@ namespace PuzzlePathDimension {
       set { _active = value; }
     }
 
+    /// <summary>
+    /// Gets the texture's color data.
+    /// </summary>
+    /// <returns>The texture's color data as an array.</returns>
+    public Color[] GetColorData() {
+      // See http://msdn.microsoft.com/en-us/library/0fss9skc.aspx for why
+      // this is not a property.
+      return (Color[])_colorData.Clone();
+    }
+
     // Shouldn't the below code be in a constructor? Or am I missing something?
     // Also, should the Initialize() method accept grid coordinates or pixel
     // coordinates? I have it accepting pixel coordinates right now... -Jorenz
@@ -97,6 +112,10 @@ namespace PuzzlePathDimension {
       // Routine stuff.
       _texture = texture;
       _active = true;
+
+      // Get the texture's color data, which is used for per-pixel collision
+      _colorData = new Color[_texture.Width * _texture.Height];
+      _texture.GetData<Color>(_colorData);
 
       // The upper left corner is easy to figure out.
       _upperLeftCorner = origin;
