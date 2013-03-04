@@ -161,6 +161,11 @@ namespace PuzzlePathDimension {
         }
       }
 
+      MouseState blah = Mouse.GetState();
+      if (blah.LeftButton == ButtonState.Pressed) {
+        Console.WriteLine("Mouse click at: " + blah.X + ", " + blah.Y);
+      }
+
       // TODO: Add your update logic here
       // Update the launcher's state
       launcher.Update();

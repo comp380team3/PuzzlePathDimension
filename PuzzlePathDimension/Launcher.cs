@@ -166,19 +166,13 @@ namespace PuzzlePathDimension {
        * so that is why the texture's width is still used for calculating the y-coordinate 
        * instead of the height.
        * 
-       * But what is the center of the circle? That question is why the launcher's position
-       * is added to both the X and Y components of the tip. Think of it as an offset.
-       * The launcher's position, however, is technically the upper-left corner of the launcher.
-       * This, therefore, introduces some inaccuracy, but subtracting half of the launcher's height 
-       * to both coordinates solves this problem. (TODO: check this)
-       * 
        * The flipped y-axis is also the reason why the angle passed to Math.Sin() is multiplied by -1.
        * 
        * I think that helps you and my future self figure out what's going on here :p 
        * After all, who knows if we have to change this later? -Jorenz
        */
-      _tip.X = (float)(_texture.Width * Math.Cos(_angle) + _position.X - _texture.Height / 2.0);
-      _tip.Y = (float)(_texture.Width * Math.Sin(-1 * _angle) + _position.Y - _texture.Height / 2.0);
+      _tip.X = (float)(_texture.Width * Math.Cos(_angle) + _position.X);
+      _tip.Y = (float)(_texture.Width * Math.Sin(-1 * _angle) + _position.Y);
     }
 
     /// <summary>
@@ -198,7 +192,7 @@ namespace PuzzlePathDimension {
 
       // If not null, draw a dot at the tip's location for testing purposes.
       if (test != null) {
-        spriteBatch.Draw(test, _tip, null, Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
+        spriteBatch.Draw(test, _tip, null, Color.White, 0f, new Vector2(10f, 10f), 0.25f, SpriteEffects.None, 0f);
       }
     }
 
