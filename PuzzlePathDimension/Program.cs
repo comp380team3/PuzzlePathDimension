@@ -1,6 +1,6 @@
 using System;
 
-namespace PuzzlePathDimensionSampleDemo {
+namespace PuzzlePathDimension {
 #if WINDOWS || XBOX
   static class Program {
     /// <summary>
