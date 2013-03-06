@@ -15,8 +15,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     private Texture2D _texture;
 
-    private Texture2D _testTexture;
-
     /// <summary>
     /// The position of the launcher.
     /// </summary>
