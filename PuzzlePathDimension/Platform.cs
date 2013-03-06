@@ -11,6 +11,8 @@ namespace PuzzlePathDimensionSampleDemo {
 
     public Vector2 Position;
 
+    public Color[] platformTextureData;
+
     public int Height {
       get { return PlatformTexture.Height; }
     }
@@ -23,6 +25,9 @@ namespace PuzzlePathDimensionSampleDemo {
 
     public void Initialize(Texture2D texture, Vector2 position) {
       PlatformTexture = texture;
+
+      platformTextureData = new Color[texture.Width * texture.Height];
+      texture.GetData(platformTextureData);
 
       Position = position;
 

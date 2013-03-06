@@ -12,7 +12,11 @@ namespace PuzzlePathDimensionSampleDemo {
 
     // The position of the ball
     public Vector2 Position;
+    
 
+    //The color data for the ball; used for per pixel collision
+    public Color[] ballTextureData;
+ 
     // The size of the window where the ball will bounce
     public Viewport viewport;
 
@@ -39,6 +43,8 @@ namespace PuzzlePathDimensionSampleDemo {
       // Set the texture of the ball
       BallTexture = texture;
 
+      ballTextureData = new Color[texture.Width * texture.Height];
+      texture.GetData(ballTextureData);
       // Set the position of the ball
       Position = position;
 
@@ -53,6 +59,8 @@ namespace PuzzlePathDimensionSampleDemo {
     }
 
     public void Update() {
+
+
       Position.X = Position.X + ballXVelocity;
       Position.Y = Position.Y + ballYVelocity;
 

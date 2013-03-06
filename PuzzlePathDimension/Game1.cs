@@ -20,6 +20,7 @@ namespace PuzzlePathDimensionSampleDemo {
     // The ball for our game
     Ball ball;
     // The platforms for the game
+    Platform [] platforms;
     Platform platform1;
     Platform platform2;
 
@@ -41,9 +42,12 @@ namespace PuzzlePathDimensionSampleDemo {
       ball = new Ball();
 
       // Create a new platform
-      platform1 = new Platform();
-      platform2 = new Platform();
+      //platform1 = new Platform();
+      //platform2 = new Platform();
 
+      platforms = new Platform[2];
+      for (int i = 0; i < platforms.Length; i++)
+        platforms[i] = new Platform();
       base.Initialize();
     }
 
@@ -58,8 +62,7 @@ namespace PuzzlePathDimensionSampleDemo {
       // TODO: use this.Content to load your game content here
 
       // Find a safe position to place the ball
-      Vector2 ballPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X + GraphicsDevice.Viewport.TitleSafeArea.Width / 2,
-          GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+      Vector2 ballPosition = new Vector2(100, 300);
       // Create a new ball 
       ball.Initialize(GraphicsDevice.Viewport, Content.Load<Texture2D>("Ball"), ballPosition);
 
@@ -68,14 +71,14 @@ namespace PuzzlePathDimensionSampleDemo {
           GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
       // Create a new platform
-      platform1.Initialize(Content.Load<Texture2D>("platform"), platform1Position);
+      platforms[0].Initialize(Content.Load<Texture2D>("platform"), platform1Position);
 
       // Find a safe position to place the platform
       Vector2 platform2Position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Width / 1.5f,
           GraphicsDevice.Viewport.TitleSafeArea.Height / 5);
 
       // Create a new platform
-      platform2.Initialize(Content.Load<Texture2D>("platform"), platform2Position);
+      platforms[1].Initialize(Content.Load<Texture2D>("platform"), platform2Position);
 
     }
 
@@ -107,6 +110,50 @@ namespace PuzzlePathDimensionSampleDemo {
       base.Update(gameTime);
     }
 
+
+    private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
+
+      // Check if the two objects are near each other. 
+      // If they are not then return false for no intersection.
+      if (rectangleA.Top > rectangleB.Bottom || rectangleB.Top > rectangleA.Bottom) {
+        return false;
+      }
+      if (rectangleB.Left > rectangleA.Right || rectangleA.Left > rectangleB.Right) {
+        return false;
+      }
+
+      // Find the bounds of the rectangle intersection
+      int top = Math.Max(rectangleA.Top, rectangleB.Top);
+      int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
+      int left = Math.Max(rectangleA.Left, rectangleB.Left);
+      int right = Math.Min(rectangleA.Right, rectangleB.Right);
+
+      // Check every point within the intersection bounds
+      for (int y = top; y < bottom; y++) {
+        for (int x = left; x < right; x++) {
+          // Get the color of both pixels at this point
+          Color colorA = dataA[(x - rectangleA.Left) +
+                               (y - rectangleA.Top) * rectangleA.Width];
+          Color colorB = dataB[(x - rectangleB.Left) +
+                               (y - rectangleB.Top) * rectangleB.Width];
+
+          // If both pixels are not completely transparent,
+          if (colorA.A != 0 && colorB.A != 0) {
+            if(y==top || y==bottom-1)
+              ball.flipYDirection();
+            if (x == left || x == right-1)
+              ball.flipXDirection();
+            // then an intersection has been found
+            return true;
+          }
+        }
+      }
+
+      // No intersection found
+      return false;
+    }
+
+
     private void UpdateCollision() {
       // Use the Rectangle's built-in intersect function to
       // determine if two objects collide
@@ -115,33 +162,13 @@ namespace PuzzlePathDimensionSampleDemo {
 
       ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
 
-      platformRectangle = new Rectangle((int)platform1.Position.X, (int)platform1.Position.Y, platform1.Width, platform1.Height);
 
-      if (ballRectangle.Intersects(platformRectangle)) {
-        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.ballYVelocity < 0) {
-          ball.flipYDirection();
-        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.ballYVelocity > 0)) {
-          ball.flipYDirection();
-        } else if ((ballRectangle.Right) <= (platformRectangle.Left)) {
-          ball.flipXDirection();
-        } else if (ballRectangle.Left >= (platformRectangle.Right)) {
-          ball.flipXDirection();
-        }
+
+      for (int i = 0; i < platforms.Length; i++) {
+        platformRectangle = new Rectangle((int)platforms[i].Position.X, (int)platforms[i].Position.Y, platforms[i].Width, platforms[i].Height);
+        Boolean intersect = IntersectPixels(ballRectangle, ball.ballTextureData, platformRectangle, platforms[i].platformTextureData);
       }
-
-      platformRectangle = new Rectangle((int)platform2.Position.X, (int)platform2.Position.Y, platform2.Width, platform2.Height);
-
-      if (ballRectangle.Intersects(platformRectangle)) {
-        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.ballYVelocity < 0) {
-          ball.flipYDirection();
-        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.ballYVelocity > 0)) {
-          ball.flipYDirection();
-        } else if ((ballRectangle.Right) <= (platformRectangle.Left)) {
-          ball.flipXDirection();
-        } else if (ballRectangle.Left >= (platformRectangle.Right)) {
-          ball.flipXDirection();
-        }
-      }
+      
 
     }
 
@@ -156,8 +183,8 @@ namespace PuzzlePathDimensionSampleDemo {
       spriteBatch.Begin();
 
       // Draw the platform on the canvas
-      platform1.Draw(spriteBatch);
-      platform2.Draw(spriteBatch);
+      for (int i = 0; i < platforms.Length; i++)
+        platforms[i].Draw(spriteBatch);
 
       // Draw the ball onto the canvas
       ball.Draw(spriteBatch);
