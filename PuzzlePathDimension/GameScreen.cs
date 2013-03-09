@@ -17,8 +17,7 @@ namespace PuzzlePathDimension {
     //The ball for our game
     Ball ball;
     //The platform fo the game
-    Platform platform1;
-    Platform platform2;
+    List<Platform> platforms;
     // The goal for the game
     Goal goal;
     // The launcher for the game
@@ -36,8 +35,9 @@ namespace PuzzlePathDimension {
       ball = new Ball();
 
       // Create a new platform
-      platform1 = new Platform();
-      platform2 = new Platform();
+      platforms = new List<Platform>();
+      platforms.Add(new Platform());
+      platforms.Add(new Platform());
 
       LoadContent(theViewport, theContent);
     }
@@ -121,16 +121,16 @@ namespace PuzzlePathDimension {
       launcher.LoadBall(ball);
 
       // Adds a platform to the level
-      platform1 = new Platform();
+      Platform platform0 = platforms[0];
       Vector2 platformPos = new Vector2(5 * Game1.GridSize, 5 * Game1.GridSize);
       Vector2 platformLen = new Vector2(20 * Game1.GridSize, 2 * Game1.GridSize);
-      platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
+      platform0.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
       // ...and another one.
-      platform2 = new Platform();
+      Platform platform1 = platforms[1];
       platformPos = new Vector2(20 * Game1.GridSize, 20 * Game1.GridSize);
       platformLen = new Vector2(10 * Game1.GridSize, 8 * Game1.GridSize);
-      platform2.Initialize(_graphicContent["platform"], platformPos, platformLen);
+      platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
 
       // Adds a goal to the level
       goal = new Goal();
@@ -138,40 +138,56 @@ namespace PuzzlePathDimension {
       goal.Initialize(_graphicContent["goal"], goalPos);
     }
 
+    private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
+      // Check if the two objects are near each other. 
+      // If they are not then return false for no intersection.
+      if (rectangleA.Top > rectangleB.Bottom || rectangleB.Top > rectangleA.Bottom) {
+        return false;
+      }
+      if (rectangleB.Left > rectangleA.Right || rectangleA.Left > rectangleB.Right) {
+        return false;
+      }
+
+      // Find the bounds of the rectangle intersection
+      int top = Math.Max(rectangleA.Top, rectangleB.Top);
+      int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
+      int left = Math.Max(rectangleA.Left, rectangleB.Left);
+      int right = Math.Min(rectangleA.Right, rectangleB.Right);
+
+      // Check every point within the intersection bounds
+      for (int y = top; y < bottom; y++) {
+        for (int x = left; x < right; x++) {
+          // Get the color of both pixels at this point
+          Color colorA = dataA[(x - rectangleA.Left) +
+                               (y - rectangleA.Top) * rectangleA.Width];
+          Color colorB = dataB[(x - rectangleB.Left) +
+                               (y - rectangleB.Top) * rectangleB.Width];
+
+          // If both pixels are not completely transparent,
+          if (colorA.A != 0 && colorB.A != 0) {
+            if (y == top || y == bottom - 1)
+              ball.FlipYDirection();
+            if (x == left || x == right - 1)
+              ball.FlipXDirection();
+            // then an intersection has been found
+            return true;
+          }
+        }
+      }
+
+      // No intersection found
+      return false;
+    }
+
     private void UpdateCollision() {
-      // Use the Rectangle's built-in intersect function to
-      // determine if two objects collide
       Rectangle ballRectangle;
       Rectangle platformRectangle;
 
       ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
 
-      platformRectangle = new Rectangle((int)platform1.Position.X, (int)platform1.Position.Y, platform1.Width, platform1.Height);
-
-      if (ballRectangle.Intersects(platformRectangle)) {
-        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.YVelocity > 0) {
-          ball.FlipYDirection();
-        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.YVelocity < 0)) {
-          ball.FlipYDirection();
-        } else if ((ballRectangle.Right) >= (platformRectangle.Left) && ball.XVelocity > 0) {
-          ball.FlipXDirection();
-        } else if (ballRectangle.Left <= (platformRectangle.Right) && ball.XVelocity < 0) {
-          ball.FlipXDirection();
-        }
-      }
-
-      platformRectangle = new Rectangle((int)platform2.Position.X, (int)platform2.Position.Y, platform2.Width, platform2.Height);
-
-      if (ballRectangle.Intersects(platformRectangle)) {
-        if ((ballRectangle.Bottom >= platformRectangle.Top) && ball.YVelocity > 0) {
-          ball.FlipYDirection();
-        } else if ((ballRectangle.Top <= platformRectangle.Bottom && ball.YVelocity < 0)) {
-          ball.FlipYDirection();
-        } else if ((ballRectangle.Right) >= (platformRectangle.Left) && ball.XVelocity > 0) {
-          ball.FlipXDirection();
-        } else if (ballRectangle.Left <= (platformRectangle.Right) && ball.XVelocity < 0) {
-          ball.FlipXDirection();
-        }
+      for (int i = 0; i < platforms.Count; i++) {
+        platformRectangle = new Rectangle((int)platforms[i].Position.X, (int)platforms[i].Position.Y, platforms[i].Width, platforms[i].Height);
+        Boolean intersect = IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platforms[i].GetColorData());
       }
     }
 
@@ -182,8 +198,9 @@ namespace PuzzlePathDimension {
       goal.Draw(theBatch);
 
       // Draw the platform on the canvas
-      platform1.Draw(theBatch);
-      platform2.Draw(theBatch);
+      foreach (Platform platform in platforms) {
+        platform.Draw(theBatch);
+      }
 
       // Draw the ball onto the canvas
       ball.Draw(theBatch);
