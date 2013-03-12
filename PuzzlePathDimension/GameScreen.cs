@@ -110,7 +110,7 @@ namespace PuzzlePathDimension {
     private void SetupTestLevel(Viewport viewport) {
       // Adds a launcher to the level
       launcher = new Launcher();
-      Vector2 launchPos = new Vector2(10 * Game1.GridSize, 29 * Game1.GridSize);
+      Vector2 launchPos = new Vector2(34 * Game1.GridSize, 29 * Game1.GridSize);
       launcher.Initialize(_graphicContent["launcher"], launchPos);
 
       // Adds a ball to the level
@@ -158,10 +158,12 @@ namespace PuzzlePathDimension {
       for (int y = top; y < bottom; y++) {
         for (int x = left; x < right; x++) {
           // Get the color of both pixels at this point
-          Color colorA = dataA[(x - rectangleA.Left) +
-                               (y - rectangleA.Top) * rectangleA.Width];
-          Color colorB = dataB[(x - rectangleB.Left) +
-                               (y - rectangleB.Top) * rectangleB.Width];
+          //Console.WriteLine("Index to fetch: " + (((x - rectangleB.Left) + (y - rectangleB.Top) * rectangleB.Width) % 400));
+          Console.WriteLine("Length of dataB: " + dataB.Length);
+          Color colorA = dataA[((x - rectangleA.Left) +
+                               (y - rectangleA.Top) * rectangleA.Width) % dataA.Length];
+          Color colorB = dataB[((x - rectangleB.Left) +
+                               (y - rectangleB.Top) * rectangleB.Width) % dataB.Length]; // lol maybe?
 
           // If both pixels are not completely transparent,
           if (colorA.A != 0 && colorB.A != 0) {

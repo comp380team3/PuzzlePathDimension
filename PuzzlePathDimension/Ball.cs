@@ -145,14 +145,14 @@ namespace PuzzlePathDimension {
       }
 
       // TODO: make this friction better
-      if (Math.Abs(_xVelocity) < 0.01f) {
+      /*if (Math.Abs(_xVelocity) < 0.01f) {
         _xVelocity = 0;
       }
       if (Math.Abs(_yVelocity) < 0.01f) {
         _yVelocity = 0;
       }
       _xVelocity *= 0.998f;
-      _yVelocity *= 0.998f;
+      _yVelocity *= 0.998f;*/
     }
 
     /// <summary>

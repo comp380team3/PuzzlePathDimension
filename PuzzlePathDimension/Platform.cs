@@ -117,6 +117,23 @@ namespace PuzzlePathDimension {
       _colorData = new Color[_texture.Width * _texture.Height];
       _texture.GetData<Color>(_colorData);
 
+      /*// Get the texture's color data, which is used for per-pixel collision
+      // TODO: remove some assumptions that this code is making 
+      // (that is, everything is a multiple of 20, and only one color is being used for it)
+      
+      // Make sure the the Color array can hold enough pixels for the whole platform
+      _colorData = new Color[(_texture.Width * (int) length.X) * (_texture.Height * (int) length.Y)];
+      int pixels = _texture.Width * _texture.Height; // Number of pixels in platform_new.png
+      // Store platform_new.png's color data in a temporary array
+      Color[] temp = new Color[pixels];
+      _texture.GetData<Color>(temp);
+
+      // Copy over the pixel data as many times as needed.
+      for (int i = 0; i < _colorData.Length; i += pixels) {
+        Array.Copy(temp, 0, _colorData, i, Math.Min(_colorData.Length - i, 400));
+        Console.WriteLine("blah");
+      }*/
+
       // The upper left corner is easy to figure out.
       _upperLeftCorner = origin;
       // For the lower right corner, the length needs to be added.
