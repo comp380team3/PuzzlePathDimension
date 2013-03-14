@@ -26,10 +26,10 @@ namespace PuzzlePathDimension {
     //Background texture for the Title screen
     Texture2D mGameScreenBackground;
     
-    public GameScreen(ContentManager theContent, Viewport theViewport, EventHandler theScreenEvent)
+    public GameScreen(Game1 game1, EventHandler theScreenEvent)
       : base(theScreenEvent) {
       //Load the background texture for the screen
-      mGameScreenBackground = theContent.Load<Texture2D>("GameScreen");
+      mGameScreenBackground = game1.Content.Load<Texture2D>("GameScreen");
 
       // Create a new ball
       ball = new Ball();
@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
       platforms.Add(new Platform());
       platforms.Add(new Platform());
 
-      LoadContent(theViewport, theContent);
+      LoadContent(game1.GraphicsDevice.Viewport, game1.Content);
     }
 
     public void LoadContent(Viewport viewport, ContentManager theContent) {

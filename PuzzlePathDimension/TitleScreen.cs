@@ -16,12 +16,12 @@ namespace PuzzlePathDimension {
     private SpriteFont menuFont;
     private SpriteFont selectFont;
 
-    public TitleScreen(ContentManager theContent, EventHandler theScreenEvent)
+    public TitleScreen(Game1 game1, EventHandler theScreenEvent)
       : base(theScreenEvent) {
       //Load the background texture for the screen
-      mTitleScreenBackground = theContent.Load<Texture2D>("PuzzlePathMenu");
-      menuFont = theContent.Load<SpriteFont>("MainMenuTitle");
-      selectFont = theContent.Load<SpriteFont>("SelectFont");
+      mTitleScreenBackground = game1.Content.Load<Texture2D>("PuzzlePathMenu");
+      menuFont = game1.Content.Load<SpriteFont>("MainMenuTitle");
+      selectFont = game1.Content.Load<SpriteFont>("SelectFont");
       Position = new Vector2(200, 200);
     }
 

@@ -14,11 +14,11 @@ namespace PuzzlePathDimension {
     private MouseState oldState;
     private SpriteFont controlfont;
 
-    public ControllerDetectScreen(ContentManager theContent, EventHandler theScreenEvent)
+    public ControllerDetectScreen(Game1 game1, EventHandler theScreenEvent)
       : base(theScreenEvent) {
       //Load the background texture for the screen
-      mControllerDetectScreenBackground = theContent.Load<Texture2D>("PuzzlePathControllerScreen");
-      controlfont = theContent.Load<SpriteFont>("MainMenuTitle");
+      mControllerDetectScreenBackground = game1.Content.Load<Texture2D>("PuzzlePathControllerScreen");
+      controlfont = game1.Content.Load<SpriteFont>("MainMenuTitle");
     }
 
     //Update all of the elements that need updating in the Controller Detect Screen

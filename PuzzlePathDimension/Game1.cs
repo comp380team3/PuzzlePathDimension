@@ -59,9 +59,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     protected override void Initialize() {
       // Initialize the various screens in the game
-      mControllerScreen = new ControllerDetectScreen(this.Content, new EventHandler(ControllerDetectScreenEvent));
-      mTitleScreen = new TitleScreen(this.Content, new EventHandler(TitleScreenEvent));
-      mGameScreen = new GameScreen(this.Content, GraphicsDevice.Viewport, new EventHandler(GameScreenEvent));
+      mControllerScreen = new ControllerDetectScreen(this, new EventHandler(ControllerDetectScreenEvent));
+      mTitleScreen = new TitleScreen(this, new EventHandler(TitleScreenEvent));
+      mGameScreen = new GameScreen(this, new EventHandler(GameScreenEvent));
 
       //Set the current screen
       stateStack.Push(mControllerScreen);
