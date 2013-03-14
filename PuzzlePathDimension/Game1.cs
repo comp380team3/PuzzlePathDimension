@@ -19,7 +19,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public static readonly float GridSize = 20f;
 
-    GraphicsDeviceManager graphics;
+    // The drawing API
     SpriteBatch spriteBatch;
 
     //The screens and the current screen
@@ -35,9 +35,11 @@ namespace PuzzlePathDimension {
     public Game1() {
       stateStack = new Stack<Screen>();
 
-      graphics = new GraphicsDeviceManager(this);
+      // Obtain a reference to the graphics API.
+      spriteBatch = new SpriteBatch(GraphicsDevice);
 
       // Set the resolution to 800x600
+      GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
       graphics.PreferredBackBufferWidth = 800;
       graphics.PreferredBackBufferHeight = 600;
       graphics.ApplyChanges();
@@ -56,7 +58,13 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // TODO: Add your initialization logic here
+      // Initialize the various screens in the game
+      mControllerScreen = new ControllerDetectScreen(this.Content, new EventHandler(ControllerDetectScreenEvent));
+      mTitleScreen = new TitleScreen(this.Content, new EventHandler(TitleScreenEvent));
+      mGameScreen = new GameScreen(this.Content, GraphicsDevice.Viewport, new EventHandler(GameScreenEvent));
+
+      //Set the current screen
+      stateStack.Push(mControllerScreen);
 
       base.Initialize();
     }
@@ -66,16 +74,6 @@ namespace PuzzlePathDimension {
     /// all of your content.
     /// </summary>
     protected override void LoadContent() {
-      // Create a new SpriteBatch, which can be used to draw textures.
-      spriteBatch = new SpriteBatch(GraphicsDevice);
-
-      //Initialize the various screens in the game
-      mControllerScreen = new ControllerDetectScreen(this.Content, new EventHandler(ControllerDetectScreenEvent));
-      mTitleScreen = new TitleScreen(this.Content, new EventHandler(TitleScreenEvent));
-      mGameScreen = new GameScreen(this.Content, GraphicsDevice.Viewport, new EventHandler(GameScreenEvent));
-
-      //Set the current screen
-      stateStack.Push(mControllerScreen);
     }
 
     /// <summary>
