@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
-  class GameScreen : Screen {
+  class SimulationState : GameState {
     /// <summary>
     /// Contains all loaded assets.
     /// </summary>
@@ -28,8 +28,7 @@ namespace PuzzlePathDimension {
 
     Game1 game1;
     
-    public GameScreen(Game1 game1)
-      : base(new EventHandler((o, e) => { })) {
+    public SimulationState(Game1 game1) {
       //Load the background texture for the screen
       mGameScreenBackground = game1.Content.Load<Texture2D>("GameScreen");
 
@@ -66,7 +65,7 @@ namespace PuzzlePathDimension {
 
 
     //Update all of the elements that need updating in the Title Screen        
-    public override void Update(GameTime theTime) {
+    public void Update(GameTime theTime) {
       // TODO: remove this test code
       if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
         launcher.LaunchBall();
@@ -195,7 +194,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public override void Draw(SpriteBatch theBatch) {
+    public void Draw(SpriteBatch theBatch) {
       theBatch.Draw(mGameScreenBackground, Vector2.Zero, Color.White);
 
       // Draw the goal on the canvas

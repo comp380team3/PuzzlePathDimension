@@ -6,19 +6,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  public class ExitState : Screen {
+  public class ExitState : GameState {
     Game1 game1;
 
-    public ExitState(Game1 game1)
-      : base(new EventHandler((o, e) => { })) {
+    public ExitState(Game1 game1) {
       this.game1 = game1;
     }
 
-    public override void Update(GameTime gameTime) {
+    public void Update(GameTime gameTime) {
       game1.Exit();
     }
 
-    public override void Draw(SpriteBatch graphics) {
+    public void Draw(SpriteBatch graphics) {
     }
   }
 }

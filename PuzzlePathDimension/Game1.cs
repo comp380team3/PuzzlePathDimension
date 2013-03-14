@@ -23,13 +23,13 @@ namespace PuzzlePathDimension {
     SpriteBatch spriteBatch;
 
     //The screens and the current screen
-    Stack<Screen> stateStack;
+    Stack<GameState> stateStack;
 
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
     public Game1() {
-      stateStack = new Stack<Screen>();
+      stateStack = new Stack<GameState>();
 
       // Set the resolution to 800x600
       GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
@@ -52,8 +52,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     protected override void Initialize() {
       // Initialize the state stack.
-      stateStack.Push(new ExitState(this));
-      stateStack.Push(new ControllerDetectScreen(this));
+      this.PushState(new ExitState(this));
+      this.PushState(new ControllerDetectState(this));
 
       base.Initialize();
     }
@@ -114,7 +114,7 @@ namespace PuzzlePathDimension {
     }
 
     // These may be better suited to a separate StateStack class.
-    public void PushState(Screen state) {
+    public void PushState(GameState state) {
       stateStack.Push(state);
     }
 
@@ -126,7 +126,7 @@ namespace PuzzlePathDimension {
       stateStack.Pop();
     }
 
-    public void ReplaceState(Screen state) {
+    public void ReplaceState(GameState state) {
       this.PopState();
       this.PushState(state);
     }
