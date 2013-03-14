@@ -25,9 +25,11 @@ namespace PuzzlePathDimension {
 
     //Background texture for the Title screen
     Texture2D mGameScreenBackground;
+
+    Game1 game1;
     
-    public GameScreen(Game1 game1, EventHandler theScreenEvent)
-      : base(theScreenEvent) {
+    public GameScreen(Game1 game1)
+      : base(new EventHandler((o, e) => { })) {
       //Load the background texture for the screen
       mGameScreenBackground = game1.Content.Load<Texture2D>("GameScreen");
 
@@ -40,6 +42,8 @@ namespace PuzzlePathDimension {
       platforms.Add(new Platform());
 
       LoadContent(game1.GraphicsDevice.Viewport, game1.Content);
+
+      this.game1 = game1;
     }
 
     public void LoadContent(Viewport viewport, ContentManager theContent) {
@@ -89,7 +93,7 @@ namespace PuzzlePathDimension {
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
       if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
-        ScreenEvent.Invoke(this, new EventArgs());
+        game1.PopState();
       }
 
       // Update the launcher's state

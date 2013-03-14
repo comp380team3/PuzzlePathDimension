@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  abstract class Screen {
+  public abstract class Screen {
     //The event associated with the Screen. This event is used to raise events
     //back in the main game class to notify the game that something has changed
     //or needs to be changed

@@ -14,11 +14,19 @@ namespace PuzzlePathDimension {
     private MouseState oldState;
     private SpriteFont controlfont;
 
-    public ControllerDetectScreen(Game1 game1, EventHandler theScreenEvent)
-      : base(theScreenEvent) {
+    TitleScreen mTitleScreen;
+
+    Game1 game1;
+
+    public ControllerDetectScreen(Game1 game1)
+      : base(new EventHandler((o, e) => {})) {
       //Load the background texture for the screen
       mControllerDetectScreenBackground = game1.Content.Load<Texture2D>("PuzzlePathControllerScreen");
       controlfont = game1.Content.Load<SpriteFont>("MainMenuTitle");
+
+      mTitleScreen = new TitleScreen(game1);
+
+      this.game1 = game1;
     }
 
     //Update all of the elements that need updating in the Controller Detect Screen
@@ -32,12 +40,12 @@ namespace PuzzlePathDimension {
       //controller is detected, call the screen event associated with this screen
       if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed
          || Keyboard.GetState().IsKeyDown(Keys.A) == true) {
-        ScreenEvent.Invoke(this, new EventArgs());
+        game1.ReplaceState(mTitleScreen);
         return;
       }
 
       if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released) {
-        ScreenEvent.Invoke(this, new EventArgs());
+        game1.ReplaceState(mTitleScreen);
       }
 
       oldState = newState;

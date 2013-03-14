@@ -23,10 +23,6 @@ namespace PuzzlePathDimension {
     SpriteBatch spriteBatch;
 
     //The screens and the current screen
-    ControllerDetectScreen mControllerScreen;
-    TitleScreen mTitleScreen;
-    GameScreen mGameScreen;
-
     Stack<Screen> stateStack;
 
     /// <summary>
@@ -34,9 +30,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Game1() {
       stateStack = new Stack<Screen>();
-
-      // Obtain a reference to the graphics API.
-      spriteBatch = new SpriteBatch(GraphicsDevice);
 
       // Set the resolution to 800x600
       GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
@@ -58,13 +51,9 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // Initialize the various screens in the game
-      mControllerScreen = new ControllerDetectScreen(this, new EventHandler(ControllerDetectScreenEvent));
-      mTitleScreen = new TitleScreen(this, new EventHandler(TitleScreenEvent));
-      mGameScreen = new GameScreen(this, new EventHandler(GameScreenEvent));
-
-      //Set the current screen
-      stateStack.Push(mControllerScreen);
+      // Initialize the state stack.
+      stateStack.Push(new ExitState(this));
+      stateStack.Push(new ControllerDetectScreen(this));
 
       base.Initialize();
     }
@@ -74,6 +63,8 @@ namespace PuzzlePathDimension {
     /// all of your content.
     /// </summary>
     protected override void LoadContent() {
+      // Obtain a reference to the graphics API.
+      spriteBatch = new SpriteBatch(GraphicsDevice);
     }
 
     /// <summary>
@@ -99,7 +90,6 @@ namespace PuzzlePathDimension {
       // TODO: Add your update logic here
       //By taking advantage of Polymorphism, we can call update on the current screen class,
       //but the Update in the subclass is the one that will be executed.
-
       stateStack.Peek().Update(gameTime);
 
       base.Update(gameTime);
@@ -110,10 +100,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime) {
-      GraphicsDevice.Clear(Color.White);
-
-      // TODO: Add your drawing code here
       spriteBatch.Begin();
+
+      GraphicsDevice.Clear(Color.White);
 
       //Again, using Polymorphism, we can call draw on the current screen class
       //and the Draw in the subclass is the one that will be executed.
@@ -124,22 +113,22 @@ namespace PuzzlePathDimension {
       base.Draw(gameTime);
     }
 
-    //This event fires when the Controller detect screen is returing control back to the main game class
-    public void ControllerDetectScreenEvent(Object obj, EventArgs e) {
-      //Switch to the title screen, the Controller detect screen is finished being displayed
-      stateStack.Pop();
-      stateStack.Push(mTitleScreen);
+    // These may be better suited to a separate StateStack class.
+    public void PushState(Screen state) {
+      stateStack.Push(state);
     }
 
-    //Thid event is fired when the Title screen is returning control back to the main game class
-    public void TitleScreenEvent(Object obj, EventArgs e) {
-      //Switch to the controller detect screen, the Title screen is finished being displayed
-      stateStack.Push(mGameScreen);
+    public void PopState() {
+      if (stateStack.Count == 1) {
+        throw new InvalidOperationException("There are no states that can be popped.");
+      }
+
+      stateStack.Pop();
     }
 
-    public void GameScreenEvent(Object obj, EventArgs e) {
-      //Switch to the title screen
-      stateStack.Pop();
+    public void ReplaceState(Screen state) {
+      this.PopState();
+      this.PushState(state);
     }
   }
 }
