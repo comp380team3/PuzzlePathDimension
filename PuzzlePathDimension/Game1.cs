@@ -26,12 +26,15 @@ namespace PuzzlePathDimension {
     ControllerDetectScreen mControllerScreen;
     TitleScreen mTitleScreen;
     GameScreen mGameScreen;
-    Screen mCurrentScreen;
+
+    Stack<Screen> stateStack;
 
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
     public Game1() {
+      stateStack = new Stack<Screen>();
+
       graphics = new GraphicsDeviceManager(this);
 
       // Set the resolution to 800x600
@@ -72,7 +75,7 @@ namespace PuzzlePathDimension {
       mGameScreen = new GameScreen(this.Content, GraphicsDevice.Viewport, new EventHandler(GameScreenEvent));
 
       //Set the current screen
-      mCurrentScreen = mControllerScreen;
+      stateStack.Push(mControllerScreen);
     }
 
     /// <summary>
@@ -99,7 +102,7 @@ namespace PuzzlePathDimension {
       //By taking advantage of Polymorphism, we can call update on the current screen class,
       //but the Update in the subclass is the one that will be executed.
 
-      mCurrentScreen.Update(gameTime);
+      stateStack.Peek().Update(gameTime);
 
       base.Update(gameTime);
     }
@@ -116,7 +119,7 @@ namespace PuzzlePathDimension {
 
       //Again, using Polymorphism, we can call draw on the current screen class
       //and the Draw in the subclass is the one that will be executed.
-      mCurrentScreen.Draw(spriteBatch);
+      stateStack.Peek().Draw(spriteBatch);
 
       spriteBatch.End();
 
@@ -126,18 +129,19 @@ namespace PuzzlePathDimension {
     //This event fires when the Controller detect screen is returing control back to the main game class
     public void ControllerDetectScreenEvent(Object obj, EventArgs e) {
       //Switch to the title screen, the Controller detect screen is finished being displayed
-      mCurrentScreen = mTitleScreen;
+      stateStack.Pop();
+      stateStack.Push(mTitleScreen);
     }
 
     //Thid event is fired when the Title screen is returning control back to the main game class
     public void TitleScreenEvent(Object obj, EventArgs e) {
       //Switch to the controller detect screen, the Title screen is finished being displayed
-      mCurrentScreen = mGameScreen;
+      stateStack.Push(mGameScreen);
     }
 
     public void GameScreenEvent(Object obj, EventArgs e) {
-      //Switch to the title screen, the Title screen is finished being displayed
-      mCurrentScreen = mTitleScreen;
+      //Switch to the title screen
+      stateStack.Pop();
     }
   }
 }
