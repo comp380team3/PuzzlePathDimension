@@ -88,7 +88,7 @@ namespace PuzzlePathDimension {
 
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
-      if (GamePad.GetState(PlayerOne).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
+      if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
         ScreenEvent.Invoke(this, new EventArgs());
       }
 
@@ -100,8 +100,6 @@ namespace PuzzlePathDimension {
 
       // Update the collision
       UpdateCollision();
-
-      base.Update(theTime);
     }
 
     /// <summary>
@@ -209,8 +207,6 @@ namespace PuzzlePathDimension {
 
       // Draw the launcher on the canvas
       launcher.Draw(theBatch);
-
-      base.Draw(theBatch);
     }
   }
 }

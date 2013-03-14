@@ -26,16 +26,14 @@ namespace PuzzlePathDimension {
       MouseState newState = Mouse.GetState();
       int x = newState.X;
       int y = newState.Y;
+
       //Poll all the gamepads (and the keyboard) to check to see
       //which controller will be the player one controller. When the controlling
       //controller is detected, call the screen event associated with this screen
-      for (int aPlayer = 0; aPlayer < 4; aPlayer++) {
-        if (GamePad.GetState((PlayerIndex)aPlayer).Buttons.A == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.A) == true) {
-          PlayerOne = (PlayerIndex)aPlayer;
-          ScreenEvent.Invoke(this, new EventArgs());
-          return;
-        }
+      if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed
+         || Keyboard.GetState().IsKeyDown(Keys.A) == true) {
+        ScreenEvent.Invoke(this, new EventArgs());
+        return;
       }
 
       if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released) {
@@ -43,15 +41,12 @@ namespace PuzzlePathDimension {
       }
 
       oldState = newState;
-
-      base.Update(theTime);
     }
 
     //Draw all of the elements that make up the Controller Detect Screen
     public override void Draw(SpriteBatch theBatch) {
       theBatch.Draw(mControllerDetectScreenBackground, Vector2.Zero, Color.White);
       theBatch.DrawString(controlfont, "Press A or Click the Screen to Continue", new Vector2(25, 500), Color.Black);
-      base.Draw(theBatch);
     }
   }
 }

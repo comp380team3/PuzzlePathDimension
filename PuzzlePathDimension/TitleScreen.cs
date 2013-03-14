@@ -34,7 +34,7 @@ namespace PuzzlePathDimension {
 
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
-      if (GamePad.GetState(PlayerOne).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter) == true) {
+      if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter) == true) {
         ScreenEvent.Invoke(this, new EventArgs());
       } else if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released &&
             x > Position.X + 100 && x < menuFont.MeasureString("Start Game").Length() + Position.X + 50 &&
@@ -42,8 +42,6 @@ namespace PuzzlePathDimension {
         ScreenEvent.Invoke(this, new EventArgs());
       }
       oldState = newState;
-
-      base.Update(theTime);
     }
 
     //Draw all of the elements that make up the Title Screen
@@ -51,8 +49,6 @@ namespace PuzzlePathDimension {
       theBatch.Draw(mTitleScreenBackground, Vector2.Zero, Color.White);
       theBatch.DrawString(menuFont, "Puzzle Path Dimension", Position, Color.Black);
       theBatch.DrawString(selectFont, "Start Game", new Vector2(Position.X + 100, Position.Y + 100), Color.Black);
-
-      base.Draw(theBatch);
     }
   }
 }

@@ -6,10 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class Screen {
-    //Stores the PlayerIndex for the controlling player, i.e. Player One
-    protected static PlayerIndex PlayerOne;
-
+  abstract class Screen {
     //The event associated with the Screen. This event is used to raise events
     //back in the main game class to notify the game that something has changed
     //or needs to be changed
@@ -19,11 +16,10 @@ namespace PuzzlePathDimension {
       ScreenEvent = theScreenEvent;
     }
 
-    public virtual void Update(GameTime theTime) {
-    }
+    // Update the game world based on external stimuli (time, input, etc.)
+    public abstract void Update(GameTime theTime);
 
-    //Draw any objects specific to the screen
-    public virtual void Draw(SpriteBatch theBatch) {
-    }
+    // Draw any objects specific to the screen
+    public abstract void Draw(SpriteBatch theBatch);
   }
 }
