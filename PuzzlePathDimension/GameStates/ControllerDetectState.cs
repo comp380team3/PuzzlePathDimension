@@ -18,12 +18,12 @@ namespace PuzzlePathDimension {
 
     Game1 game1;
 
-    public ControllerDetectState(Game1 game1) {
+    public ControllerDetectState(Game1 game1, SpriteBatch spriteBatch) {
       //Load the background texture for the screen
       mControllerDetectScreenBackground = game1.Content.Load<Texture2D>("PuzzlePathControllerScreen");
       controlfont = game1.Content.Load<SpriteFont>("MainMenuTitle");
 
-      mTitleState = new TitleState(game1);
+      mTitleState = new TitleState(game1, spriteBatch);
 
       this.game1 = game1;
     }

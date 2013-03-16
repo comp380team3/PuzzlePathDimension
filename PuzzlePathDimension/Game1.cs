@@ -53,7 +53,6 @@ namespace PuzzlePathDimension {
     protected override void Initialize() {
       // Initialize the state stack.
       this.PushState(new ExitState(this));
-      this.PushState(new ControllerDetectState(this));
 
       base.Initialize();
     }
@@ -65,6 +64,8 @@ namespace PuzzlePathDimension {
     protected override void LoadContent() {
       // Obtain a reference to the graphics API.
       spriteBatch = new SpriteBatch(GraphicsDevice);
+
+      this.PushState(new ControllerDetectState(this, spriteBatch));
     }
 
     /// <summary>

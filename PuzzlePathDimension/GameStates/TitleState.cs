@@ -19,7 +19,7 @@ namespace PuzzlePathDimension {
     Game1 game1;
     SimulationState mSimulationState;
 
-    public TitleState(Game1 game1) {
+    public TitleState(Game1 game1, SpriteBatch spriteBatch) {
       //Load the background texture for the screen
       mTitleScreenBackground = game1.Content.Load<Texture2D>("PuzzlePathMenu");
       menuFont = game1.Content.Load<SpriteFont>("MainMenuTitle");
@@ -27,7 +27,7 @@ namespace PuzzlePathDimension {
       Position = new Vector2(200, 200);
 
       this.game1 = game1;
-      this.mSimulationState = new SimulationState(game1);
+      this.mSimulationState = new SimulationState(game1, spriteBatch);
     }
 
     //Update all of the elements that need updating in the Title Screen

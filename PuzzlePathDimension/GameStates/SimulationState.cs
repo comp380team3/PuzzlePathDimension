@@ -8,72 +8,95 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
+  class Simulation {
+    public Ball Ball { get; set; }
+    public List<Platform> Platforms { get; set; }
+    public Goal Goal { get; set; }
+    public Launcher Launcher { get; set; }
+
+    public Texture2D Background { get; set; }
+  }
+
+  interface View<T> {
+    T BackingModel { get; }
+  }
+
+  class SimulationView : View<Simulation> {
+    private SpriteBatch _spriteBatch = null;
+
+    public Simulation BackingModel { get; private set; }
+
+    public SimulationView(Simulation simulation, SpriteBatch spriteBatch) {
+      this._spriteBatch = spriteBatch;
+      this.BackingModel = simulation;
+    }
+
+    public void Draw() {
+      _spriteBatch.Draw(BackingModel.Background, Vector2.Zero, Color.White);
+
+      // Draw the goal on the canvas
+      BackingModel.Goal.Draw(_spriteBatch);
+
+      // Draw the platform on the canvas
+      foreach (Platform platform in BackingModel.Platforms) {
+        platform.Draw(_spriteBatch);
+      }
+
+      // Draw the ball onto the canvas
+      BackingModel.Ball.Draw(_spriteBatch);
+
+      // Draw the launcher on the canvas
+      BackingModel.Launcher.Draw(_spriteBatch);
+    }
+  }
+
   class SimulationState : GameState {
     /// <summary>
     /// Contains all loaded assets.
     /// </summary>
-    private Dictionary<string, Texture2D> _graphicContent;
-
-    //The ball for our game
-    Ball ball;
-    //The platform fo the game
-    List<Platform> platforms;
-    // The goal for the game
-    Goal goal;
-    // The launcher for the game
-    Launcher launcher;
-
-    //Background texture for the Title screen
-    Texture2D mGameScreenBackground;
+    Dictionary<string, Texture2D> _graphicContent = new Dictionary<string, Texture2D>();
 
     Game1 game1;
-    
-    public SimulationState(Game1 game1) {
-      //Load the background texture for the screen
-      mGameScreenBackground = game1.Content.Load<Texture2D>("GameScreen");
+    SpriteBatch spriteBatch;
 
-      // Create a new ball
-      ball = new Ball();
+    Simulation _simulation;
+    SimulationView _view;
 
-      // Create a new platform
-      platforms = new List<Platform>();
-      platforms.Add(new Platform());
-      platforms.Add(new Platform());
-
-      LoadContent(game1.GraphicsDevice.Viewport, game1.Content);
-
+    public SimulationState(Game1 game1, SpriteBatch spriteBatch) {
       this.game1 = game1;
+      this.spriteBatch = spriteBatch;
+
+      LoadContent(game1.Content);
+
+      this._simulation = SetupTestLevel(game1.GraphicsDevice.Viewport);
+      this._view = new SimulationView(this._simulation, spriteBatch);
     }
 
-    public void LoadContent(Viewport viewport, ContentManager theContent) {
+    public void LoadContent(ContentManager theContent) {
       // Add all the graphic assets to the dictionary.
-      _graphicContent = new Dictionary<string, Texture2D>();
       _graphicContent.Add("ball", theContent.Load<Texture2D>("ball_new"));
       _graphicContent.Add("platform", theContent.Load<Texture2D>("platform_new"));
       _graphicContent.Add("goal", theContent.Load<Texture2D>("goal"));
       _graphicContent.Add("launcher", theContent.Load<Texture2D>("launcher"));
-
-
-      // Find a safe position to place the ball
-      Vector2 ballPosition = new Vector2(viewport.TitleSafeArea.X + viewport.TitleSafeArea.Width / 2,
-          viewport.TitleSafeArea.Y + viewport.TitleSafeArea.Height / 2);
-      // Create a new ball 
-      ball.Initialize(viewport, theContent.Load<Texture2D>("Ball"), ballPosition);
-
-      SetupTestLevel(viewport);
     }
 
 
     //Update all of the elements that need updating in the Title Screen        
     public void Update(GameTime theTime) {
-      // TODO: remove this test code
+      Launcher launcher = _simulation.Launcher;
+      Ball ball = _simulation.Ball;
+
+      // Route user input to the approproate action
       if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
         launcher.LaunchBall();
       } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
       } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.F)) {
+      }
+
+      // TODO: remove this test code
+      if (Keyboard.GetState().IsKeyDown(Keys.F)) {
         Console.WriteLine(launcher);
       } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
         Console.WriteLine(ball);
@@ -108,44 +131,58 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
-    private void SetupTestLevel(Viewport viewport) {
+    private Simulation SetupTestLevel(Viewport viewport) {
+      Simulation simulation = new Simulation();
+
+      simulation.Background = game1.Content.Load<Texture2D>("GameScreen");
+
       // Adds a launcher to the level
-      launcher = new Launcher();
+      Launcher launcher = new Launcher();
       Vector2 launchPos = new Vector2(34 * Game1.GridSize, 29 * Game1.GridSize);
       launcher.Initialize(_graphicContent["launcher"], launchPos);
+      simulation.Launcher = launcher;
 
       // Adds a ball to the level
-      ball = new Ball();
+      Ball ball = new Ball();
       Vector2 ballPos = new Vector2(400f, 300f);
       ball.Initialize(viewport, _graphicContent["ball"], ballPos);
+      simulation.Ball = ball;
+
       // Load the ball into the launcher
       launcher.LoadBall(ball);
 
+      List<Platform> platforms = new List<Platform>();
+      simulation.Platforms = platforms;
+
       // Adds a platform to the level
-      Platform platform0 = platforms[0];
+      Platform platform0 = new Platform();
       Vector2 platformPos = new Vector2(5 * Game1.GridSize, 5 * Game1.GridSize);
       Vector2 platformLen = new Vector2(20 * Game1.GridSize, 2 * Game1.GridSize);
       platform0.Initialize(_graphicContent["platform"], platformPos, platformLen);
+      platforms.Add(platform0);
 
       // ...and another one.
-      Platform platform1 = platforms[1];
+      Platform platform1 = new Platform();
       platformPos = new Vector2(20 * Game1.GridSize, 20 * Game1.GridSize);
       platformLen = new Vector2(10 * Game1.GridSize, 8 * Game1.GridSize);
       platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
+      platforms.Add(platform1);
 
       // Adds a goal to the level
-      goal = new Goal();
+      Goal goal = new Goal();
       Vector2 goalPos = new Vector2(10 * Game1.GridSize, 1 * Game1.GridSize);
       goal.Initialize(_graphicContent["goal"], goalPos);
+      simulation.Goal = goal;
+
+      return simulation;
     }
 
     private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
+      Ball ball = _simulation.Ball;
+
       // Check if the two objects are near each other. 
       // If they are not then return false for no intersection.
-      if (rectangleA.Top > rectangleB.Bottom || rectangleB.Top > rectangleA.Bottom) {
-        return false;
-      }
-      if (rectangleB.Left > rectangleA.Right || rectangleA.Left > rectangleB.Right) {
+      if (!rectangleA.Intersects(rectangleB)) {
         return false;
       }
 
@@ -183,33 +220,23 @@ namespace PuzzlePathDimension {
     }
 
     private void UpdateCollision() {
-      Rectangle ballRectangle;
-      Rectangle platformRectangle;
+      Ball ball = _simulation.Ball;
 
-      ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
+      Rectangle ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
 
-      for (int i = 0; i < platforms.Count; i++) {
-        platformRectangle = new Rectangle((int)platforms[i].Position.X, (int)platforms[i].Position.Y, platforms[i].Width, platforms[i].Height);
-        Boolean intersect = IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platforms[i].GetColorData());
+      foreach (Platform platform in _simulation.Platforms) {
+        Rectangle platformRectangle = new Rectangle(
+            (int)platform.Position.X,
+            (int)platform.Position.Y,
+            platform.Width,
+            platform.Height);
+
+        IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
       }
     }
 
     public void Draw(SpriteBatch theBatch) {
-      theBatch.Draw(mGameScreenBackground, Vector2.Zero, Color.White);
-
-      // Draw the goal on the canvas
-      goal.Draw(theBatch);
-
-      // Draw the platform on the canvas
-      foreach (Platform platform in platforms) {
-        platform.Draw(theBatch);
-      }
-
-      // Draw the ball onto the canvas
-      ball.Draw(theBatch);
-
-      // Draw the launcher on the canvas
-      launcher.Draw(theBatch);
+      _view.Draw();
     }
   }
 }
