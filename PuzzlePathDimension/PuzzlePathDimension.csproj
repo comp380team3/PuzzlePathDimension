@@ -78,18 +78,18 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ball.cs" />
-    <Compile Include="ExitState.cs" />
-    <Compile Include="Goal.cs" />
-    <Compile Include="Launcher.cs" />
-    <Compile Include="ControllerDetectState.cs" />
-    <Compile Include="SimulationState.cs" />
-    <Compile Include="Platform.cs" />
+    <Compile Include="Models\Ball.cs" />
+    <Compile Include="GameStates\ExitState.cs" />
+    <Compile Include="Models\Goal.cs" />
+    <Compile Include="Models\Launcher.cs" />
+    <Compile Include="GameStates\ControllerDetectState.cs" />
+    <Compile Include="GameStates\SimulationState.cs" />
+    <Compile Include="Models\Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="TitleState.cs" />
+    <Compile Include="GameStates\TitleState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -130,9 +130,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GameStates\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--
