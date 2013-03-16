@@ -51,11 +51,6 @@ namespace PuzzlePathDimension {
   }
 
   class SimulationState : GameState {
-    /// <summary>
-    /// Contains all loaded assets.
-    /// </summary>
-    Dictionary<string, Texture2D> _graphicContent = new Dictionary<string, Texture2D>();
-
     Game1 game1;
     SpriteBatch spriteBatch;
 
@@ -66,20 +61,9 @@ namespace PuzzlePathDimension {
       this.game1 = game1;
       this.spriteBatch = spriteBatch;
 
-      LoadContent(game1.Content);
-
       this._simulation = SetupTestLevel(game1.GraphicsDevice.Viewport);
       this._view = new SimulationView(this._simulation, spriteBatch);
     }
-
-    public void LoadContent(ContentManager theContent) {
-      // Add all the graphic assets to the dictionary.
-      _graphicContent.Add("ball", theContent.Load<Texture2D>("ball_new"));
-      _graphicContent.Add("platform", theContent.Load<Texture2D>("platform_new"));
-      _graphicContent.Add("goal", theContent.Load<Texture2D>("goal"));
-      _graphicContent.Add("launcher", theContent.Load<Texture2D>("launcher"));
-    }
-
 
     //Update all of the elements that need updating in the Title Screen        
     public void Update(GameTime theTime) {
@@ -139,13 +123,13 @@ namespace PuzzlePathDimension {
       // Adds a launcher to the level
       Launcher launcher = new Launcher();
       Vector2 launchPos = new Vector2(34 * Game1.GridSize, 29 * Game1.GridSize);
-      launcher.Initialize(_graphicContent["launcher"], launchPos);
+      launcher.Initialize(game1.Content.Load<Texture2D>("launcher"), launchPos);
       simulation.Launcher = launcher;
 
       // Adds a ball to the level
       Ball ball = new Ball();
       Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(viewport, _graphicContent["ball"], ballPos);
+      ball.Initialize(viewport, game1.Content.Load<Texture2D>("ball_new"), ballPos);
       simulation.Ball = ball;
 
       // Load the ball into the launcher
@@ -158,20 +142,20 @@ namespace PuzzlePathDimension {
       Platform platform0 = new Platform();
       Vector2 platformPos = new Vector2(5 * Game1.GridSize, 5 * Game1.GridSize);
       Vector2 platformLen = new Vector2(20 * Game1.GridSize, 2 * Game1.GridSize);
-      platform0.Initialize(_graphicContent["platform"], platformPos, platformLen);
+      platform0.Initialize(game1.Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
       platforms.Add(platform0);
 
       // ...and another one.
       Platform platform1 = new Platform();
       platformPos = new Vector2(20 * Game1.GridSize, 20 * Game1.GridSize);
       platformLen = new Vector2(10 * Game1.GridSize, 8 * Game1.GridSize);
-      platform1.Initialize(_graphicContent["platform"], platformPos, platformLen);
+      platform1.Initialize(game1.Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
       platforms.Add(platform1);
 
       // Adds a goal to the level
       Goal goal = new Goal();
       Vector2 goalPos = new Vector2(10 * Game1.GridSize, 1 * Game1.GridSize);
-      goal.Initialize(_graphicContent["goal"], goalPos);
+      goal.Initialize(game1.Content.Load<Texture2D>("goal"), goalPos);
       simulation.Goal = goal;
 
       return simulation;
