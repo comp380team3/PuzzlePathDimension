@@ -23,6 +23,11 @@ namespace PuzzlePathDimension {
     private Vector2 _position;
 
     /// <summary>
+    /// The velocity of the ball.
+    /// </summary>
+    private Vector2 _velocity;
+
+    /// <summary>
     /// The Viewport object that the ball will be drawn to.
     /// </summary>
     private Viewport _viewport;
@@ -32,15 +37,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     private bool _active;
 
-    /// <summary>
-    /// The ball's horizontal speed.
-    /// </summary>
-    private float _xVelocity;
-
-    /// <summary>
-    /// The ball's vertical speed.
-    /// </summary>
-    private float _yVelocity;
+    public Texture2D Texture {
+      get { return _texture; }
+    }
 
     /// <summary>
     /// Gets or sets the position of the ball.
@@ -48,6 +47,11 @@ namespace PuzzlePathDimension {
     public Vector2 Position {
       get { return _position; }
       set { _position = value; }
+    }
+
+    public Vector2 Velocity {
+      get { return _velocity; }
+      set { _velocity = value; }
     }
 
     /// <summary>
@@ -68,14 +72,16 @@ namespace PuzzlePathDimension {
     /// Gets the ball's horizontal speed.
     /// </summary>
     public float XVelocity {
-      get { return _xVelocity; }
+      get { return _velocity.X; }
+      set { _velocity.X = value; }
     }
 
     /// <summary>
     /// Gets the ball's vertical speed.
     /// </summary>
     public float YVelocity {
-      get { return _yVelocity; }
+      get { return _velocity.Y; }
+      set { _velocity.Y = value; }
     }
 
     /// <summary>
@@ -114,34 +120,35 @@ namespace PuzzlePathDimension {
       // Set the position of the ball
       _position = position;
 
+      // Set the velocity of the ball
+      _velocity = new Vector2(0, 0);
+
       // Ball will be stationary at first
       _active = false;
 
       _viewport = viewport;
-
-      // Ball's velocity
-      _xVelocity = 0f;
-      _yVelocity = 0f;
     }
 
     /// <summary>
     /// Updates the ball's state.
     /// </summary>
     public void Update() {
-      _position.X = Position.X + _xVelocity;
-      _position.Y = Position.Y + _yVelocity;
+      Vector2 destination = new Vector2(Position.X, Position.Y);
+      destination.X += XVelocity;
+      destination.Y += YVelocity;
+      Position = destination;
 
       // Check if the ball is heading off the screen
       if (Position.X + _texture.Width / 2 > _viewport.Width) {
-        _xVelocity = -1 * _xVelocity;
+        XVelocity = -1 * XVelocity;
       } else if (Position.X <= 0) {
-        _xVelocity = -1 * _xVelocity;
+        XVelocity = -1 * XVelocity;
       }
 
       if (Position.Y + _texture.Height / 2 > _viewport.Height) {
-        _yVelocity = -1 * _yVelocity;
+        YVelocity = -1 * YVelocity;
       } else if (Position.Y <= 0) {
-        _yVelocity = -1 * _yVelocity;
+        YVelocity = -1 * YVelocity;
       }
 
       // TODO: make this friction better
@@ -167,14 +174,14 @@ namespace PuzzlePathDimension {
     /// Flips the ball's velocity on the X axis.
     /// </summary>
     public void FlipXDirection() {
-      _xVelocity = -1 * _xVelocity;
+      XVelocity = -1 * XVelocity;
     }
 
     /// <summary>
     /// Flips the ball's velocity on the Y axis.
     /// </summary>
     public void FlipYDirection() {
-      _yVelocity = -1 * _yVelocity;
+      YVelocity = -1 * YVelocity;
     }
 
     /// <summary>
@@ -183,8 +190,8 @@ namespace PuzzlePathDimension {
     public void Launch(float x, float y) {
       _active = true;
 
-      _xVelocity = x;
-      _yVelocity = y;
+      XVelocity = x;
+      YVelocity = y;
     }
 
     /// <summary>
@@ -192,8 +199,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void Stop() {
       _active = false;
-      _xVelocity = 0f;
-      _yVelocity = 0f;
+
+      XVelocity = 0f;
+      YVelocity = 0f;
     }
 
     /// <summary>
@@ -201,8 +209,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <returns>Information about the ball.</returns>
     public override string ToString() {
-      return "Position: " + _position.X + ", " + _position.Y + " | " +
-        "Velocity: " + _xVelocity + ", " + _yVelocity;
+      return "Position: " + Position.X + ", " + Position.Y + " | " +
+        "Velocity: " + XVelocity + ", " + YVelocity;
     }
   }
 }
