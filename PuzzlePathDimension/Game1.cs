@@ -131,5 +131,54 @@ namespace PuzzlePathDimension {
       this.PopState();
       this.PushState(state);
     }
+
+    /// <summary>
+    /// Sets up a hard-coded level. This is for testing purposes.
+    /// </summary>
+    internal Simulation CreateTestLevel() {
+      Simulation simulation = new Simulation();
+
+      simulation.Background = Content.Load<Texture2D>("GameScreen");
+
+      // Adds a launcher to the level
+      Launcher launcher = new Launcher();
+      Vector2 launchPos = new Vector2(34 * Game1.GridSize, 29 * Game1.GridSize);
+      launcher.Initialize(Content.Load<Texture2D>("launcher"), launchPos);
+      simulation.Launcher = launcher;
+
+      // Adds a ball to the level
+      Ball ball = new Ball();
+      Vector2 ballPos = new Vector2(400f, 300f);
+      ball.Initialize(GraphicsDevice.Viewport, Content.Load<Texture2D>("ball_new"), ballPos);
+      simulation.Ball = ball;
+
+      // Load the ball into the launcher
+      launcher.LoadBall(ball);
+
+      List<Platform> platforms = new List<Platform>();
+      simulation.Platforms = platforms;
+
+      // Adds a platform to the level
+      Platform platform0 = new Platform();
+      Vector2 platformPos = new Vector2(5 * Game1.GridSize, 5 * Game1.GridSize);
+      Vector2 platformLen = new Vector2(20 * Game1.GridSize, 2 * Game1.GridSize);
+      platform0.Initialize(Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
+      platforms.Add(platform0);
+
+      // ...and another one.
+      Platform platform1 = new Platform();
+      platformPos = new Vector2(20 * Game1.GridSize, 20 * Game1.GridSize);
+      platformLen = new Vector2(10 * Game1.GridSize, 8 * Game1.GridSize);
+      platform1.Initialize(Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
+      platforms.Add(platform1);
+
+      // Adds a goal to the level
+      Goal goal = new Goal();
+      Vector2 goalPos = new Vector2(10 * Game1.GridSize, 1 * Game1.GridSize);
+      goal.Initialize(Content.Load<Texture2D>("goal"), goalPos);
+      simulation.Goal = goal;
+
+      return simulation;
+    }
   }
 }

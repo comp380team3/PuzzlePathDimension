@@ -8,49 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
-  class Simulation {
-    public Ball Ball { get; set; }
-    public List<Platform> Platforms { get; set; }
-    public Goal Goal { get; set; }
-    public Launcher Launcher { get; set; }
-
-    public Texture2D Background { get; set; }
-  }
-
-  interface View<T> {
-    T BackingModel { get; }
-  }
-
-  class SimulationView : View<Simulation> {
-    private SpriteBatch _spriteBatch = null;
-
-    public Simulation BackingModel { get; private set; }
-
-    public SimulationView(Simulation simulation, SpriteBatch spriteBatch) {
-      this._spriteBatch = spriteBatch;
-      this.BackingModel = simulation;
-    }
-
-    public void Draw() {
-      _spriteBatch.Draw(BackingModel.Background, Vector2.Zero, Color.White);
-
-      // Draw the goal on the canvas
-      BackingModel.Goal.Draw(_spriteBatch);
-
-      // Draw the platform on the canvas
-      foreach (Platform platform in BackingModel.Platforms) {
-        platform.Draw(_spriteBatch);
-      }
-
-      // Draw the ball onto the canvas
-      BackingModel.Ball.Draw(_spriteBatch);
-
-      // Draw the launcher on the canvas
-      BackingModel.Launcher.Draw(_spriteBatch);
-    }
-  }
-
-  class SimulationState : GameState {
+  public class SimulationState : GameState {
     Game1 game1;
     SpriteBatch spriteBatch;
 
@@ -61,7 +19,7 @@ namespace PuzzlePathDimension {
       this.game1 = game1;
       this.spriteBatch = spriteBatch;
 
-      this._simulation = SetupTestLevel(game1.GraphicsDevice.Viewport);
+      this._simulation = game1.CreateTestLevel();
       this._view = new SimulationView(this._simulation, spriteBatch);
     }
 
@@ -110,55 +68,6 @@ namespace PuzzlePathDimension {
 
       // Update the collision
       UpdateCollision();
-    }
-
-    /// <summary>
-    /// Sets up a hard-coded level. This is for testing purposes.
-    /// </summary>
-    private Simulation SetupTestLevel(Viewport viewport) {
-      Simulation simulation = new Simulation();
-
-      simulation.Background = game1.Content.Load<Texture2D>("GameScreen");
-
-      // Adds a launcher to the level
-      Launcher launcher = new Launcher();
-      Vector2 launchPos = new Vector2(34 * Game1.GridSize, 29 * Game1.GridSize);
-      launcher.Initialize(game1.Content.Load<Texture2D>("launcher"), launchPos);
-      simulation.Launcher = launcher;
-
-      // Adds a ball to the level
-      Ball ball = new Ball();
-      Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(viewport, game1.Content.Load<Texture2D>("ball_new"), ballPos);
-      simulation.Ball = ball;
-
-      // Load the ball into the launcher
-      launcher.LoadBall(ball);
-
-      List<Platform> platforms = new List<Platform>();
-      simulation.Platforms = platforms;
-
-      // Adds a platform to the level
-      Platform platform0 = new Platform();
-      Vector2 platformPos = new Vector2(5 * Game1.GridSize, 5 * Game1.GridSize);
-      Vector2 platformLen = new Vector2(20 * Game1.GridSize, 2 * Game1.GridSize);
-      platform0.Initialize(game1.Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
-      platforms.Add(platform0);
-
-      // ...and another one.
-      Platform platform1 = new Platform();
-      platformPos = new Vector2(20 * Game1.GridSize, 20 * Game1.GridSize);
-      platformLen = new Vector2(10 * Game1.GridSize, 8 * Game1.GridSize);
-      platform1.Initialize(game1.Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
-      platforms.Add(platform1);
-
-      // Adds a goal to the level
-      Goal goal = new Goal();
-      Vector2 goalPos = new Vector2(10 * Game1.GridSize, 1 * Game1.GridSize);
-      goal.Initialize(game1.Content.Load<Texture2D>("goal"), goalPos);
-      simulation.Goal = goal;
-
-      return simulation;
     }
 
     private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
