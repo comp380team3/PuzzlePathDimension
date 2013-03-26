@@ -178,6 +178,15 @@ namespace PuzzlePathDimension {
       goal.Initialize(Content.Load<Texture2D>("goal"), goalPos);
       simulation.Goal = goal;
 
+      List<Treasure> treasures = new List<Treasure>();
+      simulation.Treasures = treasures;
+
+      // Adds a treasure to the level
+      Treasure treasure = new Treasure();
+      Vector2 treasurePos = new Vector2(15 * Game1.GridSize, 15 * Game1.GridSize);
+      treasure.Initialize(Content.Load<Texture2D>("treasure"), treasurePos);
+      treasures.Add(treasure);
+
       return simulation;
     }
   }

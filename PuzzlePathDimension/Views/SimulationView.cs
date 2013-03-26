@@ -23,6 +23,11 @@ namespace PuzzlePathDimension {
         platform.Draw(_spriteBatch);
       }
 
+      // Draw the treasures on the canvas
+      foreach (Treasure treasure in BackingModel.Treasures) {
+        treasure.Draw(_spriteBatch);
+      }
+
       // Draw the ball onto the canvas
       BackingModel.Ball.Draw(_spriteBatch);
 

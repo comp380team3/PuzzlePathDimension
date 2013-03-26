@@ -5,6 +5,7 @@ namespace PuzzlePathDimension {
   class Simulation {
     public Ball Ball { get; set; }
     public List<Platform> Platforms { get; set; }
+    public List<Treasure> Treasures { get; set; }
     public Goal Goal { get; set; }
     public Launcher Launcher { get; set; }
 

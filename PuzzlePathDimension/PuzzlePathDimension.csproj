@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Models\Ball.cs" />
     <Compile Include="GameStates\ExitState.cs" />
+    <Compile Include="Models\Deathtrap.cs" />
+    <Compile Include="Models\Treasure.cs" />
     <Compile Include="Models\Goal.cs" />
     <Compile Include="Models\Launcher.cs" />
     <Compile Include="GameStates\ControllerDetectState.cs" />
