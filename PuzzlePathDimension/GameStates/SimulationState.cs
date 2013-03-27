@@ -63,7 +63,7 @@ namespace PuzzlePathDimension {
       // Update the launcher's state
       launcher.Update();
 
-      // Update the balls position
+      // Update the ball's position
       ball.Update();
 
       // Update the collision

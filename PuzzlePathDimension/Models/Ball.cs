@@ -8,7 +8,17 @@ using Microsoft.Xna.Framework.Graphics;
 namespace PuzzlePathDimension {
   class Ball {
     /// <summary>
-    /// The texture that the ball uses.
+    /// The hard-coded height of the ball, in pixels.
+    /// </summary>
+    private const int _height = 25;
+
+    /// <summary>
+    /// The hard-coded width of the ball, in pixels.
+    /// </summary>
+    private const int _width = 25;
+
+    /// <summary>
+    /// The texture that the ball will be drawn with.
     /// </summary>
     private Texture2D _texture;
 
@@ -37,6 +47,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     private bool _active;
 
+    /// <summary>
+    /// Gets the texture that the ball will be drawn with.
+    /// </summary>
     public Texture2D Texture {
       get { return _texture; }
     }
@@ -58,14 +71,14 @@ namespace PuzzlePathDimension {
     /// Gets the height of the ball.
     /// </summary>
     public int Height {
-      get { return _texture.Height; }
+      get { return _height; }
     }
 
     /// <summary>
     /// Gets the width of the ball.
     /// </summary>
     public int Width {
-      get { return _texture.Width; }
+      get { return _width; }
     }
 
     /// <summary>
@@ -117,11 +130,19 @@ namespace PuzzlePathDimension {
       _colorData = new Color[_texture.Width * _texture.Height];
       _texture.GetData<Color>(_colorData);
 
+      // Check to make sure that the visual representation of the ball is actually the right
+      // size, and print a warning to the console if that isn't the case.
+      if (_texture != null &&_texture.Width * _texture.Height != _width * _height) {
+        Console.WriteLine("Warning: the ball's texture does not have the expected dimensions.");
+        Console.WriteLine("Expected: " + _width + ", " + _height);
+        Console.WriteLine("...but the texture is: " + _texture.Width + ", " + _texture.Height);
+      }
+
       // Set the position of the ball
       _position = position;
 
-      // Set the velocity of the ball
-      _velocity = new Vector2(0, 0);
+      // Set the initial velocity of the ball
+      _velocity = Vector2.Zero;
 
       // Ball will be stationary at first
       _active = false;

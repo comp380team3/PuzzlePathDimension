@@ -11,6 +11,15 @@ namespace PuzzlePathDimension {
   /// </summary>
   class Treasure {
     /// <summary>
+    /// The hard-coded height of a treasure, in pixels.
+    /// </summary>
+    private const int _height = 30;
+    /// <summary>
+    /// The hard-coded width of a treasure, in pixels.
+    /// </summary>
+    private const int _width = 30;
+
+    /// <summary>
     /// The texture that the treasure will be drawn with.
     /// </summary>
     private Texture2D _texture;
@@ -41,14 +50,14 @@ namespace PuzzlePathDimension {
     /// Gets the height of the treasure object.
     /// </summary>
     public int Height {
-      get { return _texture.Height; }
+      get { return _height; }
     }
 
     /// <summary>
     /// Gets the width of the treasure object.
     /// </summary>
     public int Width {
-      get { return _texture.Width; }
+      get { return _width; }
     }
 
     /// <summary>
@@ -68,6 +77,18 @@ namespace PuzzlePathDimension {
       _position = position;
 
       _active = true;
+
+      // Get the texture's color data, which is used for per-pixel collision
+      _colorData = new Color[_texture.Width * _texture.Height];
+      _texture.GetData<Color>(_colorData);
+
+      // Check to make sure that the visual representation of the texture is actually the right
+      // size, and print a warning to the console if that isn't the case.
+      if (_texture != null && _texture.Width * _texture.Height != _width * _height) {
+        Console.WriteLine("Warning: the treasure's texture does not have the expected dimensions.");
+        Console.WriteLine("Expected: " + _width + ", " + _height);
+        Console.WriteLine("...but the texture is: " + _texture.Width + ", " + _texture.Height);
+      }
     }
 
     /// <summary>
