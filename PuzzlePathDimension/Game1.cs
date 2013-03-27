@@ -155,6 +155,7 @@ namespace PuzzlePathDimension {
       // Load the ball into the launcher
       launcher.LoadBall(ball);
 
+      // Create the list of platforms
       List<Platform> platforms = new List<Platform>();
       simulation.Platforms = platforms;
 
@@ -178,6 +179,7 @@ namespace PuzzlePathDimension {
       goal.Initialize(Content.Load<Texture2D>("goal"), goalPos);
       simulation.Goal = goal;
 
+      // Create the list of treasures
       List<Treasure> treasures = new List<Treasure>();
       simulation.Treasures = treasures;
 
@@ -186,6 +188,15 @@ namespace PuzzlePathDimension {
       Vector2 treasurePos = new Vector2(15 * Game1.GridSize, 15 * Game1.GridSize);
       treasure.Initialize(Content.Load<Texture2D>("treasure"), treasurePos);
       treasures.Add(treasure);
+
+      // Create the list of death traps
+      List<DeathTrap> traps = new List<DeathTrap>();
+      simulation.DeathTraps = traps;
+
+      // Adds a death trap to the level
+      Vector2 trapPos = new Vector2(14 * Game1.GridSize, 22 * Game1.GridSize);
+      DeathTrap trap = new DeathTrap(Content.Load<Texture2D>("deathtrap"), trapPos);
+      traps.Add(trap);
 
       return simulation;
     }

@@ -28,6 +28,11 @@ namespace PuzzlePathDimension {
         treasure.Draw(_spriteBatch);
       }
 
+      // Draw the death traps on the canvas
+      foreach (DeathTrap trap in BackingModel.DeathTraps) {
+        trap.Draw(_spriteBatch);
+      }
+
       // Draw the ball onto the canvas
       BackingModel.Ball.Draw(_spriteBatch);
 
