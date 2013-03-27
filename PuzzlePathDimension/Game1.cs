@@ -149,7 +149,7 @@ namespace PuzzlePathDimension {
       // Adds a ball to the level
       Ball ball = new Ball();
       Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(GraphicsDevice.Viewport, Content.Load<Texture2D>("ball_new"), ballPos);
+      ball.Initialize(Content.Load<Texture2D>("ball_new"), ballPos);
       simulation.Ball = ball;
 
       // Load the ball into the launcher

@@ -38,11 +38,6 @@ namespace PuzzlePathDimension {
     private Vector2 _velocity;
 
     /// <summary>
-    /// The Viewport object that the ball will be drawn to.
-    /// </summary>
-    private Viewport _viewport;
-
-    /// <summary>
     /// Whether the ball is active.
     /// </summary>
     private bool _active;
@@ -117,10 +112,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Initializes a ball.
     /// </summary>
-    /// <param name="viewport">The screen that the ball will be drawn on.</param>
     /// <param name="texture">The texture that the ball will be drawn with.</param>
     /// <param name="position">The initial position of the ball.</param>
-    public void Initialize(Viewport viewport, Texture2D texture, Vector2 position) {
+    public void Initialize(Texture2D texture, Vector2 position) {
       // TODO: add exceptions
 
       // Set the texture of the ball
@@ -146,8 +140,6 @@ namespace PuzzlePathDimension {
 
       // Ball will be stationary at first
       _active = false;
-
-      _viewport = viewport;
     }
 
     /// <summary>
@@ -160,13 +152,13 @@ namespace PuzzlePathDimension {
       Position = destination;
 
       // Check if the ball is heading off the screen
-      if (Position.X + _texture.Width / 2 > _viewport.Width) {
+      if (Position.X + _width / 2 > Simulation.FieldWidth) {
         XVelocity = -1 * XVelocity;
       } else if (Position.X <= 0) {
         XVelocity = -1 * XVelocity;
       }
 
-      if (Position.Y + _texture.Height / 2 > _viewport.Height) {
+      if (Position.Y + _height / 2 > Simulation.FieldHeight) {
         YVelocity = -1 * YVelocity;
       } else if (Position.Y <= 0) {
         YVelocity = -1 * YVelocity;
