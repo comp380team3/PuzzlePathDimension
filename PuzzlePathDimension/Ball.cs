@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 
 namespace PuzzlePathDimension {
   class Ball {
@@ -11,7 +13,8 @@ namespace PuzzlePathDimension {
     /// The texture that the ball uses.
     /// </summary>
     private Texture2D _texture;
-
+    private Vector2 _origin;
+    /*
     /// <summary>
     /// The texture's color data.
     /// </summary>
@@ -26,12 +29,12 @@ namespace PuzzlePathDimension {
     /// The Viewport object that the ball will be drawn to.
     /// </summary>
     private Viewport _viewport;
-
+    */
     /// <summary>
     /// Whether the ball is active.
     /// </summary>
     private bool _active;
-
+    /*
     /// <summary>
     /// The ball's horizontal speed.
     /// </summary>
@@ -41,15 +44,56 @@ namespace PuzzlePathDimension {
     /// The ball's vertical speed.
     /// </summary>
     private float _yVelocity;
+    */
+    /************************
+     * Brian's Physics stuff*
+     * *********************/
+    public const float unitToPixel = 100.0f;
+    public const float pixelToUnit = 1 / unitToPixel;
+
+    public Body body;
+    public Vector2 Position {
+      get { return body.Position * unitToPixel; }
+      set { body.Position = value * pixelToUnit; }
+    }
+    private Vector2 size;
+    public Vector2 Size {
+      get { return size * unitToPixel; }
+      set { size = value * pixelToUnit; }
+    }
+
+    public Ball(World world, Texture2D texture, Vector2 size, float mass) {
+      body = BodyFactory.CreateCircle(world, pixelToUnit * (texture.Width / 2), 1);
+      body.BodyType = BodyType.Static;
+      _origin = new Vector2((texture.Width / 2.0f), (texture.Height / 2.0f));
+      body.Restitution = .8f;
+      body.Inertia = 0f;
+      body.Friction = 0f;
+      this.Size = size;
+      this._texture = texture;
+    }
+
+    public void Launch(float velX, float velY) {
+      body.BodyType = BodyType.Dynamic;
+      body.LinearVelocity = new Vector2(velX, velY);
+    }
+
+    public void Stop() {
+      body.BodyType = BodyType.Static;
+    }
+
+    /*****************************
+     * Brian's Physics stuff ends*
+     * **************************/
 
     /// <summary>
     /// Gets or sets the position of the ball.
     /// </summary>
-    public Vector2 Position {
-      get { return _position; }
-      set { _position = value; }
-    }
-
+    /*    public Vector2 Position {
+          get { return _position; }
+          set { _position = value; }
+        }*/
+    /*
     /// <summary>
     /// Gets the height of the ball.
     /// </summary>
@@ -77,14 +121,14 @@ namespace PuzzlePathDimension {
     public float YVelocity {
       get { return _yVelocity; }
     }
-
+    */
     /// <summary>
     /// Gets whether the ball is active.
     /// </summary>
     public bool Active {
       get { return _active; }
     }
-
+    /*
     /// <summary>
     /// Gets the texture's color data.
     /// </summary>
@@ -120,8 +164,8 @@ namespace PuzzlePathDimension {
       _viewport = viewport;
 
       // Ball's velocity
-      _xVelocity = 0f;
-      _yVelocity = 0f;
+      _xVelocity = 5f;
+      _yVelocity = 5f;
     }
 
     /// <summary>
@@ -143,26 +187,17 @@ namespace PuzzlePathDimension {
       } else if (Position.Y <= 0) {
         _yVelocity = -1 * _yVelocity;
       }
-
-      // TODO: make this friction better
-      /*if (Math.Abs(_xVelocity) < 0.01f) {
-        _xVelocity = 0;
-      }
-      if (Math.Abs(_yVelocity) < 0.01f) {
-        _yVelocity = 0;
-      }
-      _xVelocity *= 0.998f;
-      _yVelocity *= 0.998f;*/
     }
-
+    */
     /// <summary>
     /// Draws the ball to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.Draw(_texture, _position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
+      spriteBatch.Draw(_texture, Position, null, Color.White, 0f, _origin, 1f, SpriteEffects.None, 0f);
     }
-
+    /*
     /// <summary>
     /// Flips the ball's velocity on the X axis.
     /// </summary>
@@ -203,6 +238,6 @@ namespace PuzzlePathDimension {
     public override string ToString() {
       return "Position: " + _position.X + ", " + _position.Y + " | " +
         "Velocity: " + _xVelocity + ", " + _yVelocity;
-    }
+    }*/
   }
 }
