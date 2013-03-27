@@ -145,8 +145,8 @@ namespace PuzzlePathDimension {
     /// <param name="v">The origin.</param>
     /// <returns>Whether the origin of the platform is inside the level.</returns>
     private bool InBounds(Vector2 v) {
-      // It's probably best if these numbers aren't hard-coded. -Jorenz
-      return v.X >= 0 && v.X <= 799 && v.Y >= 0 && v.Y <= 599;
+      // Subtract 1 to account for the fact that the origin is at (0,0).
+      return v.X >= 0 && v.X <= Simulation.FieldWidth - 1 && v.Y >= 0 && v.Y <= Simulation.FieldHeight - 1;
     }
   }
 }
