@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
-  class TitleScreen : Screen {
+  class TitleState : GameState {
     //Background texture for the Title screen
     Texture2D mTitleScreenBackground;
     Vector2 Position;
@@ -16,17 +16,22 @@ namespace PuzzlePathDimension {
     private SpriteFont menuFont;
     private SpriteFont selectFont;
 
-    public TitleScreen(ContentManager theContent, EventHandler theScreenEvent)
-      : base(theScreenEvent) {
+    Game1 game1;
+    SimulationState mSimulationState;
+
+    public TitleState(Game1 game1, SpriteBatch spriteBatch) {
       //Load the background texture for the screen
-      mTitleScreenBackground = theContent.Load<Texture2D>("PuzzlePathMenu");
-      menuFont = theContent.Load<SpriteFont>("MainMenuTitle");
-      selectFont = theContent.Load<SpriteFont>("SelectFont");
+      mTitleScreenBackground = game1.Content.Load<Texture2D>("PuzzlePathMenu");
+      menuFont = game1.Content.Load<SpriteFont>("MainMenuTitle");
+      selectFont = game1.Content.Load<SpriteFont>("SelectFont");
       Position = new Vector2(200, 200);
+
+      this.game1 = game1;
+      this.mSimulationState = new SimulationState(game1, spriteBatch);
     }
 
     //Update all of the elements that need updating in the Title Screen
-    public override void Update(GameTime theTime) {
+    public void Update(GameTime theTime) {
       //Get the current state of the mouse
       MouseState newState = Mouse.GetState();
       int x = newState.X;
@@ -34,25 +39,21 @@ namespace PuzzlePathDimension {
 
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
-      if (GamePad.GetState(PlayerOne).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter) == true) {
-        ScreenEvent.Invoke(this, new EventArgs());
-      } else if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released &&
-            x > Position.X + 100 && x < menuFont.MeasureString("Start Game").Length() + Position.X + 50 &&
-            y > Position.Y + 100 && y < menuFont.MeasureString("Start Game").Y + Position.Y + 100) {
-        ScreenEvent.Invoke(this, new EventArgs());
+      if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter) == true) {
+        game1.PushState(mSimulationState);
+      } else if (newState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released
+                && x > Position.X + 100 && x < menuFont.MeasureString("Start Game").Length() + Position.X + 50
+                && y > Position.Y + 100 && y < menuFont.MeasureString("Start Game").Y + Position.Y + 100) {
+        game1.PushState(mSimulationState);
       }
       oldState = newState;
-
-      base.Update(theTime);
     }
 
     //Draw all of the elements that make up the Title Screen
-    public override void Draw(SpriteBatch theBatch) {
+    public void Draw(SpriteBatch theBatch) {
       theBatch.Draw(mTitleScreenBackground, Vector2.Zero, Color.White);
       theBatch.DrawString(menuFont, "Puzzle Path Dimension", Position, Color.Black);
       theBatch.DrawString(selectFont, "Start Game", new Vector2(Position.X + 100, Position.Y + 100), Color.Black);
-
-      base.Draw(theBatch);
     }
   }
 }
