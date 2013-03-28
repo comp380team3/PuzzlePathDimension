@@ -10,7 +10,6 @@
 #region Using Statements
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
 using System.Collections.Generic;
 #endregion
 
@@ -33,10 +32,6 @@ namespace PuzzlePathDimension {
     public readonly GamePadState[] LastGamePadStates;
 
     public readonly bool[] GamePadWasConnected;
-
-    public TouchCollection TouchState;
-
-    public readonly List<GestureSample> Gestures = new List<GestureSample>();
 
     #endregion
 
@@ -78,13 +73,6 @@ namespace PuzzlePathDimension {
         if (CurrentGamePadStates[i].IsConnected) {
           GamePadWasConnected[i] = true;
         }
-      }
-
-      TouchState = TouchPanel.GetState();
-
-      Gestures.Clear();
-      while (TouchPanel.IsGestureAvailable) {
-        Gestures.Add(TouchPanel.ReadGesture());
       }
     }
 

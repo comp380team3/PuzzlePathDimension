@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 #endregion
 
 namespace PuzzlePathDimension {
@@ -24,7 +23,7 @@ namespace PuzzlePathDimension {
   /// methods at the appropriate times, and automatically routes input to the
   /// topmost active screen.
   /// </summary>
-  public class ScreenManager : DrawableGameComponent, GameState {
+  public class ScreenManager : DrawableGameComponent {
     #region Fields
 
     List<GameScreen> screens = new List<GameScreen>();
@@ -93,9 +92,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     public ScreenManager(Game game)
       : base(game) {
-      // we must set EnabledGestures before we can query for them, but
-      // we don't assume the game wants to read them.
-      TouchPanel.EnabledGestures = GestureType.None;
     }
 
 
@@ -242,9 +238,6 @@ namespace PuzzlePathDimension {
       }
 
       screens.Add(screen);
-
-      // update the TouchPanel to respond to gestures this screen is interested in
-      TouchPanel.EnabledGestures = screen.EnabledGestures;
     }
 
 
@@ -262,12 +255,6 @@ namespace PuzzlePathDimension {
 
       screens.Remove(screen);
       screensToUpdate.Remove(screen);
-
-      // if there is a screen still in the manager, update TouchPanel
-      // to respond to gestures that screen is interested in.
-      if (screens.Count > 0) {
-        TouchPanel.EnabledGestures = screens[screens.Count - 1].EnabledGestures;
-      }
     }
 
 
