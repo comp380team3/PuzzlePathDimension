@@ -88,38 +88,5 @@ namespace PuzzlePathDimension {
     protected override void Draw(GameTime gameTime) {
       base.Draw(gameTime);
     }
-
-    [Obsolete]
-    public void PushState(GameState state) {
-    }
-
-    [Obsolete]
-    public void PopState() {
-    }
-
-    [Obsolete]
-    public void ReplaceState(GameState state) {
-    }
-
-    /// <summary>
-    /// Sets up a hard-coded level. This is for testing purposes.
-    /// </summary>
-    internal Simulation CreateTestLevel() {
-      Simulation simulation =
-        new Simulation(LevelLoader.Load("Content/TestLevel.xml", Content));
-
-      simulation.Background = Content.Load<Texture2D>("GameScreen");
-
-      // Adds a ball to the level
-      Ball ball = new Ball();
-      Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(GraphicsDevice.Viewport, Content.Load<Texture2D>("ball_new"), ballPos);
-      simulation.Ball = ball;
-
-      // Load the ball into the launcher
-      simulation.Launcher.LoadBall(ball);
-
-      return simulation;
-    }
   }
 }

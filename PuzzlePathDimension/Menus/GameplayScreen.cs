@@ -23,23 +23,14 @@ namespace PuzzlePathDimension {
   /// put some more interesting gameplay in here!
   /// </summary>
   class GameplayScreen : GameScreen {
-    #region Fields
-
+  #region Fields
     ContentManager content;
-    SpriteFont gameFont;
-
-    Vector2 playerPosition = new Vector2(100, 100);
-    Vector2 enemyPosition = new Vector2(100, 100);
-
-    Random random = new Random();
+    Simulation simulation;
 
     float pauseAlpha;
+  #endregion
 
-    #endregion
-
-    #region Initialization
-
-
+  #region Initialization
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -48,15 +39,16 @@ namespace PuzzlePathDimension {
       TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
-
     /// <summary>
     /// Load graphics content for the game.
     /// </summary>
     public override void LoadContent() {
+      // Create a new ContentManager so that all level data is flushed
+      //   from the cache after the level ends.
       if (content == null)
         content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-      gameFont = content.Load<SpriteFont>("gamefont");
+      simulation = CreateTestLevel();
 
       // A real game would probably have more content than this sample, so
       // it would take longer to load. We simulate that by delaying for a
@@ -69,20 +61,15 @@ namespace PuzzlePathDimension {
       ScreenManager.Game.ResetElapsedTime();
     }
 
-
     /// <summary>
     /// Unload graphics content used by the game.
     /// </summary>
     public override void UnloadContent() {
       content.Unload();
     }
+  #endregion
 
-
-    #endregion
-
-    #region Update and Draw
-
-
+  #region Update and Draw
     /// <summary>
     /// Updates the state of the game. This method checks the GameScreen.IsActive
     /// property, so the game will stop updating when the pause menu is active,
@@ -98,25 +85,19 @@ namespace PuzzlePathDimension {
       else
         pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
-      if (IsActive) {
-        // Apply some random jitter to make the enemy move around.
-        const float randomization = 10;
+      // Bail early if this isn't the active screen.
+      if (!IsActive)
+        return;
 
-        enemyPosition.X += (float)(random.NextDouble() - 0.5) * randomization;
-        enemyPosition.Y += (float)(random.NextDouble() - 0.5) * randomization;
+      // Update the launcher's state
+      simulation.Launcher.Update();
 
-        // Apply a stabilizing force to stop the enemy moving off the screen.
-        Vector2 targetPosition = new Vector2(
-            ScreenManager.GraphicsDevice.Viewport.Width / 2 - gameFont.MeasureString("Insert Gameplay Here").X / 2,
-            200);
+      // Update the balls position
+      simulation.Ball.Update();
 
-        enemyPosition = Vector2.Lerp(enemyPosition, targetPosition, 0.05f);
-
-        // TODO: this game isn't very fun! You could probably improve
-        // it by inserting something more interesting in this space :-)
-      }
+      // Update the collision
+      UpdateCollision();
     }
-
 
     /// <summary>
     /// Lets the game respond to player input. Unlike the Update method,
@@ -129,64 +110,68 @@ namespace PuzzlePathDimension {
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;
 
-      KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
-      GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
+      Launcher launcher = simulation.Launcher;
+      Ball ball = simulation.Ball;
 
-      // The game pauses either if the user presses the pause button, or if
-      // they unplug the active gamepad. This requires us to keep track of
-      // whether a gamepad was ever plugged in, because we don't want to pause
-      // on PC if they are playing with a keyboard and have no gamepad at all!
-      bool gamePadDisconnected = !gamePadState.IsConnected &&
-                                 input.GamePadWasConnected[playerIndex];
+      // Route user input to the approproate action
+      if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
+        launcher.LaunchBall();
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
+        launcher.AdjustAngle((float)Math.PI / 64);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
+        launcher.AdjustAngle((float)-Math.PI / 64);
+      }
 
-      if (input.IsPauseGame(ControllingPlayer) || gamePadDisconnected) {
-        ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
-      } else {
-        // Otherwise move the player position.
-        Vector2 movement = Vector2.Zero;
+      // TODO: remove this test code
+      if (Keyboard.GetState().IsKeyDown(Keys.F)) {
+        Console.WriteLine(launcher);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
+        Console.WriteLine(ball);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.R)) {
+        if (!launcher.Active) { // Some crude restart mechanism
+          ball.Stop();
+          launcher.LoadBall(ball);
+        }
+      }
 
-        if (keyboardState.IsKeyDown(Keys.Left))
-          movement.X--;
+      MouseState mouse = Mouse.GetState();
+      if (mouse.LeftButton == ButtonState.Pressed) {
+        Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
+      }
 
-        if (keyboardState.IsKeyDown(Keys.Right))
-          movement.X++;
-
-        if (keyboardState.IsKeyDown(Keys.Up))
-          movement.Y--;
-
-        if (keyboardState.IsKeyDown(Keys.Down))
-          movement.Y++;
-
-        Vector2 thumbstick = gamePadState.ThumbSticks.Left;
-
-        movement.X += thumbstick.X;
-        movement.Y -= thumbstick.Y;
-
-        if (movement.Length() > 1)
-          movement.Normalize();
-
-        playerPosition += movement * 2;
+      //Check to see if the Player one controller has pressed the "B" button, if so, then
+      //call the screen event associated with this screen
+      if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
+        ExitScreen();
+        ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
     }
-
 
     /// <summary>
     /// Draws the gameplay screen.
     /// </summary>
     public override void Draw(GameTime gameTime) {
-      // This game has a blue background. Why? Because!
-      ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
-                                         Color.CornflowerBlue, 0, 0);
+      ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
 
-      // Our player and enemy are both actually just text strings.
       SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
       spriteBatch.Begin();
 
-      spriteBatch.DrawString(gameFont, "// TODO", playerPosition, Color.Green);
+      spriteBatch.Draw(simulation.Background, Vector2.Zero, Color.White);
 
-      spriteBatch.DrawString(gameFont, "Insert Gameplay Here",
-                             enemyPosition, Color.DarkRed);
+      // Draw the goal on the canvas
+      simulation.Goal.Draw(spriteBatch);
+
+      // Draw the platform on the canvas
+      foreach (Platform platform in simulation.Platforms) {
+        platform.Draw(spriteBatch);
+      }
+
+      // Draw the ball onto the canvas
+      simulation.Ball.Draw(spriteBatch);
+
+      // Draw the launcher on the canvas
+      simulation.Launcher.Draw(spriteBatch);
 
       spriteBatch.End();
 
@@ -197,8 +182,88 @@ namespace PuzzlePathDimension {
         ScreenManager.FadeBackBufferToBlack(alpha);
       }
     }
+  #endregion
 
+  #region Test Level
+    /// <summary>
+    /// Sets up a hard-coded level. This is for testing purposes.
+    /// </summary>
+    internal Simulation CreateTestLevel() {
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content));
 
-    #endregion
+      simulation.Background = content.Load<Texture2D>("GameScreen");
+
+      // Add a ball to the level
+      Ball ball = new Ball();
+      Vector2 ballPos = new Vector2(400f, 300f);
+      ball.Initialize(ScreenManager.Game.GraphicsDevice.Viewport, content.Load<Texture2D>("ball_new"), ballPos);
+      simulation.Ball = ball;
+
+      // Load the ball into the launcher
+      simulation.Launcher.LoadBall(ball);
+
+      return simulation;
+    }
+  #endregion
+
+  #region Collision Detection
+    private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
+      Ball ball = simulation.Ball;
+
+      // Check if the two objects are near each other.
+      // If they are not then return false for no intersection.
+      if (!rectangleA.Intersects(rectangleB)) {
+        return false;
+      }
+
+      // Find the bounds of the rectangle intersection
+      int top = Math.Max(rectangleA.Top, rectangleB.Top);
+      int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
+      int left = Math.Max(rectangleA.Left, rectangleB.Left);
+      int right = Math.Min(rectangleA.Right, rectangleB.Right);
+
+      // Check every point within the intersection bounds
+      for (int y = top; y < bottom; y++) {
+        for (int x = left; x < right; x++) {
+          // Get the color of both pixels at this point
+          //Console.WriteLine("Index to fetch: " + (((x - rectangleB.Left) + (y - rectangleB.Top) * rectangleB.Width) % 400));
+          Console.WriteLine("Length of dataB: " + dataB.Length);
+          Color colorA = dataA[((x - rectangleA.Left) +
+                               (y - rectangleA.Top) * rectangleA.Width) % dataA.Length];
+          Color colorB = dataB[((x - rectangleB.Left) +
+                               (y - rectangleB.Top) * rectangleB.Width) % dataB.Length]; // lol maybe?
+
+          // If both pixels are not completely transparent,
+          if (colorA.A != 0 && colorB.A != 0) {
+            if (y == top || y == bottom - 1)
+              ball.FlipYDirection();
+            if (x == left || x == right - 1)
+              ball.FlipXDirection();
+            // then an intersection has been found
+            return true;
+          }
+        }
+      }
+
+      // No intersection found
+      return false;
+    }
+
+    private void UpdateCollision() {
+      Ball ball = simulation.Ball;
+
+      Rectangle ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
+
+      foreach (Platform platform in simulation.Platforms) {
+        Rectangle platformRectangle = new Rectangle(
+            (int)platform.Position.X,
+            (int)platform.Position.Y,
+            platform.Width,
+            platform.Height);
+
+        IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
+      }
+    }
+  #endregion
   }
 }
