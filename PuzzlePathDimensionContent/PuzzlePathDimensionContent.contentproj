@@ -121,6 +121,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestLevel.xml">
+      <Name>TestLevel</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="deathtrap.png">
       <Name>deathtrap</Name>
       <Importer>TextureImporter</Importer>

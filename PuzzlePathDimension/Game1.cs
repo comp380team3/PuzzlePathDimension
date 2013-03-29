@@ -136,15 +136,10 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation();
+      Simulation simulation =
+        new Simulation(LevelLoader.Load("Content/TestLevel.xml", Content));
 
       simulation.Background = Content.Load<Texture2D>("GameScreen");
-
-      // Adds a launcher to the level
-      Launcher launcher = new Launcher();
-      Vector2 launchPos = new Vector2(34 * Game1.GridSize, 29 * Game1.GridSize);
-      launcher.Initialize(Content.Load<Texture2D>("launcher"), launchPos);
-      simulation.Launcher = launcher;
 
       // Adds a ball to the level
       Ball ball = new Ball();
@@ -153,33 +148,9 @@ namespace PuzzlePathDimension {
       simulation.Ball = ball;
 
       // Load the ball into the launcher
-      launcher.LoadBall(ball);
+      simulation.Launcher.LoadBall(ball);
 
-      // Create the list of platforms
-      List<Platform> platforms = new List<Platform>();
-      simulation.Platforms = platforms;
-
-      // Adds a platform to the level
-      Platform platform0 = new Platform();
-      Vector2 platformPos = new Vector2(5 * Game1.GridSize, 5 * Game1.GridSize);
-      Vector2 platformLen = new Vector2(20 * Game1.GridSize, 2 * Game1.GridSize);
-      platform0.Initialize(Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
-      platforms.Add(platform0);
-
-      // ...and another one.
-      Platform platform1 = new Platform();
-      platformPos = new Vector2(20 * Game1.GridSize, 20 * Game1.GridSize);
-      platformLen = new Vector2(10 * Game1.GridSize, 8 * Game1.GridSize);
-      platform1.Initialize(Content.Load<Texture2D>("platform_new"), platformPos, platformLen);
-      platforms.Add(platform1);
-
-      // Adds a goal to the level
-      Goal goal = new Goal();
-      Vector2 goalPos = new Vector2(10 * Game1.GridSize, 1 * Game1.GridSize);
-      goal.Initialize(Content.Load<Texture2D>("goal"), goalPos);
-      simulation.Goal = goal;
-
-      // Create the list of treasures
+      /*// Create the list of treasures
       List<Treasure> treasures = new List<Treasure>();
       simulation.Treasures = treasures;
 
@@ -196,7 +167,7 @@ namespace PuzzlePathDimension {
       // Adds a death trap to the level
       Vector2 trapPos = new Vector2(14 * Game1.GridSize, 22 * Game1.GridSize);
       DeathTrap trap = new DeathTrap(Content.Load<Texture2D>("deathtrap"), trapPos);
-      traps.Add(trap);
+      traps.Add(trap);*/
 
       return simulation;
     }
