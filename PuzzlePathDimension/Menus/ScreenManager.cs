@@ -23,7 +23,7 @@ namespace PuzzlePathDimension {
   /// methods at the appropriate times, and automatically routes input to the
   /// topmost active screen.
   /// </summary>
-  public class ScreenManager : DrawableGameComponent, GameState {
+  public class ScreenManager : DrawableGameComponent {
   #region Fields
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();

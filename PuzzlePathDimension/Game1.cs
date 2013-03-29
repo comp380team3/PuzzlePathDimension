@@ -19,22 +19,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     public static readonly float GridSize = 20f;
 
-    // The drawing API
-    SpriteBatch spriteBatch;
-
-    //The screens and the current screen
-    Stack<GameState> stateStack;
-
-    // The menu manager
-    ScreenManager menus;
-
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
     public Game1() {
-      stateStack = new Stack<GameState>();
-      menus = new ScreenManager(this);
-
       // Set the resolution to 800x600
       GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
       graphics.PreferredBackBufferWidth = 800;
@@ -43,6 +31,11 @@ namespace PuzzlePathDimension {
 
       // Tells the game where the content directory is
       Content.RootDirectory = "Content";
+
+      ScreenManager menus = new ScreenManager(this);
+      menus.AddScreen(new BackgroundScreen(), null);
+      menus.AddScreen(new MainMenuScreen(), null);
+      Components.Add(menus);
 
       // Make the mouse visible
       this.IsMouseVisible = true;
@@ -55,11 +48,7 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // Initialize the state stack.
-      this.PushState(new ExitState(this));
-
       base.Initialize();
-      menus.Initialize();
     }
 
     /// <summary>
@@ -67,12 +56,6 @@ namespace PuzzlePathDimension {
     /// all of your content.
     /// </summary>
     protected override void LoadContent() {
-      // Obtain a reference to the graphics API.
-      spriteBatch = new SpriteBatch(GraphicsDevice);
-
-      this.PushState(menus);
-      menus.AddScreen(new BackgroundScreen(), null);
-      menus.AddScreen(new MainMenuScreen(), null);
     }
 
     /// <summary>
@@ -95,11 +78,6 @@ namespace PuzzlePathDimension {
         this.Exit();
       }
 
-      // TODO: Add your update logic here
-      //By taking advantage of Polymorphism, we can call update on the current screen class,
-      //but the Update in the subclass is the one that will be executed.
-      stateStack.Peek().Update(gameTime);
-
       base.Update(gameTime);
     }
 
@@ -108,35 +86,19 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime) {
-      spriteBatch.Begin();
-
-      GraphicsDevice.Clear(Color.White);
-
-      //Again, using Polymorphism, we can call draw on the current screen class
-      //and the Draw in the subclass is the one that will be executed.
-      stateStack.Peek().Draw(gameTime, spriteBatch);
-
-      spriteBatch.End();
-
       base.Draw(gameTime);
     }
 
-    // These may be better suited to a separate StateStack class.
+    [Obsolete]
     public void PushState(GameState state) {
-      stateStack.Push(state);
     }
 
+    [Obsolete]
     public void PopState() {
-      if (stateStack.Count == 1) {
-        throw new InvalidOperationException("There are no states that can be popped.");
-      }
-
-      stateStack.Pop();
     }
 
+    [Obsolete]
     public void ReplaceState(GameState state) {
-      this.PopState();
-      this.PushState(state);
     }
 
     /// <summary>
