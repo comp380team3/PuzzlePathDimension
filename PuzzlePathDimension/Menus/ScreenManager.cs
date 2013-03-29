@@ -24,28 +24,31 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenManager : DrawableGameComponent, GameState {
-    #region Fields
-
+  #region Fields
+    // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
+
+    // The list of screens currently being updated.
+    // This needs to be a field, not a local, because screens may be removed
+    //   during the update process, and removed screens shouldn't be updated.
     List<GameScreen> screensToUpdate = new List<GameScreen>();
 
     InputState input = new InputState();
 
+    // The rendering device that all screens share.
     SpriteBatch spriteBatch;
+
+    // Some shared fonts that all screens can use.
     SpriteFont font;
-    // Added a default text writing font
     SpriteFont textFont;
+
     Texture2D blankTexture;
 
-    bool isInitialized;
+    bool hasDevice; // has the graphics device been initialized?
+    bool traceEnabled; // do we want to output debugging information?
+  #endregion
 
-    bool traceEnabled;
-
-    #endregion
-
-    #region Properties
-
-
+  #region Properties
     /// <summary>
     /// A default SpriteBatch shared by all the screens. This saves
     /// each screen having to bother creating their own local instance.
@@ -80,13 +83,9 @@ namespace PuzzlePathDimension {
       get { return traceEnabled; }
       set { traceEnabled = value; }
     }
+  #endregion
 
-
-    #endregion
-
-    #region Initialization
-
-
+  #region Initialization
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
@@ -94,16 +93,14 @@ namespace PuzzlePathDimension {
       : base(game) {
     }
 
-
     /// <summary>
     /// Initializes the screen manager component.
     /// </summary>
     public override void Initialize() {
       base.Initialize();
 
-      isInitialized = true;
+      hasDevice = true;
     }
-
 
     /// <summary>
     /// Load your graphics content.
@@ -126,7 +123,6 @@ namespace PuzzlePathDimension {
       }
     }
 
-
     /// <summary>
     /// Unload your graphics content.
     /// </summary>
@@ -136,13 +132,9 @@ namespace PuzzlePathDimension {
         screen.UnloadContent();
       }
     }
+  #endregion
 
-
-    #endregion
-
-    #region Update and Draw
-
-
+  #region Update and Draw
     /// <summary>
     /// Allows each screen to run logic.
     /// </summary>
@@ -153,7 +145,6 @@ namespace PuzzlePathDimension {
       // Make a copy of the master screen list, to avoid confusion if
       // the process of updating one screen adds or removes others.
       screensToUpdate.Clear();
-
       foreach (GameScreen screen in screens)
         screensToUpdate.Add(screen);
 
@@ -164,7 +155,6 @@ namespace PuzzlePathDimension {
       while (screensToUpdate.Count > 0) {
         // Pop the topmost screen off the waiting list.
         GameScreen screen = screensToUpdate[screensToUpdate.Count - 1];
-
         screensToUpdate.RemoveAt(screensToUpdate.Count - 1);
 
         // Update the screen.
@@ -176,14 +166,14 @@ namespace PuzzlePathDimension {
           // give it a chance to handle input.
           if (!otherScreenHasFocus) {
             screen.HandleInput(input);
-
             otherScreenHasFocus = true;
           }
 
           // If this is an active non-popup, inform any subsequent
           // screens that they are covered by it.
-          if (!screen.IsPopup)
+          if (!screen.IsPopup) {
             coveredByOtherScreen = true;
+          }
         }
       }
 
@@ -191,7 +181,6 @@ namespace PuzzlePathDimension {
       if (traceEnabled)
         TraceScreens();
     }
-
 
     /// <summary>
     /// Prints a list of all the screens, for debugging.
@@ -204,7 +193,6 @@ namespace PuzzlePathDimension {
 
       Debug.WriteLine(string.Join(", ", screenNames.ToArray()));
     }
-
 
     /// <summary>
     /// Tells each screen to draw itself.
@@ -221,12 +209,9 @@ namespace PuzzlePathDimension {
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       Draw(gameTime);
     }
+  #endregion
 
-    #endregion
-
-    #region Public Methods
-
-
+  #region Public Methods
     /// <summary>
     /// Adds a new screen to the screen manager.
     /// </summary>
@@ -236,13 +221,12 @@ namespace PuzzlePathDimension {
       screen.IsExiting = false;
 
       // If we have a graphics device, tell the screen to load content.
-      if (isInitialized) {
+      if (hasDevice) {
         screen.LoadContent();
       }
 
       screens.Add(screen);
     }
-
 
     /// <summary>
     /// Removes a screen from the screen manager. You should normally
@@ -252,14 +236,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void RemoveScreen(GameScreen screen) {
       // If we have a graphics device, tell the screen to unload content.
-      if (isInitialized) {
+      if (hasDevice) {
         screen.UnloadContent();
       }
 
       screens.Remove(screen);
-      screensToUpdate.Remove(screen);
+      screensToUpdate.Remove(screen); // in case a screen is removed during Update().
     }
-
 
     /// <summary>
     /// Expose an array holding all the screens. We return a copy rather
@@ -269,7 +252,6 @@ namespace PuzzlePathDimension {
     public GameScreen[] GetScreens() {
       return screens.ToArray();
     }
-
 
     /// <summary>
     /// Helper draws a translucent black fullscreen sprite, used for fading
@@ -286,8 +268,6 @@ namespace PuzzlePathDimension {
 
       spriteBatch.End();
     }
-
-
-    #endregion
+  #endregion
   }
 }
