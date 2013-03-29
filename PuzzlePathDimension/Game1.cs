@@ -71,6 +71,7 @@ namespace PuzzlePathDimension {
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
       this.PushState(menus);
+      menus.AddScreen(new BackgroundScreen(), null);
       menus.AddScreen(new MainMenuScreen(), null);
     }
 
