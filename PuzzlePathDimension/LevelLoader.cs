@@ -8,7 +8,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class LevelLoader {
+  /// <summary>
+  ///   Provides methods for deserializing Levels from XML files.
+  /// </summary>
+  static class LevelLoader {
+    /// <summary>
+    ///   Load an XML file from disk, retrieving textures through Content
+    ///   as necessary.
+    /// </summary>
+    /// <param name="filename">Path to the file</param>
+    /// <param name="Content">Resource manger to load from</param>
+    /// <returns>A deserialized level</returns>
     public static Level Load(string filename, ContentManager Content) {
       XmlDocument doc = new XmlDocument();
       doc.Load(filename);
