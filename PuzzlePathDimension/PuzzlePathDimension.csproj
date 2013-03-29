@@ -78,6 +78,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Level.cs" />
+    <Compile Include="LevelLoader.cs" />
     <Compile Include="Models\Ball.cs" />
     <Compile Include="GameStates\ExitState.cs" />
     <Compile Include="Models\Goal.cs" />

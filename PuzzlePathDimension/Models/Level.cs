@@ -8,5 +8,9 @@ namespace PuzzlePathDimension {
     public Goal Goal { get; set; }
     public Launcher Launcher { get; set; }
     public List<Platform> Platforms { get; set; }
+
+    public Level() {
+      Platforms = new List<Platform>();
+    }
   }
 }
