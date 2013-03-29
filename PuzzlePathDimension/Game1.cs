@@ -25,11 +25,15 @@ namespace PuzzlePathDimension {
     //The screens and the current screen
     Stack<GameState> stateStack;
 
+    // The menu manager
+    ScreenManager menus;
+
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
     public Game1() {
       stateStack = new Stack<GameState>();
+      menus = new ScreenManager(this);
 
       // Set the resolution to 800x600
       GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
@@ -55,6 +59,7 @@ namespace PuzzlePathDimension {
       this.PushState(new ExitState(this));
 
       base.Initialize();
+      menus.Initialize();
     }
 
     /// <summary>
@@ -65,7 +70,8 @@ namespace PuzzlePathDimension {
       // Obtain a reference to the graphics API.
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
-      this.PushState(new ControllerDetectState(this, spriteBatch));
+      this.PushState(menus);
+      menus.AddScreen(new MainMenuScreen(), null);
     }
 
     /// <summary>
