@@ -23,7 +23,7 @@ namespace PuzzlePathDimension {
   /// methods at the appropriate times, and automatically routes input to the
   /// topmost active screen.
   /// </summary>
-  public class ScreenManager : DrawableGameComponent {
+  public class ScreenManager : DrawableGameComponent, GameState {
     #region Fields
 
     List<GameScreen> screens = new List<GameScreen>();
@@ -218,6 +218,9 @@ namespace PuzzlePathDimension {
       }
     }
 
+    public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      Draw(gameTime);
+    }
 
     #endregion
 

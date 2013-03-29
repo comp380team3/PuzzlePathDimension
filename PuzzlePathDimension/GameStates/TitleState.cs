@@ -50,7 +50,7 @@ namespace PuzzlePathDimension {
     }
 
     //Draw all of the elements that make up the Title Screen
-    public void Draw(SpriteBatch theBatch) {
+    public void Draw(GameTime theTime, SpriteBatch theBatch) {
       theBatch.Draw(mTitleScreenBackground, Vector2.Zero, Color.White);
       theBatch.DrawString(menuFont, "Puzzle Path Dimension", Position, Color.Black);
       theBatch.DrawString(selectFont, "Start Game", new Vector2(Position.X + 100, Position.Y + 100), Color.Black);

@@ -107,7 +107,7 @@ namespace PuzzlePathDimension {
 
       //Again, using Polymorphism, we can call draw on the current screen class
       //and the Draw in the subclass is the one that will be executed.
-      stateStack.Peek().Draw(spriteBatch);
+      stateStack.Peek().Draw(gameTime, spriteBatch);
 
       spriteBatch.End();
 

@@ -17,7 +17,7 @@ namespace PuzzlePathDimension {
       game1.Exit();
     }
 
-    public void Draw(SpriteBatch graphics) {
+    public void Draw(GameTime gameTime, SpriteBatch graphics) {
     }
   }
 }

@@ -11,6 +11,6 @@ namespace PuzzlePathDimension {
     void Update(GameTime theTime);
 
     // Draw any objects specific to the screen
-    void Draw(SpriteBatch theBatch);
+    void Draw(GameTime theTime, SpriteBatch theBatch);
   }
 }

@@ -51,7 +51,7 @@ namespace PuzzlePathDimension {
     }
 
     //Draw all of the elements that make up the Controller Detect Screen
-    public void Draw(SpriteBatch theBatch) {
+    public void Draw(GameTime theTime, SpriteBatch theBatch) {
       theBatch.Draw(mControllerDetectScreenBackground, Vector2.Zero, Color.White);
       theBatch.DrawString(controlfont, "Press A or Click the Screen to Continue", new Vector2(25, 500), Color.Black);
     }

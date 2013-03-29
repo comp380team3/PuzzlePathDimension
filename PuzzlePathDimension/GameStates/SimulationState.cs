@@ -128,7 +128,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public void Draw(SpriteBatch theBatch) {
+    public void Draw(GameTime theTime, SpriteBatch theBatch) {
       _view.Draw();
     }
   }
