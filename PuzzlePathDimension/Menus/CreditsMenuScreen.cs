@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
     public CreditsMenuScreen()
       : base("Credits") {
 
-      teamMembersMenuEntry = new string[] { "Chris Babayas", "Jonathan Catello", "Brian Marroquin",
+      teamMembersMenuEntry = new string[] { "Chris Babayas", "Jonathan Castello", "Brian Marroquin",
                                                   "Jorenz Paragas", "Michael Sandoval"};
       organizationsMenuEntry = new string[] { "Microsoft XNA Community Game Platform" };
 
