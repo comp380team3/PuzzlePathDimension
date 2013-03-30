@@ -141,8 +141,8 @@ namespace PuzzlePathDimension {
       _active = false;
 
       // Calculate the velocity of the ball based on the launcher's angle.
-      float xVelocity = 15f * (float) Math.Cos(-1 * _angle);
-      float yVelocity = 15f * (float) Math.Sin(-1 * _angle);
+      float xVelocity = 10f * (float) Math.Cos(-1 * _angle);
+      float yVelocity = 10f * (float) Math.Sin(-1 * _angle);
       _ball.Launch(xVelocity, yVelocity);
 
       // The launcher no longer owns the ball.

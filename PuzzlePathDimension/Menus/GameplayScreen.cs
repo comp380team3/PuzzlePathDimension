@@ -103,12 +103,6 @@ namespace PuzzlePathDimension {
 
       // Update the launcher's state
       simulation.Launcher.Update();
-
-      // Update the balls position
-      //simulation.Ball.Update();
-
-      // Update the collision
-      //UpdateCollision();
     }
 
     /// <summary>
@@ -209,12 +203,6 @@ namespace PuzzlePathDimension {
 
       simulation.Background = content.Load<Texture2D>("GameScreen");
 
-      //Texture2D texture = content.Load<Texture2D>("platform");
-
-      //simulation.Platforms.Add(new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(400, 200)));
-      //simulation.Platforms.Add(new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(100, 500)));
-
-
       // Add a ball to the level
       Texture2D texture2 = content.Load<Texture2D>("ball_new");
       Ball ball = new Ball(world, texture2, new Vector2(texture2.Width, texture2.Height), 1);
@@ -228,67 +216,7 @@ namespace PuzzlePathDimension {
     }
   #endregion
 
-  #region Collision Detection
-    /*private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
-      Ball ball = simulation.Ball;
-
-      // Check if the two objects are near each other.
-      // If they are not then return false for no intersection.
-      if (!rectangleA.Intersects(rectangleB)) {
-        return false;
-      }
-
-      // Find the bounds of the rectangle intersection
-      int top = Math.Max(rectangleA.Top, rectangleB.Top);
-      int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
-      int left = Math.Max(rectangleA.Left, rectangleB.Left);
-      int right = Math.Min(rectangleA.Right, rectangleB.Right);
-
-      // Check every point within the intersection bounds
-      for (int y = top; y < bottom; y++) {
-        for (int x = left; x < right; x++) {
-          // Get the color of both pixels at this point
-          //Console.WriteLine("Index to fetch: " + (((x - rectangleB.Left) + (y - rectangleB.Top) * rectangleB.Width) % 400));
-          Console.WriteLine("Length of dataB: " + dataB.Length);
-          Color colorA = dataA[((x - rectangleA.Left) +
-                               (y - rectangleA.Top) * rectangleA.Width) % dataA.Length];
-          Color colorB = dataB[((x - rectangleB.Left) +
-                               (y - rectangleB.Top) * rectangleB.Width) % dataB.Length]; // lol maybe?
-
-          // If both pixels are not completely transparent,
-          if (colorA.A != 0 && colorB.A != 0) {
-            if (y == top || y == bottom - 1)
-              ball.FlipYDirection();
-            if (x == left || x == right - 1)
-              ball.FlipXDirection();
-            // then an intersection has been found
-            return true;
-          }
-        }
-      }
-
-      // No intersection found
-      return false;
-    }
-
-    private void UpdateCollision() {
-      Ball ball = simulation.Ball;
-
-      Rectangle ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
-
-      foreach (Platform platform in simulation.Platforms) {
-        Rectangle platformRectangle = new Rectangle(
-            (int)platform.Position.X,
-            (int)platform.Position.Y,
-            platform.Width,
-            platform.Height);
-
-        IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
-      }
-    }*/
-  #endregion
-
-    public void CreateBox(ContentManager theContent) {
+    private void CreateBox(ContentManager theContent) {
       walls = new List<Platform>();
 
       Texture2D texture = theContent.Load<Texture2D>("TopBottom");
