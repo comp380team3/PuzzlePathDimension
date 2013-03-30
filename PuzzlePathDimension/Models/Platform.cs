@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Factories;
 using FarseerPhysics.Dynamics;
+
 namespace PuzzlePathDimension {
   /// <summary>
   /// The Platform class describes a platform.
@@ -15,40 +16,6 @@ namespace PuzzlePathDimension {
     /// The texture that the platform uses.
     /// </summary>
     private Texture2D _texture;
-    private Vector2 _origin;
-    /*
-    /// <summary>
-    /// The texture's color data.
-    /// </summary>
-    private Color[] _colorData;
-
-    /// <summary>
-    /// The pixel coordinates of the upper left corner of the platform.
-    /// </summary>
-    private Vector2 _upperLeftCorner;
-    /// <summary>
-    /// The pixel coordinates of the lower right corner of the platform.
-    /// </summary>
-    private Vector2 _lowerRightCorner;
-
-    /// <summary>
-    /// Whether the platform is active.
-    /// </summary>
-    private bool _active;
-    /// <summary>
-    /// Gets the position, which is the upper-left corner, of the platform.
-    /// </summary>
-   /* public Vector2 Position {
-      get { return _upperLeftCorner; }
-    }
-    
-    /// <summary>
-    /// Gets the pixel coordinates of the upper-left corner of the platform.
-    /// </summary>
-    public Vector2 UpperLeftCorner {
-      get { return _upperLeftCorner; }
-    }
-    */
 
     /************************
      * Brian's Physics stuff*
@@ -68,15 +35,19 @@ namespace PuzzlePathDimension {
     }
 
     public Platform(World world, Texture2D texture, Vector2 size, float mass, Vector2 position) {
-      position.X += size.X / 2.0f;
-      position.Y += size.Y / 2.0f;
+      // Get the center of the rectangle, which the physics engine needs.
+      Vector2 center = new Vector2();
+      center.X = position.X + (size.X / 2.0f);
+      center.Y = position.Y + (size.Y / 2.0f);
 
       body = BodyFactory.CreateRectangle(world, size.X * pixelToUnit, size.Y * pixelToUnit, 1);
       body.BodyType = BodyType.Static;
-      //_origin = new Vector2((texture.Width / 2.0f), (texture.Height/2.0f));
       body.Friction = 0f;
       body.Restitution = .8f;
-      Position = position; 
+      // This Position field is actually body.Position, which is expected to be the center, 
+      // and not the upper left corner of the platform. Perhaps we can rewrite parts of the class 
+      // to make this distinction clearer? - Jorenz
+      Position = center; 
       this.Size = size;
       this._texture = texture;
     }
@@ -84,23 +55,17 @@ namespace PuzzlePathDimension {
      * Brian's Physics stuff ends*
      * **************************/
 
-
     /// <summary>
     /// Draws the platform to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      // Scale the texture appropriately to the platform's size.
-      /*Console.WriteLine("body: "+body.Position);
-      Console.WriteLine(Position);
-      Console.WriteLine(_origin);
-      Console.WriteLine(Size);
-      Console.WriteLine();*/
-
+      // Get the upper-left corner of the rectangle.
       Vector2 drawPos = new Vector2(Position.X - (Size.X / 2.0f), Position.Y - (Size.Y / 2.0f));
 
-      // Draw it!
+      // Scale the texture to the appropriate size.
       Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
+      // Draw it!
       spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
     }
 
