@@ -209,14 +209,14 @@ namespace PuzzlePathDimension {
 
       simulation.Background = content.Load<Texture2D>("GameScreen");
 
-      Texture2D texture = content.Load<Texture2D>("platform");
+      //Texture2D texture = content.Load<Texture2D>("platform");
 
-      simulation.Platforms.Add(new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(400, 200)));
-      simulation.Platforms.Add(new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(100, 500)));
+      //simulation.Platforms.Add(new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(400, 200)));
+      //simulation.Platforms.Add(new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(100, 500)));
 
 
       // Add a ball to the level
-      Texture2D texture2 = content.Load<Texture2D>("Ball");
+      Texture2D texture2 = content.Load<Texture2D>("ball_new");
       Ball ball = new Ball(world, texture2, new Vector2(texture2.Width, texture2.Height), 1);
       CreateBox(content);
       simulation.Ball = ball;
@@ -289,22 +289,23 @@ namespace PuzzlePathDimension {
   #endregion
 
     public void CreateBox(ContentManager theContent) {
-      const int width = 800;
-      const int height = 600;
-
       walls = new List<Platform>();
 
-      for (int i = 0; i < 4; i++) {
-        if (i < 2) {
-          Texture2D texture = theContent.Load<Texture2D>("TopBottom");
-          Platform temp = new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(width / 2f, height * i));
-          walls.Add(temp);
-        } else {
-          Texture2D texture = theContent.Load<Texture2D>("SideWall");
-          Platform temp = new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(width * (i - 2), height / 2f));
-          walls.Add(temp);
-        }
-      }
+      Texture2D texture = theContent.Load<Texture2D>("TopBottom");
+      Platform temp = new Platform(world, texture, new Vector2(texture.Width, texture.Height), 1, new Vector2(0, -5));
+      walls.Add(temp);
+
+      Texture2D texture2 = theContent.Load<Texture2D>("TopBottom");
+      Platform temp2 = new Platform(world, texture, new Vector2(texture2.Width, texture2.Height), 1, new Vector2(0, 595));
+      walls.Add(temp2);
+
+      Texture2D texture3 = theContent.Load<Texture2D>("SideWall");
+      Platform temp3 = new Platform(world, texture, new Vector2(texture3.Width, texture3.Height), 1, new Vector2(-5, 0));
+      walls.Add(temp3);
+
+      Texture2D texture4 = theContent.Load<Texture2D>("SideWall");
+      Platform temp4 = new Platform(world, texture, new Vector2(texture4.Width, texture4.Height), 1, new Vector2(795, 0));
+      walls.Add(temp4);
     }
   }
 }

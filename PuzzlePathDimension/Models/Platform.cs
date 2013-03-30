@@ -68,9 +68,12 @@ namespace PuzzlePathDimension {
     }
 
     public Platform(World world, Texture2D texture, Vector2 size, float mass, Vector2 position) {
+      position.X += size.X / 2.0f;
+      position.Y += size.Y / 2.0f;
+
       body = BodyFactory.CreateRectangle(world, size.X * pixelToUnit, size.Y * pixelToUnit, 1);
       body.BodyType = BodyType.Static;
-      _origin = new Vector2((texture.Width / 2.0f), (texture.Height/2.0f));
+      //_origin = new Vector2((texture.Width / 2.0f), (texture.Height/2.0f));
       body.Friction = 0f;
       body.Restitution = .8f;
       Position = position; 
@@ -88,16 +91,17 @@ namespace PuzzlePathDimension {
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
       // Scale the texture appropriately to the platform's size.
-      Console.WriteLine("body: "+body.Position);
+      /*Console.WriteLine("body: "+body.Position);
       Console.WriteLine(Position);
       Console.WriteLine(_origin);
       Console.WriteLine(Size);
-      Console.WriteLine();
+      Console.WriteLine();*/
 
+      Vector2 drawPos = new Vector2(Position.X - (Size.X / 2.0f), Position.Y - (Size.Y / 2.0f));
 
       // Draw it!
       Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
-      spriteBatch.Draw(_texture, Position, null, Color.White, 0f, _origin, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
     }
 
     /// <summary>

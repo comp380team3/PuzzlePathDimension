@@ -30,9 +30,9 @@ namespace PuzzlePathDimension {
     private static Level LoadLevel(XmlDocument doc, ContentManager Content, World world) {
       Level level = new Level();
 
-      /*foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
+      foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
         level.Platforms.Add(LoadPlatform(node, Content, world));
-      }*/
+      }
 
       level.Launcher = LoadLauncher((XmlElement)doc.GetElementsByTagName("launcher")[0], Content);
       level.Goal = LoadGoal((XmlElement)doc.GetElementsByTagName("goal")[0], Content);
