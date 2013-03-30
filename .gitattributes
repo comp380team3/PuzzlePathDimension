@@ -1,1 +1,2 @@
-*.cs     text diff=csharp eol=crlf
+*.cs		text diff=csharp eol=crlf
+*.csproj	text diff=xml eol=crlf

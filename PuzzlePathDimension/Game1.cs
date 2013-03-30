@@ -19,18 +19,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     public static readonly float GridSize = 20f;
 
-    // The drawing API
-    SpriteBatch spriteBatch;
-
-    //The screens and the current screen
-    Stack<GameState> stateStack;
-
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
     public Game1() {
-      stateStack = new Stack<GameState>();
-
       // Set the resolution to 800x600
       GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
       graphics.PreferredBackBufferWidth = 800;
@@ -39,6 +31,11 @@ namespace PuzzlePathDimension {
 
       // Tells the game where the content directory is
       Content.RootDirectory = "Content";
+
+      ScreenManager menus = new ScreenManager(this);
+      menus.AddScreen(new BackgroundScreen(), null);
+      menus.AddScreen(new MainMenuScreen(), null);
+      Components.Add(menus);
 
       // Make the mouse visible
       this.IsMouseVisible = true;
@@ -51,9 +48,6 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // Initialize the state stack.
-      this.PushState(new ExitState(this));
-
       base.Initialize();
     }
 
@@ -62,10 +56,6 @@ namespace PuzzlePathDimension {
     /// all of your content.
     /// </summary>
     protected override void LoadContent() {
-      // Obtain a reference to the graphics API.
-      spriteBatch = new SpriteBatch(GraphicsDevice);
-
-      this.PushState(new ControllerDetectState(this, spriteBatch));
     }
 
     /// <summary>
@@ -88,11 +78,6 @@ namespace PuzzlePathDimension {
         this.Exit();
       }
 
-      // TODO: Add your update logic here
-      //By taking advantage of Polymorphism, we can call update on the current screen class,
-      //but the Update in the subclass is the one that will be executed.
-      stateStack.Peek().Update(gameTime);
-
       base.Update(gameTime);
     }
 
@@ -101,75 +86,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime) {
-      spriteBatch.Begin();
-
-      GraphicsDevice.Clear(Color.White);
-
-      //Again, using Polymorphism, we can call draw on the current screen class
-      //and the Draw in the subclass is the one that will be executed.
-      stateStack.Peek().Draw(spriteBatch);
-
-      spriteBatch.End();
-
       base.Draw(gameTime);
-    }
-
-    // These may be better suited to a separate StateStack class.
-    public void PushState(GameState state) {
-      stateStack.Push(state);
-    }
-
-    public void PopState() {
-      if (stateStack.Count == 1) {
-        throw new InvalidOperationException("There are no states that can be popped.");
-      }
-
-      stateStack.Pop();
-    }
-
-    public void ReplaceState(GameState state) {
-      this.PopState();
-      this.PushState(state);
-    }
-
-    /// <summary>
-    /// Sets up a hard-coded level. This is for testing purposes.
-    /// </summary>
-    internal Simulation CreateTestLevel() {
-      Simulation simulation =
-        new Simulation(LevelLoader.Load("Content/TestLevel.xml", Content));
-
-      simulation.Background = Content.Load<Texture2D>("GameScreen");
-
-      // Adds a ball to the level
-      Ball ball = new Ball();
-      Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(Content.Load<Texture2D>("ball_new"), ballPos);
-      simulation.Ball = ball;
-
-      // Load the ball into the launcher
-      simulation.Launcher.LoadBall(ball);
-
-      /*// Create the list of treasures
-      List<Treasure> treasures = new List<Treasure>();
-      simulation.Treasures = treasures;
-
-      // Adds a treasure to the level
-      Treasure treasure = new Treasure();
-      Vector2 treasurePos = new Vector2(15 * Game1.GridSize, 15 * Game1.GridSize);
-      treasure.Initialize(Content.Load<Texture2D>("treasure"), treasurePos);
-      treasures.Add(treasure);
-
-      // Create the list of death traps
-      List<DeathTrap> traps = new List<DeathTrap>();
-      simulation.DeathTraps = traps;
-
-      // Adds a death trap to the level
-      Vector2 trapPos = new Vector2(14 * Game1.GridSize, 22 * Game1.GridSize);
-      DeathTrap trap = new DeathTrap(Content.Load<Texture2D>("deathtrap"), trapPos);
-      traps.Add(trap);*/
-
-      return simulation;
     }
   }
 }
