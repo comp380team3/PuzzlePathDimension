@@ -19,28 +19,23 @@ namespace PuzzlePathDimension {
     /// </summary>
     public static readonly float GridSize = 20f;
 
-    GraphicsDeviceManager graphics;
-    SpriteBatch spriteBatch;
-
-    //The screens and the current screen
-    ControllerDetectScreen mControllerScreen;
-    TitleScreen mTitleScreen;
-    GameScreen mGameScreen;
-    Screen mCurrentScreen;
-
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
     public Game1() {
-      graphics = new GraphicsDeviceManager(this);
-
       // Set the resolution to 800x600
+      GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
       graphics.PreferredBackBufferWidth = 800;
       graphics.PreferredBackBufferHeight = 600;
       graphics.ApplyChanges();
 
       // Tells the game where the content directory is
       Content.RootDirectory = "Content";
+
+      ScreenManager menus = new ScreenManager(this);
+      menus.AddScreen(new BackgroundScreen(), null);
+      menus.AddScreen(new MainMenuScreen(), null);
+      Components.Add(menus);
 
       // Make the mouse visible
       this.IsMouseVisible = true;
@@ -53,8 +48,6 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // TODO: Add your initialization logic here
-
       base.Initialize();
     }
 
@@ -63,16 +56,6 @@ namespace PuzzlePathDimension {
     /// all of your content.
     /// </summary>
     protected override void LoadContent() {
-      // Create a new SpriteBatch, which can be used to draw textures.
-      spriteBatch = new SpriteBatch(GraphicsDevice);
-
-      //Initialize the various screens in the game
-      mControllerScreen = new ControllerDetectScreen(this.Content, new EventHandler(ControllerDetectScreenEvent));
-      mTitleScreen = new TitleScreen(this.Content, new EventHandler(TitleScreenEvent));
-      mGameScreen = new GameScreen(this.Content, GraphicsDevice.Viewport, new EventHandler(GameScreenEvent));
-
-      //Set the current screen
-      mCurrentScreen = mControllerScreen;
     }
 
     /// <summary>
@@ -95,12 +78,6 @@ namespace PuzzlePathDimension {
         this.Exit();
       }
 
-      // TODO: Add your update logic here
-      //By taking advantage of Polymorphism, we can call update on the current screen class,
-      //but the Update in the subclass is the one that will be executed.
-
-      mCurrentScreen.Update(gameTime);
-
       base.Update(gameTime);
     }
 
@@ -109,35 +86,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime) {
-      GraphicsDevice.Clear(Color.White);
-
-      // TODO: Add your drawing code here
-      spriteBatch.Begin();
-
-      //Again, using Polymorphism, we can call draw on the current screen class
-      //and the Draw in the subclass is the one that will be executed.
-      mCurrentScreen.Draw(spriteBatch);
-
-      spriteBatch.End();
-
       base.Draw(gameTime);
-    }
-
-    //This event fires when the Controller detect screen is returing control back to the main game class
-    public void ControllerDetectScreenEvent(Object obj, EventArgs e) {
-      //Switch to the title screen, the Controller detect screen is finished being displayed
-      mCurrentScreen = mTitleScreen;
-    }
-
-    //Thid event is fired when the Title screen is returning control back to the main game class
-    public void TitleScreenEvent(Object obj, EventArgs e) {
-      //Switch to the controller detect screen, the Title screen is finished being displayed
-      mCurrentScreen = mGameScreen;
-    }
-
-    public void GameScreenEvent(Object obj, EventArgs e) {
-      //Switch to the title screen, the Title screen is finished being displayed
-      mCurrentScreen = mTitleScreen;
     }
   }
 }
