@@ -54,7 +54,10 @@ namespace PuzzlePathDimension {
     }
 
     public void Stop() {
+      // Possible fix for the assertion failure? - Jorenz
+      body.Enabled = false;
       body.BodyType = BodyType.Static;
+      body.Enabled = true;
     }
 
     /*****************************

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <level name="Test Level">
   <platform x="100" y="100" width="400" length="40" />
-  <platform x="400" y="400" width="200" length="160" />
+  <platform x="400" y="400" width="120" length="160" />
 
   <goal x="200" y="10" />
   <launcher x="680" y="580" />
