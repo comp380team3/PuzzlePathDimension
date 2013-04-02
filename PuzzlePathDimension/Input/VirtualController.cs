@@ -69,7 +69,7 @@ namespace PuzzlePathDimension {
   }
 
   /// <summary>
-  /// The VirtualController class provides an device-agonstic way of reading input.
+  /// The VirtualController class provides a device-agonstic way of reading input.
   /// </summary>
   public class VirtualController {
     /// <summary>
@@ -220,7 +220,7 @@ namespace PuzzlePathDimension {
     /// <param name="type">The type of the button to update.</param>
     /// <param name="newState">The new state of the button.</param>
     private void UpdateDigital(VirtualButtons type, VirtualButtonState newState) {
-      int typeIndex = (int)type; // Syntatic sugar
+      int typeIndex = (int)type; // Syntactic sugar
 
       // Keep track of two consecutive frames of input.
       _oldState[typeIndex] = _currentState[typeIndex];
@@ -257,7 +257,7 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Checks if a virtual button was just released. This is similar to checking
+    /// Checks if a virtual button was just pressed. This is similar to checking
     /// if a keyboard button was pressed during the current frame but released
     /// during the last frame.
     /// </summary>
