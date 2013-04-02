@@ -103,9 +103,9 @@ namespace PuzzlePathDimension {
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
     /// </summary>
-    public override void HandleInput(InputState input) {
-      if (input == null)
-        throw new ArgumentNullException("input");
+    public override void HandleInput(VirtualController vtroller) {
+      /*if (input == null)
+        throw new ArgumentNullException("input");*/
 
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;

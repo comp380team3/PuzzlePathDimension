@@ -5,46 +5,69 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
-  public enum VirtualButtonState {
+  public enum DigitalButtonState {
     Pressed,
     Released
   }
 
+  public enum DigitalInputs {
+    Confirm = 0,
+    Back,
+    Up,
+    Down,
+    Left,
+    Right
+  }
+
+  public enum DigitalInputChange {
+    /// <summary>
+    /// There was no change in the input state of that button.
+    /// </summary>
+    NoChange,
+    /// <summary>
+    /// On the previous frame, the input was released, but on this frame, it was pressed.
+    /// </summary>
+    JustPressed,
+    /// <summary>
+    /// On the previous frame, the input was pressed, but on this frame, it was released.
+    /// </summary>
+    JustReleased
+  }
+
   public class VirtualController {
-    private VirtualButtonState _confirm;
-    private VirtualButtonState _back;
-    private VirtualButtonState _up;
-    private VirtualButtonState _down;
-    private VirtualButtonState _left;
-    private VirtualButtonState _right;
+    private static readonly int DigitalInputsCount = Enum.GetNames(typeof(DigitalInputs)).Length;
+
+    private DigitalButtonState[] _currentState;
+    private DigitalButtonState[] _oldState;
+    private DigitalInputChange[] _inputChanges;
 
     private Point _currentPointState;
     private Point _oldPointState;
 
-    private List<VirtualAdapter> _adapters;
+    private VirtualAdapter _activeAdapter;
 
-    public VirtualButtonState Confirm {
-      get { return _confirm; }
+    public DigitalButtonState Confirm {
+      get { return _currentState[(int)DigitalInputs.Confirm]; }
     }
 
-    public VirtualButtonState Back {
-      get { return _back; }
+    public DigitalButtonState Back {
+      get { return _currentState[(int)DigitalInputs.Back]; }
     }
 
-    public VirtualButtonState Up {
-      get { return _up; }
+    public DigitalButtonState Up {
+      get { return _currentState[(int)DigitalInputs.Up]; }
     }
 
-    public VirtualButtonState Down {
-      get { return _down; }
+    public DigitalButtonState Down {
+      get { return _currentState[(int)DigitalInputs.Down]; }
     }
 
-    public VirtualButtonState Left {
-      get { return _left; }
+    public DigitalButtonState Left {
+      get { return _currentState[(int)DigitalInputs.Left]; }
     }
 
-    public VirtualButtonState Right {
-      get { return _right; }
+    public DigitalButtonState Right {
+      get { return _currentState[(int)DigitalInputs.Right]; }
     }
 
     public Point Point {
@@ -55,43 +78,69 @@ namespace PuzzlePathDimension {
       get { return _currentPointState.Equals(_oldPointState); }
     }
 
-    public VirtualController() {
-      _confirm = VirtualButtonState.Released;
-      _back = VirtualButtonState.Released;
-      _up = VirtualButtonState.Released;
-      _down = VirtualButtonState.Released;
-      _left = VirtualButtonState.Released;
-      _right = VirtualButtonState.Released;
+    public VirtualAdapter Adapter {
+      get { return _activeAdapter; }
+      set { _activeAdapter = value; }
+    }
+
+    public VirtualController(VirtualAdapter adapter) {
+      _currentState = new DigitalButtonState[DigitalInputsCount];
+      _oldState = new DigitalButtonState[DigitalInputsCount];
+      _inputChanges = new DigitalInputChange[DigitalInputsCount];
+
+      for (int i = 0; i < DigitalInputsCount; i++) {
+        _currentState[i] = DigitalButtonState.Released;
+        _oldState[i] = DigitalButtonState.Released;
+        _inputChanges[i] = DigitalInputChange.NoChange;
+      }
 
       _currentPointState = new Point(0, 0);
       _oldPointState = new Point(0, 0);
 
-      _adapters = new List<VirtualAdapter>();
+      _activeAdapter = adapter;
     }
 
     public void Update() {
-      foreach (VirtualAdapter adapter in _adapters) {
-        // TODO: there's a subtle bug here; one adapter can undo the effects
-        // of another adapter. I think it's best to favor pressed events since
-        // buttons are unpressed 99% of the time.
-        _confirm = adapter.Confirm();
-        _back = adapter.Back();
-        _up = adapter.Up();
-        _down = adapter.Down();
-        _left = adapter.Left();
-        _right = adapter.Right();
+      // Update every possible digital input type.
+      UpdateDigital(DigitalInputs.Confirm, _activeAdapter.Confirm());
+      UpdateDigital(DigitalInputs.Back, _activeAdapter.Back());
+      UpdateDigital(DigitalInputs.Up, _activeAdapter.Up());
+      UpdateDigital(DigitalInputs.Down, _activeAdapter.Down());
+      UpdateDigital(DigitalInputs.Left, _activeAdapter.Left());
+      UpdateDigital(DigitalInputs.Right, _activeAdapter.Right());
 
-        _oldPointState = _currentPointState;
-        _currentPointState = adapter.Point();
+      // Update the Point input separately.
+      _oldPointState = _currentPointState;
+      _currentPointState = _activeAdapter.Point();
+    }
+
+    private void UpdateDigital(DigitalInputs type, DigitalButtonState newState) {
+      int typeIndex = (int)type;
+
+      _oldState[typeIndex] = _currentState[typeIndex];
+      _currentState[typeIndex] = newState;
+
+      if (_oldState[typeIndex] == DigitalButtonState.Pressed 
+        && _currentState[typeIndex] == DigitalButtonState.Released) {
+        _inputChanges[typeIndex] = DigitalInputChange.JustReleased;
+        Console.WriteLine("Something was released.");
+
+      } else if (_oldState[typeIndex] == DigitalButtonState.Released
+        && _currentState[typeIndex] == DigitalButtonState.Pressed) {
+        _inputChanges[typeIndex] = DigitalInputChange.JustPressed;
+        Console.WriteLine("Something was pressed.");
+
+      } else {
+        _inputChanges[typeIndex] = DigitalInputChange.NoChange;
       }
     }
 
-    public void RegisterAdapter(VirtualAdapter adapter) {
-      _adapters.Add(adapter);
+    public bool CheckForRecentRelease(DigitalInputs type) {
+      return _inputChanges[(int)type] == DigitalInputChange.JustReleased;
     }
 
-    public void UnregisterAdapter(VirtualAdapter adapter) {
-      _adapters.Remove(adapter);
+    public bool CheckForRecentPress(DigitalInputs type) {
+      return _inputChanges[(int)type] == DigitalInputChange.JustPressed;
     }
   }
 }

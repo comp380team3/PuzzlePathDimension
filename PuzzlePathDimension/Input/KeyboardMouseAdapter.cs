@@ -5,38 +5,38 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace PuzzlePathDimension.Input {
+namespace PuzzlePathDimension {
   public class KeyboardMouseAdapter : VirtualAdapter {
     public KeyboardMouseAdapter() { }
 
-    public override VirtualButtonState Confirm() {
-      return Keyboard.GetState().IsKeyDown(Keys.Enter) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+    public override DigitalButtonState Confirm() {
+      return Keyboard.GetState().IsKeyDown(Keys.Enter) || Keyboard.GetState().IsKeyDown(Keys.Space) ?
+        DigitalButtonState.Pressed : DigitalButtonState.Released;
     }
 
-    public override VirtualButtonState Back() {
+    public override DigitalButtonState Back() {
       return Keyboard.GetState().IsKeyDown(Keys.Escape) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+        DigitalButtonState.Pressed : DigitalButtonState.Released;
     }
 
-    public override VirtualButtonState Up() {
+    public override DigitalButtonState Up() {
       return Keyboard.GetState().IsKeyDown(Keys.Up) || Keyboard.GetState().IsKeyDown(Keys.W) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+        DigitalButtonState.Pressed : DigitalButtonState.Released;
     }
 
-    public override VirtualButtonState Down() {
+    public override DigitalButtonState Down() {
       return Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+        DigitalButtonState.Pressed : DigitalButtonState.Released;
     }
 
-    public override VirtualButtonState Left() {
+    public override DigitalButtonState Left() {
       return Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.A) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+        DigitalButtonState.Pressed : DigitalButtonState.Released;
     }
 
-    public override VirtualButtonState Right() {
+    public override DigitalButtonState Right() {
       return Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.D) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+        DigitalButtonState.Pressed : DigitalButtonState.Released;
     }
 
     public override Point Point() {

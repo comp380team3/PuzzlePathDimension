@@ -86,24 +86,24 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Responds to user input, accepting or cancelling the message box.
     /// </summary>
-    public override void HandleInput(InputState input) {
-      PlayerIndex playerIndex;
+    public override void HandleInput(VirtualController vtroller) {
+      //PlayerIndex playerIndex;
 
       // We pass in our ControllingPlayer, which may either be null (to
       // accept input from any player) or a specific index. If we pass a null
       // controlling player, the InputState helper returns to us which player
       // actually provided the input. We pass that through to our Accepted and
       // Cancelled events, so they can tell which player triggered them.
-      if (input.IsMenuSelect(ControllingPlayer, out playerIndex)) {
+      if (vtroller.CheckForRecentRelease(DigitalInputs.Confirm)) {
         // Raise the accepted event, then exit the message box.
         if (Accepted != null)
-          Accepted(this, new PlayerIndexEventArgs(playerIndex));
+          Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
         ExitScreen();
-      } else if (input.IsMenuCancel(ControllingPlayer, out playerIndex)) {
+      } else if (vtroller.CheckForRecentRelease(DigitalInputs.Back)) {
         // Raise the cancelled event, then exit the message box.
         if (Cancelled != null)
-          Cancelled(this, new PlayerIndexEventArgs(playerIndex));
+          Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
         ExitScreen();
       }

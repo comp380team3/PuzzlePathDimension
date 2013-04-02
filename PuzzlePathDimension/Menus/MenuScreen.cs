@@ -66,9 +66,9 @@ namespace PuzzlePathDimension {
     /// Responds to user input, changing the selected entry and accepting
     /// or cancelling the menu.
     /// </summary>
-    public override void HandleInput(InputState input) {
+    public override void HandleInput(VirtualController vtroller) {
       // Move to the previous menu entry?
-      if (input.IsMenuUp(ControllingPlayer)) {
+      if (vtroller.CheckForRecentRelease(DigitalInputs.Up)) {
         selectedEntry--;
 
         if (selectedEntry < 0)
@@ -76,7 +76,7 @@ namespace PuzzlePathDimension {
       }
 
       // Move to the next menu entry?
-      if (input.IsMenuDown(ControllingPlayer)) {
+      if (vtroller.CheckForRecentRelease(DigitalInputs.Down)) {
         selectedEntry++;
 
         if (selectedEntry >= menuEntries.Count)
@@ -88,12 +88,14 @@ namespace PuzzlePathDimension {
       // If we pass a null controlling player, the InputState helper returns to
       // us which player actually provided the input. We pass that through to
       // OnSelectEntry and OnCancel, so they can tell which player triggered them.
-      PlayerIndex playerIndex;
 
-      if (input.IsMenuSelect(ControllingPlayer, out playerIndex)) {
-        OnSelectEntry(selectedEntry, playerIndex);
-      } else if (input.IsMenuCancel(ControllingPlayer, out playerIndex)) {
-        OnCancel(playerIndex);
+      //PlayerIndex playerIndex;
+
+      if (vtroller.CheckForRecentRelease(DigitalInputs.Confirm)) {
+        OnSelectEntry(selectedEntry, PlayerIndex.One);
+      } else if (vtroller.CheckForRecentRelease(DigitalInputs.Back)) {
+        OnCancel(PlayerIndex.One);
+        Console.WriteLine("blah");
       }
     }
 

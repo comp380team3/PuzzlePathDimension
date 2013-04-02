@@ -6,12 +6,12 @@ using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
   public abstract class VirtualAdapter {
-    public abstract VirtualButtonState Confirm();
-    public abstract VirtualButtonState Back();
-    public abstract VirtualButtonState Up();
-    public abstract VirtualButtonState Down();
-    public abstract VirtualButtonState Left();
-    public abstract VirtualButtonState Right();
+    public abstract DigitalButtonState Confirm();
+    public abstract DigitalButtonState Back();
+    public abstract DigitalButtonState Up();
+    public abstract DigitalButtonState Down();
+    public abstract DigitalButtonState Left();
+    public abstract DigitalButtonState Right();
 
     public abstract Point Point();
   }

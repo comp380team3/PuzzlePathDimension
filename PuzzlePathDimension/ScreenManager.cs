@@ -34,6 +34,7 @@ namespace PuzzlePathDimension {
     List<GameScreen> screensToUpdate = new List<GameScreen>();
 
     InputState input = new InputState();
+    VirtualController vtroller = new VirtualController(new KeyboardMouseAdapter());
 
     // The rendering device that all screens share.
     SpriteBatch spriteBatch;
@@ -140,7 +141,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public override void Update(GameTime gameTime) {
       // Read the keyboard and gamepad.
-      input.Update();
+      vtroller.Update();
 
       // Make a copy of the master screen list, to avoid confusion if
       // the process of updating one screen adds or removes others.
@@ -165,7 +166,7 @@ namespace PuzzlePathDimension {
           // If this is the first active screen we came across,
           // give it a chance to handle input.
           if (!otherScreenHasFocus) {
-            screen.HandleInput(input);
+            screen.HandleInput(vtroller);
             otherScreenHasFocus = true;
           }
 
