@@ -10,7 +10,7 @@ namespace PuzzlePathDimension {
   /// The KeyboardMouseAdapter maps keyboard and mouse input to the input types
   /// expected by the VirtualController.
   /// </summary>
-  public class KeyboardMouseAdapter : VirtualAdapter {
+  public class KeyboardMouseAdapter : IVirtualAdapter {
     public KeyboardMouseAdapter() { }
 
     /// <summary>

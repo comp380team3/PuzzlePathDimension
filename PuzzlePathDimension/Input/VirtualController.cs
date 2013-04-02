@@ -103,7 +103,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The adapter that is currently being used to send input to the VirtualController object.
     /// </summary>
-    private VirtualAdapter _activeAdapter;
+    private IVirtualAdapter _activeAdapter;
 
     /// <summary>
     /// Gets the state of the Confirm button.
@@ -165,7 +165,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Gets or sets the current adapter.
     /// </summary>
-    public VirtualAdapter Adapter {
+    public IVirtualAdapter Adapter {
       get { return _activeAdapter; }
       set { _activeAdapter = value; }
     }
@@ -175,7 +175,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="adapter">The VirtualAdapter object that will send input to the 
     /// VirtualController.</param>
-    public VirtualController(VirtualAdapter adapter) {
+    public VirtualController(IVirtualAdapter adapter) {
       // Initialize the three arrays with as many spots as there are digital buttons.
       _currentState = new VirtualButtonState[DigitalInputsCount];
       _oldState = new VirtualButtonState[DigitalInputsCount];

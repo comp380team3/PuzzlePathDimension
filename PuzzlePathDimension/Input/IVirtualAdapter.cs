@@ -9,7 +9,7 @@ namespace PuzzlePathDimension {
   /// The VirtualAdapter interface and any classes that implement it map the input state 
   /// from an input device to input data that the VirtualController understands.
   /// </summary>
-  public interface VirtualAdapter {
+  public interface IVirtualAdapter {
     /// <summary>
     /// The equivalent of the Confirm input is defined here.
     /// </summary>
