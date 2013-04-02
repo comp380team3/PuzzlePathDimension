@@ -68,7 +68,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
       // Move to the previous menu entry?
-      if (vtroller.CheckForRecentRelease(DigitalInputs.Up)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
         selectedEntry--;
 
         if (selectedEntry < 0)
@@ -76,7 +76,7 @@ namespace PuzzlePathDimension {
       }
 
       // Move to the next menu entry?
-      if (vtroller.CheckForRecentRelease(DigitalInputs.Down)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
         selectedEntry++;
 
         if (selectedEntry >= menuEntries.Count)
@@ -91,9 +91,9 @@ namespace PuzzlePathDimension {
 
       //PlayerIndex playerIndex;
 
-      if (vtroller.CheckForRecentRelease(DigitalInputs.Confirm)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         OnSelectEntry(selectedEntry, PlayerIndex.One);
-      } else if (vtroller.CheckForRecentRelease(DigitalInputs.Back)) {
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         OnCancel(PlayerIndex.One);
         Console.WriteLine("blah");
       }

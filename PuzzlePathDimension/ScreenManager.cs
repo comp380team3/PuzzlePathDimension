@@ -33,7 +33,9 @@ namespace PuzzlePathDimension {
     //   during the update process, and removed screens shouldn't be updated.
     List<GameScreen> screensToUpdate = new List<GameScreen>();
 
-    InputState input = new InputState();
+    /// <summary>
+    /// The VirtualController object that provides input to the Screen objects.
+    /// </summary>
     VirtualController vtroller = new VirtualController(new KeyboardMouseAdapter());
 
     // The rendering device that all screens share.

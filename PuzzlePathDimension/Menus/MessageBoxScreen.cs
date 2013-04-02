@@ -94,13 +94,13 @@ namespace PuzzlePathDimension {
       // controlling player, the InputState helper returns to us which player
       // actually provided the input. We pass that through to our Accepted and
       // Cancelled events, so they can tell which player triggered them.
-      if (vtroller.CheckForRecentRelease(DigitalInputs.Confirm)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         // Raise the accepted event, then exit the message box.
         if (Accepted != null)
           Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
         ExitScreen();
-      } else if (vtroller.CheckForRecentRelease(DigitalInputs.Back)) {
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         // Raise the cancelled event, then exit the message box.
         if (Cancelled != null)
           Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
