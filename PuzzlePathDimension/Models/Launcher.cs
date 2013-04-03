@@ -11,6 +11,10 @@ namespace PuzzlePathDimension {
   /// </summary>
   class Launcher {
     // TODO: add height and width values for the launcher
+    /// <summary>
+    /// The hard-coded length of the launcher.
+    /// </summary>
+    private int _length = 80;
 
     /// <summary>
     /// The texture that the launcher will be drawn with.
@@ -41,6 +45,11 @@ namespace PuzzlePathDimension {
     /// The angle that the launcher is pointing at.
     /// </summary>
     private float _angle;
+
+    /// <summary>
+    /// The magnitude that the ball will be launched with.
+    /// </summary>
+    private float _magnitude;
 
     /// <summary>
     /// Gets the position of the launcher.
@@ -74,10 +83,14 @@ namespace PuzzlePathDimension {
       _active = false;
       _ball = null;
 
+      // TODO: add texture dimensions check
+
       // Initialize the angle and calculate the initial position of the tip.
       _angle = (float)Math.PI / 4; // 45 degrees
       _tip = new Vector2();
       CalculateNewTip();
+
+      _magnitude = 10f;
     }
 
     /// <summary>
@@ -117,6 +130,29 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Adjusts the magnitude of the force that the ball will be launched with. Only
+    /// works if the launcher is active.
+    /// </summary>
+    /// <param name="delta">The value to adjust the magnitude by.</param>
+    public void AdjustMagnitude(float delta) {
+      if (!_active) {
+        return;
+      }
+
+      // Adjust the magnitude
+      _magnitude += delta;
+
+      // Bounds checking
+      if (_magnitude < 5f) {
+        _magnitude = 5f;
+      } else if (_magnitude > 15f) {
+        _magnitude = 15f;
+      }
+      // TODO: give actual feedback to the user.
+      Console.WriteLine("Launcher strength: " + _magnitude);
+    }
+
+    /// <summary>
     /// Loads a ball into the launcher.
     /// </summary>
     /// <param name="ball">The ball that will be eventually launched.</param>
@@ -142,9 +178,9 @@ namespace PuzzlePathDimension {
       // Stop the player from moving the launcher.
       _active = false;
 
-      // Calculate the velocity of the ball based on the launcher's angle.
-      float xVelocity = 10f * (float) Math.Cos(-1 * _angle);
-      float yVelocity = 10f * (float) Math.Sin(-1 * _angle);
+      // Calculate the velocity of the ball based on the launcher's angle and magnitude.
+      float xVelocity = _magnitude * (float) Math.Cos(-1 * _angle);
+      float yVelocity = _magnitude * (float) Math.Sin(-1 * _angle);
       _ball.Launch(xVelocity, yVelocity);
 
       // The launcher no longer owns the ball.

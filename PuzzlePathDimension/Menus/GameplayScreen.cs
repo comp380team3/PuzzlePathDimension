@@ -120,6 +120,10 @@ namespace PuzzlePathDimension {
         launcher.AdjustAngle((float)Math.PI / 64);
       } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Up)) {
+        launcher.AdjustMagnitude(0.25f);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Down)) {
+        launcher.AdjustMagnitude(-0.25f);
       }
 
       // TODO: remove this test code
