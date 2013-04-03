@@ -34,6 +34,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     private bool _active;
 
+    private bool _breakable;
+
     /// <summary>
     /// Gets the position, which is the upper-left corner, of the platform.
     /// </summary>
@@ -77,6 +79,10 @@ namespace PuzzlePathDimension {
       set { _active = value; }
     }
 
+    public bool Breakable {
+      get { return _breakable; }
+    }
+
     /// <summary>
     /// Gets the texture's color data.
     /// </summary>
@@ -93,7 +99,7 @@ namespace PuzzlePathDimension {
     /// <param name="texture">The texture to use for the platform.</param>
     /// <param name="origin">The position of the upper-left corner of the vector in pixel coordinates. </param>
     /// <param name="length">The length of the platform, in pixels, in both directions.</param>
-    public void Initialize(Texture2D texture, Vector2 origin, Vector2 length) {
+    public void Initialize(Texture2D texture, Vector2 origin, Vector2 length, bool breakable) {
       // Complain if something's wrong.
       if (texture == null || origin == null || length == null) {
         throw new ArgumentNullException("Please don't pass in a null value :( -Jorenz");
@@ -108,6 +114,7 @@ namespace PuzzlePathDimension {
       // Routine stuff.
       _texture = texture;
       _active = true;
+      _breakable = breakable;
 
       // Get the texture's color data, which is used for per-pixel collision
       _colorData = new Color[_texture.Width * _texture.Height];
@@ -136,7 +143,9 @@ namespace PuzzlePathDimension {
       Vector2 scale = new Vector2(Width / 20, Height / 20);
 
       // Draw it!
-      spriteBatch.Draw(_texture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      if (_active) {
+        spriteBatch.Draw(_texture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      }
     }
 
     /// <summary>

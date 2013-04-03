@@ -116,11 +116,11 @@ namespace PuzzlePathDimension {
       PlayerIndex temp;
 
       // Route user input to the approproate action
-      if (input.IsNewKeyPress(Keys.Space, null, out temp)) {
-        if (!ball.Active && simulation.Attempts > 0) {
+      if (input.IsNewKeyPress(Keys.Space, null, out temp) && simulation.Attempts > 0) {
+        if (!ball.Active) {
           launcher.LaunchBall();
         }
-        // Stops the current attempt
+        // Stops the current attempt unless the ball hit the goal already
         else if (!simulation.Completed) {
           SubtractAttempt();
         }
@@ -139,9 +139,11 @@ namespace PuzzlePathDimension {
         Console.WriteLine(launcher);
       } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
         Console.WriteLine(ball);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.R)) {
-        if (!launcher.Active) { // Some crude restart mechanism
-          simulation.Restart();
+      } else if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
+        Console.WriteLine("Completely restarted.");
+        simulation.Restart();
+
+        if (!launcher.Active) {
           ball.Stop();
           launcher.LoadBall(ball);
         }
@@ -282,16 +284,20 @@ namespace PuzzlePathDimension {
             platform.Width,
             platform.Height);
 
-        IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
+        bool collision = false;
+
+        if (platform.Active) {
+          collision = IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
+        }
+        if (collision && platform.Breakable) {
+          platform.Active = false;
+        }
       }
 
       // I'm using rectangle collision for testing purposes; please replace this! - Jorenz
       foreach (Treasure treasure in simulation.Treasures) {
-        Rectangle treasureRect = new Rectangle(
-          (int)treasure.Position.X,
-          (int)treasure.Position.Y,
-          treasure.Width,
-          treasure.Height);
+        Rectangle treasureRect = new Rectangle( (int)treasure.Position.X, (int)treasure.Position.Y,
+          treasure.Width, treasure.Height);
 
         if (treasureRect.Intersects(ballRectangle)){
           treasure.Collect();
@@ -299,28 +305,33 @@ namespace PuzzlePathDimension {
       }
 
       foreach (DeathTrap deathTrap in simulation.DeathTraps) {
-        Rectangle trapRect = new Rectangle(
-          (int)deathTrap.Position.X,
-          (int)deathTrap.Position.Y,
-          deathTrap.Width,
-          deathTrap.Height);
+        Rectangle trapRect = new Rectangle((int)deathTrap.Position.X, (int)deathTrap.Position.Y,
+          deathTrap.Width, deathTrap.Height);
 
+        // Don't check if the player already ran out of balls, or else the attempts will
+        // go into the negatives.
         if (trapRect.Intersects(ballRectangle) && simulation.Attempts > 0) {
           SubtractAttempt();
         }
       }
 
       Goal goal = simulation.Goal;
-      Rectangle goalRect = new Rectangle(
-        (int)goal.Position.X,
-        (int)goal.Position.Y,
-        goal.Width,
-        goal.Height);
+      Rectangle goalRect = new Rectangle((int)goal.Position.X, (int)goal.Position.Y,
+        goal.Width, goal.Height);
 
       if (goalRect.Intersects(ballRectangle) && !simulation.Completed) {
         ball.Stop();
         simulation.Completed = true;
         Console.WriteLine("You win!");
+
+        int treasures = 0;
+        foreach (Treasure treasure in simulation.Treasures) {
+          // Count every treasure that was collected.
+          if (!treasure.Active) {
+            treasures++;
+          }
+        }
+        Console.WriteLine("Treasures obtained: " + treasures + "/" + simulation.Treasures.Count);
       }
     }
   #endregion
@@ -330,8 +341,12 @@ namespace PuzzlePathDimension {
       Console.WriteLine("Attempts left: " + simulation.Attempts);
       simulation.Ball.Stop();
 
+      // Don't load a new ball if the player ran out of balls
       if (simulation.Attempts > 0) {
         simulation.Launcher.LoadBall(simulation.Ball);
+      }
+      else {
+        Console.WriteLine("You lose!");
       }
     }
   }

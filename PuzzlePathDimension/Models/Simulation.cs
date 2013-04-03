@@ -45,6 +45,10 @@ namespace PuzzlePathDimension {
       Attempts = 3;
       Completed = false;
 
+      foreach (Platform platform in Platforms) {
+        platform.Active = true;
+      }
+
       foreach (Treasure treasure in Treasures) {
         treasure.Active = true;
       }

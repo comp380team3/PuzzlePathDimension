@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <level name="Test Level">
-  <platform x="100" y="100" width="400" length="40" />
-  <platform x="400" y="400" width="200" length="160" />
+  <platform breakable="false" x="100" y="100" width="400" length="40" />
+  <platform breakable="false" x="400" y="400" width="200" length="160" />
+  <platform breakable="true" x="540" y="20" width="40" length="200" />
   <treasure x="200" y="300" />
   <treasure x="700" y="100" />
   <deathtrap x="100" y="500" />
