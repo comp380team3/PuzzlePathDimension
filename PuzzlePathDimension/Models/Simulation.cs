@@ -19,6 +19,7 @@ namespace PuzzlePathDimension {
     public Goal Goal { get; set; }
     public Launcher Launcher { get; set; }
     public int Attempts { get; set; }
+    public bool Completed { get; set; }
 
     public Texture2D Background { get; set; }
 
@@ -33,6 +34,7 @@ namespace PuzzlePathDimension {
       Launcher = level.Launcher;
       // Hard-coded for now
       Attempts = 3;
+      Completed = false;
     }
 
     /// <summary>
@@ -41,6 +43,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void Restart() {
       Attempts = 3;
+      Completed = false;
 
       foreach (Treasure treasure in Treasures) {
         treasure.Active = true;

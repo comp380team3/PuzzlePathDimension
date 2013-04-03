@@ -121,7 +121,7 @@ namespace PuzzlePathDimension {
           launcher.LaunchBall();
         }
         // Stops the current attempt
-        else {
+        else if (!simulation.Completed) {
           SubtractAttempt();
         }
       } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
@@ -305,9 +305,22 @@ namespace PuzzlePathDimension {
           deathTrap.Width,
           deathTrap.Height);
 
-        if (trapRect.Intersects(ballRectangle)) {
-
+        if (trapRect.Intersects(ballRectangle) && simulation.Attempts > 0) {
+          SubtractAttempt();
         }
+      }
+
+      Goal goal = simulation.Goal;
+      Rectangle goalRect = new Rectangle(
+        (int)goal.Position.X,
+        (int)goal.Position.Y,
+        goal.Width,
+        goal.Height);
+
+      if (goalRect.Intersects(ballRectangle) && !simulation.Completed) {
+        ball.Stop();
+        simulation.Completed = true;
+        Console.WriteLine("You win!");
       }
     }
   #endregion
