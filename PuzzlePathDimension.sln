@@ -4,18 +4,44 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimension", "Puzz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimensionContent", "PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj", "{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathUnitTests", "PuzzlePathUnitTests\PuzzlePathUnitTests.csproj", "{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Debug|x86.ActiveCfg = Debug|x86
 		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Debug|x86.Build.0 = Debug|x86
+		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Release|Any CPU.ActiveCfg = Release|x86
+		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Release|Mixed Platforms.Build.0 = Release|x86
 		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Release|x86.ActiveCfg = Release|x86
 		{577F58B7-7D36-43D8-9B8A-4DBEDA268DA1}.Release|x86.Build.0 = Release|x86
+		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Debug|x86.ActiveCfg = Debug|x86
+		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Release|Any CPU.ActiveCfg = Release|x86
+		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Release|x86.ActiveCfg = Release|x86
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

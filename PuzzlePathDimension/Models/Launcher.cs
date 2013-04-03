@@ -9,7 +9,12 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// The Launcher class represents the level's launcher.
   /// </summary>
-  class Launcher {
+  public class Launcher {
+    /// <summary>
+    /// The hard-coded length of the launcher.
+    /// </summary>
+    private const int _length = 80;
+
     /// <summary>
     /// The texture that the launcher will be drawn with.
     /// </summary>
@@ -169,8 +174,8 @@ namespace PuzzlePathDimension {
        * I think that helps you and my future self figure out what's going on here :p 
        * After all, who knows if we have to change this later? -Jorenz
        */
-      _tip.X = (float)(_texture.Width * Math.Cos(_angle) + _position.X);
-      _tip.Y = (float)(_texture.Width * Math.Sin(-1 * _angle) + _position.Y);
+      _tip.X = (float)(_length * Math.Cos(_angle) + _position.X);
+      _tip.Y = (float)(_length * Math.Sin(-1 * _angle) + _position.Y);
     }
 
     /// <summary>
