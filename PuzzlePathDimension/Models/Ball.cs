@@ -8,7 +8,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 
 namespace PuzzlePathDimension {
-  class Ball {
+  public class Ball {
     /// <summary>
     /// The texture that the ball uses.
     /// </summary>
