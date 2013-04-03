@@ -26,6 +26,7 @@ namespace PuzzlePathDimension {
   #region Fields
     ContentManager content;
     Simulation simulation;
+    Vector2 playerPosition = new Vector2(100, 100);
 
     float pauseAlpha;
   #endregion
@@ -110,6 +111,20 @@ namespace PuzzlePathDimension {
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;
 
+      KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
+      GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
+
+      // The game pauses either if the user presses the pause button, or if
+      // they unplug the active gamepad. This requires us to keep track of
+      // whether a gamepad was ever plugged in, because we don't want to pause
+      // on PC if they are playing with a keyboard and have no gamepad at all!
+      bool gamePadDisconnected = !gamePadState.IsConnected &&
+                                 input.GamePadWasConnected[playerIndex];
+
+      if (input.IsPauseGame(ControllingPlayer) || gamePadDisconnected) {
+        ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+      } 
+
       Launcher launcher = simulation.Launcher;
       Ball ball = simulation.Ball;
 
@@ -137,13 +152,6 @@ namespace PuzzlePathDimension {
       MouseState mouse = Mouse.GetState();
       if (mouse.LeftButton == ButtonState.Pressed) {
         Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
-      }
-
-      //Check to see if the Player one controller has pressed the "B" button, if so, then
-      //call the screen event associated with this screen
-      if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
-        ExitScreen();
-        ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
     }
 
