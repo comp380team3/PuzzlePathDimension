@@ -18,6 +18,7 @@ namespace PuzzlePathDimension {
     public List<DeathTrap> DeathTraps { get; set; }
     public Goal Goal { get; set; }
     public Launcher Launcher { get; set; }
+    public int Attempts { get; set; }
 
     public Texture2D Background { get; set; }
 
@@ -30,6 +31,8 @@ namespace PuzzlePathDimension {
       DeathTraps = new List<DeathTrap>(level.DeathTraps);
       Goal = level.Goal;
       Launcher = level.Launcher;
+      // Hard-coded for now
+      Attempts = 3;
     }
 
     /// <summary>
@@ -37,6 +40,8 @@ namespace PuzzlePathDimension {
     /// copy of the List objects.)
     /// </summary>
     public void Restart() {
+      Attempts = 3;
+
       foreach (Treasure treasure in Treasures) {
         treasure.Active = true;
       }

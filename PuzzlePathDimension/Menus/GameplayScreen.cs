@@ -113,9 +113,17 @@ namespace PuzzlePathDimension {
       Launcher launcher = simulation.Launcher;
       Ball ball = simulation.Ball;
 
+      PlayerIndex temp;
+
       // Route user input to the approproate action
-      if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
-        launcher.LaunchBall();
+      if (input.IsNewKeyPress(Keys.Space, null, out temp)) {
+        if (!ball.Active && simulation.Attempts > 0) {
+          launcher.LaunchBall();
+        }
+        // Stops the current attempt
+        else {
+          SubtractAttempt();
+        }
       } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
       } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
@@ -297,10 +305,21 @@ namespace PuzzlePathDimension {
           deathTrap.Width,
           deathTrap.Height);
 
-        if (trapRect.Intersects(ballRectangle)){
-          
+        if (trapRect.Intersects(ballRectangle)) {
+
         }
+      }
     }
   #endregion
+
+    private void SubtractAttempt() {
+      simulation.Attempts -= 1;
+      Console.WriteLine("Attempts left: " + simulation.Attempts);
+      simulation.Ball.Stop();
+
+      if (simulation.Attempts > 0) {
+        simulation.Launcher.LoadBall(simulation.Ball);
+      }
+    }
   }
 }

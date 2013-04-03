@@ -158,7 +158,7 @@ namespace PuzzlePathDimension {
     /// <param name="ball">The ball that will be eventually launched.</param>
     public void LoadBall(Ball newBall) {
       if (_ball != null) {
-        throw new InvalidOperationException("There is already a ball that is ready to be launched.");
+         throw new InvalidOperationException("There is already a ball that is ready to be launched.");
       }
 
       // The launcher now contains the ball, and the user can now aim it.
@@ -207,8 +207,8 @@ namespace PuzzlePathDimension {
        * I think that helps you and my future self figure out what's going on here :p 
        * After all, who knows if we have to change this later? -Jorenz
        */
-      _tip.X = (float)(_texture.Width * Math.Cos(_angle) + _position.X);
-      _tip.Y = (float)(_texture.Width * Math.Sin(-1 * _angle) + _position.Y);
+      _tip.X = (float)(_length * Math.Cos(_angle) + _position.X);
+      _tip.Y = (float)(_length * Math.Sin(-1 * _angle) + _position.Y);
     }
 
     /// <summary>
