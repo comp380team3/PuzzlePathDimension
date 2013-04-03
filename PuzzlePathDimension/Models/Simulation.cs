@@ -26,6 +26,8 @@ namespace PuzzlePathDimension {
       // If gameplay may modify properties of platforms (or the goal,
       // or the launcher), a deep copy is necessary instead.
       Platforms = new List<Platform>(level.Platforms);
+      Treasures = new List<Treasure>(level.Treasures);
+      DeathTraps = new List<DeathTrap>(level.DeathTraps);
       Goal = level.Goal;
       Launcher = level.Launcher;
     }

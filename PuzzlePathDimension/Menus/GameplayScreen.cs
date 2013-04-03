@@ -170,6 +170,14 @@ namespace PuzzlePathDimension {
       foreach (Platform platform in simulation.Platforms) {
         platform.Draw(spriteBatch);
       }
+      // Draw the treasures on the canvas
+      foreach (Treasure treasure in simulation.Treasures) {
+        treasure.Draw(spriteBatch);
+      }
+      // Draw the death traps on the canvas
+      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
+        deathTrap.Draw(spriteBatch);
+      }
 
       // Draw the ball onto the canvas
       simulation.Ball.Draw(spriteBatch);
