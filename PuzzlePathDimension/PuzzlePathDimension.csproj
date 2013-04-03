@@ -63,17 +63,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerPhysicsXNA">
-      <HintPath>..\..\..\..\Desktop\PhsyicsTest\PhsycisTest\PhsycisTest\PhsycisTest\bin\x86\Debug\FarseerPhysicsXNA.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib" />
-    <Reference Include="nunit.framework">
-      <HintPath>.\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -81,17 +75,39 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ball.cs" />
-    <Compile Include="Goal.cs" />
-    <Compile Include="Launcher.cs" />
-    <Compile Include="ControllerDetectScreen.cs" />
-    <Compile Include="GameScreen.cs" />
-    <Compile Include="Platform.cs" />
+    <Compile Include="Input\KeyboardMouseAdapter.cs" />
+    <Compile Include="Input\IVirtualAdapter.cs" />
+    <Compile Include="Input\VirtualController.cs" />
+    <Compile Include="Models\Level.cs" />
+    <Compile Include="LevelLoader.cs" />
+    <Compile Include="Models\Ball.cs" />
+    <Compile Include="Models\Goal.cs" />
+    <Compile Include="Models\Launcher.cs" />
+    <Compile Include="Models\Platform.cs" />
+    <Compile Include="Models\Simulation.cs" />
+    <Compile Include="Menus\BackgroundScreen.cs" />
+    <Compile Include="Menus\CreditsMenuScreen.cs" />
+    <Compile Include="Menus\GameplayScreen.cs" />
+    <Compile Include="Menus\GameScreen.cs" />
+    <Compile Include="Menus\HowToPlayScreen1.cs" />
+    <Compile Include="Menus\HowToPlayScreen2.cs" />
+    <Compile Include="Menus\HowToPlayScreen3.cs" />
+    <Compile Include="Menus\InputState.cs" />
+    <Compile Include="Menus\LoadingScreen.cs" />
+    <Compile Include="Menus\MainMenuScreen.cs" />
+    <Compile Include="Menus\MenuEntry.cs" />
+    <Compile Include="Menus\MenuScreen.cs" />
+    <Compile Include="Menus\MessageBoxScreen.cs" />
+    <Compile Include="Menus\OptionsMenuScreen.cs" />
+    <Compile Include="Menus\PauseMenuScreen.cs" />
+    <Compile Include="Menus\PlayerIndexEventArgs.cs" />
+    <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Screen.cs" />
-    <Compile Include="TitleScreen.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="View.cs" />
+    <Compile Include="Views\SimulationView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -100,6 +116,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Farseer Physics Engine 3.3 XNA\Farseer Physics XNA.csproj">
+      <Project>{0A850700-1ABB-4288-A391-6726B90EBEB9}</Project>
+      <Name>Farseer Physics XNA</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj">
       <Name>PuzzlePathDimensionContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
@@ -131,6 +151,9 @@
       <ProductName>Microsoft XNA Framework Redistributable 4.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameStates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
