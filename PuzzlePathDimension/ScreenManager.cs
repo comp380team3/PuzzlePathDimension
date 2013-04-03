@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 #endregion
 
 namespace PuzzlePathDimension {
@@ -144,6 +145,15 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime) {
       // Read the keyboard and gamepad.
       vtroller.Update();
+
+      // TODO: replace this debug code, which switches the adapter
+      if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)) {
+        vtroller.Adapter = new KeyboardMouseAdapter();
+        Console.WriteLine("Changed to keyboard+mouse adapter.");
+      } else if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start)) {
+        vtroller.Adapter = new Xbox360ControllerAdapter();
+        Console.WriteLine("Changed to Xbox 360 controller adapter.");
+      }
 
       // Make a copy of the master screen list, to avoid confusion if
       // the process of updating one screen adds or removes others.

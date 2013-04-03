@@ -127,7 +127,7 @@ namespace PuzzlePathDimension {
         Console.WriteLine(launcher);
       } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
         Console.WriteLine(ball);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.R)) {
+      } else if (Keyboard.GetState().IsKeyDown(Keys.R) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
         if (!launcher.Active) { // Some crude restart mechanism
           ball.Stop();
           launcher.LoadBall(ball);
