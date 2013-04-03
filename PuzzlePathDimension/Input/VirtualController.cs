@@ -159,7 +159,7 @@ namespace PuzzlePathDimension {
     /// and the current frame.
     /// </summary>
     public bool PointMoved {
-      get { return _currentPointState.Equals(_oldPointState); }
+      get { return !_currentPointState.Equals(_oldPointState); }
     }
 
     /// <summary>
