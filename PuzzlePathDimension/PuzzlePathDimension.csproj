@@ -68,9 +68,6 @@
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib" />
-    <Reference Include="nunit.framework">
-      <HintPath>.\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -78,6 +75,9 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Input\KeyboardMouseAdapter.cs" />
+    <Compile Include="Input\IVirtualAdapter.cs" />
+    <Compile Include="Input\VirtualController.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Models\Ball.cs" />

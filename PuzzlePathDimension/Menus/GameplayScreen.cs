@@ -103,9 +103,9 @@ namespace PuzzlePathDimension {
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
     /// </summary>
-    public override void HandleInput(InputState input) {
-      if (input == null)
-        throw new ArgumentNullException("input");
+    public override void HandleInput(VirtualController vtroller) {
+      /*if (input == null)
+        throw new ArgumentNullException("input");*/
 
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;
@@ -114,11 +114,11 @@ namespace PuzzlePathDimension {
       Ball ball = simulation.Ball;
 
       // Route user input to the approproate action
-      if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         launcher.LaunchBall();
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
+      } else if (vtroller.Left == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
+      } else if (vtroller.Right == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)-Math.PI / 64);
       }
 
@@ -141,7 +141,7 @@ namespace PuzzlePathDimension {
 
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
-      if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ExitScreen();
         ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
