@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\KeyboardMouseAdapter.cs" />
-    <Compile Include="Input\VirtualAdapter.cs" />
+    <Compile Include="Input\IVirtualAdapter.cs" />
     <Compile Include="Input\VirtualController.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
