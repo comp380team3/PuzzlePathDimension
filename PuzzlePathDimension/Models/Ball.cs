@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class Ball {
+  public class Ball {
     /// <summary>
     /// The texture that the ball uses.
     /// </summary>

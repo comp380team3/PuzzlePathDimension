@@ -104,13 +104,13 @@ namespace PuzzlePathDimension {
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
     /// </summary>
-    public override void HandleInput(InputState input) {
-      if (input == null)
-        throw new ArgumentNullException("input");
+    public override void HandleInput(VirtualController vtroller) {
+      /*if (input == null)
+        throw new ArgumentNullException("input");*/
 
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;
-
+      /*
       KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
       GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
 
@@ -120,8 +120,8 @@ namespace PuzzlePathDimension {
       // on PC if they are playing with a keyboard and have no gamepad at all!
       bool gamePadDisconnected = !gamePadState.IsConnected &&
                                  input.GamePadWasConnected[playerIndex];
-
-      if (input.IsPauseGame(ControllingPlayer) || gamePadDisconnected) {
+      */
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)/*|| gamePadDisconnected*/) {
         ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       } 
 
@@ -129,11 +129,11 @@ namespace PuzzlePathDimension {
       Ball ball = simulation.Ball;
 
       // Route user input to the approproate action
-      if (Keyboard.GetState().IsKeyDown(Keys.Space)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         launcher.LaunchBall();
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
+      } else if (vtroller.Left == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
+      } else if (vtroller.Right == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)-Math.PI / 64);
       }
 
@@ -152,7 +152,17 @@ namespace PuzzlePathDimension {
       MouseState mouse = Mouse.GetState();
       if (mouse.LeftButton == ButtonState.Pressed) {
         Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
+      }/*
+<<<<<<< HEAD
+=======
+
+      //Check to see if the Player one controller has pressed the "B" button, if so, then
+      //call the screen event associated with this screen
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        ExitScreen();
+        ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
+>>>>>>> origin/master*/
     }
 
     /// <summary>
