@@ -133,6 +133,7 @@ namespace PuzzlePathDimension {
         Console.WriteLine(ball);
       } else if (Keyboard.GetState().IsKeyDown(Keys.R)) {
         if (!launcher.Active) { // Some crude restart mechanism
+          simulation.Restart();
           ball.Stop();
           launcher.LoadBall(ball);
         }
@@ -275,6 +276,30 @@ namespace PuzzlePathDimension {
 
         IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
       }
+
+      // I'm using rectangle collision for testing purposes; please replace this! - Jorenz
+      foreach (Treasure treasure in simulation.Treasures) {
+        Rectangle treasureRect = new Rectangle(
+          (int)treasure.Position.X,
+          (int)treasure.Position.Y,
+          treasure.Width,
+          treasure.Height);
+
+        if (treasureRect.Intersects(ballRectangle)){
+          treasure.Collect();
+        }
+      }
+
+      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
+        Rectangle trapRect = new Rectangle(
+          (int)deathTrap.Position.X,
+          (int)deathTrap.Position.Y,
+          deathTrap.Width,
+          deathTrap.Height);
+
+        if (trapRect.Intersects(ballRectangle)){
+          
+        }
     }
   #endregion
   }

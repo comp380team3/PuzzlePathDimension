@@ -31,5 +31,15 @@ namespace PuzzlePathDimension {
       Goal = level.Goal;
       Launcher = level.Launcher;
     }
+
+    /// <summary>
+    /// Restarts the simulation phase. (This might not be needed if we make a deep
+    /// copy of the List objects.)
+    /// </summary>
+    public void Restart() {
+      foreach (Treasure treasure in Treasures) {
+        treasure.Active = true;
+      }
+    }
   }
 }

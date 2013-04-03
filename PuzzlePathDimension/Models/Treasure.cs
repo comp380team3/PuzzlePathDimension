@@ -61,10 +61,11 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Gets whether the ball is active.
+    /// Gets or sets whether the treasure is active.
     /// </summary>
     public bool Active {
       get { return _active; }
+      set { _active = value; }
     }
 
     /// <summary>

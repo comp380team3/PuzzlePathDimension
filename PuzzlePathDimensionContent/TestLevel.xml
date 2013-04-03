@@ -3,6 +3,7 @@
   <platform x="100" y="100" width="400" length="40" />
   <platform x="400" y="400" width="200" length="160" />
   <treasure x="200" y="300" />
+  <treasure x="700" y="100" />
   <deathtrap x="100" y="500" />
   <goal x="200" y="10" />
   <launcher x="680" y="580" />
