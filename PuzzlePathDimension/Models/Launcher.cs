@@ -15,6 +15,26 @@ namespace PuzzlePathDimension {
     /// </summary>
     private const int _length = 80;
 
+    // TODO: add height and width for collision purposes in the editor.
+    // It'll probably be a width of 200 and a height of 100.
+
+    /// <summary>
+    /// The minimum velocity that the ball will be launched with.
+    /// </summary>
+    private const float _minVelocity = 5f;
+    /// <summary>
+    /// The maximum velocity that the ball will be launched with.
+    /// </summary>
+    private const float _maxVelocity = 15f;
+    /// <summary>
+    /// The minimum angle that the launcher can face.
+    /// </summary>
+    private const float _minAngle = 0f;
+    /// <summary>
+    /// The maximum angle that the launcher can face.
+    /// </summary>
+    private const float _maxAngle = (float)Math.PI;
+
     /// <summary>
     /// The texture that the launcher will be drawn with.
     /// </summary>
@@ -72,24 +92,36 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets the magnitude that the ball will be launched with.
+    /// </summary>
+    public float Magnitude {
+      get { return _magnitude; }
+    }
+
+    /// <summary>
     /// Constructs a Launcher object.
     /// </summary>
     /// <param name="texture">The texture that the launcher will be drawn with.</param>
     /// <param name="position">The position of the launcher.</param>
     public Launcher(Texture2D texture, Vector2 position) {
+      // Set the texture.
       _texture = texture;
-      _position = position;
-      _movable = false;
-      _ball = null;
 
       // TODO: add texture dimensions check
 
-      // Initialize the angle and calculate the initial position of the tip.
+      // Set the launcher's position.
+      _position = position;
+
+      // At first, the launcher will be empty, and the launcher is only movable
+      // when there's a ball in it.
+      _movable = false;
+      _ball = null;
+
+      // Initialize the angle and magnitude, and calculate the initial position of the tip.
       _angle = (float)Math.PI / 4; // 45 degrees
+      _magnitude = 10f;
       _tip = new Vector2();
       CalculateNewTip();
-
-      _magnitude = 10f;
     }
 
     [Obsolete("This doesn't do anything anymore. Use the constructor! -Jorenz", true)]
@@ -122,10 +154,10 @@ namespace PuzzlePathDimension {
 
       // Bounds checking
       // TODO: prevent shooting the ball off the map if the launcher is placed in a corner
-      if (_angle < 0f) {
-        _angle = 0f;
-      } else if (_angle > Math.PI) { // 180 degrees
-        _angle = (float)Math.PI;
+      if (_angle < _minAngle) {
+        _angle = _minAngle;
+      } else if (_angle > _maxAngle) {
+        _angle = (float)_maxAngle;
       }
 
       // Calculate the new position of the launcher's tip.
@@ -146,10 +178,10 @@ namespace PuzzlePathDimension {
       _magnitude += delta;
 
       // Bounds checking
-      if (_magnitude < 5f) {
-        _magnitude = 5f;
-      } else if (_magnitude > 15f) {
-        _magnitude = 15f;
+      if (_magnitude < _minVelocity) {
+        _magnitude = _minVelocity;
+      } else if (_magnitude > _maxVelocity) {
+        _magnitude = _maxVelocity;
       }
       // TODO: give actual feedback to the user.
       Console.WriteLine("Launcher strength: " + _magnitude);
@@ -173,7 +205,7 @@ namespace PuzzlePathDimension {
     /// Launches the ball in the launcher.
     /// </summary>
     public void LaunchBall() {
-      // Don't do anything if no ball is being launched.
+      // Don't do anything if no ball is in the launcher.
       if (!_movable) {
         return;
       }
