@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using NUnit.Framework;
 using PuzzlePathDimension;
 
@@ -12,7 +7,7 @@ namespace PuzzlePathUnitTests {
   /// <summary>
   /// The LauncherTest class tests the functionality of the launcher.
   /// </summary>
-  [TestFixture]
+  [TestFixture, Description("Tests the functionality of the launcher.")]
   public class LauncherTest {
     /// <summary>
     /// The starting angle of the launcher.
