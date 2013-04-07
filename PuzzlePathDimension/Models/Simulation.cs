@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   class Simulation {
@@ -11,6 +12,8 @@ namespace PuzzlePathDimension {
     /// The height of the playing field.
     /// </summary>
     public static readonly int FieldHeight = 600;
+
+    private World _world;
 
     public Ball Ball { get; set; }
     public List<Platform> Platforms { get; set; }

@@ -10,15 +10,15 @@ using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   /// <summary>
-  ///   Provides methods for deserializing Levels from XML files.
+  /// Provides methods for deserializing Levels from XML files.
   /// </summary>
   static class LevelLoader {
     /// <summary>
-    ///   Load an XML file from disk, retrieving textures through Content
-    ///   as necessary.
+    /// Load an XML file from disk, retrieving textures through Content
+    /// as necessary.
     /// </summary>
     /// <param name="filename">Path to the file</param>
-    /// <param name="Content">Resource manger to load from</param>
+    /// <param name="Content">Resource manager to load from</param>
     /// <returns>A deserialized level</returns>
     public static Level Load(string filename, ContentManager Content, World world) {
       XmlDocument doc = new XmlDocument();
@@ -63,7 +63,7 @@ namespace PuzzlePathDimension {
         platform.Initialize(Content.Load<Texture2D>("platform_new"), position, size, false);
       }*/
 
-      Platform platform = new Platform(world, Content.Load<Texture2D>("platform_new"), size, 1, position);
+      Platform platform = new Platform(world, Content.Load<Texture2D>("platform_new"), size, position);
       //platform.Initialize(Content.Load<Texture2D>("platform_new"), position, size);
 
       return platform;

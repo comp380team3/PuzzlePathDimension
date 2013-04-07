@@ -54,7 +54,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public override void LoadContent() {
       // Create a new ContentManager so that all level data is flushed
-      //   from the cache after the level ends.
+      // from the cache after the level ends.
       if (content == null)
         content = new ContentManager(ScreenManager.Game.Services, "Content");
 
@@ -99,11 +99,11 @@ namespace PuzzlePathDimension {
       if (!IsActive)
         return;
 
-      // Update the state of the physics simulation
-      world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-
       // Update the launcher's state
       simulation.Launcher.Update();
+
+      // Update the state of the physics simulation
+      world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
     }
 
     /// <summary>
@@ -223,14 +223,8 @@ namespace PuzzlePathDimension {
 
       simulation.Background = content.Load<Texture2D>("GameScreen");
 
-      // Add a ball to the level
-/*<<<<<<< HEAD
-      Ball ball = new Ball();
-      Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(content.Load<Texture2D>("ball_new"), ballPos);
-=======*/
       Texture2D texture2 = content.Load<Texture2D>("ball_new");
-      Ball ball = new Ball(world, texture2, new Vector2(texture2.Width, texture2.Height), 1);
+      Ball ball = new Ball(world, texture2);
       CreateBox(content);
 
       simulation.Ball = ball;
@@ -374,10 +368,10 @@ namespace PuzzlePathDimension {
 
       // The -5 offset is there because I prefer a 5-pixel thick wall, not a 10-pixel thick one. - Jorenz
       // It would probably be best to define some constants...
-      Platform top = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), 1, new Vector2(0, -5));
-      Platform bottom = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), 1, new Vector2(0, 595));
-      Platform left = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), 1, new Vector2(-5, 0));
-      Platform right = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), 1, new Vector2(795, 0));
+      Platform top = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, -5));
+      Platform bottom = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, 595));
+      Platform left = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(-5, 0));
+      Platform right = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(795, 0));
 
       walls.Add(top);
       walls.Add(bottom);

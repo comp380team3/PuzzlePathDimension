@@ -23,6 +23,8 @@ namespace PuzzlePathDimension {
     /// The texture that the ball will be drawn with.
     /// </summary>
     private Texture2D _texture;
+
+
     private Vector2 _origin;
 
     /// <summary>
@@ -36,18 +38,15 @@ namespace PuzzlePathDimension {
      * Brian's Physics stuff*
      * *********************/
 
-    public const float unitToPixel = 100.0f;
-    public const float pixelToUnit = 1 / unitToPixel;
-
     public Body body;
-    public Vector2 Position {
-      get { return body.Position * unitToPixel; }
-      set { body.Position = value * pixelToUnit; }
+    public Vector2 Center {
+      get { return UnitConverter.ToPixels(body.Position); }
+      set { body.Position = UnitConverter.ToMeters(value); }
     }
-    private Vector2 size;
+    private Vector2 _size;
     public Vector2 Size {
-      get { return size * unitToPixel; }
-      set { size = value * pixelToUnit; }
+      get { return UnitConverter.ToPixels(_size); }
+      set { _size = UnitConverter.ToMeters(value); }
     }
 
     /// <summary>
@@ -64,14 +63,14 @@ namespace PuzzlePathDimension {
       get { return _width; }
     }
 
-    public Ball(World world, Texture2D texture, Vector2 size, float mass) {
-      body = BodyFactory.CreateCircle(world, pixelToUnit * (texture.Width / 2), 1);
+    public Ball(World world, Texture2D texture) {
+      body = BodyFactory.CreateCircle(world, UnitConverter.ToMeters(_width / 2), 1);
       body.BodyType = BodyType.Static;
-      _origin = new Vector2((texture.Width / 2.0f), (texture.Height / 2.0f));
+      _origin = new Vector2((_width / 2.0f), (_height / 2.0f));
       body.Restitution = .8f;
       body.Inertia = 0f;
       body.Friction = 0f;
-      this.Size = size;
+      this.Size = _size;
       this._texture = texture;
     }
 
@@ -96,8 +95,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
-      spriteBatch.Draw(_texture, Position, null, Color.White, 0f, _origin, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, _origin, 1f, SpriteEffects.None, 0f);
     }
   }
 }

@@ -108,6 +108,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="UnitConverter.cs" />
     <Compile Include="View.cs" />
     <Compile Include="Views\SimulationView.cs" />
   </ItemGroup>

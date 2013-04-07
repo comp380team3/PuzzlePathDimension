@@ -27,18 +27,19 @@ namespace PuzzlePathDimension {
     /************************
      * Brian's Physics stuff*
      * *********************/
-    public const float unitToPixel = 100.0f;
-    public const float pixelToUnit = 1 / unitToPixel;
-  
     public Body body;
-    public Vector2 Position {
-      get { return body.Position * unitToPixel; }
-      set { body.Position = value * pixelToUnit; }
+
+    /// <summary>
+    /// Gets or sets the center of the platform.
+    /// </summary>
+    public Vector2 Center {
+      get { return UnitConverter.ToPixels(body.Position); }
+      set { body.Position = UnitConverter.ToMeters(value); }
     }
     private Vector2 size;
     public Vector2 Size {
-      get { return size * unitToPixel; }
-      set { size = value * pixelToUnit; }
+      get { return UnitConverter.ToPixels(size); }
+      set { size = UnitConverter.ToMeters(value); }
     }
 
     /// <summary>
@@ -49,24 +50,28 @@ namespace PuzzlePathDimension {
       set { _active = value; }
     }
 
+    /// <summary>
+    /// Gets whether the platform is breakable.
+    /// </summary>
     public bool Breakable {
       get { return _breakable; }
     }
 
-    public Platform(World world, Texture2D texture, Vector2 size, float mass, Vector2 position) {
+    public Platform(World world, Texture2D texture, Vector2 size, Vector2 position) {
       // Get the center of the rectangle, which the physics engine needs.
       Vector2 center = new Vector2();
       center.X = position.X + (size.X / 2.0f);
       center.Y = position.Y + (size.Y / 2.0f);
 
-      body = BodyFactory.CreateRectangle(world, size.X * pixelToUnit, size.Y * pixelToUnit, 1);
+      body = BodyFactory.CreateRectangle(world, UnitConverter.ToMeters(size.X), 
+        UnitConverter.ToMeters(size.Y), 1);
       body.BodyType = BodyType.Static;
       body.Friction = 0f;
       body.Restitution = .8f;
       // This Position field is actually body.Position, which is expected to be the center, 
       // and not the upper left corner of the platform. Perhaps we can rewrite parts of the class 
       // to make this distinction clearer? - Jorenz
-      Position = center; 
+      Center = center; 
       this.Size = size;
       this._texture = texture;
     }
@@ -80,12 +85,13 @@ namespace PuzzlePathDimension {
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
       // Get the upper-left corner of the rectangle.
-      Vector2 drawPos = new Vector2(Position.X - (Size.X / 2.0f), Position.Y - (Size.Y / 2.0f));
+      // Vector2 drawPos = new Vector2(Center.X - (Size.X / 2.0f), Center.Y - (Size.Y / 2.0f));
 
       // Scale the texture to the appropriate size.
       Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
       // Draw it!
-      spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      // TODO: replace hard-coded origin
+      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, new Vector2(10, 10), scale, SpriteEffects.None, 0f);
     }
 
     /// <summary>
