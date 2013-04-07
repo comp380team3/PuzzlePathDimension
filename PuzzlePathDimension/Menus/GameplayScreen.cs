@@ -14,6 +14,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using FarseerPhysics.Dynamics;
+using System.Collections.Generic;
 #endregion
 
 namespace PuzzlePathDimension {
@@ -28,6 +30,12 @@ namespace PuzzlePathDimension {
     Simulation simulation;
 
     float pauseAlpha;
+
+    World world;
+    public const float unitToPixel = 100.0f;
+    public const float pixelToUnit = 1 / unitToPixel;
+
+    List<Platform> walls;
   #endregion
 
   #region Initialization
@@ -37,6 +45,8 @@ namespace PuzzlePathDimension {
     public GameplayScreen() {
       TransitionOnTime = TimeSpan.FromSeconds(1.5);
       TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+      world = new World(new Vector2(0, 9.8f));
     }
 
     /// <summary>
@@ -89,44 +99,36 @@ namespace PuzzlePathDimension {
       if (!IsActive)
         return;
 
+      // Update the state of the physics simulation
+      world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
+
       // Update the launcher's state
       simulation.Launcher.Update();
-
-      // Update the balls position
-      simulation.Ball.Update();
-
-      // Update the collision
-      UpdateCollision();
     }
 
     /// <summary>
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
     /// </summary>
-    public override void HandleInput(InputState input) {
-      if (input == null)
-        throw new ArgumentNullException("input");
-
+    public override void HandleInput(VirtualController vtroller) {
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;
 
       Launcher launcher = simulation.Launcher;
       Ball ball = simulation.Ball;
 
-      PlayerIndex temp;
-
       // Route user input to the approproate action
-      if (input.IsNewKeyPress(Keys.Space, null, out temp) && simulation.Attempts > 0) {
-        if (!ball.Active) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm) && simulation.Attempts > 0) {
+        if (launcher.Active) {
           launcher.LaunchBall();
         }
         // Stops the current attempt unless the ball hit the goal already
         else if (!simulation.Completed) {
           SubtractAttempt();
         }
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Left)) {
+      } else if (vtroller.Left == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Right)) {
+      } else if (vtroller.Right == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)-Math.PI / 64);
       } else if (Keyboard.GetState().IsKeyDown(Keys.Up)) {
         launcher.AdjustMagnitude(0.25f);
@@ -156,7 +158,7 @@ namespace PuzzlePathDimension {
 
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
-      if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.B) == true) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ExitScreen();
         ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
@@ -190,6 +192,11 @@ namespace PuzzlePathDimension {
         deathTrap.Draw(spriteBatch);
       }
 
+      // Draw the walls
+      foreach (Platform wall in walls) {
+        wall.Draw(spriteBatch);
+      }
+
       // Draw the ball onto the canvas
       simulation.Ball.Draw(spriteBatch);
 
@@ -212,14 +219,20 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content));
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content, world));
 
       simulation.Background = content.Load<Texture2D>("GameScreen");
 
       // Add a ball to the level
+/*<<<<<<< HEAD
       Ball ball = new Ball();
       Vector2 ballPos = new Vector2(400f, 300f);
       ball.Initialize(content.Load<Texture2D>("ball_new"), ballPos);
+=======*/
+      Texture2D texture2 = content.Load<Texture2D>("ball_new");
+      Ball ball = new Ball(world, texture2, new Vector2(texture2.Width, texture2.Height), 1);
+      CreateBox(content);
+
       simulation.Ball = ball;
 
       // Load the ball into the launcher
@@ -229,7 +242,7 @@ namespace PuzzlePathDimension {
     }
   #endregion
 
-  #region Collision Detection
+  /*#region Collision Detection
     private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
       Ball ball = simulation.Ball;
 
@@ -334,7 +347,7 @@ namespace PuzzlePathDimension {
         Console.WriteLine("Treasures obtained: " + treasures + "/" + simulation.Treasures.Count);
       }
     }
-  #endregion
+  #endregion*/
 
     private void SubtractAttempt() {
       simulation.Attempts -= 1;
@@ -348,6 +361,28 @@ namespace PuzzlePathDimension {
       else {
         Console.WriteLine("You lose!");
       }
+    }
+
+    /// <summary>
+    /// Creates the level perimeter.
+    /// </summary>
+    /// <param name="theContent">The ContentManager that will be used to load the wall textures.</param>
+    private void CreateBox(ContentManager theContent) {
+      walls = new List<Platform>();
+      Texture2D topBottom = theContent.Load<Texture2D>("TopBottom");
+      Texture2D sideWall = theContent.Load<Texture2D>("SideWall");
+
+      // The -5 offset is there because I prefer a 5-pixel thick wall, not a 10-pixel thick one. - Jorenz
+      // It would probably be best to define some constants...
+      Platform top = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), 1, new Vector2(0, -5));
+      Platform bottom = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), 1, new Vector2(0, 595));
+      Platform left = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), 1, new Vector2(-5, 0));
+      Platform right = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), 1, new Vector2(795, 0));
+
+      walls.Add(top);
+      walls.Add(bottom);
+      walls.Add(left);
+      walls.Add(right);
     }
   }
 }

@@ -9,12 +9,11 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// The Launcher class represents the level's launcher.
   /// </summary>
-  class Launcher {
-    // TODO: add height and width values for the launcher
+  public class Launcher {
     /// <summary>
     /// The hard-coded length of the launcher.
     /// </summary>
-    private int _length = 80;
+    private const int _length = 80;
 
     /// <summary>
     /// The texture that the launcher will be drawn with.

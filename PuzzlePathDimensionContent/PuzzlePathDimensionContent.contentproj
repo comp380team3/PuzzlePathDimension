@@ -170,13 +170,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="deathtrap.png">
-      <Name>deathtrap</Name>
+    <Compile Include="SideWall.png">
+      <Name>SideWall</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="treasure.png">
-      <Name>treasure</Name>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TopBottom.png">
+      <Name>TopBottom</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="deathtrap.png">
+      <Name>deathtrap</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -184,6 +193,13 @@
   <ItemGroup>
     <Compile Include="platform_breakable.png">
       <Name>platform_breakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="treasure.png">
+      <Name>treasure</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

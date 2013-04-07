@@ -6,6 +6,7 @@ using System.Xml;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -19,18 +20,18 @@ namespace PuzzlePathDimension {
     /// <param name="filename">Path to the file</param>
     /// <param name="Content">Resource manger to load from</param>
     /// <returns>A deserialized level</returns>
-    public static Level Load(string filename, ContentManager Content) {
+    public static Level Load(string filename, ContentManager Content, World world) {
       XmlDocument doc = new XmlDocument();
       doc.Load(filename);
 
-      return LoadLevel(doc, Content);
+      return LoadLevel(doc, Content, world);
     }
 
-    private static Level LoadLevel(XmlDocument doc, ContentManager Content) {
+    private static Level LoadLevel(XmlDocument doc, ContentManager Content, World world) {
       Level level = new Level();
 
       foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
-        level.Platforms.Add(LoadPlatform(node, Content));
+        level.Platforms.Add(LoadPlatform(node, Content, world));
       }
       foreach (XmlElement node in doc.GetElementsByTagName("treasure")) {
         level.Treasures.Add(LoadTreasure(node, Content));
@@ -45,7 +46,7 @@ namespace PuzzlePathDimension {
       return level;
     }
 
-    private static Platform LoadPlatform(XmlElement node, ContentManager Content) {
+    private static Platform LoadPlatform(XmlElement node, ContentManager Content, World world) {
       Vector2 position = new Vector2();
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
@@ -54,13 +55,16 @@ namespace PuzzlePathDimension {
       size.X = Convert.ToInt16(node.Attributes["width"].Value);
       size.Y = Convert.ToInt16(node.Attributes["length"].Value);
 
-      Platform platform = new Platform();
+      /*Platform platform = new Platform();
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
       if (breakable) {
         platform.Initialize(Content.Load<Texture2D>("platform_breakable"), position, size, true);
       } else {
         platform.Initialize(Content.Load<Texture2D>("platform_new"), position, size, false);
-      }
+      }*/
+
+      Platform platform = new Platform(world, Content.Load<Texture2D>("platform_new"), size, 1, position);
+      //platform.Initialize(Content.Load<Texture2D>("platform_new"), position, size);
 
       return platform;
     }

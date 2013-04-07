@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Factories;
+using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -16,59 +18,27 @@ namespace PuzzlePathDimension {
     private Texture2D _texture;
 
     /// <summary>
-    /// The texture's color data.
-    /// </summary>
-    private Color[] _colorData;
-
-    /// <summary>
-    /// The pixel coordinates of the upper left corner of the platform.
-    /// </summary>
-    private Vector2 _upperLeftCorner;
-    /// <summary>
-    /// The pixel coordinates of the lower right corner of the platform.
-    /// </summary>
-    private Vector2 _lowerRightCorner;
-
-    /// <summary>
     /// Whether the platform is active.
     /// </summary>
     private bool _active;
 
     private bool _breakable;
 
-    /// <summary>
-    /// Gets the position, which is the upper-left corner, of the platform.
-    /// </summary>
+    /************************
+     * Brian's Physics stuff*
+     * *********************/
+    public const float unitToPixel = 100.0f;
+    public const float pixelToUnit = 1 / unitToPixel;
+  
+    public Body body;
     public Vector2 Position {
-      get { return _upperLeftCorner; }
+      get { return body.Position * unitToPixel; }
+      set { body.Position = value * pixelToUnit; }
     }
-
-    /// <summary>
-    /// Gets the pixel coordinates of the upper-left corner of the platform.
-    /// </summary>
-    public Vector2 UpperLeftCorner {
-      get { return _upperLeftCorner; }
-    }
-
-    /// <summary>
-    /// Gets the pixel coordinates of the lower-right corner of the platform.
-    /// </summary>
-    public Vector2 LowerRightCorner {
-      get { return _lowerRightCorner; }
-    }
-
-    /// <summary>
-    /// Gets the height of the platform in pixels.
-    /// </summary>
-    public int Height {
-      get { return (int)Math.Abs(_upperLeftCorner.Y - _lowerRightCorner.Y); }
-    }
-
-    /// <summary>
-    /// Gets the width of the platform in pixels.
-    /// </summary>
-    public int Width {
-      get { return (int)Math.Abs(_upperLeftCorner.X - _lowerRightCorner.X); }
+    private Vector2 size;
+    public Vector2 Size {
+      get { return size * unitToPixel; }
+      set { size = value * pixelToUnit; }
     }
 
     /// <summary>
@@ -83,69 +53,39 @@ namespace PuzzlePathDimension {
       get { return _breakable; }
     }
 
-    /// <summary>
-    /// Gets the texture's color data.
-    /// </summary>
-    /// <returns>The texture's color data as an array.</returns>
-    public Color[] GetColorData() {
-      // See http://msdn.microsoft.com/en-us/library/0fss9skc.aspx for why
-      // this is not a property.
-      return (Color[])_colorData.Clone();
+    public Platform(World world, Texture2D texture, Vector2 size, float mass, Vector2 position) {
+      // Get the center of the rectangle, which the physics engine needs.
+      Vector2 center = new Vector2();
+      center.X = position.X + (size.X / 2.0f);
+      center.Y = position.Y + (size.Y / 2.0f);
+
+      body = BodyFactory.CreateRectangle(world, size.X * pixelToUnit, size.Y * pixelToUnit, 1);
+      body.BodyType = BodyType.Static;
+      body.Friction = 0f;
+      body.Restitution = .8f;
+      // This Position field is actually body.Position, which is expected to be the center, 
+      // and not the upper left corner of the platform. Perhaps we can rewrite parts of the class 
+      // to make this distinction clearer? - Jorenz
+      Position = center; 
+      this.Size = size;
+      this._texture = texture;
     }
-
-    /// <summary>
-    /// Initializes a platform.
-    /// </summary>
-    /// <param name="texture">The texture to use for the platform.</param>
-    /// <param name="origin">The position of the upper-left corner of the vector in pixel coordinates. </param>
-    /// <param name="length">The length of the platform, in pixels, in both directions.</param>
-    public void Initialize(Texture2D texture, Vector2 origin, Vector2 length, bool breakable) {
-      // Complain if something's wrong.
-      if (texture == null || origin == null || length == null) {
-        throw new ArgumentNullException("Please don't pass in a null value :( -Jorenz");
-      } else if (!InBounds(origin)) {
-        throw new ArgumentOutOfRangeException("The origin of the platform must be in bounds.");
-      } else if (length.X < 1 * Game1.GridSize) { // You can't have a platform of length 0.
-        throw new ArgumentOutOfRangeException("Please check the Vector2's X value; it must be at least 20.");
-      } else if (length.Y < 1 * Game1.GridSize) {
-        throw new ArgumentOutOfRangeException("Please check the Vector2's Y value; it must be at least 20.");
-      }
-
-      // Routine stuff.
-      _texture = texture;
-      _active = true;
-      _breakable = breakable;
-
-      // Get the texture's color data, which is used for per-pixel collision
-      _colorData = new Color[_texture.Width * _texture.Height];
-      _texture.GetData<Color>(_colorData);
-
-      // The upper left corner is easy to figure out.
-      _upperLeftCorner = origin;
-      // For the lower right corner, the length needs to be added.
-      _lowerRightCorner = _upperLeftCorner + length;
-
-      // TODO: Clip platform sizes to the 20x20 grid.
-    }
-
-    /// <summary>
-    /// Updates the platform's state.
-    /// </summary>
-    public void Update() {
-    }
+    /*****************************
+     * Brian's Physics stuff ends*
+     * **************************/
 
     /// <summary>
     /// Draws the platform to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      // Scale the texture appropriately to the platform's size.
-      Vector2 scale = new Vector2(Width / 20, Height / 20);
+      // Get the upper-left corner of the rectangle.
+      Vector2 drawPos = new Vector2(Position.X - (Size.X / 2.0f), Position.Y - (Size.Y / 2.0f));
 
+      // Scale the texture to the appropriate size.
+      Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
       // Draw it!
-      if (_active) {
-        spriteBatch.Draw(_texture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-      }
+      spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
     }
 
     /// <summary>
