@@ -35,10 +35,20 @@ namespace PuzzlePathDimension {
       return meters * MeterToPixelRatio;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pixels"></param>
+    /// <returns></returns>
     public static Vector2 ToMeters(Vector2 pixels) {
       return pixels * PixelToMeterRatio;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="meters"></param>
+    /// <returns></returns>
     public static Vector2 ToPixels(Vector2 meters) {
       return meters * MeterToPixelRatio;
     }

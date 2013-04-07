@@ -34,6 +34,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Vector2 Origin {
       get { return _origin; }
+      set {
+        _origin = value;
+        _center = CalculateCenter();
+
+        if (_body != null) {
+          _body.Position = UnitConverter.ToMeters(_center);
+        }
+      }
     }
 
     /************************
@@ -46,29 +54,34 @@ namespace PuzzlePathDimension {
     private Body _body;
 
     /// <summary>
-    /// Gets or sets the center of the platform, in pixels.
+    /// The center of the platform, in pixels.
+    /// </summary>
+    private Vector2 _center;
+
+    /// <summary>
+    /// Gets the center of the platform, in pixels.
     /// </summary>
     public Vector2 Center {
-      get { return UnitConverter.ToPixels(_body.Position); }
-      set { _body.Position = UnitConverter.ToMeters(value); }
+      get { return _center; }
     }
 
     /// <summary>
     /// The size of the platform, in pixels.
     /// </summary>
-    private Vector2 _pixelSize;
-
-    /// <summary>
-    /// The size of the platform, in meters.
-    /// </summary>
-    private Vector2 _meterSize;
+    private Vector2 _size;
 
     /// <summary>
     /// Gets or sets the size of the platform, in pixels.
     /// </summary>
     public Vector2 Size {
-      get { return UnitConverter.ToPixels(_meterSize); }
-      set { _meterSize = UnitConverter.ToMeters(value); }
+      get { return _size; }
+      set { 
+        _size = value;
+
+        if (_body != null) {
+          // TODO: replace the Body's fixture
+        }
+      }
     }
 
     /// <summary>
@@ -86,10 +99,17 @@ namespace PuzzlePathDimension {
       get { return _breakable; }
     }
 
-    public Platform(Texture2D texture, Vector2 size, Vector2 position, bool breakable) {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="texture"></param>
+    /// <param name="position"></param>
+    /// <param name="size"></param>
+    /// <param name="breakable"></param>
+    public Platform(Texture2D texture, Vector2 position, Vector2 size, bool breakable) {
       _origin = position;
-      _pixelSize = size;
-      _meterSize = UnitConverter.ToMeters(size);
+      _size = size;
+      _center = CalculateCenter();
 
       _texture = texture;
       _visible = true;
@@ -99,22 +119,33 @@ namespace PuzzlePathDimension {
       _body = null;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    private Vector2 CalculateCenter() {
+      Vector2 center = new Vector2();
+      center.X = _origin.X + (_size.X / 2.0f);
+      center.Y = _origin.Y + (_size.Y / 2.0f);
+      return center;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="world"></param>
     public void InitBody(World world) {
       if (_body != null) {
         // TODO: throw an exception
         Console.WriteLine("There is already a Body object for this platform.");
       }
 
-      _body = BodyFactory.CreateRectangle(world, _meterSize.X, _meterSize.Y, 1);
+      Vector2 meterSize = UnitConverter.ToMeters(_size);
+
+      _body = BodyFactory.CreateRectangle(world, meterSize.X, meterSize.Y, 1);
+      _body.Position = UnitConverter.ToMeters(_center);
       _body.BodyType = BodyType.Static;
       _body.Friction = 0f;
       _body.Restitution = .8f;
-
-      Vector2 center = new Vector2();
-      center.X = _origin.X + (_pixelSize.X / 2.0f);
-      center.Y = _origin.Y + (_pixelSize.Y / 2.0f);
-
-      _body.Position = UnitConverter.ToMeters(center);
     }
 
     /*****************************

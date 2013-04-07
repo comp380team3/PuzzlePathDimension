@@ -24,9 +24,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     private Texture2D _texture;
 
-
-    private Vector2 _center;
-
     /// <summary>
     /// Gets the texture that the ball will be drawn with.
     /// </summary>
@@ -38,10 +35,13 @@ namespace PuzzlePathDimension {
      * Brian's Physics stuff*
      * *********************/
 
+    /// <summary>
+    /// The Body that represents the ball in the physics simulation.
+    /// </summary>
     private Body _body;
 
     /// <summary>
-    /// Gets or sets the center of the ball.
+    /// Gets or sets the center of the ball, which is its current position, in pixels.
     /// </summary>
     public Vector2 Center {
       get { return UnitConverter.ToPixels(_body.Position); }
@@ -75,7 +75,6 @@ namespace PuzzlePathDimension {
 
       _body = BodyFactory.CreateCircle(world, UnitConverter.ToMeters(_width / 2), 1);
       _body.BodyType = BodyType.Static;
-      _center = new Vector2((_width / 2.0f), (_height / 2.0f));
       _body.Restitution = .8f;
       _body.Inertia = 0f;
       _body.Friction = 0f;
@@ -101,7 +100,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, _center, 1f, SpriteEffects.None, 0f);
+      // Draw the ball, using the center as the origin.
+      Vector2 center = new Vector2((_width / 2.0f), (_height / 2.0f));
+
+      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, center, 1f, SpriteEffects.None, 0f);
     }
   }
 }

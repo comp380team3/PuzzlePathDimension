@@ -60,11 +60,17 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Create the walls for the level.
+    /// </summary>
     private void CreateWalls() {
+      // Convert everything we need to meters first.
       float wallThickness = UnitConverter.ToMeters(10f);
       float fieldWidthMeters = UnitConverter.ToMeters(FieldWidth);
       float fieldHeightMeters = UnitConverter.ToMeters(FieldHeight);
 
+      // Remember that the physics engine treats the center as the position of the Body,
+      // so get the midpoint of the wall and use that as the position.
       Body left = BodyFactory.CreateRectangle(_world, wallThickness, fieldHeightMeters, 1);
       left.Position = new Vector2(0, fieldHeightMeters / 2);
 

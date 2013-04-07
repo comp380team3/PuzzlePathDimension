@@ -23,11 +23,11 @@ namespace PuzzlePathUnitTests {
     /// <summary>
     /// The lowest valid angle for the launcher.
     /// </summary>
-    private const float lowerBound = 0f;
+    private const float lowestAngle = 0f;
     /// <summary>
     /// The highest valid angle for the launcher.
     /// </summary>
-    private const float upperBound = (float)Math.PI;
+    private const float highestAngle = (float)Math.PI;
 
     /// <summary>
     /// This method is called before running each of these tests.
@@ -51,18 +51,18 @@ namespace PuzzlePathUnitTests {
     /// This test checks if the launcher's angle is adjusted properly.
     /// </summary>
     [Test, Description("Checks if the launcher's angle is adjusted correctly.")]
-    public void CheckAdjustAngle([Values((float) -Math.PI / 16, 0, (float) Math.PI / 16)] float moveStep) {
+    public void CheckAdjustAngle([Values((float)-Math.PI / 16, 0, (float)Math.PI / 16)] float moveStep) {
       // Create a launcher with a ball in it.
       Launcher launcher = CreateLauncher(true);
 
       // Actually move the launcher.
       launcher.AdjustAngle(moveStep);
 
-      // For floating point numbers, NUnit has a setting known as 
-      // GlobalSettings.DefaultFloatingPointTolerance that it uses when comparing floating
-      // point numbers, which takes into account the precision problems that floating point
-      // numbers often have.
-      // -------------------
+      /* For floating point numbers, NUnit has a setting known as 
+       * GlobalSettings.DefaultFloatingPointTolerance that it uses when comparing floating
+       * point numbers, which takes into account the precision problems that floating point
+       * numbers often have. */
+
       // Meanwhile, test to see that we get the expected result.
       float expectedResult = initialAngle + moveStep;
       Console.WriteLine("Comparing " + launcher.Angle + " to " + expectedResult);
@@ -73,34 +73,34 @@ namespace PuzzlePathUnitTests {
     /// This test checks if the launcher's angle is kept between 0 and 180 degrees.
     /// </summary>
     [Test, Description("Checks if the launcher's angle stays between 0 and 180 degrees.")]
-    public void CheckBounds() {
+    public void CheckAngleBounds() {
       // Create a launcher with a ball in it.
       Launcher launcher = CreateLauncher(true);
 
       // Move the launcher by a really large value.
       launcher.AdjustAngle(-10000000f);
 
-      // For floating point numbers, NUnit has a setting known as 
-      // GlobalSettings.DefaultFloatingPointTolerance that it uses when comparing floating
-      // point numbers, which takes into account the precision problems that floating point
-      // numbers often have.
-      // -------------------
+      /* For floating point numbers, NUnit has a setting known as 
+       * GlobalSettings.DefaultFloatingPointTolerance that it uses when comparing floating
+       * point numbers, which takes into account the precision problems that floating point
+       * numbers often have. */
+
       // Meanwhile, test to see that the launcher hasn't went below 0 degrees.
-      Assert.GreaterOrEqual(lowerBound, launcher.Angle);
+      Assert.GreaterOrEqual(lowestAngle, launcher.Angle);
 
       // Move the launcher the other way.
       launcher.AdjustAngle(10000000f);
 
       // Test to see that the luancher hasn't went above 180 degrees.
-      Assert.LessOrEqual(upperBound, launcher.Angle);
+      Assert.LessOrEqual(highestAngle, launcher.Angle);
     }
 
     /// <summary>
     /// This test checks if the Launcher class throws exceptions when given garbage position vectors,
     /// and it also checks if the Launcher class does not throw any false exceptions.
     /// </summary>
-    [Test, Description("Checks to see if the Launcher class validates its input.")]
-    public void ValidateInput() {
+    [Test, Description("Checks to see if the Launcher class validates its input for the position argument.")]
+    public void ValidatePosition() {
       Assert.Catch<ArgumentException>(GarbageInput);
       Assert.DoesNotThrow(OkayInput);
     }
@@ -109,16 +109,14 @@ namespace PuzzlePathUnitTests {
     /// Creates a launcher and passes in bad coordinates for its position.
     /// </summary>
     private void GarbageInput() {
-      Launcher launcher = new Launcher();
-      launcher.Initialize(null, new Vector2(-1491471, -2523953));
+      Launcher launcher = new Launcher(null, new Vector2(-1491471, -2523953));
     }
 
     /// <summary>
     /// Creates a launcher with a valid position.
     /// </summary>
     private void OkayInput() {
-      Launcher launcher = new Launcher();
-      launcher.Initialize(null, new Vector2(200, 300));
+      Launcher launcher = new Launcher(null, new Vector2(200, 300));
     }
 
     /* Put more tests here */
@@ -129,14 +127,13 @@ namespace PuzzlePathUnitTests {
     /// <param name="createBall">Whether a ball should be loaded in the launcher.</param>
     /// <returns>A Launcher object.</returns>
     private Launcher CreateLauncher(bool createBall) {
-      // Create the launcher.
-      Launcher launcher = new Launcher();
+      // Create the launcher. 
       // We don't need a texture for unit tests, so pass in null for the texture parameter.
-      launcher.Initialize(null, new Vector2(0, 0));
+      Launcher launcher = new Launcher(null, new Vector2(0, 0));
 
       if (createBall) {
         // Give the launcher a ball; otherwise, it won't move.
-        Ball ball = new Ball();
+        Ball ball = new Ball(null);
         launcher.LoadBall(ball);
       }
 
