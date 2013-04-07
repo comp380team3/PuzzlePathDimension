@@ -30,12 +30,6 @@ namespace PuzzlePathDimension {
     Simulation simulation;
 
     float pauseAlpha;
-
-    World world;
-    public const float unitToPixel = 100.0f;
-    public const float pixelToUnit = 1 / unitToPixel;
-
-    List<Platform> walls;
   #endregion
 
   #region Initialization
@@ -45,8 +39,6 @@ namespace PuzzlePathDimension {
     public GameplayScreen() {
       TransitionOnTime = TimeSpan.FromSeconds(1.5);
       TransitionOffTime = TimeSpan.FromSeconds(0.5);
-
-      world = new World(new Vector2(0, 9.8f));
     }
 
     /// <summary>
@@ -102,8 +94,8 @@ namespace PuzzlePathDimension {
       // Update the launcher's state
       simulation.Launcher.Update();
 
-      // Update the state of the physics simulation
-      world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
+      // Update the simulation's state
+      simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
     }
 
     /// <summary>
@@ -119,7 +111,7 @@ namespace PuzzlePathDimension {
 
       // Route user input to the approproate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm) && simulation.Attempts > 0) {
-        if (launcher.Active) {
+        if (launcher.Movable) {
           launcher.LaunchBall();
         }
         // Stops the current attempt unless the ball hit the goal already
@@ -145,7 +137,7 @@ namespace PuzzlePathDimension {
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
 
-        if (!launcher.Active) {
+        if (!launcher.Movable) {
           ball.Stop();
           launcher.LoadBall(ball);
         }
@@ -176,6 +168,8 @@ namespace PuzzlePathDimension {
 
       spriteBatch.Draw(simulation.Background, Vector2.Zero, Color.White);
 
+      DrawWalls(spriteBatch);
+
       // Draw the goal on the canvas
       simulation.Goal.Draw(spriteBatch);
 
@@ -190,11 +184,6 @@ namespace PuzzlePathDimension {
       // Draw the death traps on the canvas
       foreach (DeathTrap deathTrap in simulation.DeathTraps) {
         deathTrap.Draw(spriteBatch);
-      }
-
-      // Draw the walls
-      foreach (Platform wall in walls) {
-        wall.Draw(spriteBatch);
       }
 
       // Draw the ball onto the canvas
@@ -212,6 +201,16 @@ namespace PuzzlePathDimension {
         ScreenManager.FadeBackBufferToBlack(alpha);
       }
     }
+
+    private void DrawWalls(SpriteBatch spriteBatch) {
+      Texture2D topBottom = content.Load<Texture2D>("TopBottom");
+      Texture2D sideWall = content.Load<Texture2D>("SideWall");
+
+      spriteBatch.Draw(topBottom, new Vector2(0, -5), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(topBottom, new Vector2(0, 595), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(sideWall, new Vector2(-5, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(sideWall, new Vector2(795, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+    }
   #endregion
 
   #region Test Level
@@ -219,17 +218,16 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content, world));
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content));
 
       simulation.Background = content.Load<Texture2D>("GameScreen");
 
-      Texture2D texture2 = content.Load<Texture2D>("ball_new");
-      Ball ball = new Ball(world, texture2);
-      CreateBox(content);
+      Texture2D ballTex = content.Load<Texture2D>("ball_new");
+      Ball ball = new Ball(ballTex);
+      ball.InitBody(simulation.World);
 
       simulation.Ball = ball;
 
-      // Load the ball into the launcher
       simulation.Launcher.LoadBall(ball);
 
       return simulation;
@@ -237,44 +235,6 @@ namespace PuzzlePathDimension {
   #endregion
 
   /*#region Collision Detection
-    private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
-      Ball ball = simulation.Ball;
-
-      // Check if the two objects are near each other.
-      // If they are not then return false for no intersection.
-      if (!rectangleA.Intersects(rectangleB)) {
-        return false;
-      }
-
-      // Find the bounds of the rectangle intersection
-      int top = Math.Max(rectangleA.Top, rectangleB.Top);
-      int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
-      int left = Math.Max(rectangleA.Left, rectangleB.Left);
-      int right = Math.Min(rectangleA.Right, rectangleB.Right);
-
-      // Check every point within the intersection bounds
-      for (int y = top; y < bottom; y++) {
-        for (int x = left; x < right; x++) {
-          // Get the color of both pixels at this point
-          //Console.WriteLine("Index to fetch: " + (((x - rectangleB.Left) + (y - rectangleB.Top) * rectangleB.Width) % 400));
-          Console.WriteLine("Length of dataB: " + dataB.Length);
-          Color colorA = dataA[((x - rectangleA.Left) +
-                               (y - rectangleA.Top) * rectangleA.Width) % dataA.Length];
-          Color colorB = dataB[((x - rectangleB.Left) +
-                               (y - rectangleB.Top) * rectangleB.Width) % dataB.Length]; // lol maybe?
-
-          // If both pixels are not completely transparent,
-          if (colorA.A != 0 && colorB.A != 0) {
-            if (y == top || y == bottom - 1)
-              ball.FlipYDirection();
-            if (x == left || x == right - 1)
-              ball.FlipXDirection();
-            // then an intersection has been found
-            return true;
-          }
-        }
-      }
-
       // No intersection found
       return false;
     }
@@ -361,22 +321,22 @@ namespace PuzzlePathDimension {
     /// Creates the level perimeter.
     /// </summary>
     /// <param name="theContent">The ContentManager that will be used to load the wall textures.</param>
-    private void CreateBox(ContentManager theContent) {
+    /*private void CreateBox(ContentManager theContent) {
       walls = new List<Platform>();
       Texture2D topBottom = theContent.Load<Texture2D>("TopBottom");
       Texture2D sideWall = theContent.Load<Texture2D>("SideWall");
 
       // The -5 offset is there because I prefer a 5-pixel thick wall, not a 10-pixel thick one. - Jorenz
       // It would probably be best to define some constants...
-      Platform top = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, -5));
-      Platform bottom = new Platform(world, topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, 595));
-      Platform left = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(-5, 0));
-      Platform right = new Platform(world, sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(795, 0));
+      Platform top = new Platform(topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, -5));
+      Platform bottom = new Platform(topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, 595));
+      Platform left = new Platform(sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(-5, 0));
+      Platform right = new Platform(sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(795, 0));
 
       walls.Add(top);
       walls.Add(bottom);
       walls.Add(left);
       walls.Add(right);
-    }
+    }*/
   }
 }

@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
+using FarseerPhysics.Factories;
 
 namespace PuzzlePathDimension {
   class Simulation {
@@ -14,6 +17,10 @@ namespace PuzzlePathDimension {
     public static readonly int FieldHeight = 600;
 
     private World _world;
+
+    public World World {
+      get { return _world; }
+    }
 
     public Ball Ball { get; set; }
     public List<Platform> Platforms { get; set; }
@@ -38,6 +45,41 @@ namespace PuzzlePathDimension {
       // Hard-coded for now
       Attempts = 3;
       Completed = false;
+
+      InitWorld();
+    }
+
+    private void InitWorld() {
+      Vector2 gravity = new Vector2(0f, 9.8f);
+      _world = new World(gravity);
+
+      CreateWalls();
+
+      foreach (Platform plat in Platforms) {
+        plat.InitBody(_world);
+      }
+    }
+
+    private void CreateWalls() {
+      float wallThickness = UnitConverter.ToMeters(10f);
+      float fieldWidthMeters = UnitConverter.ToMeters(FieldWidth);
+      float fieldHeightMeters = UnitConverter.ToMeters(FieldHeight);
+
+      Body left = BodyFactory.CreateRectangle(_world, wallThickness, fieldHeightMeters, 1);
+      left.Position = new Vector2(0, fieldHeightMeters / 2);
+
+      Body right = BodyFactory.CreateRectangle(_world, wallThickness, fieldHeightMeters, 1);
+      right.Position = new Vector2(fieldWidthMeters, fieldHeightMeters / 2);
+
+      Body top = BodyFactory.CreateRectangle(_world, fieldWidthMeters, wallThickness, 1);
+      top.Position = new Vector2(fieldWidthMeters / 2, 0);
+
+      Body bottom = BodyFactory.CreateRectangle(_world, fieldWidthMeters, wallThickness, 1);
+      bottom.Position = new Vector2(fieldWidthMeters / 2, fieldHeightMeters);
+    }
+
+    public void Step(float time) {
+      _world.Step(time);
     }
 
     /// <summary>
@@ -49,7 +91,7 @@ namespace PuzzlePathDimension {
       Completed = false;
 
       foreach (Platform platform in Platforms) {
-        platform.Active = true;
+        platform.Visible = true;
       }
 
       foreach (Treasure treasure in Treasures) {

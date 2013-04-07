@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using FarseerPhysics.Factories;
-using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -18,36 +15,68 @@ namespace PuzzlePathDimension {
     private Texture2D _texture;
 
     /// <summary>
-    /// Whether the platform is active.
+    /// Whether the platform is visible.
     /// </summary>
-    private bool _active;
+    private bool _visible;
 
+    /// <summary>
+    /// Whether the platform is breakable.
+    /// </summary>
     private bool _breakable;
+
+    /// <summary>
+    /// The upper-left corner of the platform, in pixels.
+    /// </summary>
+    private Vector2 _origin;
+
+    /// <summary>
+    /// Gets the upper-left corner of the platform, in pixels.
+    /// </summary>
+    public Vector2 Origin {
+      get { return _origin; }
+    }
 
     /************************
      * Brian's Physics stuff*
      * *********************/
-    public Body body;
 
     /// <summary>
-    /// Gets or sets the center of the platform.
+    /// The Body that represents this platform in the physics simulation.
+    /// </summary>
+    private Body _body;
+
+    /// <summary>
+    /// Gets or sets the center of the platform, in pixels.
     /// </summary>
     public Vector2 Center {
-      get { return UnitConverter.ToPixels(body.Position); }
-      set { body.Position = UnitConverter.ToMeters(value); }
-    }
-    private Vector2 size;
-    public Vector2 Size {
-      get { return UnitConverter.ToPixels(size); }
-      set { size = UnitConverter.ToMeters(value); }
+      get { return UnitConverter.ToPixels(_body.Position); }
+      set { _body.Position = UnitConverter.ToMeters(value); }
     }
 
     /// <summary>
-    /// Gets whether the platform is active.
+    /// The size of the platform, in pixels.
     /// </summary>
-    public bool Active {
-      get { return _active; }
-      set { _active = value; }
+    private Vector2 _pixelSize;
+
+    /// <summary>
+    /// The size of the platform, in meters.
+    /// </summary>
+    private Vector2 _meterSize;
+
+    /// <summary>
+    /// Gets or sets the size of the platform, in pixels.
+    /// </summary>
+    public Vector2 Size {
+      get { return UnitConverter.ToPixels(_meterSize); }
+      set { _meterSize = UnitConverter.ToMeters(value); }
+    }
+
+    /// <summary>
+    /// Gets whether the platform is visible.
+    /// </summary>
+    public bool Visible {
+      get { return _visible; }
+      set { _visible = value; }
     }
 
     /// <summary>
@@ -57,24 +86,37 @@ namespace PuzzlePathDimension {
       get { return _breakable; }
     }
 
-    public Platform(World world, Texture2D texture, Vector2 size, Vector2 position) {
-      // Get the center of the rectangle, which the physics engine needs.
-      Vector2 center = new Vector2();
-      center.X = position.X + (size.X / 2.0f);
-      center.Y = position.Y + (size.Y / 2.0f);
+    public Platform(Texture2D texture, Vector2 size, Vector2 position, bool breakable) {
+      _origin = position;
+      _pixelSize = size;
+      _meterSize = UnitConverter.ToMeters(size);
 
-      body = BodyFactory.CreateRectangle(world, UnitConverter.ToMeters(size.X), 
-        UnitConverter.ToMeters(size.Y), 1);
-      body.BodyType = BodyType.Static;
-      body.Friction = 0f;
-      body.Restitution = .8f;
-      // This Position field is actually body.Position, which is expected to be the center, 
-      // and not the upper left corner of the platform. Perhaps we can rewrite parts of the class 
-      // to make this distinction clearer? - Jorenz
-      Center = center; 
-      this.Size = size;
-      this._texture = texture;
+      _texture = texture;
+      _visible = true;
+
+      _breakable = breakable;
+
+      _body = null;
     }
+
+    public void InitBody(World world) {
+      if (_body != null) {
+        // TODO: throw an exception
+        Console.WriteLine("There is already a Body object for this platform.");
+      }
+
+      _body = BodyFactory.CreateRectangle(world, _meterSize.X, _meterSize.Y, 1);
+      _body.BodyType = BodyType.Static;
+      _body.Friction = 0f;
+      _body.Restitution = .8f;
+
+      Vector2 center = new Vector2();
+      center.X = _origin.X + (_pixelSize.X / 2.0f);
+      center.Y = _origin.Y + (_pixelSize.Y / 2.0f);
+
+      _body.Position = UnitConverter.ToMeters(center);
+    }
+
     /*****************************
      * Brian's Physics stuff ends*
      * **************************/
@@ -84,14 +126,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      // Get the upper-left corner of the rectangle.
-      // Vector2 drawPos = new Vector2(Center.X - (Size.X / 2.0f), Center.Y - (Size.Y / 2.0f));
-
-      // Scale the texture to the appropriate size.
-      Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
-      // Draw it!
-      // TODO: replace hard-coded origin
-      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, new Vector2(10, 10), scale, SpriteEffects.None, 0f);
+      if (_visible) {
+        // Scale the texture to the appropriate size.
+        Vector2 scale = new Vector2(Size.X / (float)_texture.Width, Size.Y / (float)_texture.Height);
+        // Draw it!
+        // TODO: replace hard-coded origin
+        spriteBatch.Draw(_texture, Center, null, Color.White, 0f, new Vector2(10, 10), scale, SpriteEffects.None, 0f);
+      }
     }
 
     /// <summary>

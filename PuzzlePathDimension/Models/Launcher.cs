@@ -31,9 +31,9 @@ namespace PuzzlePathDimension {
     private Vector2 _tip;
 
     /// <summary>
-    /// Whether the launcher is active and movable.
+    /// Whether the launcher is movable.
     /// </summary>
-    private bool _active;
+    private bool _movable;
 
     /// <summary>
     /// The ball that the launcher is holding.
@@ -58,10 +58,10 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Gets whether the launcher is active and movable.
+    /// Gets whether the launcher is movable.
     /// </summary>
-    public bool Active {
-      get { return _active; }
+    public bool Movable {
+      get { return _movable; }
     }
 
     /// <summary>
@@ -72,14 +72,14 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Initializes the launcher.
+    /// Constructs a Launcher object.
     /// </summary>
     /// <param name="texture">The texture that the launcher will be drawn with.</param>
     /// <param name="position">The position of the launcher.</param>
-    public void Initialize(Texture2D texture, Vector2 position) {
+    public Launcher(Texture2D texture, Vector2 position) {
       _texture = texture;
       _position = position;
-      _active = false;
+      _movable = false;
       _ball = null;
 
       // TODO: add texture dimensions check
@@ -90,6 +90,11 @@ namespace PuzzlePathDimension {
       CalculateNewTip();
 
       _magnitude = 10f;
+    }
+
+    [Obsolete("This doesn't do anything anymore. Use the constructor! -Jorenz", true)]
+    public void Initialize(Texture2D texture, Vector2 position) {
+
     }
 
     /// <summary>
@@ -108,7 +113,7 @@ namespace PuzzlePathDimension {
     /// <param name="delta">The value to adjust the angle by.</param>
     public void AdjustAngle(float delta) {
       // We don't want the launcher moving when the ball has already been launched.
-      if (!_active) {
+      if (!_movable) {
         return;
       }
 
@@ -133,7 +138,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="delta">The value to adjust the magnitude by.</param>
     public void AdjustMagnitude(float delta) {
-      if (!_active) {
+      if (!_movable) {
         return;
       }
 
@@ -161,7 +166,7 @@ namespace PuzzlePathDimension {
 
       // The launcher now contains the ball, and the user can now aim it.
       _ball = newBall;
-      _active = true;
+      _movable = true;
     }
 
     /// <summary>
@@ -169,12 +174,12 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void LaunchBall() {
       // Don't do anything if no ball is being launched.
-      if (!_active) {
+      if (!_movable) {
         return;
       }
 
       // Stop the player from moving the launcher.
-      _active = false;
+      _movable = false;
 
       // Calculate the velocity of the ball based on the launcher's angle and magnitude.
       float xVelocity = _magnitude * (float) Math.Cos(-1 * _angle);
@@ -213,8 +218,7 @@ namespace PuzzlePathDimension {
     /// Draws the launcher to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when launching the ball.</param>
-    /// <param name="test">If not null, draws a texture at the tip of the launcher. For testing purposes.</param>
-    public void Draw(SpriteBatch spriteBatch/*, Texture2D test*/) {
+    public void Draw(SpriteBatch spriteBatch) {
       // The unit circle goes counter-clockwise, but the rotation parameter goes clockwise, so flip it.
       float rotateAngle = -1 * _angle;
 
@@ -223,11 +227,6 @@ namespace PuzzlePathDimension {
 
       // Draw the launcher!
       spriteBatch.Draw(_texture, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
-
-      // If not null, draw a dot at the tip's location for testing purposes.
-      /*if (test != null) {
-        spriteBatch.Draw(test, _tip, null, Color.White, 0f, new Vector2(10f, 10f), 0.25f, SpriteEffects.None, 0f);
-      }*/
     }
 
     /// <summary>

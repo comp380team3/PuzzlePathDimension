@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   public class Ball {
@@ -25,7 +25,7 @@ namespace PuzzlePathDimension {
     private Texture2D _texture;
 
 
-    private Vector2 _origin;
+    private Vector2 _center;
 
     /// <summary>
     /// Gets the texture that the ball will be drawn with.
@@ -38,15 +38,14 @@ namespace PuzzlePathDimension {
      * Brian's Physics stuff*
      * *********************/
 
-    public Body body;
+    private Body _body;
+
+    /// <summary>
+    /// Gets or sets the center of the ball.
+    /// </summary>
     public Vector2 Center {
-      get { return UnitConverter.ToPixels(body.Position); }
-      set { body.Position = UnitConverter.ToMeters(value); }
-    }
-    private Vector2 _size;
-    public Vector2 Size {
-      get { return UnitConverter.ToPixels(_size); }
-      set { _size = UnitConverter.ToMeters(value); }
+      get { return UnitConverter.ToPixels(_body.Position); }
+      set { _body.Position = UnitConverter.ToMeters(value); }
     }
 
     /// <summary>
@@ -63,27 +62,34 @@ namespace PuzzlePathDimension {
       get { return _width; }
     }
 
-    public Ball(World world, Texture2D texture) {
-      body = BodyFactory.CreateCircle(world, UnitConverter.ToMeters(_width / 2), 1);
-      body.BodyType = BodyType.Static;
-      _origin = new Vector2((_width / 2.0f), (_height / 2.0f));
-      body.Restitution = .8f;
-      body.Inertia = 0f;
-      body.Friction = 0f;
-      this.Size = _size;
+    public Ball(Texture2D texture) {
       this._texture = texture;
+      _body = null;
+    }
+
+    public void InitBody(World world) {
+      if (_body != null) {
+        // TODO: throw an exception
+        Console.WriteLine("There is already a Body object for this ball.");
+      }
+
+      _body = BodyFactory.CreateCircle(world, UnitConverter.ToMeters(_width / 2), 1);
+      _body.BodyType = BodyType.Static;
+      _center = new Vector2((_width / 2.0f), (_height / 2.0f));
+      _body.Restitution = .8f;
+      _body.Inertia = 0f;
+      _body.Friction = 0f;
     }
 
     public void Launch(float velX, float velY) {
-      body.BodyType = BodyType.Dynamic;
-      body.LinearVelocity = new Vector2(velX, velY);
+      _body.BodyType = BodyType.Dynamic;
+      _body.LinearVelocity = new Vector2(velX, velY);
     }
 
     public void Stop() {
-      // Possible fix for the assertion failure? - Jorenz
-      body.Enabled = false;
-      body.BodyType = BodyType.Static;
-      body.Enabled = true;
+      _body.Enabled = false;
+      _body.BodyType = BodyType.Static;
+      _body.Enabled = true;
     }
 
     /*****************************
@@ -95,7 +101,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, _origin, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, _center, 1f, SpriteEffects.None, 0f);
     }
   }
 }
