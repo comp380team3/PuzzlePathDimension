@@ -62,30 +62,67 @@ namespace PuzzlePathDimension {
       get { return _width; }
     }
 
+    /// <summary>
+    /// Constructs a Ball object.
+    /// </summary>
+    /// <param name="texture">The texture that the ball will be drawn with.</param>
     public Ball(Texture2D texture) {
-      this._texture = texture;
+      // Set the texture of the ball.
+      _texture = texture;
+
+      // TODO: add texture size check
+
+      // Leave the Body object uninitialized until a World object comes by to initialize it.
       _body = null;
     }
 
+    /// <summary>
+    /// Initializes the ball's Body object.
+    /// </summary>
+    /// <param name="world">The World object that the ball will be a part of.</param>
     public void InitBody(World world) {
       if (_body != null) {
-        // TODO: throw an exception
-        Console.WriteLine("There is already a Body object for this ball.");
+        throw new InvalidOperationException("There is already a Body object for the ball.");
       }
+      // Obtain the radius, in meters.
+      float radius = UnitConverter.ToMeters(_width / 2);
 
-      _body = BodyFactory.CreateCircle(world, UnitConverter.ToMeters(_width / 2), 1);
+      // Create the Body object.
+      _body = BodyFactory.CreateCircle(world, radius, 1);
+      // Until the ball is launched, allow the ball's position to be set manually by the launcher.
+      // That is, don't let the World affect the ball's position.
       _body.BodyType = BodyType.Static;
+      // Set other properties of the ball's Body object.
       _body.Restitution = .8f;
       _body.Inertia = 0f;
       _body.Friction = 0f;
     }
 
+    /// <summary>
+    /// Launches the ball with a given velocity.
+    /// </summary>
+    /// <param name="velX">The horizontal component of the velocity.</param>
+    /// <param name="velY">The vertical component of the velocity.</param>
     public void Launch(float velX, float velY) {
+      if (_body == null) {
+        throw new InvalidOperationException("Call InitBody() on the Ball object first.");
+      }
+
+      // Let the ball be subjected to the World's gravity.
       _body.BodyType = BodyType.Dynamic;
       _body.LinearVelocity = new Vector2(velX, velY);
     }
 
+    /// <summary>
+    /// Stops the ball.
+    /// </summary>
     public void Stop() {
+      if (_body == null) {
+        throw new InvalidOperationException("Call InitBody() on the Ball object first.");
+      }
+
+      // Temporarily remove the ball from being checked by the World while changing the BodyType
+      // back in order to avoid errors.
       _body.Enabled = false;
       _body.BodyType = BodyType.Static;
       _body.Enabled = true;

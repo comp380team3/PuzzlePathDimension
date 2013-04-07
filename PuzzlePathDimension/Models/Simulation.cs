@@ -8,16 +8,22 @@ using FarseerPhysics.Factories;
 namespace PuzzlePathDimension {
   class Simulation {
     /// <summary>
-    /// The width of the playing field.
+    /// The width of the playing field, in pixels.
     /// </summary>
     public static readonly int FieldWidth = 800;
     /// <summary>
-    /// The height of the playing field.
+    /// The height of the playing field, in pixels.
     /// </summary>
     public static readonly int FieldHeight = 600;
 
+    /// <summary>
+    /// The World object that represents the simulation phase of the level.
+    /// </summary>
     private World _world;
 
+    /// <summary>
+    /// Gets the world object that represents the simulation phase of the level.
+    /// </summary>
     public World World {
       get { return _world; }
     }
@@ -33,6 +39,10 @@ namespace PuzzlePathDimension {
 
     public Texture2D Background { get; set; }
 
+    /// <summary>
+    /// Constructs a Simulation object.
+    /// </summary>
+    /// <param name="level"></param>
     public Simulation(Level level) {
       // TODO: This clones the list, but references the same platforms.
       // If gameplay may modify properties of platforms (or the goal,
@@ -42,19 +52,25 @@ namespace PuzzlePathDimension {
       DeathTraps = new List<DeathTrap>(level.DeathTraps);
       Goal = level.Goal;
       Launcher = level.Launcher;
-      // Hard-coded for now
+      // TODO: Hard-coded for now
       Attempts = 3;
       Completed = false;
 
       InitWorld();
     }
 
+    /// <summary>
+    /// Initializes the World object.
+    /// </summary>
     private void InitWorld() {
+      // Create the World object.
       Vector2 gravity = new Vector2(0f, 9.8f);
       _world = new World(gravity);
 
+      // Make sure that the level has boundaries.
       CreateWalls();
 
+      // Add the platforms to the world.
       foreach (Platform plat in Platforms) {
         plat.InitBody(_world);
       }
@@ -84,6 +100,10 @@ namespace PuzzlePathDimension {
       bottom.Position = new Vector2(fieldWidthMeters / 2, fieldHeightMeters);
     }
 
+    /// <summary>
+    /// Advances the simulation by one step.
+    /// </summary>
+    /// <param name="time">The amount of time that has passed since the last update.</param>
     public void Step(float time) {
       _world.Step(time);
     }
