@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   class Simulation {
@@ -37,12 +37,21 @@ namespace PuzzlePathDimension {
     public Launcher Launcher { get; set; }
     public int Attempts { get; set; }
 
-    private bool _completed;
+    /// <summary>
+    /// Whether the player can interact with the simulation.
+    /// </summary>
+    private bool _active;
 
-    public bool Completed {
-      get { return _completed; }
+    /// <summary>
+    /// Gets whether the player can interact with the simulation.
+    /// </summary>
+    public bool Active {
+      get { return _active; }
     }
 
+    /// <summary>
+    /// Gets or sets the background of the playing field.
+    /// </summary>
     public Texture2D Background { get; set; }
 
     /// <summary>
@@ -60,7 +69,7 @@ namespace PuzzlePathDimension {
       Launcher = level.Launcher;
       // TODO: Hard-coded for now; this should be loaded from the level
       Attempts = 3;
-      _completed = false;
+      _active = true;
 
       // Create the physics simulation.
       InitWorld();
@@ -95,6 +104,7 @@ namespace PuzzlePathDimension {
       // Add the death traps to the world.
       foreach (DeathTrap trap in DeathTraps) {
         trap.InitBody(_world);
+        trap.OnTrapCollision += EndAttempt;
       }
     }
 
@@ -127,26 +137,20 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="time">The amount of time that has passed since the last update.</param>
     public void Step(float time) {
-      foreach (DeathTrap trap in DeathTraps) {
-        trap.Reset();
-      }
-
+      // Let the World do stuff.
       _world.Step(time);
 
-      foreach (DeathTrap trap in DeathTraps) {
-        if (trap.Touched) {
-          EndAttempt();
-        }
-      }
-
-      if (Ball.Velocity.Equals(Vector2.Zero) && !Launcher.Movable && 
-        Attempts > 0 && !_completed) {
+      // Checks if a launched ball has no velocity, which ends the current attempt.
+      if (Ball.Velocity.Equals(Vector2.Zero) && !Launcher.Movable && _active) {
         EndAttempt();
       }
     }
 
+    /// <summary>
+    /// Completes the level.
+    /// </summary>
     private void Complete() {
-      _completed = true;
+      _active = false;
       Ball.Stop(_world);
 
       Console.WriteLine("You're winner!");
@@ -159,18 +163,25 @@ namespace PuzzlePathDimension {
       Console.WriteLine("Treasures obtained: " + collected + "/" + Treasures.Count);
     }
 
+    /// <summary>
+    /// Called when someone presses the Confirm button.
+    /// </summary>
     public void HandleConfirm() {
-      if (Attempts < 0) {
+      // If the level has been completed or failed, do nothing.
+      if (!_active) {
         return;
       }
 
+      // If the launcher is currently movable, then pressing Confirm
+      // shall cause the ball to launch.
       if (Launcher.Movable) {
         Launcher.LaunchBall();
         Attempts -= 1;
         Console.WriteLine("Attempts left: " + Attempts);
       }
-      // Stops the current attempt unless the ball hit the goal already
-      else if (!Completed) {
+      // While the ball is moving, the user can hit Confirm to destroy
+      // the ball.
+      else if (_active) {
         EndAttempt();
       }
     }
@@ -180,7 +191,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void Restart() {
       Attempts = 3;
-      _completed = false;
+      _active = true;
 
       foreach (Platform platform in Platforms) {
         platform.Reset();
@@ -190,23 +201,24 @@ namespace PuzzlePathDimension {
         treasure.Reset();
       }
 
-      foreach (DeathTrap trap in DeathTraps) {
-        trap.Reset();
-      }
-
       if (!Launcher.Movable) {
         Ball.Stop(_world);
         Launcher.LoadBall(Ball);
       }
     }
 
+    /// <summary>
+    /// Called at the end of every attempt.
+    /// </summary>
     private void EndAttempt() {
+      // Stop the ball.
       Ball.Stop(_world);
 
       // Don't load a new ball if the player ran out of balls.
       if (Attempts > 0) {
         Launcher.LoadBall(Ball);
       } else {
+        _active = false;
         Console.WriteLine("You lose!");
       }
     }

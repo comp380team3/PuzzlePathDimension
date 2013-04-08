@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -82,16 +79,13 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Whether the goal was touched by a ball.
+    /// This delegate is called when the death trap is touched.
     /// </summary>
-    private bool _touched;
+    public delegate void DeathTrapTouched();
     /// <summary>
-    /// Gets whether the goal was touched by a ball.
-    /// TODO: This is basically a poor man's C# event...
+    /// Occurs when the death trap is touched.
     /// </summary>
-    public bool Touched {
-      get { return _touched; }
-    }
+    public event DeathTrapTouched OnTrapCollision;
 
     /// <summary>
     /// Constructs a DeathTrap object.
@@ -163,21 +157,18 @@ namespace PuzzlePathDimension {
       // Check if one of the Fixtures belongs to a ball.
       bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
 
-      // Only mark the death trap as collected if a ball collided with it for the first time.
-      // Its state should get reset after it gets hit, though.
+      // A subtle fact about the OnCollision event is that it is only called
+      // when the associated Contact object is changed from not-touching to touching.
+      // While two objects are still touching each other, OnCollision won't be called again.
       if (contact.IsTouching() && causedByBall) {
-        _touched = true;
+        // Call any methods that are listening to this event.
+        if (OnTrapCollision != null) {
+          OnTrapCollision();
+        }
       }
       // A death trap isn't an object that should be bounced off of, so don't actually
       // cause the collision to happen in the physics simulation.
       return false;
-    }
-
-    /// <summary>
-    /// Reset the death trap's state.
-    /// </summary>
-    public void Reset() {
-      _touched = false;
     }
 
     public void Draw(SpriteBatch spriteBatch) {

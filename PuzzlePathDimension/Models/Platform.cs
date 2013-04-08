@@ -85,10 +85,9 @@ namespace PuzzlePathDimension {
         // the position of the new center.
         _center = CalculateCenter();
 
-        // If there is a Body, we pretty much have to recreate it now...
+        // If there is a Body, then things get too complicated. Sorry! - Jorenz
         if (_body != null) {
-          // TODO: do all sorts of stuff
-          throw new NotImplementedException("I haven't determined how to code that yet. -Jorenz");
+          throw new NotSupportedException("Setting the Size of a Platform while the Body is active is not supported.");
         }
       }
     }

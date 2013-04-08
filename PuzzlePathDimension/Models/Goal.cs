@@ -1,9 +1,9 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -155,7 +155,9 @@ namespace PuzzlePathDimension {
       // Check if one of the Fixtures belongs to a ball.
       bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
 
-      // Only mark the goal as collected if a ball collided with it for the first time.
+      // A subtle fact about the OnCollision event is that it is only called
+      // when the associated Contact object is changed from not-touching to touching.
+      // While two objects are still touching each other, OnCollision won't be called again.
       if (contact.IsTouching() && causedByBall) {
         // Call any methods that are listening to this event.
         if (OnGoalCollision != null) {
