@@ -91,6 +91,15 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// This delegate is called when the treasure is collected.
+    /// </summary>
+    public delegate void TreasureCollected();
+    /// <summary>
+    /// Occurs when the treasure is collected.
+    /// </summary>
+    public event TreasureCollected OnTreasureCollect;
+
+    /// <summary>
     /// Constructs a Treasure object.
     /// </summary>
     /// <param name="texture">The texture to draw the treasure with.</param>
@@ -145,7 +154,7 @@ namespace PuzzlePathDimension {
       _body.BodyType = BodyType.Static;
       // The ball should not actually bounce off the treasure.
       _body.FixtureList[0].IsSensor = true;
-      // Mark the body as belonging to a treasure.
+      // Associate the Body object with the treasure.
       _body.UserData = "treasure";
       // Listen for collision events.
       _body.OnCollision += new OnCollisionEventHandler(HandleCollision);
@@ -163,6 +172,7 @@ namespace PuzzlePathDimension {
       bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
 
       // Only mark the treasure as collected if a ball collided with it for the first time.
+      // OnCollision doesn't get called again while the two objects are still touching, though.
       if (contact.IsTouching() && causedByBall && !_collected) {
         Collect();
       }
@@ -176,6 +186,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     private void Collect() {
       _collected = true;
+
+      // Call any methods that are listening to this event.
+      if (OnTreasureCollect != null) {
+        OnTreasureCollect();
+      }
     }
 
     /// <summary>

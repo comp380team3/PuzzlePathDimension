@@ -140,7 +140,7 @@ namespace PuzzlePathDimension {
       _body.BodyType = BodyType.Static;
       // The ball should not actually bounce off the death trap.
       _body.FixtureList[0].IsSensor = true;
-      // Mark the body as belonging to a death trap.
+      // Associate the Body object with the death trap.
       _body.UserData = "death trap";
       // Listen for collision events.
       _body.OnCollision += new OnCollisionEventHandler(HandleCollision);

@@ -37,6 +37,12 @@ namespace PuzzlePathDimension {
     public Launcher Launcher { get; set; }
     public int Attempts { get; set; }
 
+    private int _collectedTreasures;
+
+    public int CollectedTreasures {
+      get { return _collectedTreasures; }
+    }
+
     /// <summary>
     /// Whether the player can interact with the simulation.
     /// </summary>
@@ -70,6 +76,7 @@ namespace PuzzlePathDimension {
       // TODO: Hard-coded for now; this should be loaded from the level
       Attempts = 3;
       _active = true;
+      _collectedTreasures = 0;
 
       // Create the physics simulation.
       InitWorld();
@@ -99,6 +106,7 @@ namespace PuzzlePathDimension {
       // Add the treasures to the world.
       foreach (Treasure treasure in Treasures) {
         treasure.InitBody(_world);
+        treasure.OnTreasureCollect += IncrementCollected;
       }
 
       // Add the death traps to the world.
@@ -130,6 +138,12 @@ namespace PuzzlePathDimension {
 
       Body bottom = BodyFactory.CreateRectangle(_world, fieldWidthMeters, wallThickness, 1);
       bottom.Position = new Vector2(fieldWidthMeters / 2, fieldHeightMeters);
+
+      // Associate these Body objects with walls.
+      left.UserData = "wall";
+      right.UserData = "wall";
+      top.UserData = "wall";
+      bottom.UserData = "wall";
     }
 
     /// <summary>
@@ -147,20 +161,22 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Increments the number of collected treasures by one.
+    /// </summary>
+    private void IncrementCollected() {
+      _collectedTreasures++;
+    }
+
+    /// <summary>
     /// Completes the level.
     /// </summary>
     private void Complete() {
+      // Stop the ball and don't accept any more input for the simulation.
       _active = false;
       Ball.Stop(_world);
 
       Console.WriteLine("You're winner!");
-      int collected = 0;
-      foreach (Treasure treasure in Treasures) {
-        if (treasure.Collected) {
-          collected++;
-        }
-      }
-      Console.WriteLine("Treasures obtained: " + collected + "/" + Treasures.Count);
+      Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + Treasures.Count);
     }
 
     /// <summary>
@@ -190,17 +206,21 @@ namespace PuzzlePathDimension {
     /// Restarts the simulation phase.
     /// </summary>
     public void Restart() {
+      // Reset the number of attempts, the various statistics, and lets the user provide input again.
       Attempts = 3;
+      _collectedTreasures = 0;
       _active = true;
 
+      // Restore all breakable platforms and treasures.
       foreach (Platform platform in Platforms) {
         platform.Reset();
       }
-
       foreach (Treasure treasure in Treasures) {
         treasure.Reset();
       }
 
+      // If the ball happens to be moving, stop it and put it back into
+      // the launcher.
       if (!Launcher.Movable) {
         Ball.Stop(_world);
         Launcher.LoadBall(Ball);

@@ -101,6 +101,15 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// This delegate is called when the ball is launched.
+    /// </summary>
+    public delegate void BallLaunch();
+    /// <summary>
+    /// Occurs when the ball is launched.
+    /// </summary>
+    public event BallLaunch OnBallLaunch;
+
+    /// <summary>
     /// Constructs a Launcher object.
     /// </summary>
     /// <param name="texture">The texture that the launcher will be drawn with.</param>
@@ -226,6 +235,11 @@ namespace PuzzlePathDimension {
       float xVelocity = _magnitude * (float) Math.Cos(-1 * _angle);
       float yVelocity = _magnitude * (float) Math.Sin(-1 * _angle);
       _ball.Launch(xVelocity, yVelocity);
+
+      // Call any methods that are waiting for the ball to launch.
+      if (OnBallLaunch != null) {
+        OnBallLaunch();
+      }
 
       // The launcher no longer owns the ball.
       _ball = null;

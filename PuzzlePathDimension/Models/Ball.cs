@@ -1,5 +1,6 @@
 ﻿using System;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -67,6 +68,15 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// This delegate is called when the ball bounces off something solid.
+    /// </summary>
+    public delegate void BallBounce();
+    /// <summary>
+    /// Occurs when the ball bounces off something solid.
+    /// </summary>
+    public event BallBounce OnBallBounce;
+
+    /// <summary>
     /// Constructs a Ball object.
     /// </summary>
     /// <param name="texture">The texture that the ball will be drawn with.</param>
@@ -108,8 +118,36 @@ namespace PuzzlePathDimension {
       _body.Friction = 0f;
       // Slows down the ball over time.
       _body.LinearDamping = .1f;
-      // Mark the body as belonging to a ball.
+      // Associate this Body object with the ball.
       _body.UserData = "ball";
+      // Listen for collision events.
+      _body.OnCollision += new OnCollisionEventHandler(HandleCollision);
+    }
+
+    /// <summary>
+    /// Called when a ball collides with something.
+    /// </summary>
+    /// <param name="fixtureA">The first fixture that has collided.</param>
+    /// <param name="fixtureB">The second fixture that has collided.</param>
+    /// <param name="contact">The Contact object that contains information about the collision.</param>
+    /// <returns>Whether the collision should still happen.</returns>
+    private bool HandleCollision(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+      // Check if one of the Fixtures belongs to a platform or wall.
+      bool isSolidA = (string)fixtureA.Body.UserData == "wall" || (string)fixtureA.Body.UserData == "platform";
+      bool isSolidB = (string)fixtureB.Body.UserData == "wall" || (string)fixtureB.Body.UserData == "platform";
+
+      // Only collide with walls or platforms that haven't been broken.
+      // Including contact.Enabled in the boolean condition gives priority to
+      // the OnCollision event that belongs to the other Body.
+      if (contact.IsTouching() && (isSolidA || isSolidB) && contact.Enabled) {
+        // Call any methods that are listening to this event.
+        if (OnBallBounce != null) {
+          OnBallBounce();
+        }
+        return true;
+      }
+      // Otherwise, don't apply the effects of the collision.
+      return false;
     }
 
     /// <summary>

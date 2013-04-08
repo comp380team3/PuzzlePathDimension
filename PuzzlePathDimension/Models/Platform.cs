@@ -121,6 +121,15 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// This delegate is called when the ball bounces off something solid.
+    /// </summary>
+    public delegate void PlatformTouched(bool breakable);
+    /// <summary>
+    /// Occurs when the ball bounces off something solid.
+    /// </summary>
+    public event PlatformTouched OnPlatformCollision;
+
+    /// <summary>
     /// Constructs a Platform object.
     /// </summary>
     /// <param name="texture">The texture to draw the platform with.</param>
@@ -177,7 +186,7 @@ namespace PuzzlePathDimension {
       // Set other properties of the Platform's body.
       _body.Friction = 0f;
       _body.Restitution = .8f;
-      // Mark the body as belonging to a platform.
+      // Associate the Body object with the platform.
       _body.UserData = "platform";
       // Listen for collision events.
       _body.OnCollision += new OnCollisionEventHandler(HandleCollision);
@@ -194,18 +203,31 @@ namespace PuzzlePathDimension {
       // Check if one of the Fixtures belongs to a ball.
       bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
 
-      // We only really care about breakable platforms...
-      if (contact.IsTouching() && causedByBall && _breakable) {
+      if (contact.IsTouching() && causedByBall) {
+        bool shouldCollisionOccur = false;
+
         // A ball should only bounce off a breakable platform once.
-        if (_visible) {
+        if (_breakable && _visible) {
           Break();
-          return true; // Allow the collision to occur.
+          shouldCollisionOccur = true;
+        // Don't bounce off broken platforms.
+        } else if (_breakable && !_visible) {
+          shouldCollisionOccur = false;
+        // Always bounce off regular platforms.
         } else {
-          return false; // The platform's broken; don't bounce off it.
+          shouldCollisionOccur = true;
         }
+
+        // Call the methods listening for collision events.
+        if (OnPlatformCollision != null && shouldCollisionOccur) {
+          OnPlatformCollision(_breakable);
+        }
+        // Tell the physics engine the intended result.
+        return shouldCollisionOccur;
+      } else {
+        // Otherwise, if it's not caused by a ball, then ignore the collision.
+        return false;
       }
-      // In all other cases, let the collision occur.
-      return true;
     }
 
     /*****************************

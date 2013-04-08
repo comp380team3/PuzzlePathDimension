@@ -138,7 +138,7 @@ namespace PuzzlePathDimension {
       _body.BodyType = BodyType.Static;
       // The ball should not actually bounce off the goal.
       _body.FixtureList[0].IsSensor = true;
-      // Mark the body as belonging to a goal.
+      // Associate the Body with the goal.
       _body.UserData = "goal";
       // Listen for collision events.
       _body.OnCollision += new OnCollisionEventHandler(HandleCollision);
