@@ -183,8 +183,6 @@ namespace PuzzlePathDimension {
       } else if (_magnitude > _maxVelocity) {
         _magnitude = _maxVelocity;
       }
-      // TODO: give actual feedback to the user.
-      Console.WriteLine("Launcher strength: " + _magnitude);
     }
 
     /// <summary>
@@ -250,7 +248,9 @@ namespace PuzzlePathDimension {
     /// Draws the launcher to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when launching the ball.</param>
-    public void Draw(SpriteBatch spriteBatch) {
+    /// <param name="powerMeterTex">The texture that will be used to render the power meter.
+    /// It should be an 80x15 texture.</param>
+    public void Draw(SpriteBatch spriteBatch, Texture2D powerMeterTex) {
       // The unit circle goes counter-clockwise, but the rotation parameter goes clockwise, so flip it.
       float rotateAngle = -1 * _angle;
 
@@ -259,6 +259,18 @@ namespace PuzzlePathDimension {
 
       // Draw the launcher!
       spriteBatch.Draw(_texture, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
+
+      // Display the power meter if the user is currently aiming the launcher.
+      if (powerMeterTex != null && _movable) {
+        // Determine how much of the texture to display based on the current magnitude.
+        int displayedWidth = 10 + (int)(7 * (_magnitude - _minVelocity));
+        Rectangle powerMeterRect = new Rectangle(0, 0, displayedWidth, powerMeterTex.Height);
+        // Position the upper-left corner of the meter just below and to the left of the launcher.
+        Vector2 displayedPos = new Vector2(_position.X - 40, _position.Y);
+
+        // Draw the power meter!
+        spriteBatch.Draw(powerMeterTex, displayedPos, powerMeterRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      }
     }
 
     /// <summary>

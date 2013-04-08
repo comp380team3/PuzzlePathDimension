@@ -173,7 +173,9 @@ namespace PuzzlePathDimension {
       return false;
     }
 
-
+    /// <summary>
+    /// Reset the death trap's state.
+    /// </summary>
     public void Reset() {
       _touched = false;
     }

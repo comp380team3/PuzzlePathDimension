@@ -168,7 +168,7 @@ namespace PuzzlePathDimension {
       simulation.Ball.Draw(spriteBatch);
 
       // Draw the launcher on the canvas
-      simulation.Launcher.Draw(spriteBatch);
+      simulation.Launcher.Draw(spriteBatch, content.Load<Texture2D>("power_meter"));
 
       spriteBatch.End();
 

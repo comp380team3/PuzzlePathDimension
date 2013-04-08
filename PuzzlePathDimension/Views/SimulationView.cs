@@ -37,7 +37,7 @@ namespace PuzzlePathDimension {
       BackingModel.Ball.Draw(_spriteBatch);
 
       // Draw the launcher on the canvas
-      BackingModel.Launcher.Draw(_spriteBatch);
+      //BackingModel.Launcher.Draw(_spriteBatch);
     }
   }
 }
