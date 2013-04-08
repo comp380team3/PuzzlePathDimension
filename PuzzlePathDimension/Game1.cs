@@ -32,7 +32,7 @@ namespace PuzzlePathDimension {
       // Tells the game where the content directory is
       Content.RootDirectory = "Content";
 
-      ScreenManager menus = new ScreenManager(this);
+      ScreenRenderer menus = new ScreenRenderer(this);
       menus.AddScreen(new BackgroundScreen(), null);
       menus.AddScreen(new MainMenuScreen(), null);
       Components.Add(menus);

@@ -45,7 +45,7 @@ namespace PuzzlePathDimension {
     /// The constructor is private: loading screens should
     /// be activated via the static Load method instead.
     /// </summary>
-    private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow,
+    private LoadingScreen(ScreenRenderer screenManager, bool loadingIsSlow,
                           GameScreen[] screensToLoad) {
       this.loadingIsSlow = loadingIsSlow;
       this.screensToLoad = screensToLoad;
@@ -57,7 +57,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Activates the loading screen.
     /// </summary>
-    public static void Load(ScreenManager screenManager, bool loadingIsSlow,
+    public static void Load(ScreenRenderer screenManager, bool loadingIsSlow,
                             PlayerIndex? controllingPlayer,
                             params GameScreen[] screensToLoad) {
       // Tell all the current screens to transition off.
