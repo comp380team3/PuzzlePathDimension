@@ -166,7 +166,6 @@ namespace PuzzlePathDimension {
       // Only mark the death trap as collected if a ball collided with it for the first time.
       // Its state should get reset after it gets hit, though.
       if (contact.IsTouching() && causedByBall) {
-        //Console.WriteLine("death trap get!");
         _touched = true;
       }
       // A death trap isn't an object that should be bounced off of, so don't actually

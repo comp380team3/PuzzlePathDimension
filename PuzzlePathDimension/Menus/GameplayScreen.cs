@@ -206,7 +206,7 @@ namespace PuzzlePathDimension {
 
       simulation.Background = content.Load<Texture2D>("GameScreen");
 
-      Texture2D ballTex = content.Load<Texture2D>("ball_new");
+      Texture2D ballTex = content.Load<Texture2D>("ball");
       Ball ball = new Ball(ballTex);
       ball.InitBody(simulation.World);
 

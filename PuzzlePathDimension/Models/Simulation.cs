@@ -137,13 +137,13 @@ namespace PuzzlePathDimension {
 
       foreach (DeathTrap trap in DeathTraps) {
         if (trap.Touched) {
-          SubtractAttempt();
+          EndAttempt();
         }
       }
 
-      Console.WriteLine(Ball.Velocity.X + " " + Ball.Velocity.Y);
-      if (Ball.Velocity.Equals(Vector2.Zero) && !Launcher.Movable && Attempts > 0) {
-        SubtractAttempt();
+      if (Ball.Velocity.Equals(Vector2.Zero) && !Launcher.Movable && 
+        Attempts > 0 && !_completed) {
+        EndAttempt();
       }
     }
 
@@ -162,16 +162,18 @@ namespace PuzzlePathDimension {
     }
 
     public void HandleConfirm() {
-      if (Attempts <= 0) {
+      if (Attempts < 0) {
         return;
       }
 
       if (Launcher.Movable) {
         Launcher.LaunchBall();
+        Attempts -= 1;
+        Console.WriteLine("Attempts left: " + Attempts);
       }
       // Stops the current attempt unless the ball hit the goal already
       else if (!Completed) {
-        SubtractAttempt();
+        EndAttempt();
       }
     }
 
@@ -202,9 +204,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-    private void SubtractAttempt() {
-      Attempts -= 1;
-      Console.WriteLine("Attempts left: " + Attempts);
+    private void EndAttempt() {
       Ball.Stop();
 
       // Don't load a new ball if the player ran out of balls

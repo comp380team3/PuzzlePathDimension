@@ -162,7 +162,6 @@ namespace PuzzlePathDimension {
 
       // Only mark the goal as collected if a ball collided with it for the first time.
       if (contact.IsTouching() && causedByBall && !_touched) {
-        Console.WriteLine("goal get!");
         _touched = true;
       }
       // A goal isn't an object that should be bounced off of, so don't actually

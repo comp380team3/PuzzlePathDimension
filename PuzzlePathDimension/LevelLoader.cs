@@ -57,7 +57,7 @@ namespace PuzzlePathDimension {
 
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
       Texture2D texture = breakable ? 
-        Content.Load<Texture2D>("platform_breakable") : Content.Load<Texture2D>("platform_new");
+        Content.Load<Texture2D>("platform_breakable") : Content.Load<Texture2D>("platform");
       Platform platform = new Platform(texture, position, size, breakable);
 
       return platform;

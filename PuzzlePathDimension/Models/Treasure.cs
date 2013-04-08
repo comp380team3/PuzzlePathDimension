@@ -164,7 +164,6 @@ namespace PuzzlePathDimension {
 
       // Only mark the treasure as collected if a ball collided with it for the first time.
       if (contact.IsTouching() && causedByBall && !_collected) {
-        //Console.WriteLine("Treasure get!");
         Collect();
       }
       // A treasure isn't an object that should be bounced off of, so don't actually
