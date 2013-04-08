@@ -174,8 +174,8 @@ namespace PuzzlePathDimension {
         throw new InvalidOperationException("Call InitBody() on the Ball object first.");
       }
       /* We need to make the ball's Body object a static one again, but we can't do that
-       * directly because that causes errors to occur. We also can't disable the body and
-       * then re-enable it because if Stop() is called during an OnCollision event,
+       * directly because that causes assertions to fail. We also can't disable the body and
+       * then re-enable it because if a Body is disabled during an OnCollision event,
        * the Body's Fixture becomes null, and that causes an exception in the physics engine's
        * code because it calls OnCollision for both Bodies. Thus, we need to resort to 
        * this workaround. - Jorenz */

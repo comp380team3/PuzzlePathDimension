@@ -13,7 +13,9 @@ namespace PuzzlePathDimension {
     private const int _length = 80;
 
     // TODO: add height and width for collision purposes in the editor.
-    // It'll probably be a width of 200 and a height of 100.
+    // It'll probably be a width of 200 and a height of 100 so that the
+    // launcher has room to rotate throughout the entire range of valid
+    // angles.
 
     /// <summary>
     /// The minimum velocity that the ball will be launched with.

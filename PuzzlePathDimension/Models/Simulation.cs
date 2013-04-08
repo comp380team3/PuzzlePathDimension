@@ -141,6 +141,12 @@ namespace PuzzlePathDimension {
       get { return _bounces; }
     }
 
+    private DateTime _startTime;
+
+    public DateTime StartTime {
+      get { return _startTime; }
+    }
+
     /// <summary>
     /// Whether the player can interact with the simulation.
     /// </summary>
@@ -190,8 +196,9 @@ namespace PuzzlePathDimension {
       // Create the physics simulation.
       InitWorld();
 
-      // Allow the user to interact with the simulation.
+      // Allow the user to interact with the simulation, and start the timer.
       _active = true;
+      _startTime = DateTime.Now;
     }
 
     /// <summary>
@@ -300,9 +307,13 @@ namespace PuzzlePathDimension {
       _active = false;
       _ball.Stop(_world);
 
+      TimeSpan timeSpent = DateTime.Now - _startTime;
+      
       Console.WriteLine("You're winner!");
-      Console.WriteLine("Ball bounces: " + _bounces);
+      Console.WriteLine("Balls remaining: " + _attemptsLeft);
+      Console.WriteLine("Time spent (seconds): " + timeSpent.Seconds);
       Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
+      Console.WriteLine("Ball bounces: " + _bounces);
     }
 
     /// <summary>
@@ -334,6 +345,7 @@ namespace PuzzlePathDimension {
     public void Restart() {
       // Reset the number of attempts, the various statistics, and lets the user provide input again.
       _attemptsLeft = _startingAttempts;
+      _startTime = DateTime.Now;
       _collectedTreasures = 0;
       _bounces = 0;
       _active = true;
