@@ -1,20 +1,16 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // ScreenManager.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -24,7 +20,7 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenRenderer : DrawableGameComponent {
-  #region Fields
+  /* Fields */
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
 
@@ -49,9 +45,8 @@ namespace PuzzlePathDimension {
 
     bool hasDevice; // has the graphics device been initialized?
     bool traceEnabled; // do we want to output debugging information?
-  #endregion
 
-  #region Properties
+  /* Properties */
     /// <summary>
     /// A default SpriteBatch shared by all the screens. This saves
     /// each screen having to bother creating their own local instance.
@@ -59,7 +54,6 @@ namespace PuzzlePathDimension {
     public SpriteBatch SpriteBatch {
       get { return spriteBatch; }
     }
-
 
     /// <summary>
     /// A default font shared by all the screens. This saves
@@ -86,9 +80,8 @@ namespace PuzzlePathDimension {
       get { return traceEnabled; }
       set { traceEnabled = value; }
     }
-  #endregion
 
-  #region Initialization
+  /* Initialization */
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
@@ -135,9 +128,8 @@ namespace PuzzlePathDimension {
         screen.UnloadContent();
       }
     }
-  #endregion
 
-  #region Update and Draw
+  /* Update & Draw */
     /// <summary>
     /// Allows each screen to run logic.
     /// </summary>
@@ -212,9 +204,8 @@ namespace PuzzlePathDimension {
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       Draw(gameTime);
     }
-  #endregion
 
-  #region Public Methods
+  /* Public Methods */
     /// <summary>
     /// Adds a new screen to the screen manager.
     /// </summary>
@@ -271,6 +262,5 @@ namespace PuzzlePathDimension {
 
       spriteBatch.End();
     }
-  #endregion
   }
 }
