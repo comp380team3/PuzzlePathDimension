@@ -92,9 +92,6 @@ namespace PuzzlePathDimension {
       if (!IsActive)
         return;
 
-      // Update the launcher's state
-      // simulation.Launcher.Update();
-
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
     }
@@ -139,36 +136,14 @@ namespace PuzzlePathDimension {
       ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
 
       SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-
       spriteBatch.Begin();
 
       // Draw the background.
       spriteBatch.Draw(simulation.Background, Vector2.Zero, Color.White);
-
       // Draw the walls.
       DrawWalls(spriteBatch);
-
-      // Draw the goal onto the canvas.
-      simulation.Goal.Draw(spriteBatch);
-
-      // Draw the platforms onto the canvas.
-      foreach (Platform platform in simulation.Platforms) {
-        platform.Draw(spriteBatch);
-      }
-      // Draw the treasures on the canvas.
-      foreach (Treasure treasure in simulation.Treasures) {
-        treasure.Draw(spriteBatch);
-      }
-      // Draw the death traps on the canvas
-      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
-        deathTrap.Draw(spriteBatch);
-      }
-
-      // Draw the ball on the canvas.
-      simulation.Ball.Draw(spriteBatch);
-
-      // Draw the launcher on the canvas
-      simulation.Launcher.Draw(spriteBatch);
+      // Draw all the level objects.
+      DrawLevelObjects(spriteBatch);
 
       spriteBatch.End();
 
@@ -189,11 +164,38 @@ namespace PuzzlePathDimension {
       Texture2D sideWall = content.Load<Texture2D>("SideWall");
 
       // I'd rather have 5-pixel thick walls then 10-pixel thick walls, so I offset each wall
-      // by 5 pixels. - Jorenz
+      // by 5 pixels. I could change the image... - Jorenz
       spriteBatch.Draw(topBottom, new Vector2(0, -5), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       spriteBatch.Draw(topBottom, new Vector2(0, 595), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       spriteBatch.Draw(sideWall, new Vector2(-5, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       spriteBatch.Draw(sideWall, new Vector2(795, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+    }
+
+    /// <summary>
+    /// Draws the level objects.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch objects to use when drawing the level objects.</param>
+    private void DrawLevelObjects(SpriteBatch spriteBatch) {
+      // Draw the goal onto the canvas.
+      simulation.Goal.Draw(spriteBatch);
+
+      // Draw the platforms onto the canvas.
+      foreach (Platform platform in simulation.Platforms) {
+        platform.Draw(spriteBatch);
+      }
+      // Draw the treasures onto the canvas.
+      foreach (Treasure treasure in simulation.Treasures) {
+        treasure.Draw(spriteBatch);
+      }
+      // Draw the death traps onto the canvas
+      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
+        deathTrap.Draw(spriteBatch);
+      }
+
+      // Draw the ball onto the canvas.
+      simulation.Ball.Draw(spriteBatch);
+      // Draw the launcher onto the canvas.
+      simulation.Launcher.Draw(spriteBatch);
     }
   #endregion
 
@@ -202,16 +204,8 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content));
-
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content), content);
       simulation.Background = content.Load<Texture2D>("GameScreen");
-
-      Texture2D ballTex = content.Load<Texture2D>("ball");
-      Ball ball = new Ball(ballTex);
-      ball.InitBody(simulation.World);
-
-      simulation.Ball = ball;
-      simulation.Launcher.LoadBall(ball);
 
       return simulation;
     }

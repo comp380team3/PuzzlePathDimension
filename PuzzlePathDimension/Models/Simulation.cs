@@ -29,18 +29,116 @@ namespace PuzzlePathDimension {
       get { return _world; }
     }
 
-    public Ball Ball { get; set; }
-    public List<Platform> Platforms { get; set; }
-    public List<Treasure> Treasures { get; set; }
-    public List<DeathTrap> DeathTraps { get; set; }
-    public Goal Goal { get; set; }
-    public Launcher Launcher { get; set; }
-    public int Attempts { get; set; }
+    /// <summary>
+    /// The simulation's ball.
+    /// </summary>
+    private Ball _ball;
 
+    /// <summary>
+    /// The simulation's launcher.
+    /// </summary>
+    private Launcher _launcher;
+
+    /// <summary>
+    /// The simulation's goal.
+    /// </summary>
+    private Goal _goal;
+
+    /// <summary>
+    /// The simulation's list of platforms.
+    /// </summary>
+    private List<Platform> _platforms;
+
+    /// <summary>
+    /// The simulation's list of treasures.
+    /// </summary>
+    private List<Treasure> _treasures;
+
+    /// <summary>
+    /// The simulation's list of death traps.
+    /// </summary>
+    private List<DeathTrap> _deathTraps;
+
+    /// <summary>
+    /// Gets the simulation's ball.
+    /// </summary>
+    public Ball Ball {
+      get { return _ball; }
+    }
+
+    /// <summary>
+    /// Gets the simulation's launcher.
+    /// </summary>
+    public Launcher Launcher {
+      get { return _launcher; }
+    }
+
+    /// <summary>
+    /// Gets the simulation's goal.
+    /// </summary>
+    public Goal Goal {
+      get { return _goal; }
+    }
+
+    /// <summary>
+    /// Gets the simulation's list of platforms.
+    /// </summary>
+    public List<Platform> Platforms {
+      get { return _platforms; }
+    }
+
+    /// <summary>
+    /// Gets the simulation's list of treasures.
+    /// </summary>
+    public List<Treasure> Treasures {
+      get { return _treasures; }
+    }
+
+    /// <summary>
+    /// Gets the simulation's list of deathtraps.
+    /// </summary>
+    public List<DeathTrap> DeathTraps {
+      get { return _deathTraps; }
+    }
+
+    /// <summary>
+    /// The number of attempts that the player starts with.
+    /// </summary>
+    private int _startingAttempts;
+    /// <summary>
+    /// The number of attempts that the player has left.
+    /// </summary>
+    private int _attemptsLeft;
+
+    /// <summary>
+    /// Gets the number of attempts that the player has left.
+    /// </summary>
+    public int AttemptsLeft {
+      get { return _attemptsLeft; }
+    }
+
+    /// <summary>
+    /// The number of treasures that have been collected.
+    /// </summary>
     private int _collectedTreasures;
 
+    /// <summary>
+    /// Gets the number of treasures that have been collected.
+    /// </summary>
     public int CollectedTreasures {
       get { return _collectedTreasures; }
+    }
+
+    /// <summary>
+    /// The number of times that the ball has bounced off a platform or wall.
+    /// </summary>
+    private int _bounces;
+
+    /// <summary>
+    /// Gets the number of times that the ball has bounced off a platform or wall.
+    /// </summary>
+    public int Bounces {
+      get { return _bounces; }
     }
 
     /// <summary>
@@ -61,29 +159,43 @@ namespace PuzzlePathDimension {
     public Texture2D Background { get; set; }
 
     /// <summary>
+    /// The ball texture to use.
+    /// </summary>
+    private Texture2D _ballTex;
+
+    /// <summary>
     /// Constructs a Simulation object.
     /// </summary>
-    /// <param name="level"></param>
-    public Simulation(Level level) {
+    /// <param name="level">The Level to use to create the simulation.</param>
+    /// <param name="content">The ContentManager to use to load the ball texture.</param>
+    public Simulation(Level level, ContentManager content) {
       // TODO: This clones the list, but references the same platforms.
       // If gameplay may modify properties of platforms (or the goal,
       // or the launcher), a deep copy is necessary instead.
-      Platforms = new List<Platform>(level.Platforms);
-      Treasures = new List<Treasure>(level.Treasures);
-      DeathTraps = new List<DeathTrap>(level.DeathTraps);
-      Goal = level.Goal;
-      Launcher = level.Launcher;
-      // TODO: Hard-coded for now; this should be loaded from the level
-      Attempts = 3;
-      _active = true;
-      _collectedTreasures = 0;
+      _platforms = new List<Platform>(level.Platforms);
+      _treasures = new List<Treasure>(level.Treasures);
+      _deathTraps = new List<DeathTrap>(level.DeathTraps);
+      _goal = level.Goal;
+      _launcher = level.Launcher;
 
+      // TODO: Hard-coded for now; this should be loaded from the level
+      // Initialize various stats.
+      _startingAttempts = 3;
+      _attemptsLeft = _startingAttempts;
+      _collectedTreasures = 0;
+      _bounces = 0;
+
+      // Load the ball's texture and store it.
+      _ballTex = content.Load<Texture2D>("ball");
       // Create the physics simulation.
       InitWorld();
+
+      // Allow the user to interact with the simulation.
+      _active = true;
     }
 
     /// <summary>
-    /// Initializes the World object.
+    /// Initializes the World object and everything in it.
     /// </summary>
     private void InitWorld() {
       // Create the World object.
@@ -93,24 +205,30 @@ namespace PuzzlePathDimension {
       // Make sure that the level has boundaries.
       CreateWalls();
 
+      // Create a launcher with a ball in it.
+      _ball = new Ball(_ballTex);
+      _ball.InitBody(_world);
+      _ball.OnBallBounce += IncrementBounces;
+      _launcher.LoadBall(_ball);
+
       // Add the goal to the world.
-      Goal.InitBody(_world);
+      _goal.InitBody(_world);
       // When the ball touches the goal, conclude the simulation phase.
-      Goal.OnGoalCollision += Complete;
+      _goal.OnGoalCollision += Complete;
 
       // Add the platforms to the world.
-      foreach (Platform plat in Platforms) {
+      foreach (Platform plat in _platforms) {
         plat.InitBody(_world);
       }
 
       // Add the treasures to the world.
-      foreach (Treasure treasure in Treasures) {
+      foreach (Treasure treasure in _treasures) {
         treasure.InitBody(_world);
         treasure.OnTreasureCollect += IncrementCollected;
       }
 
       // Add the death traps to the world.
-      foreach (DeathTrap trap in DeathTraps) {
+      foreach (DeathTrap trap in _deathTraps) {
         trap.InitBody(_world);
         trap.OnTrapCollision += EndAttempt;
       }
@@ -155,9 +273,16 @@ namespace PuzzlePathDimension {
       _world.Step(time);
 
       // Checks if a launched ball has no velocity, which ends the current attempt.
-      if (Ball.Velocity.Equals(Vector2.Zero) && !Launcher.Movable && _active) {
+      if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable && _active) {
         EndAttempt();
       }
+    }
+
+    /// <summary>
+    /// Increments the number of bounces by one.
+    /// </summary>
+    private void IncrementBounces() {
+      _bounces++;
     }
 
     /// <summary>
@@ -173,10 +298,11 @@ namespace PuzzlePathDimension {
     private void Complete() {
       // Stop the ball and don't accept any more input for the simulation.
       _active = false;
-      Ball.Stop(_world);
+      _ball.Stop(_world);
 
       Console.WriteLine("You're winner!");
-      Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + Treasures.Count);
+      Console.WriteLine("Ball bounces: " + _bounces);
+      Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
     }
 
     /// <summary>
@@ -190,13 +316,13 @@ namespace PuzzlePathDimension {
 
       // If the launcher is currently movable, then pressing Confirm
       // shall cause the ball to launch.
-      if (Launcher.Movable) {
-        Launcher.LaunchBall();
-        Attempts -= 1;
-        Console.WriteLine("Attempts left: " + Attempts);
+      if (_launcher.Movable) {
+        _launcher.LaunchBall();
+        _attemptsLeft -= 1;
+        Console.WriteLine("Attempts left: " + _attemptsLeft);
       }
-      // While the ball is moving, the user can hit Confirm to destroy
-      // the ball.
+        // While the ball is moving, the user can hit Confirm to destroy
+        // the ball.
       else if (_active) {
         EndAttempt();
       }
@@ -207,23 +333,24 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void Restart() {
       // Reset the number of attempts, the various statistics, and lets the user provide input again.
-      Attempts = 3;
+      _attemptsLeft = _startingAttempts;
       _collectedTreasures = 0;
+      _bounces = 0;
       _active = true;
 
       // Restore all breakable platforms and treasures.
-      foreach (Platform platform in Platforms) {
+      foreach (Platform platform in _platforms) {
         platform.Reset();
       }
-      foreach (Treasure treasure in Treasures) {
+      foreach (Treasure treasure in _treasures) {
         treasure.Reset();
       }
 
       // If the ball happens to be moving, stop it and put it back into
       // the launcher.
-      if (!Launcher.Movable) {
-        Ball.Stop(_world);
-        Launcher.LoadBall(Ball);
+      if (!_launcher.Movable) {
+        _ball.Stop(_world);
+        _launcher.LoadBall(Ball);
       }
     }
 
@@ -232,11 +359,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     private void EndAttempt() {
       // Stop the ball.
-      Ball.Stop(_world);
+      _ball.Stop(_world);
 
       // Don't load a new ball if the player ran out of balls.
-      if (Attempts > 0) {
-        Launcher.LoadBall(Ball);
+      if (_attemptsLeft > 0) {
+        _launcher.LoadBall(Ball);
       } else {
         _active = false;
         Console.WriteLine("You lose!");
