@@ -144,6 +144,8 @@ namespace PuzzlePathDimension {
       DrawWalls(spriteBatch);
       // Draw all the level objects.
       DrawLevelObjects(spriteBatch);
+      // Draw any informational text.
+      DrawText(spriteBatch);
 
       spriteBatch.End();
 
@@ -174,7 +176,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the level objects.
     /// </summary>
-    /// <param name="spriteBatch">The SpriteBatch objects to use when drawing the level objects.</param>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the level objects.</param>
     private void DrawLevelObjects(SpriteBatch spriteBatch) {
       // Draw the goal onto the canvas.
       simulation.Goal.Draw(spriteBatch);
@@ -197,6 +199,25 @@ namespace PuzzlePathDimension {
       // Draw the launcher onto the canvas.
       simulation.Launcher.Draw(spriteBatch);
     }
+
+    /// <summary>
+    /// Draws any relevant text on the screen.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
+    private void DrawText(SpriteBatch spriteBatch) {
+      // Draw the number of balls left.
+      string attemptsText = "Balls left: " + simulation.AttemptsLeft;
+      spriteBatch.DrawString(ScreenManager.TextFont, attemptsText,
+        new Vector2(10f, 570f), Color.Black);
+
+      // If the simulation has concluded in some way, display the approriate message.
+      if (simulation.CurrentState == SimulationState.Completed) {
+        spriteBatch.DrawString(ScreenManager.TextFont, "You win!", new Vector2(400f, 300f), Color.Black);
+      } else if (simulation.CurrentState == SimulationState.Failed) {
+        spriteBatch.DrawString(ScreenManager.TextFont, "You lose.", new Vector2(400f, 300f), Color.Black);
+      }
+    }
+
   #endregion
 
   #region Test Level

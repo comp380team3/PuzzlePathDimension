@@ -374,11 +374,10 @@ namespace PuzzlePathDimension {
       if (_launcher.Movable) {
         _launcher.LaunchBall();
         _attemptsLeft -= 1;
-        Console.WriteLine("Attempts left: " + _attemptsLeft);
       }
         // While the ball is moving, the user can hit Confirm to destroy
         // the ball.
-      else if (_currentState != SimulationState.Active) {
+      else if (_currentState == SimulationState.Active) {
         EndAttempt();
       }
     }
