@@ -68,6 +68,14 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets whether the ball's Body object has been initialized.
+    /// This property is mainly here for unit-testing purposes.
+    /// </summary>
+    public bool BodyActive {
+      get { return !(_body == null); }
+    }
+
+    /// <summary>
     /// This delegate is called when the ball bounces off something solid.
     /// </summary>
     public delegate void BallBounce();

@@ -152,7 +152,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     private void UpdateBallPos() {
       // Move the ball with the launcher's tip if a ball is going to be fired.
-      if (_ball != null) {
+      if (_ball != null && _ball.BodyActive) {
         _ball.Center = new Vector2(_tip.X, _tip.Y);
       }
     }

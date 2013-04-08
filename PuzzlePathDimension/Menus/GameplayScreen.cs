@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using FarseerPhysics.Dynamics;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace PuzzlePathDimension {
@@ -52,6 +53,8 @@ namespace PuzzlePathDimension {
 
       // Create the hard-coded level.
       simulation = CreateTestLevel();
+      // Set up the sounds.
+      SetupSoundEvents();
 
       // A real game would probably have more content than this sample, so
       // it would take longer to load. We simulate that by delaying for a
@@ -62,6 +65,19 @@ namespace PuzzlePathDimension {
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
       ScreenManager.Game.ResetElapsedTime();
+    }
+
+    /// <summary>
+    /// Assign sounds to various events.
+    /// </summary>
+    private void SetupSoundEvents() {
+      // The sounds actually take enough time to load that there's a delay when
+      // the ball is launched, so cache them first.
+      content.Load<SoundEffect>("launch");
+      content.Load<SoundEffect>("bounce");
+      // Assign the sound effects to the proper places.
+      simulation.Ball.OnBallBounce += PlayBounce;
+      simulation.Launcher.OnBallLaunch += PlayLaunch;
     }
 
     /// <summary>
@@ -216,6 +232,22 @@ namespace PuzzlePathDimension {
       } else if (simulation.CurrentState == SimulationState.Failed) {
         spriteBatch.DrawString(ScreenManager.TextFont, "You lose.", new Vector2(400f, 300f), Color.Black);
       }
+    }
+
+    /// <summary>
+    /// Plays the launcher's sound effect.
+    /// </summary>
+    private void PlayLaunch() {
+      SoundEffect launch = content.Load<SoundEffect>("launch");
+      launch.Play();
+    }
+
+    /// <summary>
+    /// Plays the bouncing sound.
+    /// </summary>
+    private void PlayBounce() {
+      SoundEffect bounce = content.Load<SoundEffect>("bounce");
+      bounce.Play();
     }
 
   #endregion
