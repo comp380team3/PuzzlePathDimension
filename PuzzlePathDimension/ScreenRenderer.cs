@@ -13,13 +13,20 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
+  public interface IScreenList {
+    void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer);
+    void RemoveScreen(GameScreen screen);
+
+    GameScreen[] GetScreens();
+  }
+
   /// <summary>
   /// The screen manager is a component which manages one or more GameScreen
   /// instances. It maintains a stack of screens, calls their Update and Draw
   /// methods at the appropriate times, and automatically routes input to the
   /// topmost active screen.
   /// </summary>
-  public class ScreenRenderer : DrawableGameComponent {
+  public class ScreenRenderer : DrawableGameComponent, IScreenList {
   /* Fields */
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
