@@ -32,6 +32,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     string completionTime;
 
+    int selectedEntry = 0;
+
     MenuEntry startMenuEntry;
 
     MenuEntry exitMenuEntry;
@@ -164,6 +166,40 @@ namespace PuzzlePathDimension {
     #endregion
 
 #region Handle Input
+
+    public override void HandleInput(VirtualController vtroller) {
+      //base.HandleInput(vtroller);
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+        SelectedEntry--;
+
+        if (SelectedEntry < 0)
+          SelectedEntry = MenuEntries.Count - 1;
+      }
+
+      // Move to the next menu entry?
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        SelectedEntry++;
+
+        if (SelectedEntry >= MenuEntries.Count)
+          SelectedEntry = 0;
+      }
+
+      // Accept or cancel the menu? We pass in our ControllingPlayer, which may
+      // either be null (to accept input from any player) or a specific index.
+      // If we pass a null controlling player, the InputState helper returns to
+      // us which player actually provided the input. We pass that through to
+      // OnSelectEntry and OnCancel, so they can tell which player triggered them.
+
+      // PlayerIndex playerindex;
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        OnSelectEntry(SelectedEntry, PlayerIndex.One);
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        OnCancel(PlayerIndex.One);
+        Console.WriteLine("blah");
+      }
+    }
 
     /// <summary>
     /// Event handler for when the Start menu entry is selected.
