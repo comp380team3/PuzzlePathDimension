@@ -128,12 +128,8 @@ namespace PuzzlePathDimension {
         launcher.AdjustMagnitude(-0.25f);
       }
 
-      // TODO: remove this test code
-      if (Keyboard.GetState().IsKeyDown(Keys.F)) {
-        Console.WriteLine(launcher);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
-        Console.WriteLine(ball);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
+      // TODO: Replace this restart mechanism
+      if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
 

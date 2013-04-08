@@ -70,7 +70,13 @@ namespace PuzzlePathDimension {
       // Set the texture of the ball.
       _texture = texture;
 
-      // TODO: add texture size check
+      // Check to make sure that the visual representation of the texture is actually the right
+      // size, and print a warning to the console if that isn't the case.
+      if (_texture != null && _texture.Width * _texture.Height != _width * _height) {
+        Console.WriteLine("Warning: the treasure's texture does not have the expected dimensions.");
+        Console.WriteLine("Expected: " + _width + ", " + _height);
+        Console.WriteLine("...but the texture is: " + _texture.Width + ", " + _texture.Height);
+      }
 
       // Leave the Body object uninitialized until a World object comes by to initialize it.
       _body = null;
@@ -84,7 +90,7 @@ namespace PuzzlePathDimension {
       if (_body != null) {
         throw new InvalidOperationException("There is already a Body object for the ball.");
       }
-      // Obtain the radius, in meters.
+      // Obtain the radius of the ball, in meters.
       float radius = UnitConverter.ToMeters(_width / 2);
 
       // Create the Body object.
@@ -96,6 +102,8 @@ namespace PuzzlePathDimension {
       _body.Restitution = .8f;
       _body.Inertia = 0f;
       _body.Friction = 0f;
+      // Mark the body as belonging to a ball.
+      _body.UserData = "ball";
     }
 
     /// <summary>
@@ -107,9 +115,9 @@ namespace PuzzlePathDimension {
       if (_body == null) {
         throw new InvalidOperationException("Call InitBody() on the Ball object first.");
       }
-
-      // Let the ball be subjected to the World's gravity.
+      // Let the ball be subjected to the World's physical forces.
       _body.BodyType = BodyType.Dynamic;
+      // Propel the ball!
       _body.LinearVelocity = new Vector2(velX, velY);
     }
 
@@ -120,7 +128,6 @@ namespace PuzzlePathDimension {
       if (_body == null) {
         throw new InvalidOperationException("Call InitBody() on the Ball object first.");
       }
-
       // Temporarily remove the ball from being checked by the World while changing the BodyType
       // back in order to avoid errors.
       _body.Enabled = false;
@@ -139,8 +146,8 @@ namespace PuzzlePathDimension {
     public void Draw(SpriteBatch spriteBatch) {
       // Draw the ball, using the center as the origin.
       Vector2 center = new Vector2((_width / 2.0f), (_height / 2.0f));
-
-      spriteBatch.Draw(_texture, Center, null, Color.White, 0f, center, 1f, SpriteEffects.None, 0f);
+      Vector2 drawPos = UnitConverter.ToPixels(_body.Position);
+      spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, center, 1f, SpriteEffects.None, 0f);
     }
   }
 }

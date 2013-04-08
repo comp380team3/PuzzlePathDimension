@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,6 +75,11 @@ namespace PuzzlePathDimension {
       foreach (Platform plat in Platforms) {
         plat.InitBody(_world);
       }
+
+      // Add the treasures to the world.
+      foreach (Treasure treasure in Treasures) {
+        treasure.InitBody(_world);
+      }
     }
 
     /// <summary>
@@ -117,11 +123,11 @@ namespace PuzzlePathDimension {
       Completed = false;
 
       foreach (Platform platform in Platforms) {
-        platform.Visible = true;
+        platform.Reset();
       }
 
       foreach (Treasure treasure in Treasures) {
-        treasure.Active = true;
+        treasure.Reset();
       }
     }
   }

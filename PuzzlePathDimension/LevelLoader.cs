@@ -56,7 +56,9 @@ namespace PuzzlePathDimension {
       size.Y = Convert.ToInt16(node.Attributes["length"].Value);
 
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
-      Platform platform = new Platform(Content.Load<Texture2D>("platform_new"), position, size, breakable);
+      Texture2D texture = breakable ? 
+        Content.Load<Texture2D>("platform_breakable") : Content.Load<Texture2D>("platform_new");
+      Platform platform = new Platform(texture, position, size, breakable);
 
       return platform;
     }
@@ -66,8 +68,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Treasure treasure = new Treasure();
-      treasure.Initialize(Content.Load<Texture2D>("treasure"), position);
+      Treasure treasure = new Treasure(Content.Load<Texture2D>("treasure"), position);
 
       return treasure;
     }

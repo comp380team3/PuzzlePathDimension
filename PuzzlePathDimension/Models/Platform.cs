@@ -3,6 +3,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics.Contacts;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -78,7 +79,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Vector2 Size {
       get { return _size; }
-      set { 
+      set {
         _size = value;
         // Changing the platform's size also moves its center, so figure out 
         // the position of the new center.
@@ -93,12 +94,24 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets the height of the platform.
+    /// </summary>
+    public int Height {
+      get { return (int)_size.Y; }
+    }
+
+    /// <summary>
+    /// Gets the width of the platform.
+    /// </summary>
+    public int Width {
+      get { return (int)_size.X; }
+    }
+
+    /// <summary>
     /// Gets whether the platform is visible.
     /// </summary>
     public bool Visible {
       get { return _visible; }
-      // TODO: move the setter into some sort of Break() method.
-      set { _visible = value; }
     }
 
     /// <summary>
@@ -146,7 +159,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Initializes the platform's Body object.
     /// </summary>
-    /// <param name="world">The World object that the ball will be a part of.</param>
+    /// <param name="world">The World object that the platform will be a part of.</param>
     public void InitBody(World world) {
       if (_body != null) {
         throw new InvalidOperationException("There is already a Body object for this platform.");
@@ -165,11 +178,57 @@ namespace PuzzlePathDimension {
       // Set other properties of the Platform's body.
       _body.Friction = 0f;
       _body.Restitution = .8f;
+      // Mark the body as belonging to a platform.
+      _body.UserData = "platform";
+      // Listen for collision events.
+      _body.OnCollision += new OnCollisionEventHandler(HandleCollision);
+    }
+
+    /// <summary>
+    /// Called when a collision with the platform occurs.
+    /// </summary>
+    /// <param name="fixtureA">The first fixture that has collided.</param>
+    /// <param name="fixtureB">The second fixture that has collided.</param>
+    /// <param name="contact">The Contact object that contains information about the collision.</param>
+    /// <returns>Whether the collision should still happen.</returns>
+    private bool HandleCollision(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+      // Check if one of the Fixtures belongs to a ball.
+      bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
+
+      // We only really care about breakable platforms...
+      if (contact.IsTouching() && causedByBall && _breakable) {
+        // A ball should only bounce off a breakable platform once.
+        if (_visible) {
+          Break();
+          return true; // Allow the collision to occur.
+        } else {
+          return false; // The platform's broken; don't bounce off it.
+        }
+      }
+      // In all other cases, let the collision occur.
+      return true;
     }
 
     /*****************************
      * Brian's Physics stuff ends*
      * **************************/
+
+    /// <summary>
+    /// Breaks a breakable platform.
+    /// </summary>
+    private void Break() {
+      if (!_breakable) {
+        throw new InvalidOperationException("You can't break a non-breakable platform.");
+      }
+      _visible = false;
+    }
+
+    /// <summary>
+    /// Restores a platform to its original state.
+    /// </summary>
+    public void Reset() {
+      _visible = true;
+    }
 
     /// <summary>
     /// Draws the platform to the screen.
@@ -179,9 +238,10 @@ namespace PuzzlePathDimension {
       if (_visible) {
         // Scale the texture to the appropriate size.
         Vector2 scale = new Vector2(_size.X / (float)_texture.Width, _size.Y / (float)_texture.Height);
+        // Get the center of the texture.
+        Vector2 origin = new Vector2((float)_texture.Width / 2, (float)_texture.Height / 2);
         // Draw it!
-        // TODO: replace hard-coded origin
-        spriteBatch.Draw(_texture, _center, null, Color.White, 0f, new Vector2(10, 10), scale, SpriteEffects.None, 0f);
+        spriteBatch.Draw(_texture, _center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
       }
     }
 
