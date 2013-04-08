@@ -9,7 +9,7 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// The Goal class represents the goal of a level.
   /// </summary>
-  class Goal {
+  public class Goal {
     /// <summary>
     /// The hard-coded height of the goal, in pixels.
     /// </summary>
@@ -78,16 +78,13 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Whether the goal was touched by a ball.
+    /// This delegate is called when the goal is touched.
     /// </summary>
-    private bool _touched;
+    public delegate void GoalTouched();
     /// <summary>
-    /// Gets whether the goal was touched by a ball.
-    /// TODO: This is basically a poor man's C# event...
+    /// Occurs when the goal is touched.
     /// </summary>
-    public bool Touched {
-      get { return _touched; }
-    }
+    public event GoalTouched OnGoalCollision;
 
     /// <summary>
     /// Constructs a Goal object.
@@ -106,8 +103,6 @@ namespace PuzzlePathDimension {
       // Figure out the origin and center of the goal.
       _origin = position;
       _center = CalculateCenter();
-      // The goal should be initially untouched.
-      _touched = false;
       // Leave the Body object uninitialized until a World object comes by to initialize it.
       _body = null;
     }
@@ -161,19 +156,15 @@ namespace PuzzlePathDimension {
       bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
 
       // Only mark the goal as collected if a ball collided with it for the first time.
-      if (contact.IsTouching() && causedByBall && !_touched) {
-        _touched = true;
+      if (contact.IsTouching() && causedByBall) {
+        // Call any methods that are listening to this event.
+        if (OnGoalCollision != null) {
+          OnGoalCollision();
+        }
       }
       // A goal isn't an object that should be bounced off of, so don't actually
       // cause the collision to happen in the physics simulation.
       return false;
-    }
-
-    /// <summary>
-    /// Resets the state of the goal.
-    /// </summary>
-    public void Reset() {
-      _touched = false;
     }
 
     /// <summary>

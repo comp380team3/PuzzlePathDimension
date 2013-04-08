@@ -59,6 +59,9 @@ namespace PuzzlePathDimension {
       get { return _width; }
     }
 
+    /// <summary>
+    /// Gets the current velocity of the ball.
+    /// </summary>
     public Vector2 Velocity {
       get { return _body.LinearVelocity; }
     }
@@ -125,17 +128,36 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Stops the ball.
+    /// Stops the ball and resets the Body's state.
     /// </summary>
-    public void Stop() {
+    /// <param name="world">The World that the ball's Body is in.</param>
+    public void Stop(World world) {
       if (_body == null) {
         throw new InvalidOperationException("Call InitBody() on the Ball object first.");
       }
-      // Temporarily remove the ball from being checked by the World while changing the BodyType
-      // back in order to avoid errors.
-      _body.Enabled = false;
-      _body.BodyType = BodyType.Static;
-      _body.Enabled = true;
+      /* We need to make the ball's Body object a static one again, but we can't do that
+       * directly because that causes errors to occur. We also can't disable the body and
+       * then re-enable it because if Stop() is called during an OnCollision event,
+       * the Body's Fixture becomes null, and that causes an exception in the physics engine's
+       * code because it calls OnCollision for both Bodies. Thus, we need to resort to 
+       * this workaround. - Jorenz */
+
+      // Store the current position of the body, as we'll need to restore that position
+      // when we recreate the Body object.
+      Vector2 currentPos = _body.Position;
+      // RemoveBody() actually does not remove the body immediately, which allows any
+      // OnCollision events involving the ball to finish safely. The Ball's body will be
+      // removed during the next timestep.
+      world.RemoveBody(_body);
+      // Don't keep a reference to the old Body.
+      _body = null;
+
+      // Call InitBody() again to get a new Body that is set to be static.
+      InitBody(world);
+      // Set the Body's position to where the old one used to be. Normally, the launcher
+      // moves the Body anyway after this step, but if the ball has hit a goal, we want 
+      // the ball to stay where it is.
+      _body.Position = currentPos;
     }
 
     /*****************************
@@ -149,6 +171,7 @@ namespace PuzzlePathDimension {
     public void Draw(SpriteBatch spriteBatch) {
       // Draw the ball, using the center as the origin.
       Vector2 center = new Vector2((_width / 2.0f), (_height / 2.0f));
+      // Make sure that the position is in pixels before drawing it.
       Vector2 drawPos = UnitConverter.ToPixels(_body.Position);
       spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, center, 1f, SpriteEffects.None, 0f);
     }

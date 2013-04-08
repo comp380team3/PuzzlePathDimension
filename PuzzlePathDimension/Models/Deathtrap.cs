@@ -12,7 +12,7 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// The Deathtrap class contains a death trap's data.
   /// </summary>
-  class DeathTrap {
+  public class DeathTrap {
     /// <summary>
     /// The hard-coded height of the death trap.
     /// </summary>

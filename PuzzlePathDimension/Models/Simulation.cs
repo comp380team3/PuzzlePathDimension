@@ -79,6 +79,8 @@ namespace PuzzlePathDimension {
 
       // Add the goal to the world.
       Goal.InitBody(_world);
+      // When the ball touches the goal, conclude the simulation phase.
+      Goal.OnGoalCollision += Complete;
 
       // Add the platforms to the world.
       foreach (Platform plat in Platforms) {
@@ -131,10 +133,6 @@ namespace PuzzlePathDimension {
 
       _world.Step(time);
 
-      if (Goal.Touched && !_completed) {
-        Complete();
-      }
-
       foreach (DeathTrap trap in DeathTraps) {
         if (trap.Touched) {
           EndAttempt();
@@ -149,7 +147,7 @@ namespace PuzzlePathDimension {
 
     private void Complete() {
       _completed = true;
-      Ball.Stop();
+      Ball.Stop(_world);
 
       Console.WriteLine("You're winner!");
       int collected = 0;
@@ -184,8 +182,6 @@ namespace PuzzlePathDimension {
       Attempts = 3;
       _completed = false;
 
-      Goal.Reset();
-
       foreach (Platform platform in Platforms) {
         platform.Reset();
       }
@@ -199,15 +195,15 @@ namespace PuzzlePathDimension {
       }
 
       if (!Launcher.Movable) {
-        Ball.Stop();
+        Ball.Stop(_world);
         Launcher.LoadBall(Ball);
       }
     }
 
     private void EndAttempt() {
-      Ball.Stop();
+      Ball.Stop(_world);
 
-      // Don't load a new ball if the player ran out of balls
+      // Don't load a new ball if the player ran out of balls.
       if (Attempts > 0) {
         Launcher.LoadBall(Ball);
       } else {
