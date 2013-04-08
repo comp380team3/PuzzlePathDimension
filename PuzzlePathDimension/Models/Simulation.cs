@@ -7,6 +7,24 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
+  /// <summary>
+  /// The current state of the simulation.
+  /// </summary>
+  public enum SimulationState {
+    /// <summary>
+    /// The level has neither been completed nor failed.
+    /// </summary>
+    Active,
+    /// <summary>
+    /// The level has been completed.
+    /// </summary>
+    Completed,
+    /// <summary>
+    /// The level has been failed.
+    /// </summary>
+    Failed
+  }
+
   class Simulation {
     /// <summary>
     /// The width of the playing field, in pixels.
@@ -141,22 +159,27 @@ namespace PuzzlePathDimension {
       get { return _bounces; }
     }
 
+    /// <summary>
+    /// The time when the simulation started.
+    /// </summary>
     private DateTime _startTime;
-
+    /// <summary>
+    /// Gets the time when the simulation started.
+    /// </summary>
     public DateTime StartTime {
       get { return _startTime; }
     }
 
     /// <summary>
-    /// Whether the player can interact with the simulation.
+    /// The current state of the simulation.
     /// </summary>
-    private bool _active;
+    private SimulationState _currentState;
 
     /// <summary>
-    /// Gets whether the player can interact with the simulation.
+    /// Gets the current state of the simulation.
     /// </summary>
-    public bool Active {
-      get { return _active; }
+    public SimulationState CurrentState {
+      get { return _currentState; }
     }
 
     /// <summary>
@@ -168,6 +191,20 @@ namespace PuzzlePathDimension {
     /// The ball texture to use.
     /// </summary>
     private Texture2D _ballTex;
+
+    /// <summary>
+    /// This delegate is usually called when the simulation's state is changed.
+    /// </summary>
+    /// <param name="simulation">The simulation object to pass.</param>
+    public delegate void SimulationStateChange(Simulation simulation);
+    /// <summary>
+    /// Occurs when the level has been completed.
+    /// </summary>
+    public event SimulationStateChange OnCompletion;
+    /// <summary>
+    /// Occurs when the level has been failed.
+    /// </summary>
+    public event SimulationStateChange OnFailure;
 
     /// <summary>
     /// Constructs a Simulation object.
@@ -184,7 +221,7 @@ namespace PuzzlePathDimension {
       _goal = level.Goal;
       _launcher = level.Launcher;
 
-      // TODO: Hard-coded for now; this should be loaded from the level
+      // TODO: The attempts are hard-coded for now; this should be loaded from the level.
       // Initialize various stats.
       _startingAttempts = 3;
       _attemptsLeft = _startingAttempts;
@@ -197,7 +234,7 @@ namespace PuzzlePathDimension {
       InitWorld();
 
       // Allow the user to interact with the simulation, and start the timer.
-      _active = true;
+      _currentState = SimulationState.Active;
       _startTime = DateTime.Now;
     }
 
@@ -280,7 +317,8 @@ namespace PuzzlePathDimension {
       _world.Step(time);
 
       // Checks if a launched ball has no velocity, which ends the current attempt.
-      if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable && _active) {
+      if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable 
+        && _currentState == SimulationState.Active) {
         EndAttempt();
       }
     }
@@ -304,9 +342,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     private void Complete() {
       // Stop the ball and don't accept any more input for the simulation.
-      _active = false;
+      _currentState = SimulationState.Completed;
       _ball.Stop(_world);
 
+      // Get the amount of time spent.
       TimeSpan timeSpent = DateTime.Now - _startTime;
       
       Console.WriteLine("You're winner!");
@@ -314,6 +353,11 @@ namespace PuzzlePathDimension {
       Console.WriteLine("Time spent (seconds): " + timeSpent.Seconds);
       Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
       Console.WriteLine("Ball bounces: " + _bounces);
+
+      // Do anything that needs to be done when the level is completed.
+      if (OnCompletion != null) {
+        OnCompletion(this);
+      }
     }
 
     /// <summary>
@@ -321,7 +365,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void HandleConfirm() {
       // If the level has been completed or failed, do nothing.
-      if (!_active) {
+      if (_currentState != SimulationState.Active) {
         return;
       }
 
@@ -334,7 +378,7 @@ namespace PuzzlePathDimension {
       }
         // While the ball is moving, the user can hit Confirm to destroy
         // the ball.
-      else if (_active) {
+      else if (_currentState != SimulationState.Active) {
         EndAttempt();
       }
     }
@@ -348,7 +392,7 @@ namespace PuzzlePathDimension {
       _startTime = DateTime.Now;
       _collectedTreasures = 0;
       _bounces = 0;
-      _active = true;
+      _currentState = SimulationState.Active;
 
       // Restore all breakable platforms and treasures.
       foreach (Platform platform in _platforms) {
@@ -377,8 +421,13 @@ namespace PuzzlePathDimension {
       if (_attemptsLeft > 0) {
         _launcher.LoadBall(Ball);
       } else {
-        _active = false;
+        _currentState = SimulationState.Failed;
         Console.WriteLine("You lose!");
+
+        // Do anything that needs to be done when the level is failed.
+        if (OnFailure != null) {
+          OnFailure(this);
+        }
       }
     }
   }
