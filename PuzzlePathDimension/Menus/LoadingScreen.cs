@@ -107,7 +107,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the loading screen.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       // If we are the only active screen, that means all the previous screens
       // must have finished transitioning off. We check for this in the Draw
       // method, rather than in Update, because it isn't enough just for the
@@ -125,7 +125,6 @@ namespace PuzzlePathDimension {
       // tells us how long the loading is going to take, so we know whether
       // to bother drawing the message.
       if (loadingIsSlow) {
-        SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
         SpriteFont font = ScreenManager.Font;
 
         const string message = "Loading...";

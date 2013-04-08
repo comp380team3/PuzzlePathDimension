@@ -118,8 +118,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the message box.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       SpriteFont font = ScreenManager.Font;
 
       // Darken down any other screens that were drawn beneath the popup.

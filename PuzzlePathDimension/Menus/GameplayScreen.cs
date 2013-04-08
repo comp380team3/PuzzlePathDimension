@@ -164,10 +164,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the gameplay screen.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
 
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
       spriteBatch.Begin();
 
       // Draw the background.

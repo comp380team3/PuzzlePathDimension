@@ -48,14 +48,6 @@ namespace PuzzlePathDimension {
 
   /* Properties */
     /// <summary>
-    /// A default SpriteBatch shared by all the screens. This saves
-    /// each screen having to bother creating their own local instance.
-    /// </summary>
-    public SpriteBatch SpriteBatch {
-      get { return spriteBatch; }
-    }
-
-    /// <summary>
     /// A default font shared by all the screens. This saves
     /// each screen having to bother loading their own local copy.
     /// </summary>
@@ -197,12 +189,8 @@ namespace PuzzlePathDimension {
         if (screen.ScreenState == ScreenState.Hidden)
           continue;
 
-        screen.Draw(gameTime);
+        screen.Draw(gameTime, spriteBatch);
       }
-    }
-
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      Draw(gameTime);
     }
 
   /* Public Methods */

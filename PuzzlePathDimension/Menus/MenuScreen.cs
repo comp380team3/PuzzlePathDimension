@@ -188,12 +188,11 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the menu.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       // make sure our entries are in the right place before we draw them
       UpdateMenuEntryLocations();
 
       GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
       SpriteFont font = ScreenManager.Font;
 
       spriteBatch.Begin();
@@ -204,7 +203,7 @@ namespace PuzzlePathDimension {
 
         bool isSelected = IsActive && (i == selectedEntry);
 
-        menuEntry.Draw(this, isSelected, gameTime);
+        menuEntry.Draw(this, spriteBatch, isSelected, gameTime);
       }
 
       // Make the menu slide into place during transitions, using a

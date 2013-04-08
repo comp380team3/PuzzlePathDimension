@@ -84,8 +84,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the background screen.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
       Rectangle fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
 

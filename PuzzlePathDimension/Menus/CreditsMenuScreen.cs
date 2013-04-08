@@ -81,10 +81,10 @@ namespace PuzzlePathDimension {
     /// organizations list, and the individual contributions list.
     /// </summary>
     /// <param name="gameTime"></param>
-    public override void Draw(GameTime gameTime) {
-      base.Draw(gameTime);
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
       GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
       SpriteFont font = ScreenManager.TextFont;
 
       spriteBatch.Begin();

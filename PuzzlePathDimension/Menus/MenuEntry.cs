@@ -128,7 +128,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the menu entry. This can be overridden to customize the appearance.
     /// </summary>
-    public virtual void Draw(MenuScreen screen, bool isSelected, GameTime gameTime) {
+    public virtual void Draw(MenuScreen screen, SpriteBatch spriteBatch,
+                             bool isSelected, GameTime gameTime) {
       // there is no such thing as a selected item on Windows Phone, so we always
       // force isSelected to be false
 #if WINDOWS_PHONE
@@ -150,7 +151,6 @@ namespace PuzzlePathDimension {
 
       // Draw text, centered on the middle of each line.
       ScreenRenderer screenManager = screen.ScreenManager;
-      SpriteBatch spriteBatch = screenManager.SpriteBatch;
       SpriteFont font = screenManager.Font;
 
       Vector2 origin = new Vector2(0, font.LineSpacing / 2);

@@ -11,6 +11,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 namespace PuzzlePathDimension {
@@ -265,7 +266,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// This is called when the screen should draw itself.
     /// </summary>
-    public virtual void Draw(GameTime gameTime) { }
+    public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
 
 
     #endregion
