@@ -36,7 +36,12 @@ namespace PuzzlePathDimension {
     public Goal Goal { get; set; }
     public Launcher Launcher { get; set; }
     public int Attempts { get; set; }
-    public bool Completed { get; set; }
+
+    private bool _completed;
+
+    public bool Completed {
+      get { return _completed; }
+    }
 
     public Texture2D Background { get; set; }
 
@@ -53,10 +58,11 @@ namespace PuzzlePathDimension {
       DeathTraps = new List<DeathTrap>(level.DeathTraps);
       Goal = level.Goal;
       Launcher = level.Launcher;
-      // TODO: Hard-coded for now
+      // TODO: Hard-coded for now; this should be loaded from the level
       Attempts = 3;
-      Completed = false;
+      _completed = false;
 
+      // Create the physics simulation.
       InitWorld();
     }
 
@@ -70,6 +76,9 @@ namespace PuzzlePathDimension {
 
       // Make sure that the level has boundaries.
       CreateWalls();
+
+      // Add the goal to the world.
+      Goal.InitBody(_world);
 
       // Add the platforms to the world.
       foreach (Platform plat in Platforms) {
@@ -112,6 +121,31 @@ namespace PuzzlePathDimension {
     /// <param name="time">The amount of time that has passed since the last update.</param>
     public void Step(float time) {
       _world.Step(time);
+
+      if (Goal.Touched && !_completed) {
+        Complete();
+      }
+    }
+
+    private void Complete() {
+      _completed = true;
+      Ball.Stop();
+
+      Console.WriteLine("You're winner!");
+    }
+
+    public void HandleConfirm() {
+      if (Attempts <= 0) {
+        return;
+      }
+
+      if (Launcher.Movable) {
+        Launcher.LaunchBall();
+      }
+      // Stops the current attempt unless the ball hit the goal already
+      else if (!Completed) {
+        SubtractAttempt();
+      }
     }
 
     /// <summary>
@@ -120,7 +154,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void Restart() {
       Attempts = 3;
-      Completed = false;
+      _completed = false;
+
+      Goal.Reset();
 
       foreach (Platform platform in Platforms) {
         platform.Reset();
@@ -128,6 +164,24 @@ namespace PuzzlePathDimension {
 
       foreach (Treasure treasure in Treasures) {
         treasure.Reset();
+      }
+
+      if (!Launcher.Movable) {
+        Ball.Stop();
+        Launcher.LoadBall(Ball);
+      }
+    }
+
+    private void SubtractAttempt() {
+      Attempts -= 1;
+      Console.WriteLine("Attempts left: " + Attempts);
+      Ball.Stop();
+
+      // Don't load a new ball if the player ran out of balls
+      if (Attempts > 0) {
+        Launcher.LoadBall(Ball);
+      } else {
+        Console.WriteLine("You lose!");
       }
     }
   }

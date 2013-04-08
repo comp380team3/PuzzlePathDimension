@@ -98,8 +98,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Goal goal = new Goal();
-      goal.Initialize(Content.Load<Texture2D>("goal"), position);
+      Goal goal = new Goal(Content.Load<Texture2D>("goal"), position);
 
       return goal;
     }

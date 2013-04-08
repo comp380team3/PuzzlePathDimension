@@ -50,6 +50,7 @@ namespace PuzzlePathDimension {
       if (content == null)
         content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+      // Create the hard-coded level.
       simulation = CreateTestLevel();
 
       // A real game would probably have more content than this sample, so
@@ -94,7 +95,7 @@ namespace PuzzlePathDimension {
       // Update the launcher's state
       simulation.Launcher.Update();
 
-      // Update the simulation's state
+      // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
     }
 
@@ -110,14 +111,8 @@ namespace PuzzlePathDimension {
       Ball ball = simulation.Ball;
 
       // Route user input to the approproate action
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm) && simulation.Attempts > 0) {
-        if (launcher.Movable) {
-          launcher.LaunchBall();
-        }
-        // Stops the current attempt unless the ball hit the goal already
-        else if (!simulation.Completed) {
-          SubtractAttempt();
-        }
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        simulation.HandleConfirm();
       } else if (vtroller.Left == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)Math.PI / 64);
       } else if (vtroller.Right == VirtualButtonState.Pressed) {
@@ -132,17 +127,12 @@ namespace PuzzlePathDimension {
       if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
-
-        if (!launcher.Movable) {
-          ball.Stop();
-          launcher.LoadBall(ball);
-        }
       }
 
-      MouseState mouse = Mouse.GetState();
+      /*MouseState mouse = Mouse.GetState();
       if (mouse.LeftButton == ButtonState.Pressed) {
         Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
-      }
+      }*/
 
       //Check to see if the Player one controller has pressed the "B" button, if so, then
       //call the screen event associated with this screen
@@ -162,18 +152,20 @@ namespace PuzzlePathDimension {
 
       spriteBatch.Begin();
 
+      // Draw the background.
       spriteBatch.Draw(simulation.Background, Vector2.Zero, Color.White);
 
+      // Draw the walls.
       DrawWalls(spriteBatch);
 
-      // Draw the goal on the canvas
+      // Draw the goal onto the canvas.
       simulation.Goal.Draw(spriteBatch);
 
-      // Draw the platform on the canvas
+      // Draw the platforms onto the canvas.
       foreach (Platform platform in simulation.Platforms) {
         platform.Draw(spriteBatch);
       }
-      // Draw the treasures on the canvas
+      // Draw the treasures on the canvas.
       foreach (Treasure treasure in simulation.Treasures) {
         treasure.Draw(spriteBatch);
       }
@@ -182,7 +174,7 @@ namespace PuzzlePathDimension {
         deathTrap.Draw(spriteBatch);
       }
 
-      // Draw the ball onto the canvas
+      // Draw the ball on the canvas.
       simulation.Ball.Draw(spriteBatch);
 
       // Draw the launcher on the canvas
@@ -198,10 +190,16 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Draw the hard-coded walls.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the walls.</param>
     private void DrawWalls(SpriteBatch spriteBatch) {
       Texture2D topBottom = content.Load<Texture2D>("TopBottom");
       Texture2D sideWall = content.Load<Texture2D>("SideWall");
 
+      // I'd rather have 5-pixel thick walls then 10-pixel thick walls, so I offset each wall
+      // by 5 pixels. - Jorenz
       spriteBatch.Draw(topBottom, new Vector2(0, -5), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       spriteBatch.Draw(topBottom, new Vector2(0, 595), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       spriteBatch.Draw(sideWall, new Vector2(-5, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -223,7 +221,6 @@ namespace PuzzlePathDimension {
       ball.InitBody(simulation.World);
 
       simulation.Ball = ball;
-
       simulation.Launcher.LoadBall(ball);
 
       return simulation;
@@ -237,36 +234,7 @@ namespace PuzzlePathDimension {
 
     private void UpdateCollision() {
       Ball ball = simulation.Ball;
-
-      Rectangle ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
-
-      foreach (Platform platform in simulation.Platforms) {
-        Rectangle platformRectangle = new Rectangle(
-            (int)platform.Position.X,
-            (int)platform.Position.Y,
-            platform.Width,
-            platform.Height);
-
-        bool collision = false;
-
-        if (platform.Active) {
-          collision = IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
-        }
-        if (collision && platform.Breakable) {
-          platform.Active = false;
-        }
-      }
-
-      // I'm using rectangle collision for testing purposes; please replace this! - Jorenz
-      foreach (Treasure treasure in simulation.Treasures) {
-        Rectangle treasureRect = new Rectangle( (int)treasure.Position.X, (int)treasure.Position.Y,
-          treasure.Width, treasure.Height);
-
-        if (treasureRect.Intersects(ballRectangle)){
-          treasure.Collect();
-        }
-      }
-
+   * 
       foreach (DeathTrap deathTrap in simulation.DeathTraps) {
         Rectangle trapRect = new Rectangle((int)deathTrap.Position.X, (int)deathTrap.Position.Y,
           deathTrap.Width, deathTrap.Height);
@@ -298,41 +266,6 @@ namespace PuzzlePathDimension {
       }
     }
   #endregion*/
-
-    private void SubtractAttempt() {
-      simulation.Attempts -= 1;
-      Console.WriteLine("Attempts left: " + simulation.Attempts);
-      simulation.Ball.Stop();
-
-      // Don't load a new ball if the player ran out of balls
-      if (simulation.Attempts > 0) {
-        simulation.Launcher.LoadBall(simulation.Ball);
-      }
-      else {
-        Console.WriteLine("You lose!");
-      }
-    }
-
-    /// <summary>
-    /// Creates the level perimeter.
-    /// </summary>
-    /// <param name="theContent">The ContentManager that will be used to load the wall textures.</param>
-    /*private void CreateBox(ContentManager theContent) {
-      walls = new List<Platform>();
-      Texture2D topBottom = theContent.Load<Texture2D>("TopBottom");
-      Texture2D sideWall = theContent.Load<Texture2D>("SideWall");
-
-      // The -5 offset is there because I prefer a 5-pixel thick wall, not a 10-pixel thick one. - Jorenz
-      // It would probably be best to define some constants...
-      Platform top = new Platform(topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, -5));
-      Platform bottom = new Platform(topBottom, new Vector2(topBottom.Width, topBottom.Height), new Vector2(0, 595));
-      Platform left = new Platform(sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(-5, 0));
-      Platform right = new Platform(sideWall, new Vector2(sideWall.Width, sideWall.Height), new Vector2(795, 0));
-
-      walls.Add(top);
-      walls.Add(bottom);
-      walls.Add(left);
-      walls.Add(right);
-    }*/
+    
   }
 }

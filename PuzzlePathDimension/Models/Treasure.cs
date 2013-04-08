@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Dynamics;
@@ -97,7 +94,7 @@ namespace PuzzlePathDimension {
     /// Constructs a Treasure object.
     /// </summary>
     /// <param name="texture">The texture to draw the treasure with.</param>
-    /// <param name="position">The position of the texture.</param>
+    /// <param name="position">The upper-left corner of the treasure, in pixels.</param>
     public Treasure(Texture2D texture, Vector2 position) {
       // Set the texture.
       _texture = texture;
