@@ -93,7 +93,7 @@ namespace PuzzlePathDimension {
         return;
 
       // Update the launcher's state
-      simulation.Launcher.Update();
+      // simulation.Launcher.Update();
 
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -106,7 +106,7 @@ namespace PuzzlePathDimension {
     public override void HandleInput(VirtualController vtroller) {
       Launcher launcher = simulation.Launcher;
 
-      // Route user input to the approproate action
+      // Route user input to the appropriate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         simulation.HandleConfirm();
       } else if (vtroller.Left == VirtualButtonState.Pressed) {
@@ -168,7 +168,7 @@ namespace PuzzlePathDimension {
       simulation.Ball.Draw(spriteBatch);
 
       // Draw the launcher on the canvas
-      simulation.Launcher.Draw(spriteBatch, content.Load<Texture2D>("power_meter"));
+      simulation.Launcher.Draw(spriteBatch);
 
       spriteBatch.End();
 

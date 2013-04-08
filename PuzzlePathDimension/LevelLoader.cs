@@ -88,7 +88,8 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Launcher launcher = new Launcher(Content.Load<Texture2D>("launcher"), position);
+      Launcher launcher = new Launcher(Content.Load<Texture2D>("launcher"), 
+        Content.Load<Texture2D>("power_meter"), position);
 
       return launcher;
     }
