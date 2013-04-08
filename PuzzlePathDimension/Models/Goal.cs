@@ -30,7 +30,7 @@ namespace PuzzlePathDimension {
     private Body _body;
 
     /// <summary>
-    /// The position of the goal.
+    /// The upper-left corner of the goal, in pixels.
     /// </summary>
     private Vector2 _origin;
     /// <summary>
@@ -103,9 +103,12 @@ namespace PuzzlePathDimension {
         Console.WriteLine("Expected: " + _width + ", " + _height);
         Console.WriteLine("...but the texture is: " + _texture.Width + ", " + _texture.Height);
       }
+      // Figure out the origin and center of the goal.
       _origin = position;
       _center = CalculateCenter();
-
+      // The goal should be initially untouched.
+      _touched = false;
+      // Leave the Body object uninitialized until a World object comes by to initialize it.
       _body = null;
     }
 
@@ -136,7 +139,7 @@ namespace PuzzlePathDimension {
       // Set its position to be the center of the goal, in meters, which is what the
       // physics engine expects.
       _body.Position = UnitConverter.ToMeters(_center);
-      // The platform should never be subjected to the World's physical forces.
+      // The goal should never be subjected to the World's physical forces.
       _body.BodyType = BodyType.Static;
       // The ball should not actually bounce off the goal.
       _body.FixtureList[0].IsSensor = true;

@@ -141,7 +141,7 @@ namespace PuzzlePathDimension {
       // Set its position to be the center of the treasure, in meters, which is what the
       // physics engine expects.
       _body.Position = UnitConverter.ToMeters(_center);
-      // The platform should never be subjected to the World's physical forces.
+      // The goal should never be subjected to the World's physical forces.
       _body.BodyType = BodyType.Static;
       // The ball should not actually bounce off the treasure.
       _body.FixtureList[0].IsSensor = true;

@@ -59,6 +59,10 @@ namespace PuzzlePathDimension {
       get { return _width; }
     }
 
+    public Vector2 Velocity {
+      get { return _body.LinearVelocity; }
+    }
+
     /// <summary>
     /// Constructs a Ball object.
     /// </summary>
@@ -99,6 +103,8 @@ namespace PuzzlePathDimension {
       _body.Restitution = .8f;
       _body.Inertia = 0f;
       _body.Friction = 0f;
+      // Slows down the ball over time.
+      _body.LinearDamping = .1f;
       // Mark the body as belonging to a ball.
       _body.UserData = "ball";
     }

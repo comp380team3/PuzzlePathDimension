@@ -89,6 +89,11 @@ namespace PuzzlePathDimension {
       foreach (Treasure treasure in Treasures) {
         treasure.InitBody(_world);
       }
+
+      // Add the death traps to the world.
+      foreach (DeathTrap trap in DeathTraps) {
+        trap.InitBody(_world);
+      }
     }
 
     /// <summary>
@@ -120,10 +125,25 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="time">The amount of time that has passed since the last update.</param>
     public void Step(float time) {
+      foreach (DeathTrap trap in DeathTraps) {
+        trap.Reset();
+      }
+
       _world.Step(time);
 
       if (Goal.Touched && !_completed) {
         Complete();
+      }
+
+      foreach (DeathTrap trap in DeathTraps) {
+        if (trap.Touched) {
+          SubtractAttempt();
+        }
+      }
+
+      Console.WriteLine(Ball.Velocity.X + " " + Ball.Velocity.Y);
+      if (Ball.Velocity.Equals(Vector2.Zero) && !Launcher.Movable && Attempts > 0) {
+        SubtractAttempt();
       }
     }
 
@@ -132,6 +152,13 @@ namespace PuzzlePathDimension {
       Ball.Stop();
 
       Console.WriteLine("You're winner!");
+      int collected = 0;
+      foreach (Treasure treasure in Treasures) {
+        if (treasure.Collected) {
+          collected++;
+        }
+      }
+      Console.WriteLine("Treasures obtained: " + collected + "/" + Treasures.Count);
     }
 
     public void HandleConfirm() {
@@ -149,8 +176,7 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Restarts the simulation phase. (This might not be needed if we make a deep
-    /// copy of the List objects.)
+    /// Restarts the simulation phase.
     /// </summary>
     public void Restart() {
       Attempts = 3;
@@ -164,6 +190,10 @@ namespace PuzzlePathDimension {
 
       foreach (Treasure treasure in Treasures) {
         treasure.Reset();
+      }
+
+      foreach (DeathTrap trap in DeathTraps) {
+        trap.Reset();
       }
 
       if (!Launcher.Movable) {

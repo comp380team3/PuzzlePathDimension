@@ -104,11 +104,7 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      // Look up inputs for the active player profile.
-      int playerIndex = (int)ControllingPlayer.Value;
-
       Launcher launcher = simulation.Launcher;
-      Ball ball = simulation.Ball;
 
       // Route user input to the approproate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
@@ -129,13 +125,7 @@ namespace PuzzlePathDimension {
         simulation.Restart();
       }
 
-      /*MouseState mouse = Mouse.GetState();
-      if (mouse.LeftButton == ButtonState.Pressed) {
-        Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
-      }*/
-
-      //Check to see if the Player one controller has pressed the "B" button, if so, then
-      //call the screen event associated with this screen
+      // Go back to the main menu
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ExitScreen();
         ScreenManager.AddScreen(new MainMenuScreen(), null);
@@ -225,47 +215,6 @@ namespace PuzzlePathDimension {
 
       return simulation;
     }
-  #endregion
-
-  /*#region Collision Detection
-      // No intersection found
-      return false;
-    }
-
-    private void UpdateCollision() {
-      Ball ball = simulation.Ball;
-   * 
-      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
-        Rectangle trapRect = new Rectangle((int)deathTrap.Position.X, (int)deathTrap.Position.Y,
-          deathTrap.Width, deathTrap.Height);
-
-        // Don't check if the player already ran out of balls, or else the attempts will
-        // go into the negatives.
-        if (trapRect.Intersects(ballRectangle) && simulation.Attempts > 0) {
-          SubtractAttempt();
-        }
-      }
-
-      Goal goal = simulation.Goal;
-      Rectangle goalRect = new Rectangle((int)goal.Position.X, (int)goal.Position.Y,
-        goal.Width, goal.Height);
-
-      if (goalRect.Intersects(ballRectangle) && !simulation.Completed) {
-        ball.Stop();
-        simulation.Completed = true;
-        Console.WriteLine("You win!");
-
-        int treasures = 0;
-        foreach (Treasure treasure in simulation.Treasures) {
-          // Count every treasure that was collected.
-          if (!treasure.Active) {
-            treasures++;
-          }
-        }
-        Console.WriteLine("Treasures obtained: " + treasures + "/" + simulation.Treasures.Count);
-      }
-    }
-  #endregion*/
-    
+  #endregion 
   }
 }
