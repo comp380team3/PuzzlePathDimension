@@ -23,11 +23,21 @@ namespace PuzzlePathDimension {
         platform.Draw(_spriteBatch);
       }
 
+      // Draw the treasures on the canvas
+      foreach (Treasure treasure in BackingModel.Treasures) {
+        treasure.Draw(_spriteBatch);
+      }
+
+      // Draw the death traps on the canvas
+      foreach (DeathTrap trap in BackingModel.DeathTraps) {
+        trap.Draw(_spriteBatch);
+      }
+
       // Draw the ball onto the canvas
       BackingModel.Ball.Draw(_spriteBatch);
 
       // Draw the launcher on the canvas
-      BackingModel.Launcher.Draw(_spriteBatch);
+      //BackingModel.Launcher.Draw(_spriteBatch);
     }
   }
 }

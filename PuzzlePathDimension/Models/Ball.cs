@@ -1,216 +1,188 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
+using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   public class Ball {
     /// <summary>
-    /// The texture that the ball uses.
+    /// The hard-coded height of the ball, in pixels.
+    /// </summary>
+    private const int _height = 25;
+
+    /// <summary>
+    /// The hard-coded width of the ball, in pixels.
+    /// </summary>
+    private const int _width = 25;
+
+    /// <summary>
+    /// The texture that the ball will be drawn with.
     /// </summary>
     private Texture2D _texture;
 
     /// <summary>
-    /// The texture's color data.
+    /// Gets the texture that the ball will be drawn with.
     /// </summary>
-    private Color[] _colorData;
-
-    /// <summary>
-    /// The position of the ball.
-    /// </summary>
-    private Vector2 _position;
-
-    /// <summary>
-    /// The velocity of the ball.
-    /// </summary>
-    private Vector2 _velocity;
-
-    /// <summary>
-    /// The Viewport object that the ball will be drawn to.
-    /// </summary>
-    private Viewport _viewport;
-
-    /// <summary>
-    /// Whether the ball is active.
-    /// </summary>
-    private bool _active;
-
     public Texture2D Texture {
       get { return _texture; }
     }
 
-    /// <summary>
-    /// Gets or sets the position of the ball.
-    /// </summary>
-    public Vector2 Position {
-      get { return _position; }
-      set { _position = value; }
-    }
+    /************************
+     * Brian's Physics stuff*
+     * *********************/
 
-    public Vector2 Velocity {
-      get { return _velocity; }
-      set { _velocity = value; }
+    /// <summary>
+    /// The Body that represents the ball in the physics simulation.
+    /// </summary>
+    private Body _body;
+
+    /// <summary>
+    /// Gets or sets the center of the ball, which is its current position, in pixels.
+    /// </summary>
+    public Vector2 Center {
+      get { return UnitConverter.ToPixels(_body.Position); }
+      set { _body.Position = UnitConverter.ToMeters(value); }
     }
 
     /// <summary>
     /// Gets the height of the ball.
     /// </summary>
     public int Height {
-      get { return _texture.Height; }
+      get { return _height; }
     }
 
     /// <summary>
     /// Gets the width of the ball.
     /// </summary>
     public int Width {
-      get { return _texture.Width; }
+      get { return _width; }
     }
 
     /// <summary>
-    /// Gets the ball's horizontal speed.
+    /// Gets the current velocity of the ball.
     /// </summary>
-    public float XVelocity {
-      get { return _velocity.X; }
-      set { _velocity.X = value; }
+    public Vector2 Velocity {
+      get { return _body.LinearVelocity; }
     }
 
     /// <summary>
-    /// Gets the ball's vertical speed.
+    /// Gets whether the ball's Body object has been initialized.
+    /// This property is mainly here for unit-testing purposes.
     /// </summary>
-    public float YVelocity {
-      get { return _velocity.Y; }
-      set { _velocity.Y = value; }
+    public bool BodyActive {
+      get { return !(_body == null); }
     }
 
     /// <summary>
-    /// Gets whether the ball is active.
+    /// Constructs a Ball object.
     /// </summary>
-    public bool Active {
-      get { return _active; }
-    }
-
-    /// <summary>
-    /// Gets the texture's color data.
-    /// </summary>
-    /// <returns>The texture's color data as an array.</returns>
-    public Color[] GetColorData() {
-      // See http://msdn.microsoft.com/en-us/library/0fss9skc.aspx for why
-      // this is not a property.
-      return (Color[])_colorData.Clone();
-    }
-
-    /// <summary>
-    /// Initializes a ball.
-    /// </summary>
-    /// <param name="viewport">The screen that the ball will be drawn on.</param>
     /// <param name="texture">The texture that the ball will be drawn with.</param>
-    /// <param name="position">The initial position of the ball.</param>
-    public void Initialize(Viewport viewport, Texture2D texture, Vector2 position) {
-      // TODO: add exceptions
-
-      // Set the texture of the ball
+    public Ball(Texture2D texture) {
+      // Set the texture of the ball.
       _texture = texture;
 
-      // Get the texture's color data, which is used for per-pixel collision
-      _colorData = new Color[_texture.Width * _texture.Height];
-      _texture.GetData<Color>(_colorData);
+      // Check to make sure that the visual representation of the texture is actually the right
+      // size, and print a warning to the console if that isn't the case.
+      if (_texture != null && _texture.Width * _texture.Height != _width * _height) {
+        Console.WriteLine("Warning: the treasure's texture does not have the expected dimensions.");
+        Console.WriteLine("Expected: " + _width + ", " + _height);
+        Console.WriteLine("...but the texture is: " + _texture.Width + ", " + _texture.Height);
+      }
 
-      // Set the position of the ball
-      _position = position;
-
-      // Set the velocity of the ball
-      _velocity = new Vector2(0, 0);
-
-      // Ball will be stationary at first
-      _active = false;
-
-      _viewport = viewport;
+      // Leave the Body object uninitialized until a World object comes by to initialize it.
+      _body = null;
     }
 
     /// <summary>
-    /// Updates the ball's state.
+    /// Initializes the ball's Body object.
     /// </summary>
-    public void Update() {
-      Vector2 destination = new Vector2(Position.X, Position.Y);
-      destination.X += XVelocity;
-      destination.Y += YVelocity;
-      Position = destination;
+    /// <param name="world">The World object that the ball will be a part of.</param>
+    public void InitBody(World world) {
+      if (_body != null) {
+        throw new InvalidOperationException("There is already a Body object for the ball.");
+      }
+      // Obtain the radius of the ball, in meters.
+      float radius = UnitConverter.ToMeters(_width / 2);
 
-      // Check if the ball is heading off the screen
-      if (Position.X + _texture.Width / 2 > _viewport.Width) {
-        XVelocity = -1 * XVelocity;
-      } else if (Position.X <= 0) {
-        XVelocity = -1 * XVelocity;
-      }
-
-      if (Position.Y + _texture.Height / 2 > _viewport.Height) {
-        YVelocity = -1 * YVelocity;
-      } else if (Position.Y <= 0) {
-        YVelocity = -1 * YVelocity;
-      }
-
-      // TODO: make this friction better
-      /*if (Math.Abs(_xVelocity) < 0.01f) {
-        _xVelocity = 0;
-      }
-      if (Math.Abs(_yVelocity) < 0.01f) {
-        _yVelocity = 0;
-      }
-      _xVelocity *= 0.998f;
-      _yVelocity *= 0.998f;*/
+      // Create the Body object.
+      _body = BodyFactory.CreateCircle(world, radius, 1);
+      // Until the ball is launched, allow the ball's position to be set manually by the launcher.
+      // That is, don't let the World affect the ball's position.
+      _body.BodyType = BodyType.Static;
+      // Set other properties of the ball's Body object.
+      _body.Restitution = .8f;
+      _body.Inertia = 0f;
+      _body.Friction = 0f;
+      // Slows down the ball over time.
+      _body.LinearDamping = .1f;
+      // Associate this Body object with the ball.
+      _body.UserData = "ball";
     }
+
+    /// <summary>
+    /// Launches the ball with a given velocity.
+    /// </summary>
+    /// <param name="velX">The horizontal component of the velocity.</param>
+    /// <param name="velY">The vertical component of the velocity.</param>
+    public void Launch(float velX, float velY) {
+      if (_body == null) {
+        throw new InvalidOperationException("Call InitBody() on the Ball object first.");
+      }
+      // Let the ball be subjected to the World's physical forces.
+      _body.BodyType = BodyType.Dynamic;
+      // Propel the ball!
+      _body.LinearVelocity = new Vector2(velX, velY);
+    }
+
+    /// <summary>
+    /// Stops the ball and resets the Body's state.
+    /// </summary>
+    /// <param name="world">The World that the ball's Body is in.</param>
+    public void Stop(World world) {
+      if (_body == null) {
+        throw new InvalidOperationException("Call InitBody() on the Ball object first.");
+      }
+      /* We need to make the ball's Body object a static one again, but we can't do that
+       * directly because that causes assertions to fail. We also can't disable the body and
+       * then re-enable it because if a Body is disabled during an OnCollision event,
+       * the Body's Fixture becomes null, and that causes an exception in the physics engine's
+       * code because it calls OnCollision for both Bodies. Thus, we need to resort to 
+       * this workaround. - Jorenz */
+
+      // Store the current position of the body, as we'll need to restore that position
+      // when we recreate the Body object.
+      Vector2 currentPos = _body.Position;
+      // RemoveBody() actually does not remove the body immediately, which allows any
+      // OnCollision events involving the ball to finish safely. The Ball's body will be
+      // removed during the next timestep.
+      world.RemoveBody(_body);
+      // Don't keep a reference to the old Body.
+      _body = null;
+
+      // Call InitBody() again to get a new Body that is set to be static.
+      InitBody(world);
+      // Set the Body's position to where the old one used to be. Normally, the launcher
+      // moves the Body anyway after this step, but if the ball has hit a goal, we want 
+      // the ball to stay where it is.
+      _body.Position = currentPos;
+    }
+
+    /*****************************
+     * Brian's Physics stuff ends*
+     * **************************/
 
     /// <summary>
     /// Draws the ball to the screen.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.Draw(_texture, _position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-    }
-
-    /// <summary>
-    /// Flips the ball's velocity on the X axis.
-    /// </summary>
-    public void FlipXDirection() {
-      XVelocity = -1 * XVelocity;
-    }
-
-    /// <summary>
-    /// Flips the ball's velocity on the Y axis.
-    /// </summary>
-    public void FlipYDirection() {
-      YVelocity = -1 * YVelocity;
-    }
-
-    /// <summary>
-    /// Launches the ball.
-    /// </summary>
-    public void Launch(float x, float y) {
-      _active = true;
-
-      XVelocity = x;
-      YVelocity = y;
-    }
-
-    /// <summary>
-    /// Stops the ball.
-    /// </summary>
-    public void Stop() {
-      _active = false;
-
-      XVelocity = 0f;
-      YVelocity = 0f;
-    }
-
-    /// <summary>
-    /// Returns a string representation of the Ball object.
-    /// </summary>
-    /// <returns>Information about the ball.</returns>
-    public override string ToString() {
-      return "Position: " + Position.X + ", " + Position.Y + " | " +
-        "Velocity: " + XVelocity + ", " + YVelocity;
+      // Draw the ball, using the center as the origin.
+      Vector2 center = new Vector2((_width / 2.0f), (_height / 2.0f));
+      // Make sure that the position is in pixels before drawing it.
+      Vector2 drawPos = UnitConverter.ToPixels(_body.Position);
+      spriteBatch.Draw(_texture, drawPos, null, Color.White, 0f, center, 1f, SpriteEffects.None, 0f);
     }
   }
 }
