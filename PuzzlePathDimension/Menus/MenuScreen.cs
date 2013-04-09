@@ -101,7 +101,6 @@ namespace PuzzlePathDimension {
         OnSelectEntry(selectedEntry, PlayerIndex.One);
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         OnCancel(PlayerIndex.One);
-        Console.WriteLine("blah");
       }
     }
 
