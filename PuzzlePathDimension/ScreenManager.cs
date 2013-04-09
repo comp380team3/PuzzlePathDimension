@@ -150,7 +150,7 @@ namespace PuzzlePathDimension {
       if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)) {
         vtroller.Adapter = new KeyboardMouseAdapter();
         Console.WriteLine("Changed to keyboard+mouse adapter.");
-      } else if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start)) {
+      } else if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Back)) {
         vtroller.Adapter = new Xbox360ControllerAdapter();
         Console.WriteLine("Changed to Xbox 360 controller adapter.");
       }

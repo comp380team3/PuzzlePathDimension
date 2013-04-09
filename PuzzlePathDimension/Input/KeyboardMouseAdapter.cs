@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,6 +8,17 @@ namespace PuzzlePathDimension {
   /// expected by the VirtualController.
   /// </summary>
   public class KeyboardMouseAdapter : IVirtualAdapter {
+    /// <summary>
+    /// Gets whether the keyboard and mouse are connected.
+    /// </summary>
+    public bool Connected {
+      // Assume that they always are connected.
+      get { return true; }
+    }
+
+    /// <summary>
+    /// Constructs a KeyboardMouseAdapter object.
+    /// </summary>
     public KeyboardMouseAdapter() { }
 
     /// <summary>
@@ -28,6 +36,24 @@ namespace PuzzlePathDimension {
     /// <returns>The state of the keyboard input that is mapped to the Back input.</returns>
     public VirtualButtonState Back() {
       return Keyboard.GetState().IsKeyDown(Keys.Escape) ?
+        VirtualButtonState.Pressed : VirtualButtonState.Released;
+    }
+
+    /// <summary>
+    /// Defines the mouse input that corresponds to the Context input.
+    /// </summary>
+    /// <returns>The state of the mouse input that is mapped to the Context input.</returns>
+    public VirtualButtonState Context() {
+      return Mouse.GetState().RightButton == ButtonState.Pressed ?
+        VirtualButtonState.Pressed : VirtualButtonState.Released;
+    }
+
+    /// <summary>
+    /// Defines the keyboard input that corresponds to the Pause input.
+    /// </summary>
+    /// <returns>The state of the keyboard input that is mapped to the Pause input.</returns>
+    public VirtualButtonState Pause() {
+      return Keyboard.GetState().IsKeyDown(Keys.Pause) ?
         VirtualButtonState.Pressed : VirtualButtonState.Released;
     }
 

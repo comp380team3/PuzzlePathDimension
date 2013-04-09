@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
   /// <summary>
-  /// The VirtualAdapter interface and any classes that implement it map the input state 
+  /// The IVirtualAdapter interface and any classes that implement it map the input state 
   /// from an input device to input data that the VirtualController understands.
   /// </summary>
   public interface IVirtualAdapter {
+    /// <summary>
+    /// Gets whether the device that an adapter is associated with is connected to the
+    /// computer.
+    /// </summary>
+    bool Connected { get; }
+
     /// <summary>
     /// The equivalent of the Confirm input is defined here.
     /// </summary>
@@ -20,6 +23,17 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <returns>Whether the input device's Back input is pressed or released.</returns>
     VirtualButtonState Back();
+    /// <summary>
+    /// The equivalent of the Context input is defined here.
+    /// </summary>
+    /// <returns>Whether the input device's Context input is pressed or released.</returns>
+    VirtualButtonState Context();
+    /// <summary>
+    /// The equivalent of the Pause input is defined here.
+    /// </summary>
+    /// <returns>Whether the input device's Pause input is pressed or released.</returns>
+    VirtualButtonState Pause();
+
     /// <summary>
     /// The equivalent of the Up input is defined here.
     /// </summary>
