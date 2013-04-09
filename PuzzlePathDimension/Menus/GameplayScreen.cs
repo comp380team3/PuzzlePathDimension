@@ -30,6 +30,8 @@ namespace PuzzlePathDimension {
     Simulation simulation;
     Vector2 playerPosition = new Vector2(100, 100);
 
+    SpriteFont font;
+
     float pauseAlpha;
 
     /// <summary>
@@ -48,6 +50,8 @@ namespace PuzzlePathDimension {
       // from the cache after the level ends.
       if (content == null)
         content = new ContentManager(shared.ServiceProvider, "Content");
+
+      font = shared.Load<SpriteFont>("textfont");
 
       // Create the hard-coded level.
       simulation = CreateTestLevel();
@@ -235,14 +239,14 @@ namespace PuzzlePathDimension {
     private void DrawText(SpriteBatch spriteBatch) {
       // Draw the number of balls left.
       string attemptsText = "Balls left: " + simulation.AttemptsLeft;
-      spriteBatch.DrawString(ScreenManager.TextFont, attemptsText,
+      spriteBatch.DrawString(font, attemptsText,
         new Vector2(10f, 570f), Color.Black);
 
       // If the simulation has concluded in some way, display the approriate message.
       if (simulation.CurrentState == SimulationState.Completed) {
-        spriteBatch.DrawString(ScreenManager.TextFont, "You win!", new Vector2(400f, 300f), Color.Black);
+        spriteBatch.DrawString(font, "You win!", new Vector2(400f, 300f), Color.Black);
       } else if (simulation.CurrentState == SimulationState.Failed) {
-        spriteBatch.DrawString(ScreenManager.TextFont, "You lose.", new Vector2(400f, 300f), Color.Black);
+        spriteBatch.DrawString(font, "You lose.", new Vector2(400f, 300f), Color.Black);
       }
     }
 

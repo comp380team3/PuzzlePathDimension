@@ -49,7 +49,6 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenRenderer : DrawableGameComponent, IScreenList {
-    /* Fields */
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
 
@@ -66,29 +65,8 @@ namespace PuzzlePathDimension {
     // The rendering device that all screens share.
     SpriteBatch spriteBatch;
 
-    // Some shared fonts that all screens can use.
-    SpriteFont font;
-    SpriteFont textFont;
-
     bool hasDevice; // has the graphics device been initialized?
     bool traceEnabled; // do we want to output debugging information?
-
-    /* Properties */
-    /// <summary>
-    /// A default font shared by all the screens. This saves
-    /// each screen having to bother loading their own local copy.
-    /// </summary>
-    public SpriteFont Font {
-      get { return font; }
-    }
-
-    /// <summary>
-    /// A default font shared by all the screens. This is to have
-    /// a font the can be used to write general information to each screen.
-    /// </summary>
-    public SpriteFont TextFont {
-      get { return textFont; }
-    }
 
     /// <summary>
     /// If true, the manager prints out a list of all the screens
@@ -100,7 +78,7 @@ namespace PuzzlePathDimension {
       set { traceEnabled = value; }
     }
 
-    /* Initialization */
+
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
@@ -121,14 +99,12 @@ namespace PuzzlePathDimension {
     /// Load your graphics content.
     /// </summary>
     protected override void LoadContent() {
+      base.LoadContent();
+
       // Load content belonging to the screen manager.
       ContentManager content = Game.Content;
 
       spriteBatch = new SpriteBatch(GraphicsDevice);
-      font = content.Load<SpriteFont>("menufont");
-
-      // Load the text font used for writing on the menu
-      textFont = content.Load<SpriteFont>("textfont");
 
       // Tell each of the screens to load their content.
       foreach (GameScreen screen in screens) {

@@ -38,7 +38,7 @@ namespace PuzzlePathDimension {
       Components.Add(menus);
 
       // Make the mouse visible
-      this.IsMouseVisible = true;
+      IsMouseVisible = true;
     }
 
     /// <summary>
@@ -56,6 +56,7 @@ namespace PuzzlePathDimension {
     /// all of your content.
     /// </summary>
     protected override void LoadContent() {
+      base.LoadContent();
     }
 
     /// <summary>
@@ -64,6 +65,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     protected override void UnloadContent() {
       // TODO: Unload any non ContentManager content here
+      base.UnloadContent();
     }
 
     /// <summary>
