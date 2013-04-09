@@ -1,55 +1,42 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // MainMenuScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using Microsoft.Xna.Framework;
-#endregion
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// The main menu screen is the first thing displayed when the game starts up.
   /// </summary>
   class MainMenuScreen : MenuScreen {
-    #region Initialization
-
-
     /// <summary>
     /// Constructor fills in the menu contents.
     /// </summary>
     public MainMenuScreen()
-      : base("Puzzle Path") {
-      // Create our menu entries.
+        : base("Puzzle Path") {
       MenuEntry playGameMenuEntry = new MenuEntry("Play Game");
-      MenuEntry optionsMenuEntry = new MenuEntry("Options");
-      MenuEntry howToPlayMenuEntry = new MenuEntry("How To Play");
-      MenuEntry creditsMenuEntry = new MenuEntry("Credits");
-      MenuEntry exitMenuEntry = new MenuEntry("Exit");
-
-      // Hook up menu event handlers.
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-      optionsMenuEntry.Selected += OptionsMenuEntrySelected;
-      howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
-      creditsMenuEntry.Selected += CreditsMenuEntrySelected;
-      exitMenuEntry.Selected += OnCancel;
-
-      // Add entries to the menu.
       MenuEntries.Add(playGameMenuEntry);
+
+      MenuEntry optionsMenuEntry = new MenuEntry("Options");
+      optionsMenuEntry.Selected += OptionsMenuEntrySelected;
       MenuEntries.Add(optionsMenuEntry);
+
+      MenuEntry howToPlayMenuEntry = new MenuEntry("How To Play");
+      howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       MenuEntries.Add(howToPlayMenuEntry);
+
+      MenuEntry creditsMenuEntry = new MenuEntry("Credits");
+      creditsMenuEntry.Selected += CreditsMenuEntrySelected;
       MenuEntries.Add(creditsMenuEntry);
+
+      MenuEntry exitMenuEntry = new MenuEntry("Exit");
+      exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }
-
-
-    #endregion
-
-    #region Handle Input
 
 
     /// <summary>
@@ -58,7 +45,6 @@ namespace PuzzlePathDimension {
     void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ScreenManager.AddScreen(new LevelSelectScreen(), e.PlayerIndex);
     }
-
 
     /// <summary>
     /// Event handler for when the Options menu entry is selected.
@@ -83,7 +69,6 @@ namespace PuzzlePathDimension {
       ScreenManager.AddScreen(new CreditsMenuScreen(), e.PlayerIndex);
     }
 
-
     /// <summary>
     /// When the user cancels the main menu, ask if they want to exit the sample.
     /// </summary>
@@ -91,9 +76,7 @@ namespace PuzzlePathDimension {
       const string message = "Are you sure you want to exit this sample?";
 
       MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
-
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
-
       ScreenManager.AddScreen(confirmExitMessageBox, playerIndex);
     }
 
@@ -105,8 +88,5 @@ namespace PuzzlePathDimension {
     void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
       ScreenManager.Game.Exit();
     }
-
-
-    #endregion
   }
 }

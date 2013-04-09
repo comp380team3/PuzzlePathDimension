@@ -40,10 +40,6 @@ namespace PuzzlePathDimension {
     ///</summary>
     MenuEntry exitMenuEntry = new MenuEntry("back");
 
-    SpriteFont titleFont;
-    SpriteFont textFont;
-
-
     ///<summary>
     ///Constructor
     ///<summary>
@@ -53,13 +49,6 @@ namespace PuzzlePathDimension {
       MenuEntries.Add(exitMenuEntry);
 
       exitMenuEntry.Selected += OnCancel;
-    }
-
-    public override void LoadContent(ContentManager shared) {
-      base.LoadContent(shared);
-
-      titleFont = shared.Load<SpriteFont>("menufont");
-      textFont = shared.Load<SpriteFont>("textfont");
     }
 
 
@@ -80,7 +69,7 @@ namespace PuzzlePathDimension {
 
       exitMenuEntry.Position = new Vector2(
         viewport.Width / 2,
-        80 + (numberOfNames + 3) * titleFont.LineSpacing
+        80 + (numberOfNames + 3) * TitleFont.LineSpacing
       );
     }
 
@@ -103,46 +92,46 @@ namespace PuzzlePathDimension {
 
       // Draw the menu title centered on the screen
       Vector2 titlePosition = new Vector2(viewport.Width / 2, 80);
-      Vector2 titleOrigin = textFont.MeasureString(organizationsMenuEntry[0]) / 2;
+      Vector2 titleOrigin = TextFont.MeasureString(organizationsMenuEntry[0]) / 2;
       Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
       float titleScale = 1.25f;
       titlePosition.Y -= transitionOffset * 100;
 
       // Make space between the menu title and the Team member title
-      titlePosition.Y += textFont.LineSpacing * 2;
+      titlePosition.Y += TextFont.LineSpacing * 2;
 
       // Draw the list of team members to the screen
-      spriteBatch.DrawString(textFont, "Team Members", titlePosition, Color.White, 0,
+      spriteBatch.DrawString(TextFont, "Team Members", titlePosition, Color.White, 0,
                                 titleOrigin, titleScale, SpriteEffects.None, 0);
 
-      titlePosition.Y += 2 * textFont.LineSpacing;
+      titlePosition.Y += 2 * TextFont.LineSpacing;
 
       for (int i = 0; i < teamMembersMenuEntry.Length; i++) {
-        spriteBatch.DrawString(textFont, teamMembersMenuEntry[i], titlePosition, Color.Black, 0,
+        spriteBatch.DrawString(TextFont, teamMembersMenuEntry[i], titlePosition, Color.Black, 0,
                                   titleOrigin, titleScale, SpriteEffects.None, 0);
-        titlePosition.Y += textFont.LineSpacing;
+        titlePosition.Y += TextFont.LineSpacing;
       }
 
       // Make space in between the team member title and the organization title
-      titlePosition.Y += 2 * textFont.LineSpacing;
+      titlePosition.Y += 2 * TextFont.LineSpacing;
 
       // Draw the list of Organizations to the screen
-      spriteBatch.DrawString(textFont, "Organizations", titlePosition, Color.White, 0,
+      spriteBatch.DrawString(TextFont, "Organizations", titlePosition, Color.White, 0,
                                 titleOrigin, titleScale, SpriteEffects.None, 0);
 
-      titlePosition.Y += 2 * textFont.LineSpacing;
+      titlePosition.Y += 2 * TextFont.LineSpacing;
 
       for (int i = 0; i < organizationsMenuEntry.Length; i++) {
-        spriteBatch.DrawString(textFont, organizationsMenuEntry[i], titlePosition, Color.Black, 0,
+        spriteBatch.DrawString(TextFont, organizationsMenuEntry[i], titlePosition, Color.Black, 0,
                                titleOrigin, titleScale, SpriteEffects.None, 0);
-        titlePosition.Y += textFont.LineSpacing;
+        titlePosition.Y += TextFont.LineSpacing;
       }
 
       // Draw the list of individuals who contributed to the Puzzle Path game
       for (int i = 0; i < individualContributorMenuEntry.Length; i++) {
-        spriteBatch.DrawString(textFont, individualContributorMenuEntry[i], titlePosition, Color.Black, 0,
+        spriteBatch.DrawString(TextFont, individualContributorMenuEntry[i], titlePosition, Color.Black, 0,
                                 titleOrigin, titleScale, SpriteEffects.None, 0);
-        titlePosition.Y += textFont.LineSpacing;
+        titlePosition.Y += TextFont.LineSpacing;
       }
 
       spriteBatch.End();

@@ -1,17 +1,14 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // LoadingScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -29,17 +26,12 @@ namespace PuzzlePathDimension {
   ///   screen will be the only thing displayed while this load is taking place.
   /// </summary>
   class LoadingScreen : GameScreen {
-    #region Fields
-
     bool loadingIsSlow;
     bool otherScreensAreGone;
 
     GameScreen[] screensToLoad;
 
-    #endregion
-
-    #region Initialization
-
+    SpriteFont font;
 
     /// <summary>
     /// The constructor is private: loading screens should
@@ -50,7 +42,13 @@ namespace PuzzlePathDimension {
       this.loadingIsSlow = loadingIsSlow;
       this.screensToLoad = screensToLoad;
 
-      TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
+      font = shared.Load<SpriteFont>("menufont");
     }
 
 
@@ -71,11 +69,6 @@ namespace PuzzlePathDimension {
 
       screenManager.AddScreen(loadingScreen, controllingPlayer);
     }
-
-
-    #endregion
-
-    #region Update and Draw
 
 
     /// <summary>
@@ -125,12 +118,11 @@ namespace PuzzlePathDimension {
       // tells us how long the loading is going to take, so we know whether
       // to bother drawing the message.
       if (loadingIsSlow) {
-        SpriteFont font = ScreenManager.Font;
+        Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
 
         const string message = "Loading...";
 
         // Center the text in the viewport.
-        Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
         Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
         Vector2 textSize = font.MeasureString(message);
         Vector2 textPosition = (viewportSize - textSize) / 2;
@@ -143,8 +135,5 @@ namespace PuzzlePathDimension {
         spriteBatch.End();
       }
     }
-
-
-    #endregion
   }
 }

@@ -96,7 +96,6 @@
     <Compile Include="Menus\HowToPlayScreen1.cs" />
     <Compile Include="Menus\HowToPlayScreen2.cs" />
     <Compile Include="Menus\HowToPlayScreen3.cs" />
-    <Compile Include="Menus\InputState.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />
     <Compile Include="Menus\MainMenuScreen.cs" />
     <Compile Include="Menus\MenuEntry.cs" />
