@@ -56,8 +56,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Play Game menu entry is selected.
     /// </summary>
     void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
-                         new GameplayScreen());
+      ScreenManager.AddScreen(new LevelSelectScreen(), e.PlayerIndex);
     }
 
 
