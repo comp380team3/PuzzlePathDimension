@@ -276,6 +276,24 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Checks if a button is being held down.
+    /// </summary>
+    /// <param name="type">The type of button to check.</param>
+    /// <returns>Whether the button is being held down.</returns>
+    public bool IsButtonDown(VirtualButtons type) {
+      return _currentState[(int)type] == VirtualButtonState.Pressed;
+    }
+
+    /// <summary>
+    /// Checks if a button is not being held down.
+    /// </summary>
+    /// <param name="type">The type of button to check.</param>
+    /// <returns>Whether the button is not being held down.</returns>
+    public bool IsButtonUp(VirtualButtons type) {
+      return _currentState[(int)type] == VirtualButtonState.Released;
+    }
+
+    /// <summary>
     /// Checks if a virtual button was just released. This is similar to checking
     /// if a keyboard button was released during the current frame but pressed
     /// during the last frame.

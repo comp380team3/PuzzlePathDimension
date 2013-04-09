@@ -29,7 +29,6 @@ namespace PuzzlePathDimension {
   #region Fields
     ContentManager content;
     Simulation simulation;
-    Vector2 playerPosition = new Vector2(100, 100);
 
     float pauseAlpha;
   #endregion
@@ -138,13 +137,13 @@ namespace PuzzlePathDimension {
       // Route user input to the appropriate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         simulation.HandleConfirm();
-      } else if (vtroller.Left == VirtualButtonState.Pressed) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (vtroller.Right == VirtualButtonState.Pressed) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Up)) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Up)) {
         launcher.AdjustMagnitude(0.25f);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Down)) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Down)) {
         launcher.AdjustMagnitude(-0.25f);
       }
 
