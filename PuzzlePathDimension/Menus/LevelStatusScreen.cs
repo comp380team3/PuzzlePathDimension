@@ -32,8 +32,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     string completionTime;
 
-    int selectedEntry = 0;
-
     MenuEntry startMenuEntry;
 
     MenuEntry exitMenuEntry;
