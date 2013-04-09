@@ -7,11 +7,22 @@ using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
   class HowToPlayScreen3 : MenuScreen {
+
+    /// <summary>
+    /// Exit menu entry on the screen.
+    /// </summary>
     MenuEntry exitMenuEntry;
+
+    /// <summary>
+    /// Back menu entry on the screen.
+    /// </summary>
     MenuEntry backMenuEntry;
 
     #region Initialize
 
+    /// <summary>
+    /// Contructor
+    /// </summary>
     public HowToPlayScreen3()
       : base("How To Play") {
       // Create a menu entry to transition to the next screen
@@ -51,13 +62,22 @@ namespace PuzzlePathDimension {
 
     #region Handle Input
 
+    /// <summary>
+    /// Event handler for when the Back menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void BackMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
       ScreenManager.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
     }
 
+    /// <summary>
+    /// Handle the input of the user. If the user wants to move
+    /// to a diffenrent menu entry, they can press left or right.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
-      //base.HandleInput(vtroller);
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
         SelectedEntry--;
@@ -79,8 +99,6 @@ namespace PuzzlePathDimension {
       // If we pass a null controlling player, the InputState helper returns to
       // us which player actually provided the input. We pass that through to
       // OnSelectEntry and OnCancel, so they can tell which player triggered them.
-
-      // PlayerIndex playerindex;
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         OnSelectEntry(SelectedEntry, PlayerIndex.One);

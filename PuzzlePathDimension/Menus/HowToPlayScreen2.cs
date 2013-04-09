@@ -7,12 +7,27 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   class HowToPlayScreen2 : MenuScreen {
+
+    /// <summary>
+    /// Next button entry on the screen.
+    /// </summary>
     MenuEntry nextMenuEntry;
+
+    /// <summary>
+    /// Back button entry on the screen.
+    /// </summary>
     MenuEntry backMenuEntry;
+
+    /// <summary>
+    /// Exit button entry on the screen.
+    /// </summary>
     MenuEntry exitMenuEntry;
 
     #region Initialize
 
+    /// <summary>
+    /// Contructor
+    /// </summary>
     public HowToPlayScreen2()
       : base("How To Play") {
       // Create a menu entry to transition to the next screen
@@ -76,6 +91,11 @@ namespace PuzzlePathDimension {
       ScreenManager.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
     }
     
+    /// <summary>
+    /// Handle the player input. If the player wants to move to a different
+    /// menu entry, they can press left or right.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
       //base.HandleInput(vtroller);
       
@@ -99,8 +119,6 @@ namespace PuzzlePathDimension {
       // If we pass a null controlling player, the InputState helper returns to
       // us which player actually provided the input. We pass that through to
       // OnSelectEntry and OnCancel, so they can tell which player triggered them.
-
-      // PlayerIndex playerindex;
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         OnSelectEntry(SelectedEntry, PlayerIndex.One);

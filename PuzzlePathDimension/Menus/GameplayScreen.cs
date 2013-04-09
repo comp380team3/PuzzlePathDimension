@@ -105,23 +105,15 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      /*if (input == null)
-        throw new ArgumentNullException("input");*/
 
       // Look up inputs for the active player profile.
       int playerIndex = (int)ControllingPlayer.Value;
-      /*
-      KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
-      GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
 
       // The game pauses either if the user presses the pause button, or if
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause
       // on PC if they are playing with a keyboard and have no gamepad at all!
-      bool gamePadDisconnected = !gamePadState.IsConnected &&
-                                 input.GamePadWasConnected[playerIndex];
-      */
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)/*|| gamePadDisconnected*/) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       } 
 
@@ -152,17 +144,7 @@ namespace PuzzlePathDimension {
       MouseState mouse = Mouse.GetState();
       if (mouse.LeftButton == ButtonState.Pressed) {
         Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
-      }/*
-<<<<<<< HEAD
-=======
-
-      //Check to see if the Player one controller has pressed the "B" button, if so, then
-      //call the screen event associated with this screen
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ExitScreen();
-        ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
->>>>>>> origin/master*/
     }
 
     /// <summary>
@@ -244,7 +226,6 @@ namespace PuzzlePathDimension {
       for (int y = top; y < bottom; y++) {
         for (int x = left; x < right; x++) {
           // Get the color of both pixels at this point
-          //Console.WriteLine("Index to fetch: " + (((x - rectangleB.Left) + (y - rectangleB.Top) * rectangleB.Width) % 400));
           Console.WriteLine("Length of dataB: " + dataB.Length);
           Color colorA = dataA[((x - rectangleA.Left) +
                                (y - rectangleA.Top) * rectangleA.Width) % dataA.Length];
