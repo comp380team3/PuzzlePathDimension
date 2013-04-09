@@ -53,7 +53,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <returns>The state of the keyboard input that is mapped to the Pause input.</returns>
     public VirtualButtonState Pause() {
-      return Keyboard.GetState().IsKeyDown(Keys.Pause) ?
+      // Note: Escape is also bound to Back, but I think people do expect Escape to be bound to 
+      // some sort of pause functionality...
+      return Keyboard.GetState().IsKeyDown(Keys.Pause) || Keyboard.GetState().IsKeyDown(Keys.Escape) ?
         VirtualButtonState.Pressed : VirtualButtonState.Released;
     }
 

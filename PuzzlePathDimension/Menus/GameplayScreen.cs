@@ -129,7 +129,7 @@ namespace PuzzlePathDimension {
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause
       // on PC if they are playing with a keyboard and have no gamepad at all!
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Pause)) {
         ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       } 
 
@@ -149,15 +149,10 @@ namespace PuzzlePathDimension {
       }
 
       // TODO: Replace this restart mechanism
-      if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
+      if (Keyboard.GetState().IsKeyDown(Keys.R) ||
+        GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
-      }
-
-      // Go back to the main menu
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ExitScreen();
-        ScreenManager.AddScreen(new MainMenuScreen(), null);
       }
     }
 
