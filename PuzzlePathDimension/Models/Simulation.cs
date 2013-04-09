@@ -5,6 +5,7 @@ using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics.Contacts;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -198,6 +199,10 @@ namespace PuzzlePathDimension {
     /// <param name="simulation">The simulation object to pass.</param>
     public delegate void SimulationStateChange(Simulation simulation);
     /// <summary>
+    /// This delegate is called when something touches a wall.
+    /// </summary>
+    public delegate void WallTouch();
+    /// <summary>
     /// Occurs when the level has been completed.
     /// </summary>
     public event SimulationStateChange OnCompletion;
@@ -205,6 +210,10 @@ namespace PuzzlePathDimension {
     /// Occurs when the level has been failed.
     /// </summary>
     public event SimulationStateChange OnFailure;
+    /// <summary>
+    /// Occurs when a wall has been touched.
+    /// </summary>
+    public event WallTouch OnWallCollision;
 
     /// <summary>
     /// Constructs a Simulation object.
@@ -248,11 +257,12 @@ namespace PuzzlePathDimension {
 
       // Make sure that the level has boundaries.
       CreateWalls();
+      // Make sure that bounces against walls are counted.
+      OnWallCollision += IncrementBounces;
 
       // Create a launcher with a ball in it.
       _ball = new Ball(_ballTex);
       _ball.InitBody(_world);
-      _ball.OnBallBounce += IncrementBounces;
       _launcher.LoadBall(_ball);
 
       // Add the goal to the world.
@@ -263,6 +273,7 @@ namespace PuzzlePathDimension {
       // Add the platforms to the world.
       foreach (Platform plat in _platforms) {
         plat.InitBody(_world);
+        plat.OnPlatformCollision += IncrementBounces;
       }
 
       // Add the treasures to the world.
@@ -306,6 +317,39 @@ namespace PuzzlePathDimension {
       right.UserData = "wall";
       top.UserData = "wall";
       bottom.UserData = "wall";
+
+      // Have each wall listen for collision.
+      left.OnCollision += HandleWallCollision;
+      right.OnCollision += HandleWallCollision;
+      top.OnCollision += HandleWallCollision;
+      bottom.OnCollision += HandleWallCollision;
+    }
+
+    /// <summary>
+    /// Called when a collision with a wall occurs.
+    /// </summary>
+    /// <param name="fixtureA">The first fixture that has collided.</param>
+    /// <param name="fixtureB">The second fixture that has collided.</param>
+    /// <param name="contact">The Contact object that contains information about the collision.</param>
+    /// <returns>Whether the collision should still happen.</returns>
+    private bool HandleWallCollision(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+      // Check if one of the Fixtures belongs to a ball.
+      bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
+
+      // A subtle fact about the OnCollision event is that it is only called
+      // when the associated Contact object is changed from not-touching to touching.
+      // While two objects are still touching each other, OnCollision won't be called again.
+      if (contact.IsTouching() && causedByBall) {
+        // Call any methods that are listening to this event.
+        if (OnWallCollision != null) {
+          OnWallCollision();
+        }
+        // The ball's trajectory should definitely be affected by the wall, so tell
+        // the physics engine that by returning true.
+        return true;
+      }
+      // If it's not a ball, then we don't really need to worry about it. Hopefully.
+      return false;
     }
 
     /// <summary>
@@ -327,6 +371,14 @@ namespace PuzzlePathDimension {
     /// Increments the number of bounces by one.
     /// </summary>
     private void IncrementBounces() {
+      IncrementBounces(false);
+    }
+
+    /// <summary>
+    /// Increments the number of bounces by one. This particular overload of the method
+    /// is for the PlatformTouched delegate.
+    /// </summary>
+    private void IncrementBounces(bool breakable) {
       _bounces++;
     }
 

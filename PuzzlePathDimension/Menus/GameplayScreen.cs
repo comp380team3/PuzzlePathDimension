@@ -75,8 +75,12 @@ namespace PuzzlePathDimension {
       // the ball is launched, so cache them first.
       content.Load<SoundEffect>("launch");
       content.Load<SoundEffect>("bounce");
+
       // Assign the sound effects to the proper places.
-      simulation.Ball.OnBallBounce += PlayBounce;
+      foreach (Platform plat in simulation.Platforms) {
+        plat.OnPlatformCollision += PlayBounce;
+      }
+      simulation.OnWallCollision += PlayBounce;
       simulation.Launcher.OnBallLaunch += PlayLaunch;
     }
 
@@ -246,6 +250,14 @@ namespace PuzzlePathDimension {
     /// Plays the bouncing sound.
     /// </summary>
     private void PlayBounce() {
+      PlayBounce(false);
+    }
+
+    /// <summary>
+    /// Plays the bouncing sound. This particular overload of the method is for
+    /// the PlatformTouched delegate.
+    /// </summary>
+    private void PlayBounce(bool breakable) {
       SoundEffect bounce = content.Load<SoundEffect>("bounce");
       bounce.Play();
     }
