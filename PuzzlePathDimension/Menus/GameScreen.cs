@@ -117,7 +117,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Load graphics content for the screen.
     /// </summary>
-    public virtual void LoadContent() { }
+    public virtual void LoadContent(ContentManager shared) { }
 
     /// <summary>
     /// Unload content for the screen.

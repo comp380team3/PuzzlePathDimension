@@ -26,31 +26,28 @@ namespace PuzzlePathDimension {
   /// put some more interesting gameplay in here!
   /// </summary>
   class GameplayScreen : GameScreen {
-  #region Fields
     ContentManager content;
     Simulation simulation;
     Vector2 playerPosition = new Vector2(100, 100);
 
     float pauseAlpha;
-  #endregion
 
-  #region Initialization
     /// <summary>
     /// Constructor.
     /// </summary>
     public GameplayScreen() {
-      TransitionOnTime = TimeSpan.FromSeconds(1.5);
-      TransitionOffTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     /// <summary>
     /// Load graphics content for the game.
     /// </summary>
-    public override void LoadContent() {
+    public override void LoadContent(ContentManager shared) {
       // Create a new ContentManager so that all level data is flushed
       // from the cache after the level ends.
       if (content == null)
-        content = new ContentManager(ScreenManager.Game.Services, "Content");
+        content = new ContentManager(shared.ServiceProvider, "Content");
 
       // Create the hard-coded level.
       simulation = CreateTestLevel();
@@ -91,9 +88,8 @@ namespace PuzzlePathDimension {
     public override void UnloadContent() {
       content.Unload();
     }
-  #endregion
 
-  #region Update and Draw
+
     /// <summary>
     /// Updates the state of the game. This method checks the GameScreen.IsActive
     /// property, so the game will stop updating when the pause menu is active,
@@ -165,7 +161,7 @@ namespace PuzzlePathDimension {
     /// Draws the gameplay screen.
     /// </summary>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
+      spriteBatch.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
 
       spriteBatch.Begin();
 
@@ -184,9 +180,10 @@ namespace PuzzlePathDimension {
       if (TransitionPosition > 0 || pauseAlpha > 0) {
         float alpha = MathHelper.Lerp(1f - TransitionAlpha, 1f, pauseAlpha / 2);
 
-        ScreenManager.FadeBackBufferToBlack(alpha);
+        spriteBatch.FadeBackBufferToBlack(alpha);
       }
     }
+
 
     /// <summary>
     /// Draw the hard-coded walls.
@@ -273,9 +270,7 @@ namespace PuzzlePathDimension {
       bounce.Play();
     }
 
-  #endregion
 
-  #region Test Level
     /// <summary>
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
@@ -285,6 +280,5 @@ namespace PuzzlePathDimension {
 
       return simulation;
     }
-  #endregion 
   }
 }

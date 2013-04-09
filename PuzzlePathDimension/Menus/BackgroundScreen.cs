@@ -1,18 +1,14 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // BackgroundScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -21,24 +17,16 @@ namespace PuzzlePathDimension {
   /// of whatever transitions the screens on top of it may be doing.
   /// </summary>
   class BackgroundScreen : GameScreen {
-    #region Fields
-
     ContentManager content;
     Texture2D backgroundTexture;
-
-    #endregion
-
-    #region Initialization
-
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public BackgroundScreen() {
-      TransitionOnTime = TimeSpan.FromSeconds(0.5);
-      TransitionOffTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
-
 
     /// <summary>
     /// Loads graphics content for this screen. The background texture is quite
@@ -47,13 +35,12 @@ namespace PuzzlePathDimension {
     /// used the shared ContentManager provided by the Game class, the content
     /// would remain loaded forever.
     /// </summary>
-    public override void LoadContent() {
+    public override void LoadContent(ContentManager shared) {
       if (content == null)
-        content = new ContentManager(ScreenManager.Game.Services, "Content");
+        content = new ContentManager(shared.ServiceProvider, "Content");
 
       backgroundTexture = content.Load<Texture2D>("background");
     }
-
 
     /// <summary>
     /// Unloads graphics content for this screen.
@@ -61,11 +48,6 @@ namespace PuzzlePathDimension {
     public override void UnloadContent() {
       content.Unload();
     }
-
-
-    #endregion
-
-    #region Update and Draw
 
 
     /// <summary>
@@ -80,12 +62,11 @@ namespace PuzzlePathDimension {
       base.Update(gameTime, otherScreenHasFocus, false);
     }
 
-
     /// <summary>
     /// Draws the background screen.
     /// </summary>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
       Rectangle fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
 
       spriteBatch.Begin();
@@ -95,8 +76,5 @@ namespace PuzzlePathDimension {
 
       spriteBatch.End();
     }
-
-
-    #endregion
   }
 }

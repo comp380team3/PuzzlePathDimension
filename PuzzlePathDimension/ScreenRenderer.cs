@@ -13,6 +13,28 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
+  public static class SpriteBatchExtensions {
+    /// <summary>
+    /// Helper draws a translucent black fullscreen sprite, used for fading
+    /// screens in and out, and for darkening the background behind popups.
+    /// </summary>
+    public static void FadeBackBufferToBlack(this SpriteBatch spriteBatch, float alpha) {
+      GraphicsDevice device = spriteBatch.GraphicsDevice;
+      Viewport viewport = device.Viewport;
+
+      Texture2D blankTexture = new Texture2D(device, 1, 1);
+      blankTexture.SetData<Color>(new Color[] { Color.White });
+
+      spriteBatch.Begin();
+
+      spriteBatch.Draw(blankTexture,
+                       new Rectangle(0, 0, viewport.Width, viewport.Height),
+                       Color.Black * alpha);
+
+      spriteBatch.End();
+    }
+  }
+
   public interface IScreenList {
     void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer);
     void RemoveScreen(GameScreen screen);
@@ -27,7 +49,7 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenRenderer : DrawableGameComponent, IScreenList {
-  /* Fields */
+    /* Fields */
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
 
@@ -48,12 +70,10 @@ namespace PuzzlePathDimension {
     SpriteFont font;
     SpriteFont textFont;
 
-    Texture2D blankTexture;
-
     bool hasDevice; // has the graphics device been initialized?
     bool traceEnabled; // do we want to output debugging information?
 
-  /* Properties */
+    /* Properties */
     /// <summary>
     /// A default font shared by all the screens. This saves
     /// each screen having to bother loading their own local copy.
@@ -80,7 +100,7 @@ namespace PuzzlePathDimension {
       set { traceEnabled = value; }
     }
 
-  /* Initialization */
+    /* Initialization */
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
@@ -110,11 +130,9 @@ namespace PuzzlePathDimension {
       // Load the text font used for writing on the menu
       textFont = content.Load<SpriteFont>("textfont");
 
-      blankTexture = content.Load<Texture2D>("blank");
-
       // Tell each of the screens to load their content.
       foreach (GameScreen screen in screens) {
-        screen.LoadContent();
+        screen.LoadContent(content);
       }
     }
 
@@ -128,7 +146,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-  /* Update & Draw */
+    /* Update & Draw */
     /// <summary>
     /// Allows each screen to run logic.
     /// </summary>
@@ -200,7 +218,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-  /* Public Methods */
+    /* Public Methods */
     /// <summary>
     /// Adds a new screen to the screen manager.
     /// </summary>
@@ -211,7 +229,7 @@ namespace PuzzlePathDimension {
 
       // If we have a graphics device, tell the screen to load content.
       if (hasDevice) {
-        screen.LoadContent();
+        screen.LoadContent(Game.Content);
       }
 
       screens.Add(screen);
@@ -240,22 +258,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     public GameScreen[] GetScreens() {
       return screens.ToArray();
-    }
-
-    /// <summary>
-    /// Helper draws a translucent black fullscreen sprite, used for fading
-    /// screens in and out, and for darkening the background behind popups.
-    /// </summary>
-    public void FadeBackBufferToBlack(float alpha) {
-      Viewport viewport = GraphicsDevice.Viewport;
-
-      spriteBatch.Begin();
-
-      spriteBatch.Draw(blankTexture,
-                       new Rectangle(0, 0, viewport.Width, viewport.Height),
-                       Color.Black * alpha);
-
-      spriteBatch.End();
     }
   }
 }
