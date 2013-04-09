@@ -40,6 +40,12 @@ namespace PuzzlePathDimension {
       get { return menuEntries; }
     }
 
+    //////////////////////
+    protected int SelectedEntry {
+      get { return selectedEntry; }
+      set { selectedEntry = value; }
+    }
+
 
     #endregion
 
