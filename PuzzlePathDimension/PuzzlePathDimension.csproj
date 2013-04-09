@@ -82,6 +82,8 @@
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Models\Ball.cs" />
+    <Compile Include="Models\DeathTrap.cs" />
+    <Compile Include="Models\Treasure.cs" />
     <Compile Include="Models\Goal.cs" />
     <Compile Include="Models\Launcher.cs" />
     <Compile Include="Models\Platform.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="UnitConverter.cs" />
     <Compile Include="View.cs" />
     <Compile Include="Views\SimulationView.cs" />
   </ItemGroup>
@@ -117,6 +120,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Farseer Physics Engine 3.3 XNA\Farseer Physics XNA.csproj">
+      <Project>{0A850700-1ABB-4288-A391-6726B90EBEB9}</Project>
+      <Name>Farseer Physics XNA</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj">
       <Name>PuzzlePathDimensionContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

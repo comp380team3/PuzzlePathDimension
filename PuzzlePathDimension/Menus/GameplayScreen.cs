@@ -14,6 +14,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using FarseerPhysics.Dynamics;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace PuzzlePathDimension {
@@ -44,11 +47,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     public override void LoadContent() {
       // Create a new ContentManager so that all level data is flushed
-      //   from the cache after the level ends.
+      // from the cache after the level ends.
       if (content == null)
         content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+      // Create the hard-coded level.
       simulation = CreateTestLevel();
+      // Set up the sounds.
+      SetupSoundEvents();
 
       // A real game would probably have more content than this sample, so
       // it would take longer to load. We simulate that by delaying for a
@@ -59,6 +65,23 @@ namespace PuzzlePathDimension {
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
       ScreenManager.Game.ResetElapsedTime();
+    }
+
+    /// <summary>
+    /// Assign sounds to various events.
+    /// </summary>
+    private void SetupSoundEvents() {
+      // The sounds actually take enough time to load that there's a delay when
+      // the ball is launched, so cache them first.
+      content.Load<SoundEffect>("launch");
+      content.Load<SoundEffect>("bounce");
+
+      // Assign the sound effects to the proper places.
+      foreach (Platform plat in simulation.Platforms) {
+        plat.OnPlatformCollision += PlayBounce;
+      }
+      simulation.OnWallCollision += PlayBounce;
+      simulation.Launcher.OnBallLaunch += PlayLaunch;
     }
 
     /// <summary>
@@ -89,14 +112,8 @@ namespace PuzzlePathDimension {
       if (!IsActive)
         return;
 
-      // Update the launcher's state
-      simulation.Launcher.Update();
-
-      // Update the balls position
-      simulation.Ball.Update();
-
-      // Update the collision
-      UpdateCollision();
+      // Update the simulation's state.
+      simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
     }
 
     /// <summary>
@@ -104,43 +121,28 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      /*if (input == null)
-        throw new ArgumentNullException("input");*/
-
-      // Look up inputs for the active player profile.
-      int playerIndex = (int)ControllingPlayer.Value;
-
       Launcher launcher = simulation.Launcher;
-      Ball ball = simulation.Ball;
 
-      // Route user input to the approproate action
+      // Route user input to the appropriate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        launcher.LaunchBall();
+        simulation.HandleConfirm();
       } else if (vtroller.Left == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)Math.PI / 64);
       } else if (vtroller.Right == VirtualButtonState.Pressed) {
         launcher.AdjustAngle((float)-Math.PI / 64);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Up)) {
+        launcher.AdjustMagnitude(0.25f);
+      } else if (Keyboard.GetState().IsKeyDown(Keys.Down)) {
+        launcher.AdjustMagnitude(-0.25f);
       }
 
-      // TODO: remove this test code
-      if (Keyboard.GetState().IsKeyDown(Keys.F)) {
-        Console.WriteLine(launcher);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.G)) {
-        Console.WriteLine(ball);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.R) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
-        if (!launcher.Active) { // Some crude restart mechanism
-          ball.Stop();
-          launcher.LoadBall(ball);
-        }
+      // TODO: Replace this restart mechanism
+      if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
+        Console.WriteLine("Completely restarted.");
+        simulation.Restart();
       }
 
-      MouseState mouse = Mouse.GetState();
-      if (mouse.LeftButton == ButtonState.Pressed) {
-        Console.WriteLine("Mouse click at: " + mouse.X + ", " + mouse.Y);
-      }
-
-      //Check to see if the Player one controller has pressed the "B" button, if so, then
-      //call the screen event associated with this screen
+      // Go back to the main menu
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ExitScreen();
         ScreenManager.AddScreen(new MainMenuScreen(), null);
@@ -154,24 +156,16 @@ namespace PuzzlePathDimension {
       ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
 
       SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-
       spriteBatch.Begin();
 
+      // Draw the background.
       spriteBatch.Draw(simulation.Background, Vector2.Zero, Color.White);
-
-      // Draw the goal on the canvas
-      simulation.Goal.Draw(spriteBatch);
-
-      // Draw the platform on the canvas
-      foreach (Platform platform in simulation.Platforms) {
-        platform.Draw(spriteBatch);
-      }
-
-      // Draw the ball onto the canvas
-      simulation.Ball.Draw(spriteBatch);
-
-      // Draw the launcher on the canvas
-      simulation.Launcher.Draw(spriteBatch);
+      // Draw the walls.
+      DrawWalls(spriteBatch);
+      // Draw all the level objects.
+      DrawLevelObjects(spriteBatch);
+      // Draw any informational text.
+      DrawText(spriteBatch);
 
       spriteBatch.End();
 
@@ -182,6 +176,92 @@ namespace PuzzlePathDimension {
         ScreenManager.FadeBackBufferToBlack(alpha);
       }
     }
+
+    /// <summary>
+    /// Draw the hard-coded walls.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the walls.</param>
+    private void DrawWalls(SpriteBatch spriteBatch) {
+      Texture2D topBottom = content.Load<Texture2D>("TopBottom");
+      Texture2D sideWall = content.Load<Texture2D>("SideWall");
+
+      // I'd rather have 5-pixel thick walls then 10-pixel thick walls, so I offset each wall
+      // by 5 pixels. I could change the image... - Jorenz
+      spriteBatch.Draw(topBottom, new Vector2(0, -5), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(topBottom, new Vector2(0, 595), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(sideWall, new Vector2(-5, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(sideWall, new Vector2(795, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+    }
+
+    /// <summary>
+    /// Draws the level objects.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the level objects.</param>
+    private void DrawLevelObjects(SpriteBatch spriteBatch) {
+      // Draw the goal onto the canvas.
+      simulation.Goal.Draw(spriteBatch);
+
+      // Draw the platforms onto the canvas.
+      foreach (Platform platform in simulation.Platforms) {
+        platform.Draw(spriteBatch);
+      }
+      // Draw the treasures onto the canvas.
+      foreach (Treasure treasure in simulation.Treasures) {
+        treasure.Draw(spriteBatch);
+      }
+      // Draw the death traps onto the canvas
+      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
+        deathTrap.Draw(spriteBatch);
+      }
+
+      // Draw the ball onto the canvas.
+      simulation.Ball.Draw(spriteBatch);
+      // Draw the launcher onto the canvas.
+      simulation.Launcher.Draw(spriteBatch);
+    }
+
+    /// <summary>
+    /// Draws any relevant text on the screen.
+    /// </summary>
+    /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
+    private void DrawText(SpriteBatch spriteBatch) {
+      // Draw the number of balls left.
+      string attemptsText = "Balls left: " + simulation.AttemptsLeft;
+      spriteBatch.DrawString(ScreenManager.TextFont, attemptsText,
+        new Vector2(10f, 570f), Color.Black);
+
+      // If the simulation has concluded in some way, display the approriate message.
+      if (simulation.CurrentState == SimulationState.Completed) {
+        spriteBatch.DrawString(ScreenManager.TextFont, "You win!", new Vector2(400f, 300f), Color.Black);
+      } else if (simulation.CurrentState == SimulationState.Failed) {
+        spriteBatch.DrawString(ScreenManager.TextFont, "You lose.", new Vector2(400f, 300f), Color.Black);
+      }
+    }
+
+    /// <summary>
+    /// Plays the launcher's sound effect.
+    /// </summary>
+    private void PlayLaunch() {
+      SoundEffect launch = content.Load<SoundEffect>("launch");
+      launch.Play();
+    }
+
+    /// <summary>
+    /// Plays the bouncing sound.
+    /// </summary>
+    private void PlayBounce() {
+      PlayBounce(false);
+    }
+
+    /// <summary>
+    /// Plays the bouncing sound. This particular overload of the method is for
+    /// the PlatformTouched delegate.
+    /// </summary>
+    private void PlayBounce(bool breakable) {
+      SoundEffect bounce = content.Load<SoundEffect>("bounce");
+      bounce.Play();
+    }
+
   #endregion
 
   #region Test Level
@@ -189,81 +269,11 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content));
-
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content), content);
       simulation.Background = content.Load<Texture2D>("GameScreen");
-
-      // Add a ball to the level
-      Ball ball = new Ball();
-      Vector2 ballPos = new Vector2(400f, 300f);
-      ball.Initialize(ScreenManager.Game.GraphicsDevice.Viewport, content.Load<Texture2D>("ball_new"), ballPos);
-      simulation.Ball = ball;
-
-      // Load the ball into the launcher
-      simulation.Launcher.LoadBall(ball);
 
       return simulation;
     }
-  #endregion
-
-  #region Collision Detection
-    private bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB) {
-      Ball ball = simulation.Ball;
-
-      // Check if the two objects are near each other.
-      // If they are not then return false for no intersection.
-      if (!rectangleA.Intersects(rectangleB)) {
-        return false;
-      }
-
-      // Find the bounds of the rectangle intersection
-      int top = Math.Max(rectangleA.Top, rectangleB.Top);
-      int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
-      int left = Math.Max(rectangleA.Left, rectangleB.Left);
-      int right = Math.Min(rectangleA.Right, rectangleB.Right);
-
-      // Check every point within the intersection bounds
-      for (int y = top; y < bottom; y++) {
-        for (int x = left; x < right; x++) {
-          // Get the color of both pixels at this point
-          //Console.WriteLine("Index to fetch: " + (((x - rectangleB.Left) + (y - rectangleB.Top) * rectangleB.Width) % 400));
-          Console.WriteLine("Length of dataB: " + dataB.Length);
-          Color colorA = dataA[((x - rectangleA.Left) +
-                               (y - rectangleA.Top) * rectangleA.Width) % dataA.Length];
-          Color colorB = dataB[((x - rectangleB.Left) +
-                               (y - rectangleB.Top) * rectangleB.Width) % dataB.Length]; // lol maybe?
-
-          // If both pixels are not completely transparent,
-          if (colorA.A != 0 && colorB.A != 0) {
-            if (y == top || y == bottom - 1)
-              ball.FlipYDirection();
-            if (x == left || x == right - 1)
-              ball.FlipXDirection();
-            // then an intersection has been found
-            return true;
-          }
-        }
-      }
-
-      // No intersection found
-      return false;
-    }
-
-    private void UpdateCollision() {
-      Ball ball = simulation.Ball;
-
-      Rectangle ballRectangle = new Rectangle((int)ball.Position.X, (int)ball.Position.Y, ball.Width, ball.Height);
-
-      foreach (Platform platform in simulation.Platforms) {
-        Rectangle platformRectangle = new Rectangle(
-            (int)platform.Position.X,
-            (int)platform.Position.Y,
-            platform.Width,
-            platform.Height);
-
-        IntersectPixels(ballRectangle, ball.GetColorData(), platformRectangle, platform.GetColorData());
-      }
-    }
-  #endregion
+  #endregion 
   }
 }
