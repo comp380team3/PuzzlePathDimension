@@ -1,151 +1,254 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics.Contacts;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// The Platform class describes a platform.
   /// </summary>
-  class Platform {
+  public class Platform {
     /// <summary>
     /// The texture that the platform uses.
     /// </summary>
     private Texture2D _texture;
 
     /// <summary>
-    /// The texture's color data.
+    /// Whether the platform is visible.
     /// </summary>
-    private Color[] _colorData;
+    private bool _visible;
 
     /// <summary>
-    /// The pixel coordinates of the upper left corner of the platform.
+    /// Whether the platform is breakable.
     /// </summary>
-    private Vector2 _upperLeftCorner;
-    /// <summary>
-    /// The pixel coordinates of the lower right corner of the platform.
-    /// </summary>
-    private Vector2 _lowerRightCorner;
+    private bool _breakable;
 
     /// <summary>
-    /// Whether the platform is active.
+    /// The upper-left corner of the platform, in pixels.
     /// </summary>
-    private bool _active;
+    private Vector2 _origin;
 
     /// <summary>
-    /// Gets the position, which is the upper-left corner, of the platform.
+    /// Gets the upper-left corner of the platform, in pixels.
     /// </summary>
-    public Vector2 Position {
-      get { return _upperLeftCorner; }
+    public Vector2 Origin {
+      get { return _origin; }
+      set {
+        _origin = value;
+        // Moving the platform also moves its center, so figure out the position of
+        // the new center.
+        _center = CalculateCenter();
+
+        // Reposition the Body, but only if it has been initialized.
+        if (_body != null) {
+          _body.Position = UnitConverter.ToMeters(_center);
+        }
+      }
+    }
+
+    /************************
+     * Brian's Physics stuff*
+     * *********************/
+
+    /// <summary>
+    /// The Body that represents this platform in the physics simulation.
+    /// </summary>
+    private Body _body;
+
+    /// <summary>
+    /// The center of the platform, in pixels.
+    /// </summary>
+    private Vector2 _center;
+
+    /// <summary>
+    /// Gets the center of the platform, in pixels.
+    /// </summary>
+    public Vector2 Center {
+      get { return _center; }
     }
 
     /// <summary>
-    /// Gets the pixel coordinates of the upper-left corner of the platform.
+    /// The size of the platform, in pixels.
     /// </summary>
-    public Vector2 UpperLeftCorner {
-      get { return _upperLeftCorner; }
+    private Vector2 _size;
+
+    /// <summary>
+    /// Gets or sets the size of the platform, in pixels.
+    /// </summary>
+    public Vector2 Size {
+      get { return _size; }
+      set {
+        _size = value;
+        // Changing the platform's size also moves its center, so figure out 
+        // the position of the new center.
+        _center = CalculateCenter();
+
+        // If there is a Body, then things get too complicated. Sorry! - Jorenz
+        if (_body != null) {
+          throw new NotSupportedException("Setting the Size of a Platform while the Body is active is not supported.");
+        }
+      }
     }
 
     /// <summary>
-    /// Gets the pixel coordinates of the lower-right corner of the platform.
-    /// </summary>
-    public Vector2 LowerRightCorner {
-      get { return _lowerRightCorner; }
-    }
-
-    /// <summary>
-    /// Gets the height of the platform in pixels.
+    /// Gets the height of the platform.
     /// </summary>
     public int Height {
-      get { return (int)Math.Abs(_upperLeftCorner.Y - _lowerRightCorner.Y); }
+      get { return (int)_size.Y; }
     }
 
     /// <summary>
-    /// Gets the width of the platform in pixels.
+    /// Gets the width of the platform.
     /// </summary>
     public int Width {
-      get { return (int)Math.Abs(_upperLeftCorner.X - _lowerRightCorner.X); }
+      get { return (int)_size.X; }
     }
 
     /// <summary>
-    /// Gets whether the platform is active.
+    /// Gets whether the platform is visible.
     /// </summary>
-    public bool Active {
-      get { return _active; }
-      set { _active = value; }
+    public bool Visible {
+      get { return _visible; }
     }
 
     /// <summary>
-    /// Gets the texture's color data.
+    /// Gets whether the platform is breakable.
     /// </summary>
-    /// <returns>The texture's color data as an array.</returns>
-    public Color[] GetColorData() {
-      // See http://msdn.microsoft.com/en-us/library/0fss9skc.aspx for why
-      // this is not a property.
-      return (Color[])_colorData.Clone();
+    public bool Breakable {
+      get { return _breakable; }
     }
 
-    // Shouldn't the below code be in a constructor? Or am I missing something?
-    // Also, should the Initialize() method accept grid coordinates or pixel
-    // coordinates? I have it accepting pixel coordinates right now... -Jorenz
+    /// <summary>
+    /// This delegate is called when the ball bounces off something solid.
+    /// </summary>
+    public delegate void PlatformTouched(bool breakable);
+    /// <summary>
+    /// Occurs when the ball bounces off something solid.
+    /// </summary>
+    public event PlatformTouched OnPlatformCollision;
 
     /// <summary>
-    /// Initializes a platform.
+    /// Constructs a Platform object.
     /// </summary>
-    /// <param name="texture">The texture to use for the platform.</param>
-    /// <param name="origin">The position of the upper-left corner of the vector in pixel coordinates. </param>
-    /// <param name="length">The length of the platform, in pixels, in both directions.</param>
-    public void Initialize(Texture2D texture, Vector2 origin, Vector2 length) {
-      // Complain if something's wrong.
-      if (texture == null || origin == null || length == null) {
-        throw new ArgumentNullException("Please don't pass in a null value :( -Jorenz");
-      } else if (!InBounds(origin)) {
-        throw new ArgumentOutOfRangeException("The origin of the platform must be in bounds.");
-      } else if (length.X < 1 * Game1.GridSize) { // You can't have a platform of length 0.
-        throw new ArgumentOutOfRangeException("Please check the Vector2's X value; it must be at least 20.");
-      } else if (length.Y < 1 * Game1.GridSize) {
-        throw new ArgumentOutOfRangeException("Please check the Vector2's Y value; it must be at least 20.");
+    /// <param name="texture">The texture to draw the platform with.</param>
+    /// <param name="position">The upper-left corner of the platform, in pixels.</param>
+    /// <param name="size">The size of the platform, in pixels.</param>
+    /// <param name="breakable">Whether the platform should be breakable.</param>
+    public Platform(Texture2D texture, Vector2 position, Vector2 size, bool breakable) {
+      // Determine the positional and size data of the platform.
+      _origin = position;
+      _size = size;
+      _center = CalculateCenter();
+
+      // Set the platform to be visible.
+      _texture = texture;
+      _visible = true;
+
+      // Set whether the platform is a breakable one.
+      _breakable = breakable;
+
+      // Leave the Body object uninitialized until a World object comes by to initialize it.
+      _body = null;
+    }
+
+    /// <summary>
+    /// Calculates the center of the platform.
+    /// </summary>
+    /// <returns>The position of the center of the platform.</returns>
+    private Vector2 CalculateCenter() {
+      Vector2 center = new Vector2();
+      center.X = _origin.X + (_size.X / 2.0f);
+      center.Y = _origin.Y + (_size.Y / 2.0f);
+      return center;
+    }
+
+    /// <summary>
+    /// Initializes the platform's Body object.
+    /// </summary>
+    /// <param name="world">The World object that the platform will be a part of.</param>
+    public void InitBody(World world) {
+      if (_body != null) {
+        throw new InvalidOperationException("There is already a Body object for this platform.");
       }
 
-      // Routine stuff.
-      _texture = texture;
-      _active = true;
+      // Get the size of the platform, in meters.
+      Vector2 meterSize = UnitConverter.ToMeters(_size);
 
-      // Get the texture's color data, which is used for per-pixel collision
-      _colorData = new Color[_texture.Width * _texture.Height];
-      _texture.GetData<Color>(_colorData);
-
-      /*// Get the texture's color data, which is used for per-pixel collision
-      // TODO: remove some assumptions that this code is making 
-      // (that is, everything is a multiple of 20, and only one color is being used for it)
-      
-      // Make sure the the Color array can hold enough pixels for the whole platform
-      _colorData = new Color[(_texture.Width * (int) length.X) * (_texture.Height * (int) length.Y)];
-      int pixels = _texture.Width * _texture.Height; // Number of pixels in platform_new.png
-      // Store platform_new.png's color data in a temporary array
-      Color[] temp = new Color[pixels];
-      _texture.GetData<Color>(temp);
-
-      // Copy over the pixel data as many times as needed.
-      for (int i = 0; i < _colorData.Length; i += pixels) {
-        Array.Copy(temp, 0, _colorData, i, Math.Min(_colorData.Length - i, 400));
-        Console.WriteLine("blah");
-      }*/
-
-      // The upper left corner is easy to figure out.
-      _upperLeftCorner = origin;
-      // For the lower right corner, the length needs to be added.
-      _lowerRightCorner = _upperLeftCorner + length;
-
-      // TODO: Clip platform sizes to the 20x20 grid.
+      // Create the Body object.
+      _body = BodyFactory.CreateRectangle(world, meterSize.X, meterSize.Y, 1);
+      // Set its position to be the center of the platform, in meters, which is what the
+      // physics engine expects.
+      _body.Position = UnitConverter.ToMeters(_center);
+      // The platform should never be subjected to the World's physical forces.
+      _body.BodyType = BodyType.Static;
+      // Set other properties of the Platform's body.
+      _body.Friction = 0f;
+      _body.Restitution = .8f;
+      // Associate the Body object with the platform.
+      _body.UserData = "platform";
+      // Listen for collision events.
+      _body.OnCollision += new OnCollisionEventHandler(HandleCollision);
     }
 
     /// <summary>
-    /// Updates the platform's state.
+    /// Called when a collision with the platform occurs.
     /// </summary>
-    public void Update() {
+    /// <param name="fixtureA">The first fixture that has collided.</param>
+    /// <param name="fixtureB">The second fixture that has collided.</param>
+    /// <param name="contact">The Contact object that contains information about the collision.</param>
+    /// <returns>Whether the collision should still happen.</returns>
+    private bool HandleCollision(Fixture fixtureA, Fixture fixtureB, Contact contact) {
+      // Check if one of the Fixtures belongs to a ball.
+      bool causedByBall = (string)fixtureA.Body.UserData == "ball" || (string)fixtureB.Body.UserData == "ball";
+
+      if (contact.IsTouching() && causedByBall) {
+        bool shouldCollisionOccur = false;
+
+        // A ball should only bounce off a breakable platform once.
+        if (_breakable && _visible) {
+          Break();
+          shouldCollisionOccur = true;
+        // Don't bounce off broken platforms.
+        } else if (_breakable && !_visible) {
+          shouldCollisionOccur = false;
+        // Always bounce off regular platforms.
+        } else {
+          shouldCollisionOccur = true;
+        }
+
+        // Call the methods listening for collision events.
+        if (OnPlatformCollision != null && shouldCollisionOccur) {
+          OnPlatformCollision(_breakable);
+        }
+        // Tell the physics engine the intended result.
+        return shouldCollisionOccur;
+      } else {
+        // Otherwise, if it's not caused by a ball, then ignore the collision.
+        return false;
+      }
+    }
+
+    /*****************************
+     * Brian's Physics stuff ends*
+     * **************************/
+
+    /// <summary>
+    /// Breaks a breakable platform.
+    /// </summary>
+    private void Break() {
+      if (!_breakable) {
+        throw new InvalidOperationException("You can't break a non-breakable platform.");
+      }
+      _visible = false;
+    }
+
+    /// <summary>
+    /// Restores a platform to its original state.
+    /// </summary>
+    public void Reset() {
+      _visible = true;
     }
 
     /// <summary>
@@ -153,11 +256,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      // Scale the texture appropriately to the platform's size.
-      Vector2 scale = new Vector2(Width / 20, Height / 20);
-
-      // Draw it!
-      spriteBatch.Draw(_texture, _upperLeftCorner, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      if (_visible) {
+        // Scale the texture to the appropriate size.
+        Vector2 scale = new Vector2(_size.X / (float)_texture.Width, _size.Y / (float)_texture.Height);
+        // Get the center of the texture.
+        Vector2 origin = new Vector2((float)_texture.Width / 2, (float)_texture.Height / 2);
+        // Draw it!
+        spriteBatch.Draw(_texture, _center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+      }
     }
 
     /// <summary>
@@ -166,8 +272,8 @@ namespace PuzzlePathDimension {
     /// <param name="v">The origin.</param>
     /// <returns>Whether the origin of the platform is inside the level.</returns>
     private bool InBounds(Vector2 v) {
-      // It's probably best if these numbers aren't hard-coded. -Jorenz
-      return v.X >= 0 && v.X <= 799 && v.Y >= 0 && v.Y <= 599;
+      // Subtract 1 to account for the fact that the origin is at (0,0).
+      return v.X >= 0 && v.X <= Simulation.FieldWidth - 1 && v.Y >= 0 && v.Y <= Simulation.FieldHeight - 1;
     }
   }
 }
