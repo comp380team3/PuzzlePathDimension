@@ -13,16 +13,11 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// This is the main type for your game
   /// </summary>
-  public class Game1 : Microsoft.Xna.Framework.Game {
-    /// <summary>
-    /// The size of one square on the level grid.
-    /// </summary>
-    public static readonly float GridSize = 20f;
-
+  public class PuzzlePathGame : Microsoft.Xna.Framework.Game {
     /// <summary>
     /// Creates a Game1 object.
     /// </summary>
-    public Game1() {
+    public PuzzlePathGame() {
       // Set the resolution to 800x600
       GraphicsDeviceManager graphics = new GraphicsDeviceManager(this);
       graphics.PreferredBackBufferWidth = 800;
