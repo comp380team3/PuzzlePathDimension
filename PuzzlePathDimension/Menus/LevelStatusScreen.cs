@@ -151,7 +151,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
+      LoadingScreen.Load(ScreenList, true, e.PlayerIndex,
                          new GameplayScreen());
     }
   }

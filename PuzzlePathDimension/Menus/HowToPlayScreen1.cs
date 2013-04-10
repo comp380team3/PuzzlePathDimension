@@ -48,7 +48,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
-      ScreenManager.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
+      ScreenList.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
     }
 
     /// <summary>

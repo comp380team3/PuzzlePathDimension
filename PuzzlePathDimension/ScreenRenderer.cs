@@ -42,9 +42,7 @@ namespace PuzzlePathDimension {
   /// methods at the appropriate times, and automatically routes input to the
   /// topmost active screen.
   /// </summary>
-  public class ScreenRenderer : DrawableGameComponent, IScreenList {
-    Scene scene;
-
+  public class ScreenRenderer : DrawableGameComponent {
     /// <summary>
     /// The VirtualController object that provides input to the Screen objects.
     /// </summary>
@@ -56,13 +54,15 @@ namespace PuzzlePathDimension {
     // has the graphics device been initialized?
     public bool HasDevice { get; private set; }
 
+    public Scene Scene { get; private set; }
+
 
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
     public ScreenRenderer(Game game)
         : base(game) {
-      scene = new Scene(this);
+      Scene = new Scene(this);
     }
 
     /// <summary>
@@ -82,14 +82,14 @@ namespace PuzzlePathDimension {
 
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
-      scene.LoadContent(Game.Content);
+      Scene.LoadContent(Game.Content);
     }
 
     /// <summary>
     /// Unload your graphics content.
     /// </summary>
     protected override void UnloadContent() {
-      scene.UnloadContent();
+      Scene.UnloadContent();
     }
 
     /// <summary>
@@ -99,40 +99,14 @@ namespace PuzzlePathDimension {
       // Read the keyboard and gamepad.
       vtroller.Update();
 
-      scene.Update(gameTime, vtroller, Game.IsActive);
+      Scene.Update(gameTime, vtroller, Game.IsActive);
     }
 
     /// <summary>
     /// Tells each screen to draw itself.
     /// </summary>
     public override void Draw(GameTime gameTime) {
-      scene.Draw(gameTime, spriteBatch);
-    }
-
-    /// <summary>
-    /// Adds a new screen to the screen manager.
-    /// </summary>
-    public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer) {
-      scene.AddScreen(screen, controllingPlayer);
-    }
-
-    /// <summary>
-    /// Removes a screen from the screen manager. You should normally
-    /// use GameScreen.ExitScreen instead of calling this directly, so
-    /// the screen can gradually transition off rather than just being
-    /// instantly removed.
-    /// </summary>
-    public void RemoveScreen(GameScreen screen) {
-      scene.RemoveScreen(screen);
-    }
-
-    /// <summary>
-    /// Expose an array holding all the screens. We return a copy rather
-    /// than the real master list, because screens should only ever be added
-    /// or removed using the AddScreen and RemoveScreen methods.
-    /// </summary>
-    public GameScreen[] GetScreens() {
-      return scene.GetScreens();
+      Scene.Draw(gameTime, spriteBatch);
     }
   }
 }

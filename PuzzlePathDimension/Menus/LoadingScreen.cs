@@ -37,8 +37,7 @@ namespace PuzzlePathDimension {
     /// The constructor is private: loading screens should
     /// be activated via the static Load method instead.
     /// </summary>
-    private LoadingScreen(ScreenRenderer screenManager, bool loadingIsSlow,
-                          GameScreen[] screensToLoad) {
+    private LoadingScreen(bool loadingIsSlow, GameScreen[] screensToLoad) {
       this.loadingIsSlow = loadingIsSlow;
       this.screensToLoad = screensToLoad;
 
@@ -55,19 +54,18 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Activates the loading screen.
     /// </summary>
-    public static void Load(ScreenRenderer screenManager, bool loadingIsSlow,
+    public static void Load(IScreenList screenList, bool loadingIsSlow,
                             PlayerIndex? controllingPlayer,
                             params GameScreen[] screensToLoad) {
       // Tell all the current screens to transition off.
-      foreach (GameScreen screen in screenManager.GetScreens())
+      foreach (GameScreen screen in screenList.GetScreens())
         screen.ExitScreen();
 
       // Create and activate the loading screen.
-      LoadingScreen loadingScreen = new LoadingScreen(screenManager,
-                                                      loadingIsSlow,
+      LoadingScreen loadingScreen = new LoadingScreen(loadingIsSlow,
                                                       screensToLoad);
 
-      screenManager.AddScreen(loadingScreen, controllingPlayer);
+      screenList.AddScreen(loadingScreen, controllingPlayer);
     }
 
 
@@ -81,11 +79,11 @@ namespace PuzzlePathDimension {
       // If all the previous screens have finished transitioning
       // off, it is time to actually perform the load.
       if (otherScreensAreGone) {
-        ScreenManager.RemoveScreen(this);
+        ScreenList.RemoveScreen(this);
 
         foreach (GameScreen screen in screensToLoad) {
           if (screen != null) {
-            ScreenManager.AddScreen(screen, ControllingPlayer);
+            ScreenList.AddScreen(screen, ControllingPlayer);
           }
         }
 
@@ -107,7 +105,7 @@ namespace PuzzlePathDimension {
       // screens to be gone: in order for the transition to look good we must
       // have actually drawn a frame without them before we perform the load.
       if ((ScreenState == ScreenState.Active) &&
-          (ScreenManager.GetScreens().Length == 1)) {
+          (ScreenList.GetScreens().Length == 1)) {
         otherScreensAreGone = true;
       }
 

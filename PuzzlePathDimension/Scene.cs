@@ -109,6 +109,7 @@ namespace PuzzlePathDimension {
     public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer) {
       screen.ControllingPlayer = controllingPlayer;
       screen.ScreenManager = screenRenderer;
+      screen.ScreenList = this;
       screen.IsExiting = false;
 
       // If we have a graphics device, tell the screen to load content.

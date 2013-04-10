@@ -36,7 +36,7 @@ namespace PuzzlePathDimension {
 
       MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(message);
       confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
-      ScreenManager.AddScreen(confirmQuitMessageBox, ControllingPlayer);
+      ScreenList.AddScreen(confirmQuitMessageBox, ControllingPlayer);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace PuzzlePathDimension {
     /// transition from the game back to the main menu screen.
     /// </summary>
     void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(),
+      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
                                                      new MainMenuScreen());
     }
   }

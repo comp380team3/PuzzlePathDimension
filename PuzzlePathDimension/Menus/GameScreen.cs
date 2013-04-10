@@ -82,6 +82,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public ScreenRenderer ScreenManager { get; internal set; }
 
+    public IScreenList ScreenList { get; internal set; }
+
     /// <summary>
     /// Gets the index of the player who is currently controlling this screen,
     /// or null if it is accepting input from any player. This is used to lock
@@ -140,7 +142,7 @@ namespace PuzzlePathDimension {
 
         if (!UpdateTransition(gameTime, TransitionOffTime, 1)) {
           // When the transition finishes, remove the screen.
-          ScreenManager.RemoveScreen(this);
+          ScreenList.RemoveScreen(this);
         }
       } else if (coveredByOtherScreen) {
         // If the screen is covered by another, it should transition off.
@@ -211,7 +213,7 @@ namespace PuzzlePathDimension {
     public void ExitScreen() {
       if (TransitionOffTime == TimeSpan.Zero) {
         // If the screen has a zero transition time, remove it immediately.
-        ScreenManager.RemoveScreen(this);
+        ScreenList.RemoveScreen(this);
       } else {
         // Otherwise flag that it should transition off and then exit.
         IsExiting = true;

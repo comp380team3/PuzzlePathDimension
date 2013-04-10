@@ -43,14 +43,14 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Play Game menu entry is selected.
     /// </summary>
     void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenManager.AddScreen(new LevelSelectScreen(), e.PlayerIndex);
+      ScreenList.AddScreen(new LevelSelectScreen(), e.PlayerIndex);
     }
 
     /// <summary>
     /// Event handler for when the Options menu entry is selected.
     /// </summary>
     void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenManager.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
+      ScreenList.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
     }
 
     /// <summary>
@@ -59,14 +59,14 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void howToPlayMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenManager.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
+      ScreenList.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
     }
 
     /// <summary>
     /// Event handler for when the Credits meny entry is selected.
     /// </summary>
     void CreditsMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenManager.AddScreen(new CreditsMenuScreen(), e.PlayerIndex);
+      ScreenList.AddScreen(new CreditsMenuScreen(), e.PlayerIndex);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ namespace PuzzlePathDimension {
 
       MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
-      ScreenManager.AddScreen(confirmExitMessageBox, playerIndex);
+      ScreenList.AddScreen(confirmExitMessageBox, playerIndex);
     }
 
 

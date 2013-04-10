@@ -130,7 +130,7 @@ namespace PuzzlePathDimension {
       // whether a gamepad was ever plugged in, because we don't want to pause
       // on PC if they are playing with a keyboard and have no gamepad at all!
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+        ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       } 
 
       Launcher launcher = simulation.Launcher;
@@ -157,7 +157,7 @@ namespace PuzzlePathDimension {
       // Go back to the main menu
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ExitScreen();
-        ScreenManager.AddScreen(new MainMenuScreen(), null);
+        ScreenList.AddScreen(new MainMenuScreen(), null);
       }
     }
 
