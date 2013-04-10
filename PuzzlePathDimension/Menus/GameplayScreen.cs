@@ -1,13 +1,10 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // GameplayScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using System.Threading;
 using Microsoft.Xna.Framework;
@@ -17,14 +14,8 @@ using Microsoft.Xna.Framework.Input;
 using FarseerPhysics.Dynamics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
-#endregion
 
 namespace PuzzlePathDimension {
-  /// <summary>
-  /// This screen implements the actual game logic. It is just a
-  /// placeholder to get the idea across: you'll probably want to
-  /// put some more interesting gameplay in here!
-  /// </summary>
   class GameplayScreen : GameScreen {
     ContentManager content;
     Simulation simulation;
@@ -34,9 +25,6 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    /// <summary>
-    /// Constructor.
-    /// </summary>
     public GameplayScreen() {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -122,9 +110,6 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      // Look up inputs for the active player profile.
-      int playerIndex = (int)ControllingPlayer.Value;
-
       // The game pauses either if the user presses the pause button, or if
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause
@@ -194,15 +179,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the walls.</param>
     private void DrawWalls(SpriteBatch spriteBatch) {
-      Texture2D topBottom = content.Load<Texture2D>("TopBottom");
-      Texture2D sideWall = content.Load<Texture2D>("SideWall");
+      Texture2D wallTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+      wallTexture.SetData<Color>(new Color[] { Color.White });
 
-      // I'd rather have 5-pixel thick walls then 10-pixel thick walls, so I offset each wall
-      // by 5 pixels. I could change the image... - Jorenz
-      spriteBatch.Draw(topBottom, new Vector2(0, -5), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-      spriteBatch.Draw(topBottom, new Vector2(0, 595), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-      spriteBatch.Draw(sideWall, new Vector2(-5, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-      spriteBatch.Draw(sideWall, new Vector2(795, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(wallTexture, new Rectangle(0, 0, 800, 5), null, Color.Black);
+      spriteBatch.Draw(wallTexture, new Rectangle(0, 595, 800, 5), null, Color.Black);
+      spriteBatch.Draw(wallTexture, new Rectangle(0, 0, 5, 600), null, Color.Black);
+      spriteBatch.Draw(wallTexture, new Rectangle(795, 0, 5, 600), null, Color.Black);
     }
 
     /// <summary>
@@ -239,8 +222,7 @@ namespace PuzzlePathDimension {
     private void DrawText(SpriteBatch spriteBatch) {
       // Draw the number of balls left.
       string attemptsText = "Balls left: " + simulation.AttemptsLeft;
-      spriteBatch.DrawString(font, attemptsText,
-        new Vector2(10f, 570f), Color.Black);
+      spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
 
       // If the simulation has concluded in some way, display the approriate message.
       if (simulation.CurrentState == SimulationState.Completed) {
