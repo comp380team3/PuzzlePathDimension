@@ -75,6 +75,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Menus\IMenuEntry.cs" />
     <Compile Include="Menus\LevelSelectScreen.cs" />
     <Compile Include="Menus\LevelStatusScreen.cs" />
     <Compile Include="Input\KeyboardMouseAdapter.cs" />

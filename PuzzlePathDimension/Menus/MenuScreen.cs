@@ -18,14 +18,14 @@ namespace PuzzlePathDimension {
   /// move up and down to select an entry, or cancel to back out of the screen.
   /// </summary>
   abstract class MenuScreen : GameScreen {
-    List<MenuEntry> menuEntries = new List<MenuEntry>();
+    List<IMenuEntry> menuEntries = new List<IMenuEntry>();
     string menuTitle;
 
     /// <summary>
     /// Gets the list of menu entries, so derived classes can add
     /// or change the menu contents.
     /// </summary>
-    protected IList<MenuEntry> MenuEntries {
+    protected IList<IMenuEntry> MenuEntries {
       get { return menuEntries; }
     }
     
@@ -122,7 +122,7 @@ namespace PuzzlePathDimension {
 
       // update each menu entry's location in turn
       for (int i = 0; i < menuEntries.Count; i++) {
-        MenuEntry menuEntry = menuEntries[i];
+        IMenuEntry menuEntry = menuEntries[i];
 
         // each entry is to be centered horizontally
         position.X = viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
@@ -169,7 +169,7 @@ namespace PuzzlePathDimension {
 
       // Draw each menu entry in turn.
       for (int i = 0; i < menuEntries.Count; i++) {
-        MenuEntry menuEntry = menuEntries[i];
+        IMenuEntry menuEntry = menuEntries[i];
 
         bool isSelected = IsActive && (i == SelectedEntry);
 

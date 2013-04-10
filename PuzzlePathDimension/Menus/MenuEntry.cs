@@ -16,7 +16,7 @@ namespace PuzzlePathDimension {
   /// entries in different ways. This also provides an event that will be raised
   /// when the menu entry is selected.
   /// </summary>
-  class MenuEntry {
+  class MenuEntry : IMenuEntry {
     /// <summary>
     /// Tracks a fading selection effect on the entry.
     /// </summary>
@@ -46,7 +46,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Method for raising the Selected event.
     /// </summary>
-    protected internal virtual void OnSelectEntry(PlayerIndex playerIndex) {
+    public virtual void OnSelectEntry(PlayerIndex playerIndex) {
       if (Selected != null)
         Selected(this, new PlayerIndexEventArgs(playerIndex));
     }
