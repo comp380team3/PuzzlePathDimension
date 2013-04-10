@@ -7,70 +7,47 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
-  /// <summary>
-  /// The credits screen displays the individuals and organizations
-  /// that contributed toward the games completion.
-  /// </summary>
-  class CreditsMenuScreen : MenuScreen {
+  class CreditsEntry : IMenuEntry {
+    public event EventHandler<PlayerIndexEventArgs> Selected;
+
+    float selectionFade;
+
+    public Vector2 Position { get; set; }
+
+    public string[] TeamMembers { get; set; }
+    public string[] Organizations { get; set; }
+    public string[] Individuals { get; set; }
+
     /// <summary>
-    /// The team members of Puzzle Path
+    /// Method for raising the Selected event.
     /// </summary>
-    string[] teamMembersMenuEntry = new string[] {
-      "Chris Babayas",
-      "Jonathan Castello",
-      "Brian Marroquin",
-      "Jorenz Paragas",
-      "Michael Sandoval",
-    };
-
-    ///<summary>
-    ///The organizations that contributed to Puzzle Path
-    ///</summary>
-    string[] organizationsMenuEntry = new string[] {
-      "Microsoft XNA Community Game Platform",
-    };
-
-    ///<summary>
-    ///Individuals that have contributed to Puzzle Path
-    ///</summary>
-    string[] individualContributorMenuEntry = new string[] { "" };
-
-    ///<summary>
-    ///An exit menu entry to return to the previous screen
-    ///</summary>
-    MenuEntry exitMenuEntry = new MenuEntry("Back");
-
-    ///<summary>
-    ///Constructor
-    ///<summary>
-    public CreditsMenuScreen()
-        : base("Credits") {
-      // Add entry to the menu
-      MenuEntries.Add(exitMenuEntry);
-
-      exitMenuEntry.Selected += OnCancel;
+    public void OnSelectEntry(PlayerIndex playerIndex) {
+      if (Selected != null)
+        Selected(this, new PlayerIndexEventArgs(playerIndex));
     }
 
+    public int GetWidth(MenuScreen screen) {
+      return 100;
+    }
 
-    /// <summary>
-    /// Update the MenuEntry's location. The location will be after the
-    /// list of names that are given credit for the work applied to the game.
-    /// </summary>
-    protected override void UpdateMenuEntryLocations() {
-      base.UpdateMenuEntryLocations();
+    public int GetHeight(MenuScreen screen) {
+      int numberOfNames = TeamMembers.Length
+                        + Organizations.Length
+                        + Individuals.Length;
 
-      // TODO: Replace physical screen viewport with virtual coordinate system.
-      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+      return (numberOfNames + 8) * screen.TextFont.LineSpacing;
+    }
 
-      // start at Y = 80; start at the center of the screen
-      int numberOfNames = teamMembersMenuEntry.Length
-                        + organizationsMenuEntry.Length
-                        + individualContributorMenuEntry.Length;
+    public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
+      // When the menu selection changes, entries gradually fade between
+      // their selected and deselected appearance, rather than instantly
+      // popping to the new state.
+      float fadeSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * 4;
 
-      exitMenuEntry.Position = new Vector2(
-        viewport.Width / 2,
-        80 + (numberOfNames + 3) * TitleFont.LineSpacing
-      );
+      if (isSelected)
+        selectionFade = Math.Min(selectionFade + fadeSpeed, 1);
+      else
+        selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
     }
 
     /// <summary>
@@ -78,63 +55,91 @@ namespace PuzzlePathDimension {
     /// organizations list, and the individual contributions list.
     /// </summary>
     /// <param name="gameTime"></param>
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      base.Draw(gameTime, spriteBatch);
-
+    public void Draw(MenuScreen screen, SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
       Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
 
-      spriteBatch.Begin();
+      SpriteFont textFont = screen.TextFont;
+      SpriteFont titleFont = screen.TitleFont;
+
+      Color titleColor = new Color(192, 192, 192) * screen.TransitionAlpha;
 
       // Make the menu slide into place during transitions, using a
       // power curve to make things look more interesting (this makes
       // the movement slow down as it nears the end).
-      float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+      float transitionOffset = (float)Math.Pow(screen.TransitionPosition, 2);
+      const float scale = 1.25f;
 
-      // Draw the menu title centered on the screen
-      Vector2 titlePosition = new Vector2(viewport.Width / 2, 80);
-      Vector2 titleOrigin = TextFont.MeasureString(organizationsMenuEntry[0]) / 2;
-      Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
-      float titleScale = 1.25f;
-      titlePosition.Y -= transitionOffset * 100;
+      Vector2 origin = textFont.MeasureString(Organizations[0]) / 2;
+      Vector2 position = new Vector2(viewport.Width / 2, 80);
+      position.Y -= transitionOffset * 100;
 
       // Make space between the menu title and the Team member title
-      titlePosition.Y += TextFont.LineSpacing * 2;
+      position.Y += 2 * textFont.LineSpacing;
 
       // Draw the list of team members to the screen
-      spriteBatch.DrawString(TextFont, "Team Members", titlePosition, Color.White, 0,
-                                titleOrigin, titleScale, SpriteEffects.None, 0);
+      spriteBatch.DrawString(textFont, "Team Members", position, Color.White, 0,
+                                origin, scale, SpriteEffects.None, 0);
 
-      titlePosition.Y += 2 * TextFont.LineSpacing;
+      position.Y += 2 * textFont.LineSpacing;
 
-      for (int i = 0; i < teamMembersMenuEntry.Length; i++) {
-        spriteBatch.DrawString(TextFont, teamMembersMenuEntry[i], titlePosition, Color.Black, 0,
-                                  titleOrigin, titleScale, SpriteEffects.None, 0);
-        titlePosition.Y += TextFont.LineSpacing;
+      for (int i = 0; i < TeamMembers.Length; i++) {
+        spriteBatch.DrawString(textFont, TeamMembers[i], position, Color.Black, 0,
+                                  origin, scale, SpriteEffects.None, 0);
+        position.Y += textFont.LineSpacing;
       }
 
       // Make space in between the team member title and the organization title
-      titlePosition.Y += 2 * TextFont.LineSpacing;
+      position.Y += 2 * textFont.LineSpacing;
 
       // Draw the list of Organizations to the screen
-      spriteBatch.DrawString(TextFont, "Organizations", titlePosition, Color.White, 0,
-                                titleOrigin, titleScale, SpriteEffects.None, 0);
+      spriteBatch.DrawString(textFont, "Organizations", position, Color.White, 0,
+                                origin, scale, SpriteEffects.None, 0);
 
-      titlePosition.Y += 2 * TextFont.LineSpacing;
+      position.Y += 2 * textFont.LineSpacing;
 
-      for (int i = 0; i < organizationsMenuEntry.Length; i++) {
-        spriteBatch.DrawString(TextFont, organizationsMenuEntry[i], titlePosition, Color.Black, 0,
-                               titleOrigin, titleScale, SpriteEffects.None, 0);
-        titlePosition.Y += TextFont.LineSpacing;
+      for (int i = 0; i < Organizations.Length; i++) {
+        spriteBatch.DrawString(textFont, Organizations[i], position, Color.Black, 0,
+                               origin, scale, SpriteEffects.None, 0);
+        position.Y += textFont.LineSpacing;
       }
 
       // Draw the list of individuals who contributed to the Puzzle Path game
-      for (int i = 0; i < individualContributorMenuEntry.Length; i++) {
-        spriteBatch.DrawString(TextFont, individualContributorMenuEntry[i], titlePosition, Color.Black, 0,
-                                titleOrigin, titleScale, SpriteEffects.None, 0);
-        titlePosition.Y += TextFont.LineSpacing;
+      for (int i = 0; i < Individuals.Length; i++) {
+        spriteBatch.DrawString(textFont, Individuals[i], position, Color.Black, 0,
+                                origin, scale, SpriteEffects.None, 0);
+        position.Y += textFont.LineSpacing;
       }
+    }
+  }
 
-      spriteBatch.End();
+  /// <summary>
+  /// The credits screen displays the individuals and organizations
+  /// that contributed toward the games completion.
+  /// </summary>
+  class CreditsMenuScreen : MenuScreen {
+    ///<summary>
+    ///Constructor
+    ///<summary>
+    public CreditsMenuScreen()
+        : base("Credits") {
+      CreditsEntry creditsEntry = new CreditsEntry();
+      creditsEntry.TeamMembers = new string[] {
+        "Chris Babayas",
+        "Jonathan Castello",
+        "Brian Marroquin",
+        "Jorenz Paragas",
+        "Michael Sandoval",
+      };
+      creditsEntry.Organizations = new string[] {
+        "Microsoft XNA Community Game Platform",
+      };
+      creditsEntry.Individuals = new string[] {};
+      creditsEntry.Selected += OnCancel;
+      MenuEntries.Add(creditsEntry);
+
+      MenuEntry exitMenuEntry = new MenuEntry("Back");
+      exitMenuEntry.Selected += OnCancel;
+      MenuEntries.Add(exitMenuEntry);
     }
   }
 }
