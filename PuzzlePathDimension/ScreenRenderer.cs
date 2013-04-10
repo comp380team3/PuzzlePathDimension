@@ -8,6 +8,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,13 +36,6 @@ namespace PuzzlePathDimension {
     }
   }
 
-  public interface IScreenList {
-    void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer);
-    void RemoveScreen(GameScreen screen);
-
-    GameScreen[] GetScreens();
-  }
-
   /// <summary>
   /// The screen manager is a component which manages one or more GameScreen
   /// instances. It maintains a stack of screens, calls their Update and Draw
@@ -49,13 +43,7 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenRenderer : DrawableGameComponent, IScreenList {
-    // The list of screens that will receive Update and Draw events.
-    List<GameScreen> screens = new List<GameScreen>();
-
-    // The list of screens currently being updated.
-    // This needs to be a field, not a local, because screens may be removed
-    //   during the update process, and removed screens shouldn't be updated.
-    List<GameScreen> screensToUpdate = new List<GameScreen>();
+    Scene scene;
 
     /// <summary>
     /// The VirtualController object that provides input to the Screen objects.
@@ -65,25 +53,16 @@ namespace PuzzlePathDimension {
     // The rendering device that all screens share.
     SpriteBatch spriteBatch;
 
-    bool hasDevice; // has the graphics device been initialized?
-    bool traceEnabled; // do we want to output debugging information?
-
-    /// <summary>
-    /// If true, the manager prints out a list of all the screens
-    /// each time it is updated. This can be useful for making sure
-    /// everything is being added and removed at the right times.
-    /// </summary>
-    public bool TraceEnabled {
-      get { return traceEnabled; }
-      set { traceEnabled = value; }
-    }
+    // has the graphics device been initialized?
+    public bool HasDevice { get; private set; }
 
 
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
     public ScreenRenderer(Game game)
-      : base(game) {
+        : base(game) {
+      scene = new Scene(this);
     }
 
     /// <summary>
@@ -92,7 +71,7 @@ namespace PuzzlePathDimension {
     public override void Initialize() {
       base.Initialize();
 
-      hasDevice = true;
+      HasDevice = true;
     }
 
     /// <summary>
@@ -101,28 +80,18 @@ namespace PuzzlePathDimension {
     protected override void LoadContent() {
       base.LoadContent();
 
-      // Load content belonging to the screen manager.
-      ContentManager content = Game.Content;
-
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
-      // Tell each of the screens to load their content.
-      foreach (GameScreen screen in screens) {
-        screen.LoadContent(content);
-      }
+      scene.LoadContent(Game.Content);
     }
 
     /// <summary>
     /// Unload your graphics content.
     /// </summary>
     protected override void UnloadContent() {
-      // Tell each of the screens to unload their content.
-      foreach (GameScreen screen in screens) {
-        screen.UnloadContent();
-      }
+      scene.UnloadContent();
     }
 
-    /* Update & Draw */
     /// <summary>
     /// Allows each screen to run logic.
     /// </summary>
@@ -130,85 +99,21 @@ namespace PuzzlePathDimension {
       // Read the keyboard and gamepad.
       vtroller.Update();
 
-      // Make a copy of the master screen list, to avoid confusion if
-      // the process of updating one screen adds or removes others.
-      screensToUpdate.Clear();
-      foreach (GameScreen screen in screens)
-        screensToUpdate.Add(screen);
-
-      bool otherScreenHasFocus = !Game.IsActive;
-      bool coveredByOtherScreen = false;
-
-      // Loop as long as there are screens waiting to be updated.
-      while (screensToUpdate.Count > 0) {
-        // Pop the topmost screen off the waiting list.
-        GameScreen screen = screensToUpdate[screensToUpdate.Count - 1];
-        screensToUpdate.RemoveAt(screensToUpdate.Count - 1);
-
-        // Update the screen.
-        screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
-
-        if (screen.ScreenState == ScreenState.TransitionOn ||
-            screen.ScreenState == ScreenState.Active) {
-          // If this is the first active screen we came across,
-          // give it a chance to handle input.
-          if (!otherScreenHasFocus) {
-            screen.HandleInput(vtroller);
-            otherScreenHasFocus = true;
-          }
-
-          // If this is an active non-popup, inform any subsequent
-          // screens that they are covered by it.
-          if (!screen.IsPopup) {
-            coveredByOtherScreen = true;
-          }
-        }
-      }
-
-      // Print debug trace?
-      if (traceEnabled)
-        TraceScreens();
-    }
-
-    /// <summary>
-    /// Prints a list of all the screens, for debugging.
-    /// </summary>
-    void TraceScreens() {
-      List<string> screenNames = new List<string>();
-
-      foreach (GameScreen screen in screens)
-        screenNames.Add(screen.GetType().Name);
-
-      Debug.WriteLine(string.Join(", ", screenNames.ToArray()));
+      scene.Update(gameTime, vtroller, Game.IsActive);
     }
 
     /// <summary>
     /// Tells each screen to draw itself.
     /// </summary>
     public override void Draw(GameTime gameTime) {
-      foreach (GameScreen screen in screens) {
-        if (screen.ScreenState == ScreenState.Hidden)
-          continue;
-
-        screen.Draw(gameTime, spriteBatch);
-      }
+      scene.Draw(gameTime, spriteBatch);
     }
 
-    /* Public Methods */
     /// <summary>
     /// Adds a new screen to the screen manager.
     /// </summary>
     public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer) {
-      screen.ControllingPlayer = controllingPlayer;
-      screen.ScreenManager = this;
-      screen.IsExiting = false;
-
-      // If we have a graphics device, tell the screen to load content.
-      if (hasDevice) {
-        screen.LoadContent(Game.Content);
-      }
-
-      screens.Add(screen);
+      scene.AddScreen(screen, controllingPlayer);
     }
 
     /// <summary>
@@ -218,13 +123,7 @@ namespace PuzzlePathDimension {
     /// instantly removed.
     /// </summary>
     public void RemoveScreen(GameScreen screen) {
-      // If we have a graphics device, tell the screen to unload content.
-      if (hasDevice) {
-        screen.UnloadContent();
-      }
-
-      screens.Remove(screen);
-      screensToUpdate.Remove(screen); // in case a screen is removed during Update().
+      scene.RemoveScreen(screen);
     }
 
     /// <summary>
@@ -233,7 +132,7 @@ namespace PuzzlePathDimension {
     /// or removed using the AddScreen and RemoveScreen methods.
     /// </summary>
     public GameScreen[] GetScreens() {
-      return screens.ToArray();
+      return scene.GetScreens();
     }
   }
 }
