@@ -27,7 +27,21 @@ namespace PuzzlePathDimension {
     }
 
     public int GetWidth(MenuScreen screen) {
-      return 100;
+      SpriteFont font = screen.TextFont;
+      float width = 0.0f;
+
+      width = Math.Max(width, font.MeasureString("Team Members").X);
+      foreach (string name in TeamMembers)
+        width = Math.Max(width, font.MeasureString(name).X);
+
+      width = Math.Max(width, font.MeasureString("Organizations").X);
+      foreach (string name in Organizations)
+        width = Math.Max(width, font.MeasureString(name).X);
+
+      foreach (string name in Individuals)
+        width = Math.Max(width, font.MeasureString(name).X);
+
+      return (int)Math.Round(width);
     }
 
     public int GetHeight(MenuScreen screen) {
@@ -35,7 +49,9 @@ namespace PuzzlePathDimension {
                         + Organizations.Length
                         + Individuals.Length;
 
-      return (numberOfNames + 8) * screen.TextFont.LineSpacing;
+      numberOfNames += 8; // for the spacing
+
+      return numberOfNames * screen.TextFont.LineSpacing;
     }
 
     public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
@@ -59,22 +75,10 @@ namespace PuzzlePathDimension {
       Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
 
       SpriteFont textFont = screen.TextFont;
-      SpriteFont titleFont = screen.TitleFont;
-
-      Color titleColor = new Color(192, 192, 192) * screen.TransitionAlpha;
-
-      // Make the menu slide into place during transitions, using a
-      // power curve to make things look more interesting (this makes
-      // the movement slow down as it nears the end).
-      float transitionOffset = (float)Math.Pow(screen.TransitionPosition, 2);
       const float scale = 1.25f;
 
-      Vector2 origin = textFont.MeasureString(Organizations[0]) / 2;
-      Vector2 position = new Vector2(viewport.Width / 2, 80);
-      position.Y -= transitionOffset * 100;
-
-      // Make space between the menu title and the Team member title
-      position.Y += 2 * textFont.LineSpacing;
+      Vector2 position = Position;
+      Vector2 origin = new Vector2(0, textFont.MeasureString(Organizations[0]).Y / 2);
 
       // Draw the list of team members to the screen
       spriteBatch.DrawString(textFont, "Team Members", position, Color.White, 0,
