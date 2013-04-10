@@ -38,7 +38,7 @@ namespace PuzzlePathDimension {
     ///<summary>
     ///An exit menu entry to return to the previous screen
     ///</summary>
-    MenuEntry exitMenuEntry = new MenuEntry("back");
+    MenuEntry exitMenuEntry = new MenuEntry("Back");
 
     ///<summary>
     ///Constructor
