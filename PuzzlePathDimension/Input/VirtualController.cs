@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
@@ -32,6 +29,15 @@ namespace PuzzlePathDimension {
     /// The button that usually cancels something.
     /// </summary>
     Back,
+    /// <summary>
+    /// The button that has different functionality depending on the current
+    /// state of the game.
+    /// </summary>
+    Context,
+    /// <summary>
+    /// The button that pauses the game.
+    /// </summary>
+    Pause,
     /// <summary>
     /// The button that represents the up direction.
     /// </summary>
@@ -120,6 +126,20 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets the state of the Context button.
+    /// </summary>
+    public VirtualButtonState Context {
+      get { return _currentState[(int)VirtualButtons.Context]; }
+    }
+
+    /// <summary>
+    /// Gets the state of the Pause button.
+    /// </summary>
+    public VirtualButtonState Pause {
+      get { return _currentState[(int)VirtualButtons.Pause]; }
+    }
+
+    /// <summary>
     /// Gets the state of the Up button.
     /// </summary>
     public VirtualButtonState Up {
@@ -163,6 +183,14 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets whether the VirtualController can read input from
+    /// the current adapter.
+    /// </summary>
+    public bool Connected {
+      get { return _activeAdapter.Connected; }
+    }
+
+    /// <summary>
     /// Gets or sets the current adapter.
     /// </summary>
     public IVirtualAdapter Adapter {
@@ -203,6 +231,8 @@ namespace PuzzlePathDimension {
       // Update every possible digital input's state.
       UpdateDigital(VirtualButtons.Confirm, _activeAdapter.Confirm());
       UpdateDigital(VirtualButtons.Back, _activeAdapter.Back());
+      UpdateDigital(VirtualButtons.Context, _activeAdapter.Context());
+      UpdateDigital(VirtualButtons.Pause, _activeAdapter.Pause());
       UpdateDigital(VirtualButtons.Up, _activeAdapter.Up());
       UpdateDigital(VirtualButtons.Down, _activeAdapter.Down());
       UpdateDigital(VirtualButtons.Left, _activeAdapter.Left());
@@ -243,6 +273,24 @@ namespace PuzzlePathDimension {
       } else {
         _inputChanges[typeIndex] = VirtualButtonChange.NoChange;
       }
+    }
+
+    /// <summary>
+    /// Checks if a button is being held down.
+    /// </summary>
+    /// <param name="type">The type of button to check.</param>
+    /// <returns>Whether the button is being held down.</returns>
+    public bool IsButtonDown(VirtualButtons type) {
+      return _currentState[(int)type] == VirtualButtonState.Pressed;
+    }
+
+    /// <summary>
+    /// Checks if a button is not being held down.
+    /// </summary>
+    /// <param name="type">The type of button to check.</param>
+    /// <returns>Whether the button is not being held down.</returns>
+    public bool IsButtonUp(VirtualButtons type) {
+      return _currentState[(int)type] == VirtualButtonState.Released;
     }
 
     /// <summary>

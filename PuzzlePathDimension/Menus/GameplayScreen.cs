@@ -19,7 +19,6 @@ namespace PuzzlePathDimension {
   class GameplayScreen : GameScreen {
     ContentManager content;
     Simulation simulation;
-    Vector2 playerPosition = new Vector2(100, 100);
 
     SpriteFont font;
 
@@ -109,6 +108,7 @@ namespace PuzzlePathDimension {
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause
       // on PC if they are playing with a keyboard and have no gamepad at all!
+
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       } 
@@ -118,26 +118,21 @@ namespace PuzzlePathDimension {
       // Route user input to the appropriate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         simulation.HandleConfirm();
-      } else if (vtroller.Left == VirtualButtonState.Pressed) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (vtroller.Right == VirtualButtonState.Pressed) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Up)) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Up)) {
         launcher.AdjustMagnitude(0.25f);
-      } else if (Keyboard.GetState().IsKeyDown(Keys.Down)) {
+      } else if (vtroller.IsButtonDown(VirtualButtons.Down)) {
         launcher.AdjustMagnitude(-0.25f);
       }
 
       // TODO: Replace this restart mechanism
-      if (Keyboard.GetState().IsKeyDown(Keys.R)) { // Some crude restart mechanism
+      if (Keyboard.GetState().IsKeyDown(Keys.R) ||
+        GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
-      }
-
-      // Go back to the main menu
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ExitScreen();
-        ScreenList.AddScreen(new MainMenuScreen(), null);
       }
     }
 
