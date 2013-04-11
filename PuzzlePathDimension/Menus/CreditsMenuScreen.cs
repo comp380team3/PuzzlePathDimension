@@ -7,6 +7,42 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
+  interface ICredit {
+    int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime);
+  }
+
+  class Spacer : ICredit {
+    private int Height { get; set; }
+
+    public Spacer(int height) {
+      Height = height;
+    }
+
+    public int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime) {
+      return Height;
+    }
+  }
+
+  class Line : ICredit {
+    public Color TextColor { get; set; }
+    private SpriteFont Font { get; set; }
+    private string Text { get; set; }
+
+    public Line(String text, SpriteFont font, Color textColor) {
+      Text = text;
+      TextColor = textColor;
+      Font = font;
+    }
+
+    public int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime) {
+      Vector2 origin = new Vector2(0, Font.MeasureString(Text).Y / 2);
+
+      spriteBatch.DrawString(Font, Text, pos, TextColor, 0,
+                                origin, 1.25f, SpriteEffects.None, 0);
+      return Font.LineSpacing;
+    }
+  }
+
   class CreditsEntry : IMenuEntry {
     public event EventHandler<PlayerIndexEventArgs> Selected;
 
@@ -72,47 +108,28 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="gameTime"></param>
     public void Draw(MenuScreen screen, SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
-      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
-
       SpriteFont textFont = screen.TextFont;
-      const float scale = 1.25f;
+
+      List<ICredit> items = new List<ICredit>();
+
+      items.Add(new Line("Team Members", textFont, Color.White));
+      items.Add(new Spacer(textFont.LineSpacing));
+      foreach (string name in TeamMembers)
+        items.Add(new Line(name, textFont, Color.Black));
+      items.Add(new Spacer(textFont.LineSpacing));
+
+      items.Add(new Spacer(textFont.LineSpacing));
+
+      items.Add(new Line("Organizations", textFont, Color.White));
+      items.Add(new Spacer(textFont.LineSpacing));
+      foreach (string name in Organizations)
+        items.Add(new Line(name, textFont, Color.Black));
+      foreach (string name in Individuals)
+        items.Add(new Line(name, textFont, Color.Black));
 
       Vector2 position = Position;
-      Vector2 origin = new Vector2(0, textFont.MeasureString(Organizations[0]).Y / 2);
-
-      // Draw the list of team members to the screen
-      spriteBatch.DrawString(textFont, "Team Members", position, Color.White, 0,
-                                origin, scale, SpriteEffects.None, 0);
-
-      position.Y += 2 * textFont.LineSpacing;
-
-      for (int i = 0; i < TeamMembers.Length; i++) {
-        spriteBatch.DrawString(textFont, TeamMembers[i], position, Color.Black, 0,
-                                  origin, scale, SpriteEffects.None, 0);
-        position.Y += textFont.LineSpacing;
-      }
-
-      // Make space in between the team member title and the organization title
-      position.Y += 2 * textFont.LineSpacing;
-
-      // Draw the list of Organizations to the screen
-      spriteBatch.DrawString(textFont, "Organizations", position, Color.White, 0,
-                                origin, scale, SpriteEffects.None, 0);
-
-      position.Y += 2 * textFont.LineSpacing;
-
-      for (int i = 0; i < Organizations.Length; i++) {
-        spriteBatch.DrawString(textFont, Organizations[i], position, Color.Black, 0,
-                               origin, scale, SpriteEffects.None, 0);
-        position.Y += textFont.LineSpacing;
-      }
-
-      // Draw the list of individuals who contributed to the Puzzle Path game
-      for (int i = 0; i < Individuals.Length; i++) {
-        spriteBatch.DrawString(textFont, Individuals[i], position, Color.Black, 0,
-                                origin, scale, SpriteEffects.None, 0);
-        position.Y += textFont.LineSpacing;
-      }
+      foreach (ICredit credit in items)
+        position.Y += credit.Draw(spriteBatch, position, gameTime);
     }
   }
 
