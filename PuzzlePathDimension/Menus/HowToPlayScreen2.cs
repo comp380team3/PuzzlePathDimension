@@ -7,80 +7,64 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   class HowToPlayScreen2 : MenuScreen {
-
     /// <summary>
     /// Next button entry on the screen.
     /// </summary>
-    MenuEntry nextMenuEntry;
+    MenuEntry nextMenuEntry = new MenuEntry("Next");
 
     /// <summary>
     /// Back button entry on the screen.
     /// </summary>
-    MenuEntry backMenuEntry;
+    MenuEntry backMenuEntry = new MenuEntry("Back");
 
     /// <summary>
     /// Exit button entry on the screen.
     /// </summary>
-    MenuEntry exitMenuEntry;
+    MenuEntry exitMenuEntry = new MenuEntry("Exit");
 
-    #region Initialize
 
     /// <summary>
     /// Contructor
     /// </summary>
     public HowToPlayScreen2()
-      : base("How To Play") {
-      // Create a menu entry to transition to the next screen
-      nextMenuEntry = new MenuEntry("Next");
-      backMenuEntry = new MenuEntry("Back");
-      exitMenuEntry = new MenuEntry("Exit");
-
-      // Hook up menu event handlers.
+        : base("How To Play") {
       nextMenuEntry.Selected += NextMenuEntrySelected;
-      backMenuEntry.Selected += BackMenuEntrySelected;
-      exitMenuEntry.Selected += OnCancel;
-
-      // Add the menu entry to the menu
       MenuEntries.Add(nextMenuEntry);
+
+      backMenuEntry.Selected += BackMenuEntrySelected;
       MenuEntries.Add(backMenuEntry);
+
+      exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }
 
-    #endregion
-
-    #region Update
 
     /// <summary>
     /// Update the MenuEntry's location.
     /// </summary>
     protected override void UpdateMenuEntryLocations() {
       base.UpdateMenuEntryLocations();
-      GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-      // start at Y = 550; start at the lower end of the screen
-      Vector2 position = new Vector2(graphics.Viewport.Width / 6, 550);
 
+      // TODO: Use virtual coordinate system instead of physical screen viewport.
+      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+
+      // start at Y = 550; start at the lower end of the screen
+      Vector2 position = new Vector2(viewport.Width / 6, 550);
       backMenuEntry.Position = position;
 
-      position.X = position.X + 225;
-
+      position.X += 225;
       exitMenuEntry.Position = position;
-
-      position.X = position.X + 225;
-
+      position.X += 225;
       nextMenuEntry.Position = position;
-      }
+    }
 
-    #endregion
-
-
-    #region Handle Input
 
     /// <summary>
     /// Event handler for when the Next menu entry is selected
     /// </summary>
     void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
-      ScreenManager.AddScreen(new HowToPlayScreen3(), e.PlayerIndex);
+      ScreenList.AddScreen(new HowToPlayScreen3(), e.PlayerIndex);
     }
 
     /// <summary>
@@ -88,7 +72,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     void BackMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
-      ScreenManager.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
+      ScreenList.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
     }
     
     /// <summary>
@@ -97,18 +81,16 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
-      //base.HandleInput(vtroller);
-      
       if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        SelectedEntry--;
+        SelectedEntry -= 1;
 
-      if (SelectedEntry < 0)
+        if (SelectedEntry < 0)
           SelectedEntry = MenuEntries.Count - 1;
       }
 
       // Move to the next menu entry?
       if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-        SelectedEntry++;
+        SelectedEntry += 1;
 
         if (SelectedEntry >= MenuEntries.Count)
           SelectedEntry = 0;
@@ -124,10 +106,7 @@ namespace PuzzlePathDimension {
         OnSelectEntry(SelectedEntry, PlayerIndex.One);
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         OnCancel(PlayerIndex.One);
-        Console.WriteLine("blah");
       }
     }
-    #endregion
-
   }
 }

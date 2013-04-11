@@ -82,7 +82,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Level menu entry is selected.
     /// </summary>
     void ALevelMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenManager.AddScreen(new LevelStatusScreen(completed, levelScore, levelNumber, completionTime), e.PlayerIndex);
+      ScreenList.AddScreen(new LevelStatusScreen(completed, levelScore, levelNumber, completionTime), e.PlayerIndex);
     }
 
     #endregion

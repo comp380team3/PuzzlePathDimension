@@ -1,17 +1,14 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // LoadingScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -29,53 +26,47 @@ namespace PuzzlePathDimension {
   ///   screen will be the only thing displayed while this load is taking place.
   /// </summary>
   class LoadingScreen : GameScreen {
-    #region Fields
-
     bool loadingIsSlow;
     bool otherScreensAreGone;
 
     GameScreen[] screensToLoad;
 
-    #endregion
-
-    #region Initialization
-
+    SpriteFont font;
 
     /// <summary>
     /// The constructor is private: loading screens should
     /// be activated via the static Load method instead.
     /// </summary>
-    private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow,
-                          GameScreen[] screensToLoad) {
+    private LoadingScreen(bool loadingIsSlow, GameScreen[] screensToLoad) {
       this.loadingIsSlow = loadingIsSlow;
       this.screensToLoad = screensToLoad;
 
-      TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
+      font = shared.Load<SpriteFont>("menufont");
     }
 
 
     /// <summary>
     /// Activates the loading screen.
     /// </summary>
-    public static void Load(ScreenManager screenManager, bool loadingIsSlow,
+    public static void Load(IScreenList screenList, bool loadingIsSlow,
                             PlayerIndex? controllingPlayer,
                             params GameScreen[] screensToLoad) {
       // Tell all the current screens to transition off.
-      foreach (GameScreen screen in screenManager.GetScreens())
+      foreach (GameScreen screen in screenList.GetScreens())
         screen.ExitScreen();
 
       // Create and activate the loading screen.
-      LoadingScreen loadingScreen = new LoadingScreen(screenManager,
-                                                      loadingIsSlow,
+      LoadingScreen loadingScreen = new LoadingScreen(loadingIsSlow,
                                                       screensToLoad);
 
-      screenManager.AddScreen(loadingScreen, controllingPlayer);
+      screenList.AddScreen(loadingScreen, controllingPlayer);
     }
-
-
-    #endregion
-
-    #region Update and Draw
 
 
     /// <summary>
@@ -88,11 +79,11 @@ namespace PuzzlePathDimension {
       // If all the previous screens have finished transitioning
       // off, it is time to actually perform the load.
       if (otherScreensAreGone) {
-        ScreenManager.RemoveScreen(this);
+        ScreenList.RemoveScreen(this);
 
         foreach (GameScreen screen in screensToLoad) {
           if (screen != null) {
-            ScreenManager.AddScreen(screen, ControllingPlayer);
+            ScreenList.AddScreen(screen, ControllingPlayer);
           }
         }
 
@@ -107,14 +98,14 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the loading screen.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       // If we are the only active screen, that means all the previous screens
       // must have finished transitioning off. We check for this in the Draw
       // method, rather than in Update, because it isn't enough just for the
       // screens to be gone: in order for the transition to look good we must
       // have actually drawn a frame without them before we perform the load.
       if ((ScreenState == ScreenState.Active) &&
-          (ScreenManager.GetScreens().Length == 1)) {
+          (ScreenList.GetScreens().Length == 1)) {
         otherScreensAreGone = true;
       }
 
@@ -125,13 +116,11 @@ namespace PuzzlePathDimension {
       // tells us how long the loading is going to take, so we know whether
       // to bother drawing the message.
       if (loadingIsSlow) {
-        SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-        SpriteFont font = ScreenManager.Font;
+        Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
 
         const string message = "Loading...";
 
         // Center the text in the viewport.
-        Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
         Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
         Vector2 textSize = font.MeasureString(message);
         Vector2 textPosition = (viewportSize - textSize) / 2;
@@ -144,8 +133,5 @@ namespace PuzzlePathDimension {
         spriteBatch.End();
       }
     }
-
-
-    #endregion
   }
 }
