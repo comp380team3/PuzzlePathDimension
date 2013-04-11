@@ -7,14 +7,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
-  interface ICredit {
+  interface IMenuLine {
     int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime);
 
     int Height { get; }
     int Width { get; }
   }
 
-  class Spacer : ICredit {
+  class Spacer : IMenuLine {
     public int Height { get; private set; }
 
     public int Width {
@@ -32,7 +32,7 @@ namespace PuzzlePathDimension {
     }
   }
 
-  class Line : ICredit {
+  class TextLine : IMenuLine {
     public Color TextColor { get; set; }
     private SpriteFont Font { get; set; }
     private string Text { get; set; }
@@ -49,7 +49,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public Line(String text, SpriteFont font, Color textColor) {
+    public TextLine(String text, SpriteFont font, Color textColor) {
       Text = text;
       TextColor = textColor;
       Font = font;
@@ -64,28 +64,14 @@ namespace PuzzlePathDimension {
     }
   }
 
-  class CreditsEntry : IMenuEntry {
+  class LinesTemplate : IMenuEntry {
     public event EventHandler<PlayerIndexEventArgs> Selected;
 
-    float selectionFade;
-
     public Vector2 Position { get; set; }
-    public IList<ICredit> Credits { get; private set; }
+    public IList<IMenuLine> Lines { get; private set; }
 
-    public int Height {
-      get {
-        return Credits.Aggregate(0, (acc, credit) => acc + credit.Height);
-      }
-    }
-
-    public int Width {
-      get {
-        return Credits.Aggregate(0, (acc, credit) => Math.Max(acc, credit.Width));
-      }
-    }
-
-    public CreditsEntry() {
-      Credits = new List<ICredit>();
+    public LinesTemplate() {
+      Lines = new List<IMenuLine>();
     }
 
     /// <summary>
@@ -97,23 +83,14 @@ namespace PuzzlePathDimension {
     }
 
     public int GetWidth(MenuScreen screen) {
-      return Width;
+      return Lines.Aggregate(0, (acc, credit) => Math.Max(acc, credit.Width));
     }
 
     public int GetHeight(MenuScreen screen) {
-      return Height;
+      return Lines.Aggregate(0, (acc, credit) => acc + credit.Height);
     }
 
     public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
-      // When the menu selection changes, entries gradually fade between
-      // their selected and deselected appearance, rather than instantly
-      // popping to the new state.
-      float fadeSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * 4;
-
-      if (isSelected)
-        selectionFade = Math.Min(selectionFade + fadeSpeed, 1);
-      else
-        selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
     }
 
     /// <summary>
@@ -123,7 +100,7 @@ namespace PuzzlePathDimension {
     /// <param name="gameTime"></param>
     public void Draw(MenuScreen screen, SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
       Vector2 position = Position;
-      foreach (ICredit credit in Credits)
+      foreach (IMenuLine credit in Lines)
         position.Y += credit.Draw(spriteBatch, position, gameTime);
     }
   }
@@ -147,8 +124,7 @@ namespace PuzzlePathDimension {
 
     string[] Individuals = new string[] { };
 
-
-    CreditsEntry creditsEntry = new CreditsEntry();
+    LinesTemplate creditsEntry = new LinesTemplate();
     MenuEntry exitMenuEntry = new MenuEntry("Back");
 
     ///<summary>
@@ -166,23 +142,23 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
 
-      IList<ICredit> credits = creditsEntry.Credits;
+      IList<IMenuLine> credits = creditsEntry.Lines;
       credits.Clear();
 
-      credits.Add(new Line("Team Members", TextFont, Color.White));
+      credits.Add(new TextLine("Team Members", TextFont, Color.White));
       credits.Add(new Spacer(TextFont.LineSpacing));
       foreach (string name in TeamMembers)
-        credits.Add(new Line(name, TextFont, Color.Black));
+        credits.Add(new TextLine(name, TextFont, Color.Black));
       credits.Add(new Spacer(TextFont.LineSpacing));
 
       credits.Add(new Spacer(TextFont.LineSpacing));
 
-      credits.Add(new Line("Organizations", TextFont, Color.White));
+      credits.Add(new TextLine("Organizations", TextFont, Color.White));
       credits.Add(new Spacer(TextFont.LineSpacing));
       foreach (string name in Organizations)
-        credits.Add(new Line(name, TextFont, Color.Black));
+        credits.Add(new TextLine(name, TextFont, Color.Black));
       foreach (string name in Individuals)
-        credits.Add(new Line(name, TextFont, Color.Black));
+        credits.Add(new TextLine(name, TextFont, Color.Black));
     }
   }
 }
