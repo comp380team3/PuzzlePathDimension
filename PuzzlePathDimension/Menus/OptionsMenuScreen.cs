@@ -18,9 +18,9 @@ namespace PuzzlePathDimension {
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
     static int currentControllerType = 0;
 
-    MenuEntry soundMenuEntry = new MenuEntry(string.Empty);
-    MenuEntry controllerConfigurationMenuEntry = new MenuEntry(string.Empty);
-    MenuEntry back = new MenuEntry("back");
+    MenuButton soundMenuEntry = new MenuButton(string.Empty);
+    MenuButton controllerConfigurationMenuEntry = new MenuButton(string.Empty);
+    MenuButton back = new MenuButton("back");
 
     /// <summary>
     /// Constructor.

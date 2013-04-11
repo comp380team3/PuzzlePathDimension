@@ -12,8 +12,8 @@ namespace PuzzlePathDimension {
   /// brief description of the basic actions available in the game.
   /// </summary>
   class HowToPlayScreen1 : MenuScreen {
-    MenuEntry nextMenuEntry = new MenuEntry("Next");
-    MenuEntry exitMenuEntry = new MenuEntry("Exit");
+    MenuButton nextMenuEntry = new MenuButton("Next");
+    MenuButton exitMenuEntry = new MenuButton("Exit");
 
     public HowToPlayScreen1()
         : base("How To Play") {

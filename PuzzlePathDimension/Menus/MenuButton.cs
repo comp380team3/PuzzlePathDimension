@@ -16,7 +16,7 @@ namespace PuzzlePathDimension {
   /// entries in different ways. This also provides an event that will be raised
   /// when the menu entry is selected.
   /// </summary>
-  class MenuEntry : IMenuEntry {
+  class MenuButton : IMenuEntry {
     /// <summary>
     /// Tracks a fading selection effect on the entry.
     /// </summary>
@@ -55,7 +55,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructs a new menu entry with the specified text.
     /// </summary>
-    public MenuEntry(string text) {
+    public MenuButton(string text) {
       Text = text;
     }
 

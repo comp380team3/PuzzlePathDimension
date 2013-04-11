@@ -10,17 +10,17 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Next button entry on the screen.
     /// </summary>
-    MenuEntry nextMenuEntry = new MenuEntry("Next");
+    MenuButton nextMenuEntry = new MenuButton("Next");
 
     /// <summary>
     /// Back button entry on the screen.
     /// </summary>
-    MenuEntry backMenuEntry = new MenuEntry("Back");
+    MenuButton backMenuEntry = new MenuButton("Back");
 
     /// <summary>
     /// Exit button entry on the screen.
     /// </summary>
-    MenuEntry exitMenuEntry = new MenuEntry("Exit");
+    MenuButton exitMenuEntry = new MenuButton("Exit");
 
 
     /// <summary>

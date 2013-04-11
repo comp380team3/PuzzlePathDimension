@@ -11,8 +11,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Menu entries for the Level Select Screen.
     /// </summary>
-    MenuEntry aLevelMenuEntry;
-    MenuEntry exitMenuEntry;
+    MenuButton aLevelMenuEntry;
+    MenuButton exitMenuEntry;
 
     /// <summary>
     /// The level which the user has selected.
@@ -50,8 +50,8 @@ namespace PuzzlePathDimension {
         completionTime = "0:00";
 
       //Create menu entries
-        aLevelMenuEntry = new MenuEntry(string.Empty);
-        exitMenuEntry = new MenuEntry(string.Empty);
+        aLevelMenuEntry = new MenuButton(string.Empty);
+        exitMenuEntry = new MenuButton(string.Empty);
 
       //Hook up event handlers
         aLevelMenuEntry.Selected += ALevelMenuEntrySelected;

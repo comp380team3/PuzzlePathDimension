@@ -24,7 +24,7 @@ namespace PuzzlePathDimension {
     string[] Individuals = new string[] { };
 
     LinesTemplate creditsEntry = new LinesTemplate();
-    MenuEntry exitMenuEntry = new MenuEntry("Back");
+    MenuButton exitMenuEntry = new MenuButton("Back");
 
     ///<summary>
     ///Constructor

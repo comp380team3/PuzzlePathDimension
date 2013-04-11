@@ -8,8 +8,8 @@ using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   class LevelStatusScreen : MenuScreen {
-    MenuEntry startMenuEntry = new MenuEntry("Start");
-    MenuEntry exitMenuEntry = new MenuEntry("Back");
+    MenuButton startMenuEntry = new MenuButton("Start");
+    MenuButton exitMenuEntry = new MenuButton("Back");
 
     /// <summary>
     /// Return true if level is completed, otherwise false.

@@ -18,11 +18,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     public PauseMenuScreen()
         : base("Paused") {
-      MenuEntry resumeGameMenuEntry = new MenuEntry("Resume Game");
+      MenuButton resumeGameMenuEntry = new MenuButton("Resume Game");
       resumeGameMenuEntry.Selected += OnCancel;
       MenuEntries.Add(resumeGameMenuEntry);
 
-      MenuEntry quitGameMenuEntry = new MenuEntry("Quit Game");
+      MenuButton quitGameMenuEntry = new MenuButton("Quit Game");
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       MenuEntries.Add(quitGameMenuEntry);
     }

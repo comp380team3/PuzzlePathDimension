@@ -17,23 +17,23 @@ namespace PuzzlePathDimension {
     /// </summary>
     public MainMenuScreen()
         : base("Puzzle Path") {
-      MenuEntry playGameMenuEntry = new MenuEntry("Play Game");
+      MenuButton playGameMenuEntry = new MenuButton("Play Game");
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       MenuEntries.Add(playGameMenuEntry);
 
-      MenuEntry optionsMenuEntry = new MenuEntry("Options");
+      MenuButton optionsMenuEntry = new MenuButton("Options");
       optionsMenuEntry.Selected += OptionsMenuEntrySelected;
       MenuEntries.Add(optionsMenuEntry);
 
-      MenuEntry howToPlayMenuEntry = new MenuEntry("How To Play");
+      MenuButton howToPlayMenuEntry = new MenuButton("How To Play");
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       MenuEntries.Add(howToPlayMenuEntry);
 
-      MenuEntry creditsMenuEntry = new MenuEntry("Credits");
+      MenuButton creditsMenuEntry = new MenuButton("Credits");
       creditsMenuEntry.Selected += CreditsMenuEntrySelected;
       MenuEntries.Add(creditsMenuEntry);
 
-      MenuEntry exitMenuEntry = new MenuEntry("Exit");
+      MenuButton exitMenuEntry = new MenuButton("Exit");
       exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }

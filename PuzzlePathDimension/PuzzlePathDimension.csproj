@@ -102,7 +102,7 @@
     <Compile Include="Menus\HowToPlayScreen3.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />
     <Compile Include="Menus\MainMenuScreen.cs" />
-    <Compile Include="Menus\MenuEntry.cs" />
+    <Compile Include="Menus\MenuButton.cs" />
     <Compile Include="Menus\MenuScreen.cs" />
     <Compile Include="Menus\MessageBoxScreen.cs" />
     <Compile Include="Menus\OptionsMenuScreen.cs" />
