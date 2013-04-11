@@ -1,13 +1,10 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // GameplayScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using System.Threading;
 using Microsoft.Xna.Framework;
@@ -17,49 +14,36 @@ using Microsoft.Xna.Framework.Input;
 using FarseerPhysics.Dynamics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
-#endregion
 
 namespace PuzzlePathDimension {
-  /// <summary>
-  /// This screen implements the actual game logic. It is just a
-  /// placeholder to get the idea across: you'll probably want to
-  /// put some more interesting gameplay in here!
-  /// </summary>
   class GameplayScreen : GameScreen {
-  #region Fields
     ContentManager content;
     Simulation simulation;
 
-    float pauseAlpha;
-  #endregion
+    SpriteFont font;
 
-  #region Initialization
-    /// <summary>
-    /// Constructor.
-    /// </summary>
+    float pauseAlpha;
+
     public GameplayScreen() {
-      TransitionOnTime = TimeSpan.FromSeconds(1.5);
-      TransitionOffTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     /// <summary>
     /// Load graphics content for the game.
     /// </summary>
-    public override void LoadContent() {
+    public override void LoadContent(ContentManager shared) {
       // Create a new ContentManager so that all level data is flushed
       // from the cache after the level ends.
       if (content == null)
-        content = new ContentManager(ScreenManager.Game.Services, "Content");
+        content = new ContentManager(shared.ServiceProvider, "Content");
+
+      font = shared.Load<SpriteFont>("textfont");
 
       // Create the hard-coded level.
       simulation = CreateTestLevel();
       // Set up the sounds.
       SetupSoundEvents();
-
-      // A real game would probably have more content than this sample, so
-      // it would take longer to load. We simulate that by delaying for a
-      // while, giving you a chance to admire the beautiful loading screen.
-      Thread.Sleep(1000);
 
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
@@ -90,9 +74,8 @@ namespace PuzzlePathDimension {
     public override void UnloadContent() {
       content.Unload();
     }
-  #endregion
 
-  #region Update and Draw
+
     /// <summary>
     /// Updates the state of the game. This method checks the GameScreen.IsActive
     /// property, so the game will stop updating when the pause menu is active,
@@ -121,15 +104,13 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      // Look up inputs for the active player profile.
-      int playerIndex = (int)ControllingPlayer.Value;
-
       // The game pauses either if the user presses the pause button, or if
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause
       // on PC if they are playing with a keyboard and have no gamepad at all!
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Pause)) {
-        ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       } 
 
       Launcher launcher = simulation.Launcher;
@@ -158,10 +139,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the gameplay screen.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
-      ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      spriteBatch.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
 
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
       spriteBatch.Begin();
 
       // Draw the background.
@@ -179,24 +159,23 @@ namespace PuzzlePathDimension {
       if (TransitionPosition > 0 || pauseAlpha > 0) {
         float alpha = MathHelper.Lerp(1f - TransitionAlpha, 1f, pauseAlpha / 2);
 
-        ScreenManager.FadeBackBufferToBlack(alpha);
+        spriteBatch.FadeBackBufferToBlack(alpha);
       }
     }
+
 
     /// <summary>
     /// Draw the hard-coded walls.
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the walls.</param>
     private void DrawWalls(SpriteBatch spriteBatch) {
-      Texture2D topBottom = content.Load<Texture2D>("TopBottom");
-      Texture2D sideWall = content.Load<Texture2D>("SideWall");
+      Texture2D wallTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+      wallTexture.SetData<Color>(new Color[] { Color.White });
 
-      // I'd rather have 5-pixel thick walls then 10-pixel thick walls, so I offset each wall
-      // by 5 pixels. I could change the image... - Jorenz
-      spriteBatch.Draw(topBottom, new Vector2(0, -5), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-      spriteBatch.Draw(topBottom, new Vector2(0, 595), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-      spriteBatch.Draw(sideWall, new Vector2(-5, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-      spriteBatch.Draw(sideWall, new Vector2(795, 0), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+      spriteBatch.Draw(wallTexture, new Rectangle(0, 0, 800, 5), null, Color.Black);
+      spriteBatch.Draw(wallTexture, new Rectangle(0, 595, 800, 5), null, Color.Black);
+      spriteBatch.Draw(wallTexture, new Rectangle(0, 0, 5, 600), null, Color.Black);
+      spriteBatch.Draw(wallTexture, new Rectangle(795, 0, 5, 600), null, Color.Black);
     }
 
     /// <summary>
@@ -233,14 +212,13 @@ namespace PuzzlePathDimension {
     private void DrawText(SpriteBatch spriteBatch) {
       // Draw the number of balls left.
       string attemptsText = "Balls left: " + simulation.AttemptsLeft;
-      spriteBatch.DrawString(ScreenManager.TextFont, attemptsText,
-        new Vector2(10f, 570f), Color.Black);
+      spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
 
       // If the simulation has concluded in some way, display the approriate message.
       if (simulation.CurrentState == SimulationState.Completed) {
-        spriteBatch.DrawString(ScreenManager.TextFont, "You win!", new Vector2(400f, 300f), Color.Black);
+        spriteBatch.DrawString(font, "You win!", new Vector2(400f, 300f), Color.Black);
       } else if (simulation.CurrentState == SimulationState.Failed) {
-        spriteBatch.DrawString(ScreenManager.TextFont, "You lose.", new Vector2(400f, 300f), Color.Black);
+        spriteBatch.DrawString(font, "You lose.", new Vector2(400f, 300f), Color.Black);
       }
     }
 
@@ -268,9 +246,7 @@ namespace PuzzlePathDimension {
       bounce.Play();
     }
 
-  #endregion
 
-  #region Test Level
     /// <summary>
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
@@ -280,6 +256,5 @@ namespace PuzzlePathDimension {
 
       return simulation;
     }
-  #endregion 
   }
 }

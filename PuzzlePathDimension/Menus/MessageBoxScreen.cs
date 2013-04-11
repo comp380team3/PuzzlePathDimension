@@ -1,18 +1,14 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // MessageBoxScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -20,21 +16,12 @@ namespace PuzzlePathDimension {
   /// confirmation messages.
   /// </summary>
   class MessageBoxScreen : GameScreen {
-    #region Fields
-
     string message;
     Texture2D gradientTexture;
-
-    #endregion
-
-    #region Events
+    SpriteFont font;
 
     public event EventHandler<PlayerIndexEventArgs> Accepted;
     public event EventHandler<PlayerIndexEventArgs> Cancelled;
-
-    #endregion
-
-    #region Initialization
 
 
     /// <summary>
@@ -44,7 +31,6 @@ namespace PuzzlePathDimension {
     public MessageBoxScreen(string message)
       : this(message, true) { }
 
-
     /// <summary>
     /// Constructor lets the caller specify whether to include the standard
     /// "A=ok, B=cancel" usage text prompt.
@@ -52,18 +38,15 @@ namespace PuzzlePathDimension {
     public MessageBoxScreen(string message, bool includeUsageText) {
       const string usageText = "\nA button, Space, Enter = ok" +
                                "\nB button, Esc = cancel";
-
       if (includeUsageText)
         this.message = message + usageText;
       else
         this.message = message;
 
-      IsPopup = true;
-
-      TransitionOnTime = TimeSpan.FromSeconds(0.2);
-      TransitionOffTime = TimeSpan.FromSeconds(0.2);
+      base.IsPopup = true;
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.2);
     }
-
 
     /// <summary>
     /// Loads graphics content for this screen. This uses the shared ContentManager
@@ -71,37 +54,22 @@ namespace PuzzlePathDimension {
     /// Whenever a subsequent MessageBoxScreen tries to load this same content,
     /// it will just get back another reference to the already loaded data.
     /// </summary>
-    public override void LoadContent() {
-      ContentManager content = ScreenManager.Game.Content;
-
-      gradientTexture = content.Load<Texture2D>("gradient");
+    public override void LoadContent(ContentManager shared) {
+      gradientTexture = shared.Load<Texture2D>("gradient");
+      font = shared.Load<SpriteFont>("menufont");
     }
-
-
-    #endregion
-
-    #region Handle Input
 
 
     /// <summary>
     /// Responds to user input, accepting or cancelling the message box.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      //PlayerIndex playerIndex;
-
-      // We pass in our ControllingPlayer, which may either be null (to
-      // accept input from any player) or a specific index. If we pass a null
-      // controlling player, the InputState helper returns to us which player
-      // actually provided the input. We pass that through to our Accepted and
-      // Cancelled events, so they can tell which player triggered them.
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        // Raise the accepted event, then exit the message box.
         if (Accepted != null)
           Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
         ExitScreen();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        // Raise the cancelled event, then exit the message box.
         if (Cancelled != null)
           Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
@@ -110,23 +78,15 @@ namespace PuzzlePathDimension {
     }
 
 
-    #endregion
-
-    #region Draw
-
-
     /// <summary>
     /// Draws the message box.
     /// </summary>
-    public override void Draw(GameTime gameTime) {
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-      SpriteFont font = ScreenManager.Font;
-
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       // Darken down any other screens that were drawn beneath the popup.
-      ScreenManager.FadeBackBufferToBlack(TransitionAlpha * 2 / 3);
+      spriteBatch.FadeBackBufferToBlack(TransitionAlpha * 2 / 3);
 
       // Center the message text in the viewport.
-      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
       Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
       Vector2 textSize = font.MeasureString(message);
       Vector2 textPosition = (viewportSize - textSize) / 2;
@@ -153,8 +113,5 @@ namespace PuzzlePathDimension {
 
       spriteBatch.End();
     }
-
-
-    #endregion
   }
 }

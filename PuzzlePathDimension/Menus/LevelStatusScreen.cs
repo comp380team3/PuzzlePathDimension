@@ -7,70 +7,31 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
-
   class LevelStatusScreen : MenuScreen {
-
-    #region Fields
-    
-    /// <summary>
-    /// If the level is complete, true, otherwise false.
-    /// </summary>
-    bool completed;
-
-    /// <summary>
-    /// The highest score for the current level.
-    /// </summary>
-    int levelScore;
-
-    /// <summary>
-    /// The number that identifies the current level.
-    /// </summary>
-    int levelNumber;
-
-    /// <summary>
-    /// The time spent on the completion of the current level.
-    /// </summary>
-    string completionTime;
-
-    int selectedEntry = 0;
-
-    MenuEntry startMenuEntry;
-
-    MenuEntry exitMenuEntry;
-
-    #endregion
-
-    #region Properties
+    MenuEntry startMenuEntry = new MenuEntry("Start");
+    MenuEntry exitMenuEntry = new MenuEntry("Back");
 
     /// <summary>
     /// Return true if level is completed, otherwise false.
     /// </summary>
-    public bool Completed {
-      get { return completed; }
-    }
+    public bool Completed { get; private set; }
 
     /// <summary>
     /// Return the user's score for the current level.
     /// </summary>
-    public int LevelScore {
-      get { return levelScore; }
-    }
+    public int LevelScore { get; private set; }
 
     /// <summary>
     /// Return the numnber identifier of the current level.
     /// </summary>
-    public int LevelNumber {
-      get { return LevelNumber; }
-    }
+    public int LevelNumber { get; private set; }
 
     /// <summary>
     /// Return the time spent on completing a level with the highest score.
     /// </summary>
-    public string CompletionTime {
-      get { return completionTime; }
-    }
+    public string CompletionTime { get; private set; }
 
-    #endregion
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -79,42 +40,34 @@ namespace PuzzlePathDimension {
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
     public LevelStatusScreen(bool completed, int levelScore, int levelNumber, string completionTime)
-    : base("Level " + levelNumber)
-    {
+        : base("Level " + levelNumber) {
+      Completed = completed;
+      LevelScore = levelScore;
+      LevelNumber = levelNumber;
+      CompletionTime = completionTime;
 
-      this.completed = completed;
-      this.levelScore = levelScore;
-      this.levelNumber = levelNumber;
-      this.completionTime = completionTime;
-
-      //Create our menu entries
-      startMenuEntry = new MenuEntry("Start");
-      exitMenuEntry = new MenuEntry("Back");
-
-      //Hook up menu event handlers
       startMenuEntry.Selected += StartMenuEntrySelected;
-      exitMenuEntry.Selected += OnCancel;
-
-      //Add entries to the menu
       MenuEntries.Add(startMenuEntry);
+
+      exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }
 
-    #region Update and Draw
 
     /// <summary>
     /// Update the MenuEntry's location.
     /// </summary>
     protected override void UpdateMenuEntryLocations() {
       base.UpdateMenuEntryLocations();
-      GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-      // start at Y = 80; start at the center of the screen
-      Vector2 position = new Vector2(graphics.Viewport.Width / 4, 400);
 
+      // TODO: Use virtual coordinate system instead of physical screen viewport.
+      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+
+      // start at Y = 80; start at the center of the screen
+      Vector2 position = new Vector2(viewport.Width / 4, 400);
       exitMenuEntry.Position = position;
 
-      position.X = position.X + 400;
-
+      position.X += 400;
       startMenuEntry.Position = position;
     }
 
@@ -124,11 +77,11 @@ namespace PuzzlePathDimension {
     /// by the user.
     /// </summary>
     /// <param name="gameTime"></param>
-    public override void Draw(GameTime gameTime) {
-      base.Draw(gameTime);
-      GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-      SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-      SpriteFont font = ScreenManager.Font;
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
+      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
+      SpriteFont font = base.TitleFont;
 
       spriteBatch.Begin();
 
@@ -138,7 +91,7 @@ namespace PuzzlePathDimension {
       float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
       // Draw the menu title centered on the screen
-      Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
+      Vector2 titlePosition = new Vector2(viewport.Width / 2, 80);
       Vector2 titleOrigin = font.MeasureString("Competion Time: 0:00") / 2;
       Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
       float titleScale = 1.25f;
@@ -148,30 +101,24 @@ namespace PuzzlePathDimension {
       titlePosition.Y = titlePosition.Y + font.LineSpacing * 2;
 
       // Draw the level information to the screen
-      spriteBatch.DrawString(font, "Status: " + (completed ? "Completed" : "Incomplete"), titlePosition,
+      spriteBatch.DrawString(font, "Status: " + (Completed ? "Completed" : "Incomplete"), titlePosition,
                              Color.White, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
       
-      titlePosition.Y = titlePosition.Y + font.LineSpacing * 2;
+      titlePosition.Y += font.LineSpacing * 2;
 
-      spriteBatch.DrawString(font, "Completion Time: " + completionTime, titlePosition, Color.White, 
+      spriteBatch.DrawString(font, "Completion Time: " + CompletionTime, titlePosition, Color.White, 
                              0, titleOrigin, titleScale, SpriteEffects.None, 0);
 
-      titlePosition.Y = titlePosition.Y + font.LineSpacing * 2;
+      titlePosition.Y += font.LineSpacing * 2;
 
-      spriteBatch.DrawString(font, "Score: " + levelScore, titlePosition, Color.White,
+      spriteBatch.DrawString(font, "Score: " + LevelScore, titlePosition, Color.White,
                              0, titleOrigin, titleScale, SpriteEffects.None, 0);
       spriteBatch.End();
     }
 
-    #endregion
-
-#region Handle Input
-
     public override void HandleInput(VirtualController vtroller) {
-      //base.HandleInput(vtroller);
-
       if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        SelectedEntry--;
+        SelectedEntry -= 1;
 
         if (SelectedEntry < 0)
           SelectedEntry = MenuEntries.Count - 1;
@@ -179,7 +126,7 @@ namespace PuzzlePathDimension {
 
       // Move to the next menu entry?
       if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-        SelectedEntry++;
+        SelectedEntry += 1;
 
         if (SelectedEntry >= MenuEntries.Count)
           SelectedEntry = 0;
@@ -190,8 +137,6 @@ namespace PuzzlePathDimension {
       // If we pass a null controlling player, the InputState helper returns to
       // us which player actually provided the input. We pass that through to
       // OnSelectEntry and OnCancel, so they can tell which player triggered them.
-
-      // PlayerIndex playerindex;
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         OnSelectEntry(SelectedEntry, PlayerIndex.One);
@@ -206,10 +151,8 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
+      LoadingScreen.Load(ScreenList, true, e.PlayerIndex,
                          new GameplayScreen());
     }
-
-#endregion
   }
 }

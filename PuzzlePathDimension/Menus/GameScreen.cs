@@ -1,24 +1,22 @@
-#region File Description
 //-----------------------------------------------------------------------------
 // GameScreen.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#endregion
 
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using System.IO;
-#endregion
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// Enum describes the screen transition state.
   /// </summary>
   public enum ScreenState {
-    TransitionOn,
+    TransitionOn = 0,
     Active,
     TransitionOff,
     Hidden,
@@ -33,7 +31,7 @@ namespace PuzzlePathDimension {
   /// as screens.
   /// </summary>
   public abstract class GameScreen {
-    #region Properties
+    bool otherScreenHasFocus;
 
 
     /// <summary>
@@ -43,71 +41,31 @@ namespace PuzzlePathDimension {
     /// popup, in which case screens underneath it do not need to bother
     /// transitioning off.
     /// </summary>
-    public bool IsPopup {
-      get { return isPopup; }
-      protected set { isPopup = value; }
-    }
-
-    bool isPopup = false;
-
+    public bool IsPopup { get; protected set; }
 
     /// <summary>
     /// Indicates how long the screen takes to
     /// transition on when it is activated.
     /// </summary>
-    public TimeSpan TransitionOnTime {
-      get { return transitionOnTime; }
-      protected set { transitionOnTime = value; }
-    }
-
-    TimeSpan transitionOnTime = TimeSpan.Zero;
-
+    public TimeSpan TransitionOnTime { get; protected set; }
 
     /// <summary>
     /// Indicates how long the screen takes to
     /// transition off when it is deactivated.
     /// </summary>
-    public TimeSpan TransitionOffTime {
-      get { return transitionOffTime; }
-      protected set { transitionOffTime = value; }
-    }
-
-    TimeSpan transitionOffTime = TimeSpan.Zero;
-
-
-    /// <summary>
-    /// Gets the current position of the screen transition, ranging
-    /// from zero (fully active, no transition) to one (transitioned
-    /// fully off to nothing).
-    /// </summary>
-    public float TransitionPosition {
-      get { return transitionPosition; }
-      protected set { transitionPosition = value; }
-    }
-
-    float transitionPosition = 1;
-
+    public TimeSpan TransitionOffTime { get; protected set; }
 
     /// <summary>
     /// Gets the current alpha of the screen transition, ranging
     /// from 1 (fully active, no transition) to 0 (transitioned
     /// fully off to nothing).
     /// </summary>
-    public float TransitionAlpha {
-      get { return 1f - TransitionPosition; }
-    }
-
+    public float TransitionAlpha { get; protected set; }
 
     /// <summary>
     /// Gets the current screen transition state.
     /// </summary>
-    public ScreenState ScreenState {
-      get { return screenState; }
-      protected set { screenState = value; }
-    }
-
-    ScreenState screenState = ScreenState.TransitionOn;
-
+    public ScreenState ScreenState { get; protected set; }
 
     /// <summary>
     /// There are two possible reasons why a screen might be transitioning
@@ -117,38 +75,14 @@ namespace PuzzlePathDimension {
     /// if set, the screen will automatically remove itself as soon as the
     /// transition finishes.
     /// </summary>
-    public bool IsExiting {
-      get { return isExiting; }
-      protected internal set { isExiting = value; }
-    }
-
-    bool isExiting = false;
-
-
-    /// <summary>
-    /// Checks whether this screen is active and can respond to user input.
-    /// </summary>
-    public bool IsActive {
-      get {
-        return !otherScreenHasFocus &&
-               (screenState == ScreenState.TransitionOn ||
-                screenState == ScreenState.Active);
-      }
-    }
-
-    bool otherScreenHasFocus;
-
+    public bool IsExiting { get; protected internal set; }
 
     /// <summary>
     /// Gets the manager that this screen belongs to.
     /// </summary>
-    public ScreenManager ScreenManager {
-      get { return screenManager; }
-      internal set { screenManager = value; }
-    }
+    public ScreenRenderer ScreenManager { get; internal set; }
 
-    ScreenManager screenManager;
-
+    public IScreenList ScreenList { get; internal set; }
 
     /// <summary>
     /// Gets the index of the player who is currently controlling this screen,
@@ -158,33 +92,39 @@ namespace PuzzlePathDimension {
     /// this menu is given control over all subsequent screens, so other gamepads
     /// are inactive until the controlling player returns to the main menu.
     /// </summary>
-    public PlayerIndex? ControllingPlayer {
-      get { return controllingPlayer; }
-      internal set { controllingPlayer = value; }
+    public PlayerIndex? ControllingPlayer { get; internal set; }
+
+    /// <summary>
+    /// Checks whether this screen is active and can respond to user input.
+    /// </summary>
+    public bool IsActive {
+      get {
+        return !otherScreenHasFocus &&
+               (ScreenState == ScreenState.TransitionOn ||
+                ScreenState == ScreenState.Active);
+      }
     }
 
-    PlayerIndex? controllingPlayer;
-
-    #endregion
-
-    #region Initialization
+    /// <summary>
+    /// Gets the current position of the screen transition, ranging
+    /// from zero (fully active, no transition) to one (transitioned
+    /// fully off to nothing).
+    /// </summary>
+    public float TransitionPosition {
+      get { return 1f - TransitionAlpha; }
+      protected set { TransitionAlpha = 1f - value; }
+    }
 
 
     /// <summary>
     /// Load graphics content for the screen.
     /// </summary>
-    public virtual void LoadContent() { }
-
+    public virtual void LoadContent(ContentManager shared) { }
 
     /// <summary>
     /// Unload content for the screen.
     /// </summary>
     public virtual void UnloadContent() { }
-
-
-    #endregion
-
-    #region Update and Draw
 
 
     /// <summary>
@@ -196,35 +136,34 @@ namespace PuzzlePathDimension {
                                                   bool coveredByOtherScreen) {
       this.otherScreenHasFocus = otherScreenHasFocus;
 
-      if (isExiting) {
+      if (IsExiting) {
         // If the screen is going away to die, it should transition off.
-        screenState = ScreenState.TransitionOff;
+        ScreenState = ScreenState.TransitionOff;
 
-        if (!UpdateTransition(gameTime, transitionOffTime, 1)) {
+        if (!UpdateTransition(gameTime, TransitionOffTime, 1)) {
           // When the transition finishes, remove the screen.
-          ScreenManager.RemoveScreen(this);
+          ScreenList.RemoveScreen(this);
         }
       } else if (coveredByOtherScreen) {
         // If the screen is covered by another, it should transition off.
-        if (UpdateTransition(gameTime, transitionOffTime, 1)) {
+        if (UpdateTransition(gameTime, TransitionOffTime, 1)) {
           // Still busy transitioning.
-          screenState = ScreenState.TransitionOff;
+          ScreenState = ScreenState.TransitionOff;
         } else {
           // Transition finished!
-          screenState = ScreenState.Hidden;
+          ScreenState = ScreenState.Hidden;
         }
       } else {
         // Otherwise the screen should transition on and become active.
-        if (UpdateTransition(gameTime, transitionOnTime, -1)) {
+        if (UpdateTransition(gameTime, TransitionOnTime, -1)) {
           // Still busy transitioning.
-          screenState = ScreenState.TransitionOn;
+          ScreenState = ScreenState.TransitionOn;
         } else {
           // Transition finished!
-          screenState = ScreenState.Active;
+          ScreenState = ScreenState.Active;
         }
       }
     }
-
 
     /// <summary>
     /// Helper for updating the screen transition position.
@@ -240,19 +179,18 @@ namespace PuzzlePathDimension {
                                   time.TotalMilliseconds);
 
       // Update the transition position.
-      transitionPosition += transitionDelta * direction;
+      TransitionPosition += transitionDelta * direction;
 
       // Did we reach the end of the transition?
-      if (((direction < 0) && (transitionPosition <= 0)) ||
-          ((direction > 0) && (transitionPosition >= 1))) {
-        transitionPosition = MathHelper.Clamp(transitionPosition, 0, 1);
+      if (((direction < 0) && (TransitionPosition <= 0)) ||
+          ((direction > 0) && (TransitionPosition >= 1))) {
+        TransitionPosition = MathHelper.Clamp(TransitionPosition, 0, 1);
         return false;
       }
 
       // Otherwise we are still busy transitioning.
       return true;
     }
-
 
     /// <summary>
     /// Allows the screen to handle user input. Unlike Update, this method
@@ -261,16 +199,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     public virtual void HandleInput(VirtualController vtroller) { }
 
-
     /// <summary>
     /// This is called when the screen should draw itself.
     /// </summary>
-    public virtual void Draw(GameTime gameTime) { }
-
-
-    #endregion
-
-    #region Public Methods
+    public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
 
 
     /// <summary>
@@ -281,14 +213,11 @@ namespace PuzzlePathDimension {
     public void ExitScreen() {
       if (TransitionOffTime == TimeSpan.Zero) {
         // If the screen has a zero transition time, remove it immediately.
-        ScreenManager.RemoveScreen(this);
+        ScreenList.RemoveScreen(this);
       } else {
         // Otherwise flag that it should transition off and then exit.
-        isExiting = true;
+        IsExiting = true;
       }
     }
-
-
-    #endregion
   }
 }
