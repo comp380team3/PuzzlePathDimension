@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
 
@@ -48,27 +49,26 @@ namespace PuzzlePathDimension {
         levelScore = 0;
         completed = false;
         completionTime = "0:00";
+    }
 
-      //Create menu entries
-        aLevelMenuEntry = new MenuButton(string.Empty);
-        exitMenuEntry = new MenuButton(string.Empty);
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
 
-      //Hook up event handlers
-        aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
-        exitMenuEntry.Selected += OnCancel;
+      aLevelMenuEntry = new MenuButton(string.Empty);
+      aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
+      MenuEntries.Add(aLevelMenuEntry);
 
-      //Add entries to the menu
-        MenuEntries.Add(aLevelMenuEntry);
-        MenuEntries.Add(exitMenuEntry);
+      exitMenuEntry = new MenuButton(string.Empty);
+      exitMenuEntry.Selected += OnCancel;
+      MenuEntries.Add(exitMenuEntry);
 
-        SetMenuEntryText();
+      SetMenuEntryText();
     }
 
     /// <summary>
     /// Set the text that will be displayed for the menu entries
     /// </summary>
     void SetMenuEntryText() {
-    
       // Set the text of each level
       aLevelMenuEntry.Text = "Level " + levelNumber;
       exitMenuEntry.Text = "Back";

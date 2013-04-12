@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -12,14 +13,21 @@ namespace PuzzlePathDimension {
   /// brief description of the basic actions available in the game.
   /// </summary>
   class HowToPlayScreen1 : MenuScreen {
-    MenuButton nextMenuEntry = new MenuButton("Next");
-    MenuButton exitMenuEntry = new MenuButton("Exit");
+    MenuButton nextMenuEntry;
+    MenuButton exitMenuEntry;
 
     public HowToPlayScreen1()
         : base("How To Play") {
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
+      nextMenuEntry = new MenuButton("Next");
       nextMenuEntry.Selected += NextMenuEntrySelected;
       MenuEntries.Add(nextMenuEntry);
 
+      exitMenuEntry = new MenuButton("Exit");
       exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }

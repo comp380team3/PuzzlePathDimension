@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   class HowToPlayScreen3 : MenuScreen {
     /// <summary>
     /// Back menu entry on the screen.
     /// </summary>
-    MenuButton backMenuEntry = new MenuButton("Back");
+    MenuButton backMenuEntry;
 
     /// <summary>
     /// Exit menu entry on the screen.
     /// </summary>
-    MenuButton exitMenuEntry = new MenuButton("Exit");
+    MenuButton exitMenuEntry;
 
 
     /// <summary>
@@ -23,9 +24,16 @@ namespace PuzzlePathDimension {
     /// </summary>
     public HowToPlayScreen3()
         : base("How To Play") {
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
+      backMenuEntry = new MenuButton("Back");
       backMenuEntry.Selected += BackMenuEntrySelected;
       MenuEntries.Add(backMenuEntry);
 
+      exitMenuEntry = new MenuButton("Exit");
       exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }

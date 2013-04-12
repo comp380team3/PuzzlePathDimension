@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -18,6 +19,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     public PauseMenuScreen()
         : base("Paused") {
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
       MenuButton resumeGameMenuEntry = new MenuButton("Resume Game");
       resumeGameMenuEntry.Selected += OnCancel;
       MenuEntries.Add(resumeGameMenuEntry);

@@ -18,24 +18,33 @@ namespace PuzzlePathDimension {
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
     static int currentControllerType = 0;
 
-    MenuButton soundMenuEntry = new MenuButton(string.Empty);
-    MenuButton controllerConfigurationMenuEntry = new MenuButton(string.Empty);
-    MenuButton back = new MenuButton("back");
+    MenuButton soundMenuEntry;
+    MenuButton controllerConfigurationMenuEntry;
+    MenuButton back;
 
     /// <summary>
     /// Constructor.
     /// </summary>
     public OptionsMenuScreen()
         : base("Options") {
-      SetMenuEntryText();
+    }
 
+    public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager shared) {
+      base.LoadContent(shared);
+
+      soundMenuEntry = new MenuButton(string.Empty);
       soundMenuEntry.Selected += SoundMenuEntrySelected;
-      controllerConfigurationMenuEntry.Selected += ControllerConfigurationMenuEntrySelected;
-      back.Selected += OnCancel;
-
       MenuEntries.Add(soundMenuEntry);
+
+      controllerConfigurationMenuEntry = new MenuButton(string.Empty);
+      controllerConfigurationMenuEntry.Selected += ControllerConfigurationMenuEntrySelected;
       MenuEntries.Add(controllerConfigurationMenuEntry);
+
+      back = new MenuButton("back");
+      back.Selected += OnCancel;
       MenuEntries.Add(back);
+
+      SetMenuEntryText();
     }
 
     /// <summary>

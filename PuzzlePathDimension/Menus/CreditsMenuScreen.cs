@@ -24,22 +24,26 @@ namespace PuzzlePathDimension {
     string[] Individuals = new string[] { };
 
     LinesTemplate creditsEntry = new LinesTemplate();
-    MenuButton exitMenuEntry = new MenuButton("Back");
+    MenuButton exitMenuEntry;
 
     ///<summary>
     ///Constructor
     ///<summary>
     public CreditsMenuScreen()
         : base("Credits") {
-      creditsEntry.Selected += OnCancel;
-      exitMenuEntry.Selected += OnCancel;
-
-      MenuEntries.Add(creditsEntry);
-      MenuEntries.Add(exitMenuEntry);
     }
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
+
+      exitMenuEntry = new MenuButton("Back");
+      exitMenuEntry.Selected += OnCancel;
+      MenuEntries.Add(exitMenuEntry);
+
+      creditsEntry = new LinesTemplate();
+      creditsEntry.Selected += OnCancel;
+      MenuEntries.Add(creditsEntry);
+
 
       IList<IMenuLine> credits = creditsEntry.Lines;
       credits.Clear();
