@@ -53,7 +53,19 @@ namespace PuzzlePathDimension {
     }
 
     public override void HandleInput(VirtualController vtroller) {
-      menuTemplate.HandleInput(vtroller);
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+        menuTemplate.SelectPrev();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        menuTemplate.SelectNext();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        menuTemplate.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        menuTemplate.Cancel();
+      }
     }
 
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
