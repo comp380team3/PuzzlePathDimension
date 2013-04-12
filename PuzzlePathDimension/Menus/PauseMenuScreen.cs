@@ -5,6 +5,7 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,24 +16,59 @@ namespace PuzzlePathDimension {
   /// giving the player options to resume or quit.
   /// </summary>
   class PauseMenuScreen : MenuScreen {
+    MenuTemplate menuTemplate = new MenuTemplate();
+
     /// <summary>
     /// Constructor.
     /// </summary>
-    public PauseMenuScreen()
-        : base("Paused") {
+    public PauseMenuScreen() : base("") {
     }
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("menufont");
 
+      menuTemplate.Title = new TextLine("Paused", font, new Color(192, 192, 192));
+      menuTemplate.Cancelled += OnCancel;
+
+
+      IList<MenuButton> items = menuTemplate.Items;
+
       MenuButton resumeGameMenuEntry = new MenuButton("Resume Game", font);
       resumeGameMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(resumeGameMenuEntry);
+      items.Add(resumeGameMenuEntry);
 
       MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
-      MenuEntries.Add(quitGameMenuEntry);
+      items.Add(quitGameMenuEntry);
+    }
+
+
+    public override void HandleInput(VirtualController vtroller) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+        menuTemplate.SelectPrev();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        menuTemplate.SelectNext();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        menuTemplate.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        menuTemplate.Cancel();
+      }
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      menuTemplate.TransitionPosition = TransitionPosition;
+      menuTemplate.Update(this, true, gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      menuTemplate.Draw(this, spriteBatch, true, gameTime);
     }
 
 

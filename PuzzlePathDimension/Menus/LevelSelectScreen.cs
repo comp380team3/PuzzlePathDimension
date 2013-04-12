@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-
   class LevelSelectScreen : MenuScreen {
+    MenuTemplate menuTemplate = new MenuTemplate();
 
     /// <summary>
     /// Menu entries for the Level Select Screen.
@@ -42,8 +42,7 @@ namespace PuzzlePathDimension {
     /// Contructor
     /// Read an xml file and obtain information for each level in the xml file.
     /// </summary>
-    public LevelSelectScreen()
-      : base("Select A Level") {
+    public LevelSelectScreen() : base("") {
       // Add the levels to the screen
       //Note: need xml file format to be completed to add level information
         levelNumber = 1;
@@ -56,15 +55,49 @@ namespace PuzzlePathDimension {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("menufont");
 
+      menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
+      menuTemplate.Cancelled += OnCancel;
+
+
+      IList<MenuButton> items = menuTemplate.Items;
+
       aLevelMenuEntry = new MenuButton(string.Empty, font);
       aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
-      MenuEntries.Add(aLevelMenuEntry);
+      items.Add(aLevelMenuEntry);
 
       exitMenuEntry = new MenuButton(string.Empty, font);
       exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
+      items.Add(exitMenuEntry);
+
 
       SetMenuEntryText();
+    }
+
+    public override void HandleInput(VirtualController vtroller) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+        menuTemplate.SelectPrev();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        menuTemplate.SelectNext();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        menuTemplate.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        menuTemplate.Cancel();
+      }
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      menuTemplate.TransitionPosition = TransitionPosition;
+      menuTemplate.Update(this, true, gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      menuTemplate.Draw(this, spriteBatch, true, gameTime);
     }
 
     /// <summary>

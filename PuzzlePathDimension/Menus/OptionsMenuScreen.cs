@@ -5,8 +5,10 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -19,6 +21,8 @@ namespace PuzzlePathDimension {
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
     static int currentControllerType = 0;
 
+    MenuTemplate menuTemplate = new MenuTemplate();
+
     MenuButton soundMenuEntry;
     MenuButton controllerConfigurationMenuEntry;
     MenuButton back;
@@ -26,27 +30,60 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor.
     /// </summary>
-    public OptionsMenuScreen()
-        : base("Options") {
+    public OptionsMenuScreen() : base("") {
     }
 
-    public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager shared) {
+    public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("menufont");
 
+      menuTemplate.Title = new TextLine("Options", font, new Color(192, 192, 192));
+      menuTemplate.Cancelled += OnCancel;
+
+
+      IList<MenuButton> items = menuTemplate.Items;
+
       soundMenuEntry = new MenuButton(string.Empty, font);
       soundMenuEntry.Selected += SoundMenuEntrySelected;
-      MenuEntries.Add(soundMenuEntry);
+      items.Add(soundMenuEntry);
 
       controllerConfigurationMenuEntry = new MenuButton(string.Empty, font);
       controllerConfigurationMenuEntry.Selected += ControllerConfigurationMenuEntrySelected;
-      MenuEntries.Add(controllerConfigurationMenuEntry);
+      items.Add(controllerConfigurationMenuEntry);
 
       back = new MenuButton("back", font);
       back.Selected += OnCancel;
-      MenuEntries.Add(back);
+      items.Add(back);
+
 
       SetMenuEntryText();
+    }
+
+    public override void HandleInput(VirtualController vtroller) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+        menuTemplate.SelectPrev();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        menuTemplate.SelectNext();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        menuTemplate.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        menuTemplate.Cancel();
+      }
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      menuTemplate.TransitionPosition = TransitionPosition;
+      menuTemplate.Update(this, true, gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      menuTemplate.Draw(this, spriteBatch, true, gameTime);
     }
 
     /// <summary>
