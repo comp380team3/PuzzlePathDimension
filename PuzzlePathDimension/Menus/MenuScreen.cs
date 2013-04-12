@@ -148,7 +148,7 @@ namespace PuzzlePathDimension {
       for (int i = 0; i < menuEntries.Count; i++) {
         bool isSelected = IsActive && (i == SelectedEntry);
 
-        menuEntries[i].Update(isSelected, gameTime);
+        menuEntries[i].Update(this, isSelected, gameTime);
       }
     }
 
@@ -170,7 +170,7 @@ namespace PuzzlePathDimension {
 
         bool isSelected = IsActive && (i == SelectedEntry);
 
-        menuEntry.Draw(this, spriteBatch, isSelected, gameTime);
+        menuEntry.Draw(spriteBatch, isSelected, gameTime);
       }
 
       // Make the menu slide into place during transitions, using a

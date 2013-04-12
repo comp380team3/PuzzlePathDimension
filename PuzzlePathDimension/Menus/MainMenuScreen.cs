@@ -76,7 +76,7 @@ namespace PuzzlePathDimension {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      menuTemplate.Draw(this, spriteBatch, true, gameTime);
+      menuTemplate.Draw(spriteBatch, true, gameTime);
     }
 
 

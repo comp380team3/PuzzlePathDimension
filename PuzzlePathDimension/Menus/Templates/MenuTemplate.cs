@@ -45,7 +45,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public void Draw(MenuScreen screen, SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
+    public void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
       Vector2 cursor = origin; // The current drawing location
 
@@ -64,12 +64,17 @@ namespace PuzzlePathDimension {
       cursor.Y = 175;
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
+        Color color = (SelectedItem == i) ? Color.Yellow : Color.White;
+
+        // Modify the alpha to fade text out during transitions.
+        color *= (1.0f - TransitionPosition);
 
         cursor.X = origin.X - button.GetWidth() / 2;
         cursor.X -= transitionOffset * 256;
 
         button.Position = cursor;
-        button.Draw(screen, spriteBatch, SelectedItem == i, gameTime);
+        button.Color = color;
+        button.Draw(spriteBatch, SelectedItem == i, gameTime);
 
         cursor.Y += button.GetHeight();
       }

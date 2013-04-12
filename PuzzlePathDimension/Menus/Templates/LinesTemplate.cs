@@ -31,7 +31,7 @@ namespace PuzzlePathDimension {
       return Lines.Aggregate(0, (acc, credit) => acc + credit.Height);
     }
 
-    public void Update(bool isSelected, GameTime gameTime) {
+    public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
     /// organizations list, and the individual contributions list.
     /// </summary>
     /// <param name="gameTime"></param>
-    public void Draw(MenuScreen screen, SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
+    public void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
       Vector2 position = Position;
       foreach (IMenuLine credit in Lines)
         position.Y += credit.Draw(spriteBatch, position, gameTime);

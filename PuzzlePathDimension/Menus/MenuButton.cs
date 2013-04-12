@@ -32,6 +32,8 @@ namespace PuzzlePathDimension {
 
     public SpriteFont Font { get; set; }
 
+    public Color Color { get; set; }
+
     /// <summary>
     /// Gets or sets the position at which to draw this menu entry. This is set by the
     /// MenuScreen each frame in Update.
@@ -66,7 +68,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Updates the menu entry.
     /// </summary>
-    public virtual void Update(bool isSelected, GameTime gameTime) {
+    public void Update(bool isSelected, GameTime gameTime) {
       // When the menu selection changes, entries gradually fade between
       // their selected and deselected appearance, rather than instantly
       // popping to the new state.
@@ -78,17 +80,25 @@ namespace PuzzlePathDimension {
         selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
     }
 
+    /// <summary>
+    /// Don't use this! It's just here as scaffolding while refactorings are happening.
+    /// </summary>
+    public virtual void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
+      Color color = isSelected ? Color.Yellow : Color.White;
+
+      // Modify the alpha to fade text out during transitions.
+      color *= (1.0f - screen.TransitionPosition);
+
+      Color = color;
+
+      Update(isSelected, gameTime);
+    }
+
 
     /// <summary>
     /// Draws the menu entry. This can be overridden to customize the appearance.
     /// </summary>
-    public virtual void Draw(MenuScreen screen, SpriteBatch spriteBatch,
-                             bool isSelected, GameTime gameTime) {
-      // Draw the selected entry in yellow, otherwise white.
-      Color color = isSelected ? Color.Yellow : Color.White;
-      // Modify the alpha to fade text out during transitions.
-      color *= screen.TransitionAlpha;
-
+    public virtual void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
       // Pulsate the size of the selected menu entry.
       double time = gameTime.TotalGameTime.TotalSeconds;
       float pulsate = (float)Math.Sin(time * 6) + 1;
@@ -97,7 +107,7 @@ namespace PuzzlePathDimension {
       // Draw text, centered on the middle of each line.
       Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
 
-      spriteBatch.DrawString(Font, Text, Position, color, 0,
+      spriteBatch.DrawString(Font, Text, Position, Color, 0,
                              origin, scale, SpriteEffects.None, 0);
     }
 
