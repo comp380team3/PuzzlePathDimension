@@ -15,10 +15,12 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// The main menu screen is the first thing displayed when the game starts up.
   /// </summary>
-  class MainMenuScreen : MenuScreen {
+  class MainMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
-    public MainMenuScreen() : base("") {
+    public MainMenuScreen() {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -53,6 +55,8 @@ namespace PuzzlePathDimension {
     }
 
     public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
+
       if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
         menuTemplate.SelectPrev();
       }
@@ -76,6 +80,8 @@ namespace PuzzlePathDimension {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
       menuTemplate.Draw(spriteBatch, true, gameTime);
     }
 
@@ -113,12 +119,12 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// When the user cancels the main menu, ask if they want to exit the sample.
     /// </summary>
-    protected override void OnCancel(PlayerIndex playerIndex) {
+    void OnCancel(object sender, PlayerIndexEventArgs e) {
       const string message = "Are you sure you want to exit this sample?";
 
       MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
-      ScreenList.AddScreen(confirmExitMessageBox, playerIndex);
+      ScreenList.AddScreen(confirmExitMessageBox, e.PlayerIndex);
     }
 
     /// <summary>

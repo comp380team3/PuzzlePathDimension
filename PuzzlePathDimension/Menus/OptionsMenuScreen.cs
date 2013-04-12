@@ -5,6 +5,7 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +17,7 @@ namespace PuzzlePathDimension {
   /// screen, and gives the user a chance to configure the game
   /// in various hopefully useful ways.
   /// </summary>
-  class OptionsMenuScreen : MenuScreen {
+  class OptionsMenuScreen : GameScreen {
     static bool sound = true;
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
     static int currentControllerType = 0;
@@ -30,7 +31,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor.
     /// </summary>
-    public OptionsMenuScreen() : base("") {
+    public OptionsMenuScreen() {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -94,6 +97,10 @@ namespace PuzzlePathDimension {
       controllerConfigurationMenuEntry.Text = "Controller Type: " + controllerType[currentControllerType];
     }
 
+
+    void OnCancel(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
+    }
 
     /// <summary>
     /// Event handler for when the Sound menu entry is selected.

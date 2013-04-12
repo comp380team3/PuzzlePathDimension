@@ -5,6 +5,7 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -15,13 +16,15 @@ namespace PuzzlePathDimension {
   /// The pause menu comes up over the top of the game,
   /// giving the player options to resume or quit.
   /// </summary>
-  class PauseMenuScreen : MenuScreen {
+  class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public PauseMenuScreen() : base("") {
+    public PauseMenuScreen() {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -45,6 +48,8 @@ namespace PuzzlePathDimension {
 
 
     public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
+
       if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
         menuTemplate.SelectPrev();
       }
@@ -68,9 +73,15 @@ namespace PuzzlePathDimension {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
       menuTemplate.Draw(spriteBatch, true, gameTime);
     }
 
+
+    void OnCancel(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
+    }
 
     /// <summary>
     /// Event handler for when the Quit Game menu entry is selected.

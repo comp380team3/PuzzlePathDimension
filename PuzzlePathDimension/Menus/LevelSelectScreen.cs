@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class LevelSelectScreen : MenuScreen {
+  class LevelSelectScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
     /// <summary>
@@ -42,13 +42,16 @@ namespace PuzzlePathDimension {
     /// Contructor
     /// Read an xml file and obtain information for each level in the xml file.
     /// </summary>
-    public LevelSelectScreen() : base("") {
+    public LevelSelectScreen() {
       // Add the levels to the screen
-      //Note: need xml file format to be completed to add level information
-        levelNumber = 1;
-        levelScore = 0;
-        completed = false;
-        completionTime = "0:00";
+      // Note: need xml file format to be completed to add level information
+      levelNumber = 1;
+      levelScore = 0;
+      completed = false;
+      completionTime = "0:00";
+
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -74,6 +77,8 @@ namespace PuzzlePathDimension {
     }
 
     public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
+
       if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
         menuTemplate.SelectPrev();
       }
@@ -97,6 +102,7 @@ namespace PuzzlePathDimension {
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
       menuTemplate.Draw(spriteBatch, true, gameTime);
     }
 
@@ -112,6 +118,10 @@ namespace PuzzlePathDimension {
     #endregion
 
     #region Handle Input
+
+    void OnCancel(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
+    }
 
     /// <summary>
     /// Event handler for when the Level menu entry is selected.
