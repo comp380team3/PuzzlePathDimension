@@ -104,10 +104,13 @@ namespace PuzzlePathDimension {
       float pulsate = (float)Math.Sin(time * 6) + 1;
       float scale = 1 + pulsate * 0.05f * selectionFade;
 
+      Vector2 cursor = Position;
+      cursor.X -= (Font.MeasureString(Text).X / 2) * (scale - 1);
+
       // Draw text, centered on the middle of each line.
       Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
 
-      spriteBatch.DrawString(Font, Text, Position, Color, 0,
+      spriteBatch.DrawString(Font, Text, cursor, Color, 0,
                              origin, scale, SpriteEffects.None, 0);
     }
 
