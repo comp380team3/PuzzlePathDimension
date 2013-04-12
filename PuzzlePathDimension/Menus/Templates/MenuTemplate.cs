@@ -11,8 +11,11 @@ namespace PuzzlePathDimension {
     public IList<MenuButton> Items { get; private set; }
     public int SelectedItem { get; private set; }
 
+    public float TransitionPosition { get; set; }
+
     public MenuTemplate() {
       Items = new List<MenuButton>();
+      TransitionPosition = 0.0f;
     }
 
     public void SelectNext() {
@@ -46,12 +49,14 @@ namespace PuzzlePathDimension {
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
       Vector2 cursor = origin; // The current drawing location
 
+      float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+
       spriteBatch.Begin();
 
       // Draw the title
       if (Title != null) {
         cursor.X = origin.X - Title.Width / 2;
-        cursor.Y = 80;
+        cursor.Y = 80 - transitionOffset * 100;
         Title.Draw(spriteBatch, cursor, gameTime);
       }
 
@@ -61,6 +66,7 @@ namespace PuzzlePathDimension {
         MenuButton button = Items[i];
 
         cursor.X = origin.X - button.GetWidth() / 2;
+        cursor.X -= transitionOffset * 256;
 
         button.Position = cursor;
         button.Draw(screen, spriteBatch, SelectedItem == i, gameTime);

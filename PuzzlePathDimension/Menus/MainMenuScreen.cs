@@ -71,6 +71,7 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
+      menuTemplate.TransitionPosition = TransitionPosition;
       menuTemplate.Update(this, true, gameTime);
     }
 
