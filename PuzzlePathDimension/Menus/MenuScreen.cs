@@ -29,9 +29,7 @@ namespace PuzzlePathDimension {
       get { return menuEntries; }
     }
     
-    public SpriteFont TitleFont { get; private set; }
-    public SpriteFont TextFont { get; private set; }
-
+    private SpriteFont TitleFont { get; set; }
     protected int SelectedEntry { get; set; }
 
 
@@ -50,7 +48,6 @@ namespace PuzzlePathDimension {
       base.LoadContent(shared);
 
       TitleFont = shared.Load<SpriteFont>("menufont");
-      TextFont = shared.Load<SpriteFont>("textfont");
     }
 
 

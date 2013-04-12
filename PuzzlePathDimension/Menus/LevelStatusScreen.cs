@@ -31,6 +31,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string CompletionTime { get; private set; }
 
+    private SpriteFont Font { get; set; }
+
 
     /// <summary>
     /// Constructor
@@ -49,13 +51,13 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont font = shared.Load<SpriteFont>("menufont");
+      Font = shared.Load<SpriteFont>("menufont");
 
-      startMenuEntry = new MenuButton("Start", font);
+      startMenuEntry = new MenuButton("Start", Font);
       startMenuEntry.Selected += StartMenuEntrySelected;
       MenuEntries.Add(startMenuEntry);
 
-      exitMenuEntry = new MenuButton("Back", font);
+      exitMenuEntry = new MenuButton("Back", Font);
       exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }
@@ -88,7 +90,6 @@ namespace PuzzlePathDimension {
       base.Draw(gameTime, spriteBatch);
 
       Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
-      SpriteFont font = base.TitleFont;
 
       spriteBatch.Begin();
 
@@ -99,26 +100,26 @@ namespace PuzzlePathDimension {
 
       // Draw the menu title centered on the screen
       Vector2 titlePosition = new Vector2(viewport.Width / 2, 80);
-      Vector2 titleOrigin = font.MeasureString("Competion Time: 0:00") / 2;
+      Vector2 titleOrigin = Font.MeasureString("Competion Time: 0:00") / 2;
       Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
       float titleScale = 1.25f;
       titlePosition.Y -= transitionOffset * 100;
 
       // Make space between the menu title and the level information
-      titlePosition.Y = titlePosition.Y + font.LineSpacing * 2;
+      titlePosition.Y = titlePosition.Y + Font.LineSpacing * 2;
 
       // Draw the level information to the screen
-      spriteBatch.DrawString(font, "Status: " + (Completed ? "Completed" : "Incomplete"), titlePosition,
+      spriteBatch.DrawString(Font, "Status: " + (Completed ? "Completed" : "Incomplete"), titlePosition,
                              Color.White, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
       
-      titlePosition.Y += font.LineSpacing * 2;
+      titlePosition.Y += Font.LineSpacing * 2;
 
-      spriteBatch.DrawString(font, "Completion Time: " + CompletionTime, titlePosition, Color.White, 
+      spriteBatch.DrawString(Font, "Completion Time: " + CompletionTime, titlePosition, Color.White, 
                              0, titleOrigin, titleScale, SpriteEffects.None, 0);
 
-      titlePosition.Y += font.LineSpacing * 2;
+      titlePosition.Y += Font.LineSpacing * 2;
 
-      spriteBatch.DrawString(font, "Score: " + LevelScore, titlePosition, Color.White,
+      spriteBatch.DrawString(Font, "Score: " + LevelScore, titlePosition, Color.White,
                              0, titleOrigin, titleScale, SpriteEffects.None, 0);
       spriteBatch.End();
     }
