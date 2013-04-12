@@ -93,7 +93,7 @@ namespace PuzzlePathDimension {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
       menuTemplate.TransitionPosition = TransitionPosition;
-      menuTemplate.Update(this, true, gameTime);
+      menuTemplate.Update(true, gameTime);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
