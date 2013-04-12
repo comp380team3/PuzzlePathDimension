@@ -23,15 +23,15 @@ namespace PuzzlePathDimension {
         Selected(this, new PlayerIndexEventArgs(playerIndex));
     }
 
-    public int GetWidth(MenuScreen screen) {
+    public int GetWidth() {
       return Lines.Aggregate(0, (acc, credit) => Math.Max(acc, credit.Width));
     }
 
-    public int GetHeight(MenuScreen screen) {
+    public int GetHeight() {
       return Lines.Aggregate(0, (acc, credit) => acc + credit.Height);
     }
 
-    public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
+    public void Update(bool isSelected, GameTime gameTime) {
     }
 
     /// <summary>

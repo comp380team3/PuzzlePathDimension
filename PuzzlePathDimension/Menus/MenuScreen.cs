@@ -122,7 +122,7 @@ namespace PuzzlePathDimension {
         IMenuEntry menuEntry = menuEntries[i];
 
         // each entry is to be centered horizontally
-        position.X = viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
+        position.X = viewport.Width / 2 - menuEntry.GetWidth() / 2;
 
         if (ScreenState == ScreenState.TransitionOn)
           position.X -= transitionOffset * 256;
@@ -133,7 +133,7 @@ namespace PuzzlePathDimension {
         menuEntry.Position = position;
 
         // move down for the next entry the size of this entry
-        position.Y += menuEntry.GetHeight(this);
+        position.Y += menuEntry.GetHeight();
       }
     }
 
@@ -148,7 +148,7 @@ namespace PuzzlePathDimension {
       for (int i = 0; i < menuEntries.Count; i++) {
         bool isSelected = IsActive && (i == SelectedEntry);
 
-        menuEntries[i].Update(this, isSelected, gameTime);
+        menuEntries[i].Update(isSelected, gameTime);
       }
     }
 

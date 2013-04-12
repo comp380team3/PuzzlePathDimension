@@ -38,7 +38,7 @@ namespace PuzzlePathDimension {
     public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
-        button.Update(screen, SelectedItem == i, gameTime);
+        button.Update(SelectedItem == i, gameTime);
       }
     }
 
@@ -60,12 +60,12 @@ namespace PuzzlePathDimension {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
 
-        cursor.X = origin.X - button.GetWidth(screen) / 2;
+        cursor.X = origin.X - button.GetWidth() / 2;
 
         button.Position = cursor;
         button.Draw(screen, spriteBatch, SelectedItem == i, gameTime);
 
-        cursor.Y += button.GetHeight(screen);
+        cursor.Y += button.GetHeight();
       }
 
       spriteBatch.End();

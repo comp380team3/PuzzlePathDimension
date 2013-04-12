@@ -10,10 +10,10 @@ namespace PuzzlePathDimension {
 
     void OnSelectEntry(PlayerIndex playerIndex);
 
-    int GetWidth(MenuScreen menu);
-    int GetHeight(MenuScreen menu);
+    int GetWidth();
+    int GetHeight();
 
-    void Update(MenuScreen screen, bool isSelected, GameTime gameTime);
+    void Update(bool isSelected, GameTime gameTime);
     void Draw(MenuScreen screen, SpriteBatch spriteBatch,
               bool isSelected, GameTime gameTime);
   }

@@ -66,7 +66,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Updates the menu entry.
     /// </summary>
-    public virtual void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
+    public virtual void Update(bool isSelected, GameTime gameTime) {
       // When the menu selection changes, entries gradually fade between
       // their selected and deselected appearance, rather than instantly
       // popping to the new state.
@@ -105,7 +105,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Queries how much space this menu entry requires.
     /// </summary>
-    public virtual int GetHeight(MenuScreen screen) {
+    public virtual int GetHeight() {
       return Font.LineSpacing;
     }
 
@@ -113,7 +113,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Queries how wide the entry is, used for centering on the screen.
     /// </summary>
-    public virtual int GetWidth(MenuScreen screen) {
+    public virtual int GetWidth() {
       return (int)Font.MeasureString(Text).X;
     }
   }
