@@ -15,7 +15,7 @@ namespace PuzzlePathDimension {
 
     public MenuTemplate() {
       Items = new List<MenuButton>();
-      TransitionPosition = 0.0f;
+      TransitionPosition = 1.0f;
     }
 
     public void SelectNext() {
