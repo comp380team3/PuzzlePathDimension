@@ -22,12 +22,13 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
+      SpriteFont font = shared.Load<SpriteFont>("menufont");
 
-      nextMenuEntry = new MenuButton("Next");
+      nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
       MenuEntries.Add(nextMenuEntry);
 
-      exitMenuEntry = new MenuButton("Exit");
+      exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
     }

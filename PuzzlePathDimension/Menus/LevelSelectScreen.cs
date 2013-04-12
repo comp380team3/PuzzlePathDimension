@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
 
@@ -53,12 +54,13 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
+      SpriteFont font = shared.Load<SpriteFont>("menufont");
 
-      aLevelMenuEntry = new MenuButton(string.Empty);
+      aLevelMenuEntry = new MenuButton(string.Empty, font);
       aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
       MenuEntries.Add(aLevelMenuEntry);
 
-      exitMenuEntry = new MenuButton(string.Empty);
+      exitMenuEntry = new MenuButton(string.Empty, font);
       exitMenuEntry.Selected += OnCancel;
       MenuEntries.Add(exitMenuEntry);
 

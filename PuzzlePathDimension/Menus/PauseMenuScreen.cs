@@ -7,6 +7,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -23,12 +24,13 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
+      SpriteFont font = shared.Load<SpriteFont>("menufont");
 
-      MenuButton resumeGameMenuEntry = new MenuButton("Resume Game");
+      MenuButton resumeGameMenuEntry = new MenuButton("Resume Game", font);
       resumeGameMenuEntry.Selected += OnCancel;
       MenuEntries.Add(resumeGameMenuEntry);
 
-      MenuButton quitGameMenuEntry = new MenuButton("Quit Game");
+      MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       MenuEntries.Add(quitGameMenuEntry);
     }

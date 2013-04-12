@@ -23,31 +23,31 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont titleFont = shared.Load<SpriteFont>("menufont");
+      SpriteFont font = shared.Load<SpriteFont>("menufont");
 
-      menuTemplate.Title = new TextLine("Puzzle Path", titleFont, new Color(192, 192, 192));
+      menuTemplate.Title = new TextLine("Puzzle Path", font, new Color(192, 192, 192));
       menuTemplate.Cancelled += OnCancel;
 
 
       IList<MenuButton> items = menuTemplate.Items;
 
-      MenuButton playGameMenuEntry = new MenuButton("Play Game");
+      MenuButton playGameMenuEntry = new MenuButton("Play Game", font);
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       items.Add(playGameMenuEntry);
 
-      MenuButton optionsMenuEntry = new MenuButton("Options");
+      MenuButton optionsMenuEntry = new MenuButton("Options", font);
       optionsMenuEntry.Selected += OptionsMenuEntrySelected;
       items.Add(optionsMenuEntry);
 
-      MenuButton howToPlayMenuEntry = new MenuButton("How To Play");
+      MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       items.Add(howToPlayMenuEntry);
 
-      MenuButton creditsMenuEntry = new MenuButton("Credits");
+      MenuButton creditsMenuEntry = new MenuButton("Credits", font);
       creditsMenuEntry.Selected += CreditsMenuEntrySelected;
       items.Add(creditsMenuEntry);
 
-      MenuButton exitMenuEntry = new MenuButton("Exit");
+      MenuButton exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
     }

@@ -30,6 +30,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string Text { get; set; }
 
+    public SpriteFont Font { get; set; }
+
     /// <summary>
     /// Gets or sets the position at which to draw this menu entry. This is set by the
     /// MenuScreen each frame in Update.
@@ -55,8 +57,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructs a new menu entry with the specified text.
     /// </summary>
-    public MenuButton(string text) {
+    public MenuButton(string text, SpriteFont font) {
       Text = text;
+      Font = font;
     }
 
 
@@ -92,10 +95,9 @@ namespace PuzzlePathDimension {
       float scale = 1 + pulsate * 0.05f * selectionFade;
 
       // Draw text, centered on the middle of each line.
-      SpriteFont font = screen.TitleFont;
-      Vector2 origin = new Vector2(0, font.LineSpacing / 2);
+      Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
 
-      spriteBatch.DrawString(font, Text, Position, color, 0,
+      spriteBatch.DrawString(Font, Text, Position, color, 0,
                              origin, scale, SpriteEffects.None, 0);
     }
 
@@ -104,7 +106,7 @@ namespace PuzzlePathDimension {
     /// Queries how much space this menu entry requires.
     /// </summary>
     public virtual int GetHeight(MenuScreen screen) {
-      return screen.TitleFont.LineSpacing;
+      return Font.LineSpacing;
     }
 
 
@@ -112,7 +114,7 @@ namespace PuzzlePathDimension {
     /// Queries how wide the entry is, used for centering on the screen.
     /// </summary>
     public virtual int GetWidth(MenuScreen screen) {
-      return (int)screen.TitleFont.MeasureString(Text).X;
+      return (int)Font.MeasureString(Text).X;
     }
   }
 }

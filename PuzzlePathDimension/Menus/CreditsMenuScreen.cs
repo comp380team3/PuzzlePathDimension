@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -24,7 +25,6 @@ namespace PuzzlePathDimension {
     string[] Individuals = new string[] { };
 
     LinesTemplate creditsEntry = new LinesTemplate();
-    MenuButton exitMenuEntry;
 
     ///<summary>
     ///Constructor
@@ -35,33 +35,35 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-
-      exitMenuEntry = new MenuButton("Back");
-      exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
+      SpriteFont titleFont = shared.Load<SpriteFont>("menufont");
+      SpriteFont textFont = shared.Load<SpriteFont>("textfont");
 
       creditsEntry = new LinesTemplate();
       creditsEntry.Selected += OnCancel;
       MenuEntries.Add(creditsEntry);
 
+      MenuButton exitMenuEntry = new MenuButton("Back", titleFont);
+      exitMenuEntry.Selected += OnCancel;
+      MenuEntries.Add(exitMenuEntry);
+
 
       IList<IMenuLine> credits = creditsEntry.Lines;
       credits.Clear();
 
-      credits.Add(new TextLine("Team Members", TextFont, Color.White, 1.25f));
-      credits.Add(new Spacer(TextFont.LineSpacing));
+      credits.Add(new TextLine("Team Members", textFont, Color.White, 1.25f));
+      credits.Add(new Spacer(textFont.LineSpacing));
       foreach (string name in TeamMembers)
-        credits.Add(new TextLine(name, TextFont, Color.Black, 1.25f));
-      credits.Add(new Spacer(TextFont.LineSpacing));
+        credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
+      credits.Add(new Spacer(textFont.LineSpacing));
 
-      credits.Add(new Spacer(TextFont.LineSpacing));
+      credits.Add(new Spacer(textFont.LineSpacing));
 
-      credits.Add(new TextLine("Organizations", TextFont, Color.White, 1.25f));
-      credits.Add(new Spacer(TextFont.LineSpacing));
+      credits.Add(new TextLine("Organizations", textFont, Color.White, 1.25f));
+      credits.Add(new Spacer(textFont.LineSpacing));
       foreach (string name in Organizations)
-        credits.Add(new TextLine(name, TextFont, Color.Black, 1.25f));
+        credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
       foreach (string name in Individuals)
-        credits.Add(new TextLine(name, TextFont, Color.Black, 1.25f));
+        credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
     }
   }
 }

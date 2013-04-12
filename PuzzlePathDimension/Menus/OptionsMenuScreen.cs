@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -31,16 +32,17 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager shared) {
       base.LoadContent(shared);
+      SpriteFont font = shared.Load<SpriteFont>("menufont");
 
-      soundMenuEntry = new MenuButton(string.Empty);
+      soundMenuEntry = new MenuButton(string.Empty, font);
       soundMenuEntry.Selected += SoundMenuEntrySelected;
       MenuEntries.Add(soundMenuEntry);
 
-      controllerConfigurationMenuEntry = new MenuButton(string.Empty);
+      controllerConfigurationMenuEntry = new MenuButton(string.Empty, font);
       controllerConfigurationMenuEntry.Selected += ControllerConfigurationMenuEntrySelected;
       MenuEntries.Add(controllerConfigurationMenuEntry);
 
-      back = new MenuButton("back");
+      back = new MenuButton("back", font);
       back.Selected += OnCancel;
       MenuEntries.Add(back);
 
