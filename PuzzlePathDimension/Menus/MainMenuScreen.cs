@@ -5,37 +5,65 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// The main menu screen is the first thing displayed when the game starts up.
   /// </summary>
   class MainMenuScreen : MenuScreen {
-    /// <summary>
-    /// Constructor fills in the menu contents.
-    /// </summary>
-    public MainMenuScreen()
-        : base("Puzzle Path") {
+    MenuTemplate menuTemplate = new MenuTemplate();
+
+    public MainMenuScreen() : base("") {
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+      SpriteFont titleFont = shared.Load<SpriteFont>("menufont");
+
+      menuTemplate.Title = new TextLine("Puzzle Path", titleFont, new Color(192, 192, 192));
+      menuTemplate.Cancelled += OnCancel;
+
+
+      IList<MenuButton> items = menuTemplate.Items;
+
       MenuButton playGameMenuEntry = new MenuButton("Play Game");
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-      MenuEntries.Add(playGameMenuEntry);
+      items.Add(playGameMenuEntry);
 
       MenuButton optionsMenuEntry = new MenuButton("Options");
       optionsMenuEntry.Selected += OptionsMenuEntrySelected;
-      MenuEntries.Add(optionsMenuEntry);
+      items.Add(optionsMenuEntry);
 
       MenuButton howToPlayMenuEntry = new MenuButton("How To Play");
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
-      MenuEntries.Add(howToPlayMenuEntry);
+      items.Add(howToPlayMenuEntry);
 
       MenuButton creditsMenuEntry = new MenuButton("Credits");
       creditsMenuEntry.Selected += CreditsMenuEntrySelected;
-      MenuEntries.Add(creditsMenuEntry);
+      items.Add(creditsMenuEntry);
 
       MenuButton exitMenuEntry = new MenuButton("Exit");
       exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
+      items.Add(exitMenuEntry);
+    }
+
+    public override void HandleInput(VirtualController vtroller) {
+      menuTemplate.HandleInput(vtroller);
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      menuTemplate.Update(this, true, gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      menuTemplate.Draw(this, spriteBatch, true, gameTime);
     }
 
 
@@ -79,7 +107,6 @@ namespace PuzzlePathDimension {
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
       ScreenList.AddScreen(confirmExitMessageBox, playerIndex);
     }
-
 
     /// <summary>
     /// Event handler for when the user selects ok on the "are you sure
