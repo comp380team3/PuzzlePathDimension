@@ -44,20 +44,20 @@ namespace PuzzlePathDimension {
       IList<IMenuLine> credits = creditsEntry.Lines;
       credits.Clear();
 
-      credits.Add(new TextLine("Team Members", TextFont, Color.White));
+      credits.Add(new TextLine("Team Members", TextFont, Color.White, 1.25f));
       credits.Add(new Spacer(TextFont.LineSpacing));
       foreach (string name in TeamMembers)
-        credits.Add(new TextLine(name, TextFont, Color.Black));
+        credits.Add(new TextLine(name, TextFont, Color.Black, 1.25f));
       credits.Add(new Spacer(TextFont.LineSpacing));
 
       credits.Add(new Spacer(TextFont.LineSpacing));
 
-      credits.Add(new TextLine("Organizations", TextFont, Color.White));
+      credits.Add(new TextLine("Organizations", TextFont, Color.White, 1.25f));
       credits.Add(new Spacer(TextFont.LineSpacing));
       foreach (string name in Organizations)
-        credits.Add(new TextLine(name, TextFont, Color.Black));
+        credits.Add(new TextLine(name, TextFont, Color.Black, 1.25f));
       foreach (string name in Individuals)
-        credits.Add(new TextLine(name, TextFont, Color.Black));
+        credits.Add(new TextLine(name, TextFont, Color.Black, 1.25f));
     }
   }
 }

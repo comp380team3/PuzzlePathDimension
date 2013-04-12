@@ -32,29 +32,32 @@ namespace PuzzlePathDimension {
     private SpriteFont Font { get; set; }
     private string Text { get; set; }
 
+    public float Scale { get; set; }
+
     public int Width {
       get {
-        return (int)Font.MeasureString(Text).X;
+        return (int)(Font.MeasureString(Text).X * Scale);
       }
     }
 
     public int Height {
       get {
-        return (int)Font.MeasureString(Text).Y;
+        return (int)(Font.MeasureString(Text).Y * Scale);
       }
     }
 
-    public TextLine(string text, SpriteFont font, Color textColor) {
+    public TextLine(string text, SpriteFont font, Color textColor, float scale = 1.0f) {
       Text = text;
       TextColor = textColor;
       Font = font;
+      Scale = scale;
     }
 
     public int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime) {
       Vector2 origin = new Vector2(0, Font.MeasureString(Text).Y / 2);
 
       spriteBatch.DrawString(Font, Text, pos, TextColor, 0,
-                                origin, 1.25f, SpriteEffects.None, 0);
+                                origin, Scale, SpriteEffects.None, 0);
       return Font.LineSpacing;
     }
   }
