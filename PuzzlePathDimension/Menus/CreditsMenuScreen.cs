@@ -9,7 +9,7 @@ namespace PuzzlePathDimension {
   /// The credits screen displays the individuals and organizations
   /// that contributed toward the games completion.
   /// </summary>
-  class CreditsMenuScreen : MenuScreen {
+  class CreditsMenuScreen : GameScreen {
     string[] TeamMembers = new string[] {
       "Chris Babayas",
       "Jonathan Castello",
@@ -29,7 +29,9 @@ namespace PuzzlePathDimension {
     ///<summary>
     ///Constructor
     ///<summary>
-    public CreditsMenuScreen() : base("") {
+    public CreditsMenuScreen() {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -38,12 +40,12 @@ namespace PuzzlePathDimension {
       SpriteFont textFont = shared.Load<SpriteFont>("textfont");
 
       creditsEntry.Title = new TextLine("Credits", titleFont, new Color(192, 192, 192));
-      creditsEntry.Selected += OnCancel;
-      MenuEntries.Add(creditsEntry);
+      creditsEntry.Cancelled += OnCancel;
 
       MenuButton exitMenuEntry = new MenuButton("Back", titleFont);
       exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
+      creditsEntry.Buttons[LinesTemplate.Selection.Middle] = exitMenuEntry;
+      creditsEntry.SelectedItem = LinesTemplate.Selection.Middle;
 
 
       IList<IMenuLine> credits = creditsEntry.Lines;
@@ -54,9 +56,7 @@ namespace PuzzlePathDimension {
       foreach (string name in TeamMembers)
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
       credits.Add(new Spacer(textFont.LineSpacing));
-
       credits.Add(new Spacer(textFont.LineSpacing));
-
       credits.Add(new TextLine("Organizations", textFont, Color.White, 1.25f));
       credits.Add(new Spacer(textFont.LineSpacing));
       foreach (string name in Organizations)
@@ -65,9 +65,39 @@ namespace PuzzlePathDimension {
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+    public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+        creditsEntry.SelectPrev();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        creditsEntry.SelectNext();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        creditsEntry.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        creditsEntry.Cancel();
+      }
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
       creditsEntry.TransitionPosition = TransitionPosition;
+      creditsEntry.Update(true, gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
+
+      creditsEntry.Draw(spriteBatch, true, gameTime);
+    }
+
+    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
     }
   }
 }

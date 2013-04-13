@@ -5,37 +5,52 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class LinesTemplate : IMenuEntry {
-    public event EventHandler<PlayerIndexEventArgs> Selected;
+  class LinesTemplate {
+    public enum Selection { Left = 0, Middle, Right };
 
-    public Vector2 Position { get; set; }
+    public event EventHandler<PlayerIndexEventArgs> Cancelled;
+
     public float TransitionPosition { get; set; }
 
     public IMenuLine Title { get; set; }
     public IList<IMenuLine> Lines { get; private set; }
+    public IDictionary<Selection, MenuButton> Buttons { get; private set; }
+
+    public Selection SelectedItem { get; set; }
 
     public LinesTemplate() {
       Lines = new List<IMenuLine>();
+      Buttons = new Dictionary<Selection, MenuButton>();
       TransitionPosition = 1.0f;
     }
 
-    /// <summary>
-    /// Method for raising the Selected event.
-    /// </summary>
-    public void OnSelectEntry(PlayerIndex playerIndex) {
-      if (Selected != null)
-        Selected(this, new PlayerIndexEventArgs(playerIndex));
+    public void Update(bool isSelected, GameTime gameTime) {
+      foreach (Selection label in Buttons.Keys) {
+        MenuButton button = Buttons[label];
+        button.Update(label == SelectedItem, gameTime);
+      }
     }
 
-    public int GetWidth() {
-      return 0;
+    public void SelectNext() {
+      // TODO
     }
 
-    public int GetHeight() {
-      return Lines.Aggregate(0, (acc, credit) => acc + credit.Height);
+    public void SelectPrev() {
+      // TODO
     }
 
-    public void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
+    public void Confirm() {
+      MenuButton button;
+      Buttons.TryGetValue(SelectedItem, out button);
+      if (button == null)
+        return;
+
+      button.OnSelectEntry(PlayerIndex.One);
+    }
+
+    public void Cancel() {
+      if (Cancelled != null)
+        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
     }
 
     /// <summary>
@@ -48,6 +63,8 @@ namespace PuzzlePathDimension {
       Vector2 cursor = origin; // The current drawing location
 
       float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+
+      spriteBatch.Begin();
 
       // Draw the title
       if (Title != null) {
@@ -67,6 +84,30 @@ namespace PuzzlePathDimension {
 
         credit.Color = tmp;
       }
+
+      // Draw the buttons
+      var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right};
+
+      cursor = new Vector2(origin.X / 3, 550);
+      foreach (Selection label in labels) {
+        MenuButton button;
+        Buttons.TryGetValue(label, out button);
+
+        if (button != null) {
+          Color color = (label == SelectedItem) ? Color.Yellow : Color.White;
+          color *= (1.0f - TransitionPosition);
+
+          cursor.X -= button.GetWidth() / 2;
+          button.Position = cursor;
+          button.Color = color;
+          button.Draw(spriteBatch, label == SelectedItem, gameTime);
+          cursor.X += button.GetWidth() / 2;
+        }
+
+        cursor.X += 2 * origin.X / 3;
+      }
+
+      spriteBatch.End();
     }
   }
 }
