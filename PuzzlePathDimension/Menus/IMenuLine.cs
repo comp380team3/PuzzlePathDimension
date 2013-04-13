@@ -5,11 +5,14 @@ namespace PuzzlePathDimension {
   interface IMenuLine {
     int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime);
 
+    Color Color { get; set; }
     int Height { get; }
     int Width { get; }
   }
 
   class Spacer : IMenuLine {
+    public Color Color { get; set; }
+
     public int Height { get; private set; }
 
     public int Width {
@@ -28,7 +31,7 @@ namespace PuzzlePathDimension {
   }
 
   class TextLine : IMenuLine {
-    public Color TextColor { get; set; }
+    public Color Color { get; set; }
     private SpriteFont Font { get; set; }
     private string Text { get; set; }
 
@@ -48,7 +51,7 @@ namespace PuzzlePathDimension {
 
     public TextLine(string text, SpriteFont font, Color textColor, float scale = 1.0f) {
       Text = text;
-      TextColor = textColor;
+      Color = textColor;
       Font = font;
       Scale = scale;
     }
@@ -56,7 +59,7 @@ namespace PuzzlePathDimension {
     public int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime) {
       Vector2 origin = new Vector2(0, Font.MeasureString(Text).Y / 2);
 
-      spriteBatch.DrawString(Font, Text, pos, TextColor, 0,
+      spriteBatch.DrawString(Font, Text, pos, Color, 0,
                                 origin, Scale, SpriteEffects.None, 0);
       return Font.LineSpacing;
     }

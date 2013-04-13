@@ -29,8 +29,7 @@ namespace PuzzlePathDimension {
     ///<summary>
     ///Constructor
     ///<summary>
-    public CreditsMenuScreen()
-        : base("Credits") {
+    public CreditsMenuScreen() : base("") {
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -38,7 +37,7 @@ namespace PuzzlePathDimension {
       SpriteFont titleFont = shared.Load<SpriteFont>("menufont");
       SpriteFont textFont = shared.Load<SpriteFont>("textfont");
 
-      creditsEntry = new LinesTemplate();
+      creditsEntry.Title = new TextLine("Credits", titleFont, new Color(192, 192, 192));
       creditsEntry.Selected += OnCancel;
       MenuEntries.Add(creditsEntry);
 
@@ -64,6 +63,11 @@ namespace PuzzlePathDimension {
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
       foreach (string name in Individuals)
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      creditsEntry.TransitionPosition = TransitionPosition;
+      base.Draw(gameTime, spriteBatch);
     }
   }
 }
