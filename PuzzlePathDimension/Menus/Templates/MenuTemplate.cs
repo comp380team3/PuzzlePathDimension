@@ -38,14 +38,14 @@ namespace PuzzlePathDimension {
     }
 
 
-    public void Update(bool isSelected, GameTime gameTime) {
+    public void Update(GameTime gameTime) {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
         button.Update(SelectedItem == i, gameTime);
       }
     }
 
-    public void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
+    public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
       Vector2 cursor = origin; // The current drawing location
 
