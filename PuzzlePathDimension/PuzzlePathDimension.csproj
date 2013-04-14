@@ -75,7 +75,6 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Menus\IMenuEntry.cs" />
     <Compile Include="Menus\IMenuLine.cs" />
     <Compile Include="Menus\LevelSelectScreen.cs" />
     <Compile Include="Menus\LevelStatusScreen.cs" />
@@ -104,7 +103,6 @@
     <Compile Include="Menus\LoadingScreen.cs" />
     <Compile Include="Menus\MainMenuScreen.cs" />
     <Compile Include="Menus\MenuButton.cs" />
-    <Compile Include="Menus\MenuScreen.cs" />
     <Compile Include="Menus\MessageBoxScreen.cs" />
     <Compile Include="Menus\OptionsMenuScreen.cs" />
     <Compile Include="Menus\PauseMenuScreen.cs" />

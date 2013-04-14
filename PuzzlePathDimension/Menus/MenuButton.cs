@@ -16,7 +16,7 @@ namespace PuzzlePathDimension {
   /// entries in different ways. This also provides an event that will be raised
   /// when the menu entry is selected.
   /// </summary>
-  class MenuButton : IMenuEntry {
+  class MenuButton {
     /// <summary>
     /// Tracks a fading selection effect on the entry.
     /// </summary>
@@ -79,21 +79,6 @@ namespace PuzzlePathDimension {
       else
         selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
     }
-
-    /// <summary>
-    /// Don't use this! It's just here as scaffolding while refactorings are happening.
-    /// </summary>
-    public virtual void Update(MenuScreen screen, bool isSelected, GameTime gameTime) {
-      Color color = isSelected ? Color.Yellow : Color.White;
-
-      // Modify the alpha to fade text out during transitions.
-      color *= (1.0f - screen.TransitionPosition);
-
-      Color = color;
-
-      Update(isSelected, gameTime);
-    }
-
 
     /// <summary>
     /// Draws the menu entry. This can be overridden to customize the appearance.
