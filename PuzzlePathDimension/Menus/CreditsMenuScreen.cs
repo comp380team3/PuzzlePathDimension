@@ -68,11 +68,11 @@ namespace PuzzlePathDimension {
     public override void HandleInput(VirtualController vtroller) {
       base.HandleInput(vtroller);
 
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
         detailsTemplate.SelectPrev();
       }
 
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
         detailsTemplate.SelectNext();
       }
 
