@@ -24,7 +24,7 @@ namespace PuzzlePathDimension {
 
     string[] Individuals = new string[] { };
 
-    LinesTemplate creditsEntry = new LinesTemplate();
+    DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     ///<summary>
     ///Constructor
@@ -39,16 +39,16 @@ namespace PuzzlePathDimension {
       SpriteFont titleFont = shared.Load<SpriteFont>("menufont");
       SpriteFont textFont = shared.Load<SpriteFont>("textfont");
 
-      creditsEntry.Title = new TextLine("Credits", titleFont, new Color(192, 192, 192));
-      creditsEntry.Cancelled += OnCancel;
+      detailsTemplate.Title = new TextLine("Credits", titleFont, new Color(192, 192, 192));
+      detailsTemplate.Cancelled += OnCancel;
 
       MenuButton exitMenuEntry = new MenuButton("Back", titleFont);
       exitMenuEntry.Selected += OnCancel;
-      creditsEntry.Buttons[LinesTemplate.Selection.Middle] = exitMenuEntry;
-      creditsEntry.SelectedItem = LinesTemplate.Selection.Middle;
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
 
 
-      IList<IMenuLine> credits = creditsEntry.Lines;
+      IList<IMenuLine> credits = detailsTemplate.Lines;
       credits.Clear();
 
       credits.Add(new TextLine("Team Members", textFont, Color.White, 1.25f));
@@ -69,31 +69,31 @@ namespace PuzzlePathDimension {
       base.HandleInput(vtroller);
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
-        creditsEntry.SelectPrev();
+        detailsTemplate.SelectPrev();
       }
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
-        creditsEntry.SelectNext();
+        detailsTemplate.SelectNext();
       }
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        creditsEntry.Confirm();
+        detailsTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        creditsEntry.Cancel();
+        detailsTemplate.Cancel();
       }
     }
 
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-      creditsEntry.TransitionPosition = TransitionPosition;
-      creditsEntry.Update(true, gameTime);
+      detailsTemplate.TransitionPosition = TransitionPosition;
+      detailsTemplate.Update(true, gameTime);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
-      creditsEntry.Draw(spriteBatch, true, gameTime);
+      detailsTemplate.Draw(spriteBatch, true, gameTime);
     }
 
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {

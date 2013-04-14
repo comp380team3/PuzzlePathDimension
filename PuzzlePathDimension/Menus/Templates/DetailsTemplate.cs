@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class LinesTemplate {
+  class DetailsTemplate {
     public enum Selection { Left = 0, Middle, Right };
 
     public event EventHandler<PlayerIndexEventArgs> Cancelled;
@@ -18,7 +18,7 @@ namespace PuzzlePathDimension {
 
     public Selection SelectedItem { get; set; }
 
-    public LinesTemplate() {
+    public DetailsTemplate() {
       Lines = new List<IMenuLine>();
       Buttons = new Dictionary<Selection, MenuButton>();
       TransitionPosition = 1.0f;
@@ -53,11 +53,6 @@ namespace PuzzlePathDimension {
         Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
     }
 
-    /// <summary>
-    /// Draw onto the screen the names in the members list,
-    /// organizations list, and the individual contributions list.
-    /// </summary>
-    /// <param name="gameTime"></param>
     public void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
       Vector2 cursor = origin; // The current drawing location

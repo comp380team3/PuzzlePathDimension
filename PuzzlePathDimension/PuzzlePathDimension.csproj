@@ -83,7 +83,7 @@
     <Compile Include="Input\IVirtualAdapter.cs" />
     <Compile Include="Input\VirtualController.cs" />
     <Compile Include="Input\Xbox360ControllerAdapter.cs" />
-    <Compile Include="Menus\Templates\LinesTemplate.cs" />
+    <Compile Include="Menus\Templates\DetailsTemplate.cs" />
     <Compile Include="Menus\Templates\MenuTemplate.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
