@@ -101,13 +101,13 @@ namespace PuzzlePathDimension {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
       detailsTemplate.TransitionPosition = TransitionPosition;
-      detailsTemplate.Update(true, gameTime);
+      detailsTemplate.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
-      detailsTemplate.Draw(spriteBatch, true, gameTime);
+      detailsTemplate.Draw(spriteBatch, gameTime);
     }
 
 

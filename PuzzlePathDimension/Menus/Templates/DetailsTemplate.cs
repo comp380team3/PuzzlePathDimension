@@ -24,7 +24,7 @@ namespace PuzzlePathDimension {
       TransitionPosition = 1.0f;
     }
 
-    public void Update(bool isSelected, GameTime gameTime) {
+    public void Update(GameTime gameTime) {
       foreach (Selection label in Buttons.Keys) {
         MenuButton button = Buttons[label];
         button.Update(label == SelectedItem, gameTime);
@@ -83,7 +83,7 @@ namespace PuzzlePathDimension {
         Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
     }
 
-    public void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
+    public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
       Vector2 cursor = origin; // The current drawing location
 
