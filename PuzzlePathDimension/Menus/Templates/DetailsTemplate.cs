@@ -32,11 +32,41 @@ namespace PuzzlePathDimension {
     }
 
     public void SelectNext() {
-      // TODO
+      if (SelectedItem == Selection.Left) {
+        if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+        else if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+      } else if (SelectedItem == Selection.Middle) {
+        if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+        else if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+      } else if (SelectedItem == Selection.Right) {
+        if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+        else if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+      }
     }
 
     public void SelectPrev() {
-      // TODO
+      if (SelectedItem == Selection.Left) {
+        if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+        else if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+      } else if (SelectedItem == Selection.Middle) {
+        if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+        else if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+      } else if (SelectedItem == Selection.Right) {
+        if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+        else if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+      }
     }
 
     public void Confirm() {
