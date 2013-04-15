@@ -60,7 +60,6 @@ namespace PuzzlePathDimension {
 
       GraphicsCursor cursor = new GraphicsCursor();
       cursor.Position = origin;
-      cursor.Alpha = 1.0f;
 
       spriteBatch.Begin();
 

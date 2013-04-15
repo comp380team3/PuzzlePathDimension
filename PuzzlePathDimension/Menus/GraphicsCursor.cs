@@ -35,11 +35,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     public float Alpha {
       get {
-        return alpha;
+        return 1.0f - alpha;
       }
 
       set {
-        alpha = MathHelper.Clamp(value, 0.0f, 1.0f);
+        alpha = 1.0f - MathHelper.Clamp(value, 0.0f, 1.0f);
       }
     }
 
