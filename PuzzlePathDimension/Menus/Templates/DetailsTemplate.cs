@@ -84,49 +84,79 @@ namespace PuzzlePathDimension {
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
-      Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
-      Vector2 cursor = origin; // The current drawing location
-
       float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+      Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
+
+      GraphicsCursor cursor = new GraphicsCursor();
+      cursor.Position = origin;
+      cursor.TextColor = Color.White;
+      cursor.Alpha = 1.0f;
 
       spriteBatch.Begin();
 
       // Draw the title
+      cursor.Y = 80.0f;
       if (Title != null) {
-        cursor = new Vector2(origin.X - Title.Width / 2, 80 - 100 * transitionOffset);
-        Title.Draw(spriteBatch, cursor, gameTime);
+        GraphicsCursor titleCursor = cursor;
+
+        // Center the title text.
+        // TODO: This really belongs in a MenuLine subclass.
+        titleCursor = (new OffsetEffect(-Title.Width / 2, 0)).ApplyTo(titleCursor);
+
+        // Shift the title based on the current transition state.
+        titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
+
+        Title.Draw(spriteBatch, titleCursor.Position, gameTime);
       }
 
       // Draw the content
-      int width = Lines.Aggregate(0, (acc, credit) => Math.Max(acc, credit.Width)) / 2;
+      cursor.Y = 175.0f;
+      {
+        GraphicsCursor lineCursor = cursor;
 
-      cursor = new Vector2(origin.X - width - 256*transitionOffset, 175.0f);
-      foreach (IMenuLine credit in Lines) {
-        Color tmp = credit.Color;
-        credit.Color = tmp * (1.0f - TransitionPosition);
+        // Modify the alpha to fade text out during transitions.
+        lineCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(lineCursor);
 
-        cursor.Y += credit.Draw(spriteBatch, cursor, gameTime);
+        // Center the text.
+        // TODO: This really belongs in the MenuLine class.
+        int width = Lines.Aggregate(0, (acc, credit) => Math.Max(acc, credit.Width));
+        lineCursor = (new OffsetEffect(-width / 2, 0)).ApplyTo(lineCursor);
 
-        credit.Color = tmp;
+        // Shift the text based on the current transition state.
+        lineCursor = (new OffsetEffect(-transitionOffset * 256, 0)).ApplyTo(lineCursor);
+
+        foreach (IMenuLine line in Lines) {
+          Color tmp = line.Color;
+          line.Color *= lineCursor.Alpha;
+          lineCursor.Y += line.Draw(spriteBatch, lineCursor.Position, gameTime);
+          line.Color = tmp;
+        }
       }
 
       // Draw the buttons
-      var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right};
+      var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
 
-      cursor = new Vector2(origin.X / 3, 550);
+      cursor.X = origin.X / 3;
+      cursor.Y = 550;
       foreach (Selection label in labels) {
         MenuButton button;
         Buttons.TryGetValue(label, out button);
 
         if (button != null) {
-          Color color = (label == SelectedItem) ? Color.Yellow : Color.White;
-          color *= (1.0f - TransitionPosition);
+          GraphicsCursor buttonCursor = cursor;
 
-          cursor.X -= button.GetWidth() / 2;
-          button.Position = cursor;
-          button.Color = color;
+          // Shift the button based on the current transition state.
+          buttonCursor = (new OffsetEffect(-button.GetWidth() / 2, 0)).ApplyTo(buttonCursor);
+
+          // Modify the alpha to fade text out during transitions.
+          buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
+
+          if (label == SelectedItem)
+            buttonCursor.TextColor = Color.Yellow;
+
+          button.Position = buttonCursor.Position;
+          button.Color = buttonCursor.BlendedTextColor();
           button.Draw(spriteBatch, label == SelectedItem, gameTime);
-          cursor.X += button.GetWidth() / 2;
         }
 
         cursor.X += 2 * origin.X / 3;

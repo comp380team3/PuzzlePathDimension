@@ -46,36 +46,57 @@ namespace PuzzlePathDimension {
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
-      Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
-      Vector2 cursor = origin; // The current drawing location
-
       float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+      Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
+
+      GraphicsCursor cursor = new GraphicsCursor();
+      cursor.Position = origin;
+      cursor.TextColor = Color.White;
+      cursor.Alpha = 1.0f;
 
       spriteBatch.Begin();
 
       // Draw the title
+      cursor.Y = 80;
       if (Title != null) {
-        cursor.X = origin.X - Title.Width / 2;
-        cursor.Y = 80 - transitionOffset * 100;
-        Title.Draw(spriteBatch, cursor, gameTime);
+        GraphicsCursor titleCursor = cursor;
+
+        // Center the title text.
+        // TODO: This really belongs in a MenuLine subclass.
+        titleCursor = (new OffsetEffect(-Title.Width / 2, 0)).ApplyTo(titleCursor);
+
+        // Shift the title based on the current transition state.
+        titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
+
+        Title.Draw(spriteBatch, titleCursor.Position, gameTime);
       }
 
       // Draw the menu items
       cursor.Y = 175;
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
-        Color color = (SelectedItem == i) ? Color.Yellow : Color.White;
+        GraphicsCursor buttonCursor = cursor;
+
+        // Center the button text.
+        // TODO: This really belongs in MenuButton.
+        buttonCursor = (new OffsetEffect(-button.GetWidth() / 2, 0)).ApplyTo(buttonCursor);
+
+        // Shift the button based on the current transition state.
+        buttonCursor = (new OffsetEffect(-transitionOffset * 256, 0)).ApplyTo(buttonCursor);
 
         // Modify the alpha to fade text out during transitions.
-        color *= (1.0f - TransitionPosition);
+        buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
-        cursor.X = origin.X - button.GetWidth() / 2;
-        cursor.X -= transitionOffset * 256;
+        // If the item is selected, make the text color yellow.
+        if (SelectedItem == i)
+          buttonCursor.TextColor = Color.Yellow;
 
-        button.Position = cursor;
-        button.Color = color;
+        // Draw the button.
+        button.Position = buttonCursor.Position;
+        button.Color = buttonCursor.BlendedTextColor();
         button.Draw(spriteBatch, SelectedItem == i, gameTime);
 
+        // not an effect
         cursor.Y += button.GetHeight();
       }
 
