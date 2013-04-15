@@ -88,10 +88,7 @@ namespace PuzzlePathDimension {
         buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
         // Draw the button.
-        button.Draw(spriteBatch, buttonCursor, SelectedItem == i, gameTime);
-
-        // not an effect
-        cursor.Y += button.GetHeight();
+        cursor.Y += button.Draw(spriteBatch, buttonCursor, SelectedItem == i, gameTime);
       }
 
       spriteBatch.End();

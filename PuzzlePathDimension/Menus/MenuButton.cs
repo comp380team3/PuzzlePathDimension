@@ -35,13 +35,6 @@ namespace PuzzlePathDimension {
     public Color Color { get; set; }
 
     /// <summary>
-    /// Gets or sets the position at which to draw this menu entry. This is set by the
-    /// MenuScreen each frame in Update.
-    /// </summary>
-    public Vector2 Position { get; set; }
-
-
-    /// <summary>
     /// Event raised when the menu entry is selected.
     /// </summary>
     public event EventHandler<PlayerIndexEventArgs> Selected;
@@ -85,7 +78,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the menu entry. This can be overridden to customize the appearance.
     /// </summary>
-    public virtual void Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, bool isSelected, GameTime gameTime) {
+    public virtual int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, bool isSelected, GameTime gameTime) {
       // Vertically center text on the middle of each line.
       Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
 
@@ -97,27 +90,13 @@ namespace PuzzlePathDimension {
       cursor = (new ScaleEffect(scale)).ApplyTo(cursor);
 
       cursor = (new OffsetEffect(-(Font.MeasureString(Text).X / 2) * (scale - 1), 0)).ApplyTo(cursor);
-      cursor = (new OffsetEffect(-GetWidth() / 2, 0)).ApplyTo(cursor);
+      cursor = (new OffsetEffect(-(Font.MeasureString(Text).X / 2), 0)).ApplyTo(cursor);
 
       Color color = Color * cursor.Alpha;
       spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
                              origin, cursor.Scaling, SpriteEffects.None, 0);
-    }
 
-
-    /// <summary>
-    /// Queries how much space this menu entry requires.
-    /// </summary>
-    public virtual int GetHeight() {
       return Font.LineSpacing;
-    }
-
-
-    /// <summary>
-    /// Queries how wide the entry is, used for centering on the screen.
-    /// </summary>
-    public virtual int GetWidth() {
-      return (int)Font.MeasureString(Text).X;
     }
   }
 }

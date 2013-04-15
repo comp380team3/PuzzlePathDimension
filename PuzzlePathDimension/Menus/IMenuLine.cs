@@ -4,22 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 namespace PuzzlePathDimension {
   interface IMenuLine {
     int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, GameTime gameTime);
-
-    Color Color { get; set; }
-    int Height { get; }
-    int Width { get; }
   }
 
   class Spacer : IMenuLine {
-    public Color Color { get; set; }
-
     public int Height { get; private set; }
-
-    public int Width {
-      get {
-        return 0;
-      }
-    }
 
     public Spacer(int height) {
       Height = height;
@@ -64,7 +52,8 @@ namespace PuzzlePathDimension {
       Color color = Color * cursor.Alpha;
       spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
                                 origin, Scale, SpriteEffects.None, 0);
-      return Font.LineSpacing;
+
+      return Height;
     }
   }
 }
