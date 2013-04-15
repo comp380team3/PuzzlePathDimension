@@ -5,37 +5,83 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// The main menu screen is the first thing displayed when the game starts up.
   /// </summary>
-  class MainMenuScreen : MenuScreen {
-    /// <summary>
-    /// Constructor fills in the menu contents.
-    /// </summary>
-    public MainMenuScreen()
-        : base("Puzzle Path") {
-      MenuEntry playGameMenuEntry = new MenuEntry("Play Game");
+  class MainMenuScreen : GameScreen {
+    MenuTemplate menuTemplate = new MenuTemplate();
+
+    public MainMenuScreen() {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+    }
+
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+      SpriteFont font = shared.Load<SpriteFont>("menufont");
+
+      menuTemplate.Title = new TextLine("Puzzle Path", font, new Color(192, 192, 192));
+
+
+      IList<MenuButton> items = menuTemplate.Items;
+
+      MenuButton playGameMenuEntry = new MenuButton("Play Game", font);
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-      MenuEntries.Add(playGameMenuEntry);
+      items.Add(playGameMenuEntry);
 
-      MenuEntry optionsMenuEntry = new MenuEntry("Options");
+      MenuButton optionsMenuEntry = new MenuButton("Options", font);
       optionsMenuEntry.Selected += OptionsMenuEntrySelected;
-      MenuEntries.Add(optionsMenuEntry);
+      items.Add(optionsMenuEntry);
 
-      MenuEntry howToPlayMenuEntry = new MenuEntry("How To Play");
+      MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
-      MenuEntries.Add(howToPlayMenuEntry);
+      items.Add(howToPlayMenuEntry);
 
-      MenuEntry creditsMenuEntry = new MenuEntry("Credits");
+      MenuButton creditsMenuEntry = new MenuButton("Credits", font);
       creditsMenuEntry.Selected += CreditsMenuEntrySelected;
-      MenuEntries.Add(creditsMenuEntry);
+      items.Add(creditsMenuEntry);
 
-      MenuEntry exitMenuEntry = new MenuEntry("Exit");
+      MenuButton exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
+      items.Add(exitMenuEntry);
+    }
+
+    public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+        menuTemplate.SelectPrev();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        menuTemplate.SelectNext();
+      }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        menuTemplate.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+      }
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      menuTemplate.TransitionPosition = TransitionPosition;
+      menuTemplate.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
+      menuTemplate.Draw(spriteBatch, gameTime);
     }
 
 
@@ -72,14 +118,13 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// When the user cancels the main menu, ask if they want to exit the sample.
     /// </summary>
-    protected override void OnCancel(PlayerIndex playerIndex) {
+    void OnCancel(object sender, PlayerIndexEventArgs e) {
       const string message = "Are you sure you want to exit this sample?";
 
       MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
-      ScreenList.AddScreen(confirmExitMessageBox, playerIndex);
+      ScreenList.AddScreen(confirmExitMessageBox, e.PlayerIndex);
     }
-
 
     /// <summary>
     /// Event handler for when the user selects ok on the "are you sure
