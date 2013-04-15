@@ -1,8 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
+  /// <summary>
+  /// Applies a transparency effect to a graphical cursor.
+  /// </summary>
   class AlphaEffect : IEffect<GraphicsCursor> {
     float alpha;
+    /// <summary>
+    /// The transparency factor to apply.
+    /// </summary>
     public float Alpha {
       get { return alpha; }
       set { alpha = MathHelper.Clamp(value, 0.0f, 1.0f); }
