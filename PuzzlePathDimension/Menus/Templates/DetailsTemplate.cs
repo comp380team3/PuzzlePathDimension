@@ -28,10 +28,6 @@ namespace PuzzlePathDimension {
       foreach (Selection label in Buttons.Keys) {
         MenuButton button = Buttons[label];
 
-        if (label == SelectedItem)
-          button.Color = Color.Yellow;
-        else
-          button.Color = Color.White;
         button.Update(label == SelectedItem, gameTime);
       }
     }

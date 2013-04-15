@@ -78,6 +78,8 @@ namespace PuzzlePathDimension {
         selectionFade = Math.Min(selectionFade + fadeSpeed, 1);
       else
         selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
+
+      Color = isSelected ? Color.Yellow : Color.White;
     }
 
     /// <summary>

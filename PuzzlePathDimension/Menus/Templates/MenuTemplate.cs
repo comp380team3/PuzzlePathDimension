@@ -42,10 +42,6 @@ namespace PuzzlePathDimension {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
 
-        if (SelectedItem == i)
-          button.Color = Color.Yellow;
-        else
-          button.Color = Color.White;
         button.Update(SelectedItem == i, gameTime);
       }
     }
