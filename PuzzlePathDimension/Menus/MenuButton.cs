@@ -89,8 +89,7 @@ namespace PuzzlePathDimension {
 
       cursor = (new ScaleEffect(scale)).ApplyTo(cursor);
 
-      cursor = (new OffsetEffect(-(Font.MeasureString(Text).X / 2) * (scale - 1), 0)).ApplyTo(cursor);
-      cursor = (new OffsetEffect(-(Font.MeasureString(Text).X / 2), 0)).ApplyTo(cursor);
+      cursor = (new OffsetEffect(-scale * Font.MeasureString(Text).X / 2, 0)).ApplyTo(cursor);
 
       Color color = Color * cursor.Alpha;
       spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
