@@ -75,6 +75,11 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Menus\Effects\AlphaEffect.cs" />
+    <Compile Include="Menus\Effects\IEffect.cs" />
+    <Compile Include="Menus\Effects\OffsetEffect.cs" />
+    <Compile Include="Menus\Effects\ScaleEffect.cs" />
+    <Compile Include="Menus\GraphicsCursor.cs" />
     <Compile Include="Menus\IMenuLine.cs" />
     <Compile Include="Menus\LevelSelectScreen.cs" />
     <Compile Include="Menus\LevelStatusScreen.cs" />
