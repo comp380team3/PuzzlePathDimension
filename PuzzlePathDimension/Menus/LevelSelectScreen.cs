@@ -59,7 +59,6 @@ namespace PuzzlePathDimension {
       SpriteFont font = shared.Load<SpriteFont>("menufont");
 
       menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
-      menuTemplate.Cancelled += OnCancel;
 
 
       IList<MenuButton> items = menuTemplate.Items;
@@ -90,7 +89,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         menuTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        menuTemplate.Cancel();
+        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
       }
     }
 

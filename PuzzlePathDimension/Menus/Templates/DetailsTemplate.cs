@@ -15,11 +15,6 @@ namespace PuzzlePathDimension {
     public enum Selection { Left = 0, Middle, Right };
 
     /// <summary>
-    /// Fires when the user cancels in this view.
-    /// </summary>
-    public event EventHandler<PlayerIndexEventArgs> Cancelled;
-
-    /// <summary>
     /// The amount of transition that has been done.
     /// 0.0f means "fully transitioned".
     /// 1.0f means "not transitioned at all".
@@ -199,14 +194,6 @@ namespace PuzzlePathDimension {
         return;
 
       button.OnSelectEntry(PlayerIndex.One);
-    }
-
-    /// <summary>
-    /// Cancel this view.
-    /// </summary>
-    public void Cancel() {
-      if (Cancelled != null)
-        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
     }
   }
 }

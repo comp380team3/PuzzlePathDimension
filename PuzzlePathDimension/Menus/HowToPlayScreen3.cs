@@ -34,7 +34,6 @@ namespace PuzzlePathDimension {
       SpriteFont font = shared.Load<SpriteFont>("menufont");
 
       detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
-      detailsTemplate.Cancelled += OnCancel;
 
       backMenuEntry = new MenuButton("Back", font);
       backMenuEntry.Selected += BackMenuEntrySelected;
@@ -64,7 +63,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         detailsTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        detailsTemplate.Cancel();
+        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
       }
     }
 
