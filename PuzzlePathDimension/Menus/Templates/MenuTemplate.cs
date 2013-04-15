@@ -41,6 +41,11 @@ namespace PuzzlePathDimension {
     public void Update(GameTime gameTime) {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
+
+        if (SelectedItem == i)
+          button.Color = Color.Yellow;
+        else
+          button.Color = Color.White;
         button.Update(SelectedItem == i, gameTime);
       }
     }
@@ -51,7 +56,6 @@ namespace PuzzlePathDimension {
 
       GraphicsCursor cursor = new GraphicsCursor();
       cursor.Position = origin;
-      cursor.TextColor = Color.White;
       cursor.Alpha = 1.0f;
 
       spriteBatch.Begin();
@@ -87,14 +91,8 @@ namespace PuzzlePathDimension {
         // Modify the alpha to fade text out during transitions.
         buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
-        // If the item is selected, make the text color yellow.
-        if (SelectedItem == i)
-          buttonCursor.TextColor = Color.Yellow;
-
         // Draw the button.
-        button.Position = buttonCursor.Position;
-        button.Color = buttonCursor.BlendedTextColor();
-        button.Draw(spriteBatch, SelectedItem == i, gameTime);
+        button.Draw(spriteBatch, buttonCursor, SelectedItem == i, gameTime);
 
         // not an effect
         cursor.Y += button.GetHeight();

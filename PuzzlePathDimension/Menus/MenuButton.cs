@@ -83,20 +83,21 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the menu entry. This can be overridden to customize the appearance.
     /// </summary>
-    public virtual void Draw(SpriteBatch spriteBatch, bool isSelected, GameTime gameTime) {
+    public virtual void Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, bool isSelected, GameTime gameTime) {
+      // Vertically center text on the middle of each line.
+      Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
+
       // Pulsate the size of the selected menu entry.
       double time = gameTime.TotalGameTime.TotalSeconds;
       float pulsate = (float)Math.Sin(time * 6) + 1;
       float scale = 1 + pulsate * 0.05f * selectionFade;
 
-      Vector2 cursor = Position;
-      cursor.X -= (Font.MeasureString(Text).X / 2) * (scale - 1);
+      cursor = (new ScaleEffect(scale)).ApplyTo(cursor);
+      cursor = (new OffsetEffect(-(Font.MeasureString(Text).X / 2) * (scale - 1), 0)).ApplyTo(cursor);
 
-      // Draw text, centered on the middle of each line.
-      Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
-
-      spriteBatch.DrawString(Font, Text, cursor, Color, 0,
-                             origin, scale, SpriteEffects.None, 0);
+      Color color = Color * cursor.Alpha;
+      spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
+                             origin, cursor.Scaling, SpriteEffects.None, 0);
     }
 
 

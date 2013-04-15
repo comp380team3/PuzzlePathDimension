@@ -27,6 +27,11 @@ namespace PuzzlePathDimension {
     public void Update(GameTime gameTime) {
       foreach (Selection label in Buttons.Keys) {
         MenuButton button = Buttons[label];
+
+        if (label == SelectedItem)
+          button.Color = Color.Yellow;
+        else
+          button.Color = Color.White;
         button.Update(label == SelectedItem, gameTime);
       }
     }
@@ -89,7 +94,6 @@ namespace PuzzlePathDimension {
 
       GraphicsCursor cursor = new GraphicsCursor();
       cursor.Position = origin;
-      cursor.TextColor = Color.White;
       cursor.Alpha = 1.0f;
 
       spriteBatch.Begin();
@@ -145,18 +149,14 @@ namespace PuzzlePathDimension {
         if (button != null) {
           GraphicsCursor buttonCursor = cursor;
 
-          // Shift the button based on the current transition state.
+          // Center the button text.
+          // TODO: This really belongs in MenuButton.
           buttonCursor = (new OffsetEffect(-button.GetWidth() / 2, 0)).ApplyTo(buttonCursor);
 
           // Modify the alpha to fade text out during transitions.
           buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
-          if (label == SelectedItem)
-            buttonCursor.TextColor = Color.Yellow;
-
-          button.Position = buttonCursor.Position;
-          button.Color = buttonCursor.BlendedTextColor();
-          button.Draw(spriteBatch, label == SelectedItem, gameTime);
+          button.Draw(spriteBatch, buttonCursor, label == SelectedItem, gameTime);
         }
 
         cursor.X += 2 * origin.X / 3;

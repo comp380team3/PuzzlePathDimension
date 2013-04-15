@@ -5,10 +5,16 @@ namespace PuzzlePathDimension {
   struct GraphicsCursor {
     public float X { get; set; }
     public float Y { get; set; }
-    public float Scaling { get; set; }
 
-    public Color TextColor { get; set; }
-    public SpriteFont Font { get; set; }
+    float scaling;
+    public float Scaling {
+      get {
+        return scaling + 1.0f;
+      }
+      set {
+        scaling = value - 1.0f;
+      }
+    }
 
     float alpha;
     public float Alpha {
@@ -28,10 +34,6 @@ namespace PuzzlePathDimension {
     public Vector2 Position {
       get { return new Vector2(X, Y); }
       set { X = value.X; Y = value.Y; }
-    }
-
-    public Color BlendedTextColor() {
-      return TextColor * Alpha;
     }
   }
 }
