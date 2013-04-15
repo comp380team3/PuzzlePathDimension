@@ -110,7 +110,7 @@ namespace PuzzlePathDimension {
         // Shift the title based on the current transition state.
         titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
 
-        Title.Draw(spriteBatch, titleCursor.Position, gameTime);
+        Title.Draw(spriteBatch, titleCursor, gameTime);
       }
 
       // Draw the content
@@ -129,12 +129,8 @@ namespace PuzzlePathDimension {
         // Shift the text based on the current transition state.
         lineCursor = (new OffsetEffect(-transitionOffset * 256, 0)).ApplyTo(lineCursor);
 
-        foreach (IMenuLine line in Lines) {
-          Color tmp = line.Color;
-          line.Color *= lineCursor.Alpha;
-          lineCursor.Y += line.Draw(spriteBatch, lineCursor.Position, gameTime);
-          line.Color = tmp;
-        }
+        foreach (IMenuLine line in Lines)
+          lineCursor.Y += line.Draw(spriteBatch, lineCursor, gameTime);
       }
 
       // Draw the buttons

@@ -72,7 +72,7 @@ namespace PuzzlePathDimension {
         // Shift the title based on the current transition state.
         titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
 
-        Title.Draw(spriteBatch, titleCursor.Position, gameTime);
+        Title.Draw(spriteBatch, titleCursor, gameTime);
       }
 
       // Draw the menu items

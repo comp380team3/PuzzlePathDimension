@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   interface IMenuLine {
-    int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime);
+    int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, GameTime gameTime);
 
     Color Color { get; set; }
     int Height { get; }
@@ -25,7 +25,7 @@ namespace PuzzlePathDimension {
       Height = height;
     }
 
-    public int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime) {
+    public int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, GameTime gameTime) {
       return Height;
     }
   }
@@ -56,10 +56,12 @@ namespace PuzzlePathDimension {
       Scale = scale;
     }
 
-    public int Draw(SpriteBatch spriteBatch, Vector2 pos, GameTime gameTime) {
+    public int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, GameTime gameTime) {
       Vector2 origin = new Vector2(0, Font.MeasureString(Text).Y / 2);
 
-      spriteBatch.DrawString(Font, Text, pos, Color, 0,
+      Color color = Color * cursor.Alpha;
+
+      spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
                                 origin, Scale, SpriteEffects.None, 0);
       return Font.LineSpacing;
     }
