@@ -144,6 +144,7 @@ namespace PuzzlePathDimension {
     /// Select the next available menu button.
     /// </summary>
     public void SelectNext() {
+      // TODO: Find a better way to do this.
       if (SelectedItem == Selection.Left) {
         if (Buttons.ContainsKey(Selection.Middle))
           SelectedItem = Selection.Middle;
@@ -166,6 +167,7 @@ namespace PuzzlePathDimension {
     /// Select the previous menu button.
     /// </summary>
     public void SelectPrev() {
+      // TODO: Find a better way to do this.
       if (SelectedItem == Selection.Left) {
         if (Buttons.ContainsKey(Selection.Right))
           SelectedItem = Selection.Right;
