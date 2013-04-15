@@ -4,40 +4,48 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
+  /// <summary>
+  /// A template representing a vertical series of selectable buttons.
+  /// </summary>
   class MenuTemplate {
+    /// <summary>
+    /// Fires when the user cancels in this view.
+    /// </summary>
     public event EventHandler<PlayerIndexEventArgs> Cancelled;
 
+    /// <summary>
+    /// The amount of transition that has been done.
+    /// 0.0f means "fully transitioned".
+    /// 1.0f means "not transitioned at all".
+    /// </summary>
+    public float TransitionPosition { get; set; }
+
+
+    /// <summary>
+    /// The view's title.
+    /// </summary>
     public IMenuLine Title { get; set; }
+
+    /// <summary>
+    /// The list of menu buttons to be displayed.
+    /// </summary>
     public IList<MenuButton> Items { get; private set; }
+
+    /// <summary>
+    /// The currently selected button.
+    /// </summary>
     public int SelectedItem { get; private set; }
 
-    public float TransitionPosition { get; set; }
 
     public MenuTemplate() {
       Items = new List<MenuButton>();
       TransitionPosition = 1.0f;
     }
 
-    public void SelectNext() {
-      SelectedItem = (SelectedItem + 1) % Items.Count;
-    }
-
-    public void SelectPrev() {
-      // Modulo on negative numbers behaves strangely, so add Items.Count
-      // to ensure that we're never dealing with a negative number.
-      SelectedItem = (SelectedItem - 1 + Items.Count) % Items.Count;
-    }
-
-    public void Confirm() {
-      Items[SelectedItem].OnSelectEntry(PlayerIndex.One);
-    }
-
-    public void Cancel() {
-      if (Cancelled != null)
-        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
-    }
-
-
+    /// <summary>
+    /// Update the state of the view over time.
+    /// </summary>
+    /// <param name="gameTime"></param>
     public void Update(GameTime gameTime) {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
@@ -46,6 +54,11 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Draw the current state of this view to the screen.
+    /// </summary>
+    /// <param name="spriteBatch"></param>
+    /// <param name="gameTime"></param>
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
       float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
@@ -95,6 +108,38 @@ namespace PuzzlePathDimension {
       }
 
       spriteBatch.End();
+    }
+
+
+    /// <summary>
+    /// Select the next available menu button.
+    /// </summary>
+    public void SelectNext() {
+      SelectedItem = (SelectedItem + 1) % Items.Count;
+    }
+
+    /// <summary>
+    /// Select the previous menu button.
+    /// </summary>
+    public void SelectPrev() {
+      // Modulo on negative numbers behaves strangely, so add Items.Count
+      // to ensure that we're never dealing with a negative number.
+      SelectedItem = (SelectedItem - 1 + Items.Count) % Items.Count;
+    }
+
+    /// <summary>
+    /// Confirm the currently selected menu button.
+    /// </summary>
+    public void Confirm() {
+      Items[SelectedItem].OnSelectEntry(PlayerIndex.One);
+    }
+
+    /// <summary>
+    /// Cancel this view.
+    /// </summary>
+    public void Cancel() {
+      if (Cancelled != null)
+        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
     }
   }
 }

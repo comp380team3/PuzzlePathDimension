@@ -5,18 +5,48 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
+  /// <summary>
+  /// A template representing some textual information and a small set of buttons.
+  /// </summary>
   class DetailsTemplate {
+    /// <summary>
+    /// Labels for each of the three buttons in this view.
+    /// </summary>
     public enum Selection { Left = 0, Middle, Right };
 
+    /// <summary>
+    /// Fires when the user cancels in this view.
+    /// </summary>
     public event EventHandler<PlayerIndexEventArgs> Cancelled;
 
+    /// <summary>
+    /// The amount of transition that has been done.
+    /// 0.0f means "fully transitioned".
+    /// 1.0f means "not transitioned at all".
+    /// </summary>
     public float TransitionPosition { get; set; }
 
+
+    /// <summary>
+    /// The view's title.
+    /// </summary>
     public IMenuLine Title { get; set; }
+
+    /// <summary>
+    /// The list of lines to be shown in this view.
+    /// </summary>
     public IList<IMenuLine> Lines { get; private set; }
+
+    /// <summary>
+    /// A small set of buttons to be shown in this view.
+    /// </summary>
     public IDictionary<Selection, MenuButton> Buttons { get; private set; }
 
+    /// <summary>
+    /// The currently selected button.
+    /// </summary>
     public Selection SelectedItem { get; set; }
+
 
     public DetailsTemplate() {
       Lines = new List<IMenuLine>();
@@ -24,6 +54,10 @@ namespace PuzzlePathDimension {
       TransitionPosition = 1.0f;
     }
 
+    /// <summary>
+    /// Update the state of the view over time.
+    /// </summary>
+    /// <param name="gameTime"></param>
     public void Update(GameTime gameTime) {
       foreach (Selection label in Buttons.Keys) {
         MenuButton button = Buttons[label];
@@ -32,58 +66,11 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public void SelectNext() {
-      if (SelectedItem == Selection.Left) {
-        if (Buttons.ContainsKey(Selection.Middle))
-          SelectedItem = Selection.Middle;
-        else if (Buttons.ContainsKey(Selection.Right))
-          SelectedItem = Selection.Right;
-      } else if (SelectedItem == Selection.Middle) {
-        if (Buttons.ContainsKey(Selection.Right))
-          SelectedItem = Selection.Right;
-        else if (Buttons.ContainsKey(Selection.Left))
-          SelectedItem = Selection.Left;
-      } else if (SelectedItem == Selection.Right) {
-        if (Buttons.ContainsKey(Selection.Left))
-          SelectedItem = Selection.Left;
-        else if (Buttons.ContainsKey(Selection.Middle))
-          SelectedItem = Selection.Middle;
-      }
-    }
-
-    public void SelectPrev() {
-      if (SelectedItem == Selection.Left) {
-        if (Buttons.ContainsKey(Selection.Right))
-          SelectedItem = Selection.Right;
-        else if (Buttons.ContainsKey(Selection.Middle))
-          SelectedItem = Selection.Middle;
-      } else if (SelectedItem == Selection.Middle) {
-        if (Buttons.ContainsKey(Selection.Left))
-          SelectedItem = Selection.Left;
-        else if (Buttons.ContainsKey(Selection.Right))
-          SelectedItem = Selection.Right;
-      } else if (SelectedItem == Selection.Right) {
-        if (Buttons.ContainsKey(Selection.Middle))
-          SelectedItem = Selection.Middle;
-        else if (Buttons.ContainsKey(Selection.Left))
-          SelectedItem = Selection.Left;
-      }
-    }
-
-    public void Confirm() {
-      MenuButton button;
-      Buttons.TryGetValue(SelectedItem, out button);
-      if (button == null)
-        return;
-
-      button.OnSelectEntry(PlayerIndex.One);
-    }
-
-    public void Cancel() {
-      if (Cancelled != null)
-        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
-    }
-
+    /// <summary>
+    /// Draw the current state of this view to the screen.
+    /// </summary>
+    /// <param name="spriteBatch"></param>
+    /// <param name="gameTime"></param>
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
       float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
       Vector2 origin = new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2, 0);
@@ -155,6 +142,71 @@ namespace PuzzlePathDimension {
       }
 
       spriteBatch.End();
+    }
+
+
+    /// <summary>
+    /// Select the next available menu button.
+    /// </summary>
+    public void SelectNext() {
+      if (SelectedItem == Selection.Left) {
+        if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+        else if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+      } else if (SelectedItem == Selection.Middle) {
+        if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+        else if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+      } else if (SelectedItem == Selection.Right) {
+        if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+        else if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+      }
+    }
+
+    /// <summary>
+    /// Select the previous menu button.
+    /// </summary>
+    public void SelectPrev() {
+      if (SelectedItem == Selection.Left) {
+        if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+        else if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+      } else if (SelectedItem == Selection.Middle) {
+        if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+        else if (Buttons.ContainsKey(Selection.Right))
+          SelectedItem = Selection.Right;
+      } else if (SelectedItem == Selection.Right) {
+        if (Buttons.ContainsKey(Selection.Middle))
+          SelectedItem = Selection.Middle;
+        else if (Buttons.ContainsKey(Selection.Left))
+          SelectedItem = Selection.Left;
+      }
+    }
+
+    /// <summary>
+    /// Confirm the currently selected menu button.
+    /// </summary>
+    public void Confirm() {
+      MenuButton button;
+      Buttons.TryGetValue(SelectedItem, out button);
+      if (button == null)
+        return;
+
+      button.OnSelectEntry(PlayerIndex.One);
+    }
+
+    /// <summary>
+    /// Cancel this view.
+    /// </summary>
+    public void Cancel() {
+      if (Cancelled != null)
+        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
     }
   }
 }
