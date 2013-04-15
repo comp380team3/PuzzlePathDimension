@@ -59,8 +59,9 @@ namespace PuzzlePathDimension {
     public int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, GameTime gameTime) {
       Vector2 origin = new Vector2(0, Font.MeasureString(Text).Y / 2);
 
-      Color color = Color * cursor.Alpha;
+      cursor = (new OffsetEffect(-Width / 2, 0)).ApplyTo(cursor);
 
+      Color color = Color * cursor.Alpha;
       spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
                                 origin, Scale, SpriteEffects.None, 0);
       return Font.LineSpacing;

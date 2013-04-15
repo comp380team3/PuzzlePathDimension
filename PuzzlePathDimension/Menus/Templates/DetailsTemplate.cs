@@ -81,10 +81,6 @@ namespace PuzzlePathDimension {
       if (Title != null) {
         GraphicsCursor titleCursor = cursor;
 
-        // Center the title text.
-        // TODO: This really belongs in a MenuLine subclass.
-        titleCursor = (new OffsetEffect(-Title.Width / 2, 0)).ApplyTo(titleCursor);
-
         // Shift the title based on the current transition state.
         titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
 
@@ -98,11 +94,6 @@ namespace PuzzlePathDimension {
 
         // Modify the alpha to fade text out during transitions.
         lineCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(lineCursor);
-
-        // Center the text.
-        // TODO: This really belongs in the MenuLine class.
-        int width = Lines.Aggregate(0, (acc, credit) => Math.Max(acc, credit.Width));
-        lineCursor = (new OffsetEffect(-width / 2, 0)).ApplyTo(lineCursor);
 
         // Shift the text based on the current transition state.
         lineCursor = (new OffsetEffect(-transitionOffset * 256, 0)).ApplyTo(lineCursor);
@@ -122,10 +113,6 @@ namespace PuzzlePathDimension {
 
         if (button != null) {
           GraphicsCursor buttonCursor = cursor;
-
-          // Center the button text.
-          // TODO: This really belongs in MenuButton.
-          buttonCursor = (new OffsetEffect(-button.GetWidth() / 2, 0)).ApplyTo(buttonCursor);
 
           // Modify the alpha to fade text out during transitions.
           buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
