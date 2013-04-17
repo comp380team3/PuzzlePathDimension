@@ -38,7 +38,7 @@ namespace PuzzlePathDimension {
       if (content == null)
         content = new ContentManager(shared.ServiceProvider, "Content");
 
-      font = shared.Load<SpriteFont>("textfont");
+      font = shared.Load<SpriteFont>("Font/textfont");
 
       // Create the hard-coded level.
       simulation = CreateTestLevel();
@@ -57,8 +57,8 @@ namespace PuzzlePathDimension {
     private void SetupSoundEvents() {
       // The sounds actually take enough time to load that there's a delay when
       // the ball is launched, so cache them first.
-      content.Load<SoundEffect>("launch");
-      content.Load<SoundEffect>("bounce");
+      content.Load<SoundEffect>("Sound/launch");
+      content.Load<SoundEffect>("Sound/bounce");
 
       // Assign the sound effects to the proper places.
       foreach (Platform plat in simulation.Platforms) {
@@ -226,7 +226,7 @@ namespace PuzzlePathDimension {
     /// Plays the launcher's sound effect.
     /// </summary>
     private void PlayLaunch() {
-      SoundEffect launch = content.Load<SoundEffect>("launch");
+      SoundEffect launch = content.Load<SoundEffect>("Sound/launch");
       launch.Play();
     }
 
@@ -242,7 +242,7 @@ namespace PuzzlePathDimension {
     /// the PlatformTouched delegate.
     /// </summary>
     private void PlayBounce(bool breakable) {
-      SoundEffect bounce = content.Load<SoundEffect>("bounce");
+      SoundEffect bounce = content.Load<SoundEffect>("Sound/bounce");
       bounce.Play();
     }
 
@@ -252,7 +252,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     internal Simulation CreateTestLevel() {
       Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content), content);
-      simulation.Background = content.Load<Texture2D>("GameScreen");
+      simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
     }

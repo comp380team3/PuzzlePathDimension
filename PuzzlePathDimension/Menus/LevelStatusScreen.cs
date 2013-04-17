@@ -55,7 +55,7 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      Font = shared.Load<SpriteFont>("menufont");
+      Font = shared.Load<SpriteFont>("Font/menufont");
 
       detailsTemplate.Title = new TextLine("Level " + LevelNumber, Font, new Color(192, 192, 192));
 
@@ -72,11 +72,11 @@ namespace PuzzlePathDimension {
       IList<IMenuLine> stats = detailsTemplate.Lines;
       stats.Clear();
 
-      stats.Add(new TextLine("Status: " + (Completed ? "Completed" : "Incomplete"), Font, Color.White, 1.25f));
+      stats.Add(new TextLine("Status: " + (Completed ? "Completed" : "Incomplete"), Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
-      stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White, 1.25f));
+      stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
-      stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White, 1.25f));
+      stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
     public override void HandleInput(VirtualController vtroller) {

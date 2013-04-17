@@ -55,8 +55,8 @@ namespace PuzzlePathDimension {
     /// it will just get back another reference to the already loaded data.
     /// </summary>
     public override void LoadContent(ContentManager shared) {
-      gradientTexture = shared.Load<Texture2D>("gradient");
-      font = shared.Load<SpriteFont>("menufont");
+      gradientTexture = shared.Load<Texture2D>("Texture/gradient");
+      font = shared.Load<SpriteFont>("Font/menufont");
     }
 
 

@@ -36,8 +36,8 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont titleFont = shared.Load<SpriteFont>("menufont");
-      SpriteFont textFont = shared.Load<SpriteFont>("textfont");
+      SpriteFont titleFont = shared.Load<SpriteFont>("Font/menufont");
+      SpriteFont textFont = shared.Load<SpriteFont>("Font/textfont");
 
       detailsTemplate.Title = new TextLine("Credits", titleFont, new Color(192, 192, 192));
 

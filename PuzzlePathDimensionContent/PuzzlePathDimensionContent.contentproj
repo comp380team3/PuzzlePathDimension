@@ -37,7 +37,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="platform.png">
+    <Compile Include="Texture\platform.png">
       <Name>platform</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -51,21 +51,21 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="goal.png">
+    <Compile Include="Texture\goal.png">
       <Name>goal</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameScreen.png">
+    <Compile Include="Texture\GameScreen.png">
       <Name>GameScreen</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="launcher.png">
+    <Compile Include="Texture\launcher.png">
       <Name>launcher</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -79,7 +79,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ball.png">
+    <Compile Include="Texture\ball.png">
       <Name>ball</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -107,7 +107,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="background.png">
+    <Compile Include="Texture\background.png">
       <Name>background</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -128,21 +128,21 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gradient.png">
+    <Compile Include="Texture\gradient.png">
       <Name>gradient</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="menufont.spritefont">
+    <Compile Include="Font\menufont.spritefont">
       <Name>menufont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="textFont.spritefont">
+    <Compile Include="Font\textFont.spritefont">
       <Name>textFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
@@ -172,47 +172,48 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="deathtrap.png">
+    <Compile Include="Texture\deathtrap.png">
       <Name>deathtrap</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="platform_breakable.png">
+    <Compile Include="Texture\platform_breakable.png">
       <Name>platform_breakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="treasure.png">
+    <Compile Include="Texture\treasure.png">
       <Name>treasure</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="power_meter.png">
+    <Compile Include="Texture\power_meter.png">
       <Name>power_meter</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bounce.wav">
+    <Compile Include="Sound\bounce.wav">
       <Name>bounce</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="launch.wav">
+    <Compile Include="Sound\launch.wav">
       <Name>launch</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
