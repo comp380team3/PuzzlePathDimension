@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
       if (content == null)
         content = new ContentManager(shared.ServiceProvider, "Content");
 
-      backgroundTexture = content.Load<Texture2D>("background");
+      backgroundTexture = content.Load<Texture2D>("Texture/background");
     }
 
     /// <summary>

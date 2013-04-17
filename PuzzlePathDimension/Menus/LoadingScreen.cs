@@ -47,7 +47,7 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
 
-      font = shared.Load<SpriteFont>("menufont");
+      font = shared.Load<SpriteFont>("Font/menufont");
     }
 
 

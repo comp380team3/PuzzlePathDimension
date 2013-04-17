@@ -56,7 +56,7 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont font = shared.Load<SpriteFont>("menufont");
+      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
       menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
 

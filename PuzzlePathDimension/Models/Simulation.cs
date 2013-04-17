@@ -238,7 +238,7 @@ namespace PuzzlePathDimension {
       _bounces = 0;
 
       // Load the ball's texture and store it.
-      _ballTex = content.Load<Texture2D>("ball");
+      _ballTex = content.Load<Texture2D>("Texture/ball");
       // Create the physics simulation.
       InitWorld();
 
