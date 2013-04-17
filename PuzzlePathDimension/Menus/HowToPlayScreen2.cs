@@ -43,6 +43,7 @@ namespace PuzzlePathDimension {
       nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
 
       backMenuEntry = new MenuButton("Back", font);
       backMenuEntry.Selected += BackMenuEntrySelected;

@@ -62,6 +62,7 @@ namespace PuzzlePathDimension {
       startMenuEntry = new MenuButton("Start", Font);
       startMenuEntry.Selected += StartMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = startMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
 
       exitMenuEntry = new MenuButton("Back", Font);
       exitMenuEntry.Selected += OnCancel;

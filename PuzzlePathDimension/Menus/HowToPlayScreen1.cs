@@ -32,10 +32,11 @@ namespace PuzzlePathDimension {
       nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
 
       exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = exitMenuEntry;
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
     }
 
     /// <summary>
