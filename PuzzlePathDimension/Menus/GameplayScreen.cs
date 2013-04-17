@@ -251,7 +251,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content), content);
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/TestLevel.xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
