@@ -29,10 +29,10 @@ namespace PuzzlePathDimension {
 
     private static Level LoadLevel(XmlDocument doc, ContentManager Content) {
       Level level = new Level();
-
+      
+      // TODO: Fall back to 3 attempts if a number isn't specified
       XmlElement levelNode = (XmlElement)doc.GetElementsByTagName("level")[0];
       level.Attempts = Convert.ToInt16(levelNode.Attributes["balls"].Value);
-      Console.WriteLine(level.Attempts);
 
       foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
         level.Platforms.Add(LoadPlatform(node, Content));
