@@ -40,6 +40,10 @@ namespace PuzzlePathDimension {
       resumeGameMenuEntry.Selected += OnCancel;
       items.Add(resumeGameMenuEntry);
 
+      MenuButton retryGameMenuEntry = new MenuButton("Retry Game", font);
+      retryGameMenuEntry.Selected += RetryGameMenuEntrySelected;
+      items.Add(retryGameMenuEntry);
+
       MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       items.Add(quitGameMenuEntry);
@@ -80,6 +84,15 @@ namespace PuzzlePathDimension {
 
     void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
+    }
+
+    /// <summary>
+    /// Event handler for when the Retry Game menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    void RetryGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+      // Put what happens when the person clicks retry
     }
 
     /// <summary>

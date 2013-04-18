@@ -20,6 +20,7 @@ namespace PuzzlePathDimension {
 
     string[] Organizations = new string[] {
       "Microsoft XNA Community Game Platform",
+      "Farseer Physics Engine",
     };
 
     string[] Individuals = new string[] { };

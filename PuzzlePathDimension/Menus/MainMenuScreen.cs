@@ -18,31 +18,44 @@ namespace PuzzlePathDimension {
   class MainMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public MainMenuScreen() {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
-
+    
+    /// <summary>
+    /// Load the assets required for the Main Menu.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
       menuTemplate.Title = new TextLine("Puzzle Path", font, new Color(192, 192, 192));
 
-
+      // List that contains the menu buttons
       IList<MenuButton> items = menuTemplate.Items;
 
+      // Create the Menu Buttons, attach what happens for each entry,
+      // and add the menu buttons to the list of buttons.
       MenuButton playGameMenuEntry = new MenuButton("Play Game", font);
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       items.Add(playGameMenuEntry);
 
-      MenuButton optionsMenuEntry = new MenuButton("Options", font);
-      optionsMenuEntry.Selected += OptionsMenuEntrySelected;
-      items.Add(optionsMenuEntry);
+      MenuButton levelEditorMenuEntry = new MenuButton("Level Editor", font);
+      levelEditorMenuEntry.Selected += LevelEditorMenuEntrySelected;
+      items.Add(levelEditorMenuEntry);
 
       MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       items.Add(howToPlayMenuEntry);
+
+      MenuButton optionsMenuEntry = new MenuButton("Options", font);
+      optionsMenuEntry.Selected += OptionsMenuEntrySelected;
+      items.Add(optionsMenuEntry);
 
       MenuButton creditsMenuEntry = new MenuButton("Credits", font);
       creditsMenuEntry.Selected += CreditsMenuEntrySelected;
@@ -53,6 +66,12 @@ namespace PuzzlePathDimension {
       items.Add(exitMenuEntry);
     }
 
+    /// <summary>
+    /// Handle the input from the user. Down moves the selected Menu Button
+    /// to the next Menu Button in the list. Up moves the selected Menu Button
+    /// to the previous Menu Button in the list.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
       base.HandleInput(vtroller);
 
@@ -78,6 +97,11 @@ namespace PuzzlePathDimension {
       menuTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the list of Menu Buttons to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
@@ -93,10 +117,12 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Event handler for when the Options menu entry is selected.
+    /// Event handler for when the Level Editor menu entry is selected.
     /// </summary>
-    void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    void LevelEditorMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+      // Add the Level Editor Screen Here
     }
 
     /// <summary>
@@ -106,6 +132,13 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void howToPlayMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ScreenList.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
+    }
+
+    /// <summary>
+    /// Event handler for when the Options menu entry is selected.
+    /// </summary>
+    void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+      ScreenList.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
     }
 
     /// <summary>

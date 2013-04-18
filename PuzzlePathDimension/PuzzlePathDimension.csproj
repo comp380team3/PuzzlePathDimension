@@ -91,6 +91,7 @@
     <Compile Include="Input\Xbox360ControllerAdapter.cs" />
     <Compile Include="Menus\Templates\DetailsTemplate.cs" />
     <Compile Include="Menus\Templates\MenuTemplate.cs" />
+    <Compile Include="Menus\Templates\MessageBoxTemplate.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Models\Ball.cs" />
