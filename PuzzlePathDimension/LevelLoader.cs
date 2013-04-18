@@ -57,7 +57,7 @@ namespace PuzzlePathDimension {
 
       Vector2 size = new Vector2();
       size.X = Convert.ToInt16(node.Attributes["width"].Value);
-      size.Y = Convert.ToInt16(node.Attributes["length"].Value);
+      size.Y = Convert.ToInt16(node.Attributes["height"].Value);
 
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
       Texture2D texture = breakable ? 
