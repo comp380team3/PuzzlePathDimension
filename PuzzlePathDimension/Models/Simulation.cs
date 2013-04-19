@@ -161,6 +161,11 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Whether a ball has bounced off at least one platform during a given timestep.
+    /// </summary>
+    private bool _hasBouncedThisStep;
+
+    /// <summary>
     /// The time when the simulation started.
     /// </summary>
     private DateTime _startTime;
@@ -357,6 +362,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="time">The amount of time that has passed since the last update.</param>
     public void Step(float time) {
+      // Reset the bounce state.
+      _hasBouncedThisStep = false;
+
       // Let the World do stuff.
       _world.Step(time);
 
@@ -379,7 +387,11 @@ namespace PuzzlePathDimension {
     /// is for the PlatformTouched delegate.
     /// </summary>
     private void IncrementBounces(bool breakable) {
-      _bounces++;
+      // Fixes the case where the ball touches two platforms at the same time.
+      if (!_hasBouncedThisStep) {
+        _bounces++;
+        _hasBouncedThisStep = true;
+      }
     }
 
     /// <summary>
