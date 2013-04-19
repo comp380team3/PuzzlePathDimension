@@ -82,6 +82,7 @@
     <Compile Include="Menus\Effects\OffsetEffect.cs" />
     <Compile Include="Menus\Effects\ScaleEffect.cs" />
     <Compile Include="Menus\GraphicsCursor.cs" />
+    <Compile Include="Menus\HowToPlayScreen4.cs" />
     <Compile Include="Menus\IMenuLine.cs" />
     <Compile Include="Menus\LevelSelectScreen.cs" />
     <Compile Include="Menus\LevelStatusScreen.cs" />

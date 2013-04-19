@@ -19,34 +19,22 @@ namespace PuzzlePathDimension {
     string message;
     Texture2D gradientTexture;
     SpriteFont font;
-    MessageBoxTemplate messageBoxTemplate; //= new DetailsTemplate();
+    MessageBoxTemplate messageBoxTemplate;
 
     /// <summary>
     /// The left button's text of the Message Box.
     /// </summary>
-    public string LeftButtonText {
-      // check for null? - Jorenz
-      get; //{ return messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left].Text;  }
-      set; //{ messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left].Text = value; }
-    }
+    public string LeftButtonText { get; set; }
 
     /// <summary>
     /// The middle button's text of the Message Box.
     /// </summary>
-    public string MiddleButtonText {
-      // check for null? - Jorenz
-      get; //{ return messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Middle].Text; }
-      set; //{ messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Middle].Text = value; }
-    }
+    public string MiddleButtonText { get; set; }
 
     /// <summary>
     /// The right button's text of the Message Box.
     /// </summary>
-    public string RightButtonText {
-      // check for null? - Jorenz
-      get; //{ return messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right].Text; }
-      set; //{ messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right].Text = value; }
-    }
+    public string RightButtonText { get; set; }
 
     public event EventHandler<PlayerIndexEventArgs> Accepted;
     public event EventHandler<PlayerIndexEventArgs> Cancelled;
@@ -56,29 +44,32 @@ namespace PuzzlePathDimension {
     /// Constructor automatically includes the standard "A=ok, B=cancel"
     /// usage text prompt.
     /// </summary>
-    public MessageBoxScreen(string message)
-      : this("", true) {
+    public MessageBoxScreen(string message) {
 
         this.message = message; // Added. - Jorenz
 
         messageBoxTemplate = new MessageBoxTemplate(message);
         LeftButtonText = "Cancel";
-        MiddleButtonText = "";
+        MiddleButtonText = null;
         RightButtonText = "Confirm";
+
+        base.IsPopup = true;
+        base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
+        base.TransitionOffTime = TimeSpan.FromSeconds(0.2);
     }
 
     /// <summary>
     /// Constructor lets the caller specify whether to include the standard
     /// "A=ok, B=cancel" usage text prompt.
     /// </summary>
-    public MessageBoxScreen(string message, bool includeUsageText) {
+    public MessageBoxScreen(string message, string leftButtonText, string middleButtonText, string rightButtonText) {
 
       this.message = message;
 
       messageBoxTemplate = new MessageBoxTemplate(message);
-      LeftButtonText = "Cancel";
-      MiddleButtonText = "";
-      RightButtonText = "Confirm";
+      LeftButtonText = leftButtonText;
+      MiddleButtonText = middleButtonText;
+      RightButtonText = rightButtonText;
 
       base.IsPopup = true;
       base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
@@ -97,14 +88,24 @@ namespace PuzzlePathDimension {
 
       messageBoxTemplate.Title = new TextLine(message, font, new Color(192, 192, 192));
 
-        MenuButton confirmButton = new MenuButton(RightButtonText, font);
-        confirmButton.Selected += ConfirmMenuEntrySelected;
-        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = confirmButton;
-        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
+      if (LeftButtonText != null) {
+        MenuButton leftButton = new MenuButton(LeftButtonText, font);
+        leftButton.Selected += CancelMenuEntrySelected;
+        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left] = leftButton;
+      }
 
-      MenuButton cancelButton = new MenuButton(LeftButtonText, font);
-      cancelButton.Selected += CancelMenuEntrySelected;
-      messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left] = cancelButton;
+      if (MiddleButtonText != null) {
+        MenuButton centerButton = new MenuButton(MiddleButtonText, font);
+        centerButton.Selected += CancelMenuEntrySelected;
+        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Middle] = centerButton;
+      }
+
+      if (RightButtonText != null) {
+        MenuButton rightButton = new MenuButton(RightButtonText, font);
+        rightButton.Selected += ConfirmMenuEntrySelected;
+        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
+        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
+      }
     }
 
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {

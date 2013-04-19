@@ -48,9 +48,35 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Selection SelectedItem { get; set; }
 
+    /// <summary>
+    /// The X position for the location of the Message Box.
+    /// </summary>
+    public int RectangleXPosition { get; set; }
+
+    /// <summary>
+    /// The Y position for the location of the Message Box.
+    /// </summary>
+    public int RectangleYPosition { get; set; }
+
+    /// <summary>
+    /// The Width of the Message Box.
+    /// </summary>
+    public int ReactangleWidth { get; set; }
+
+    /// <summary>
+    /// The Height of the Message Box.
+    /// </summary>
+    public int RectangleHeight { get; set; }
+
     public MessageBoxTemplate(string message) {
       Lines = new List<IMenuLine>();
       Buttons = new Dictionary<Selection, MenuButton>();
+
+      RectangleXPosition = 50;
+      RectangleYPosition = 200;
+      ReactangleWidth = 700;
+      RectangleHeight = 200;
+
       TransitionPosition = 1.0f;
       this.TitleMessage = message;
     }
@@ -80,36 +106,20 @@ namespace PuzzlePathDimension {
 
       spriteBatch.Begin();
 
-      // Center the message text in the viewport.
-      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
-      Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
-
-      //Draw Message Box.
-      Vector2 textSize = font.MeasureString(TitleMessage);
-      Vector2 textPosition = (viewportSize - textSize) / 2;
-
-      // The background includes a border somewhat larger than the text itself.
-      const int hPad = 32;
-      const int vPad = 16;
-
-      Rectangle backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
-                                                    (int)textPosition.Y - vPad - 100,
-                                                    (int)textSize.X + hPad * 2,
-                                                    (int)textSize.Y + vPad + 125);
+      Rectangle backgroundRectangle = new Rectangle(RectangleXPosition, RectangleYPosition,
+                                                    ReactangleWidth, RectangleHeight);
 
       // Draw the background rectangle.
       spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
       
       // Draw the title
       cursor.Y = backgroundRectangle.Top + font.LineSpacing;
-      //+font.LineSpacing; // This was changed - Jorenz
 
       if (Title != null) {
         GraphicsCursor titleCursor = cursor;
 
         //Shift the title based on the current transition state.
         titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
-        //Console.WriteLine(titleCursor.X + " " + titleCursor.Y);
 
         Title.Draw(spriteBatch, titleCursor, gameTime);
       }
@@ -132,7 +142,7 @@ namespace PuzzlePathDimension {
       // Draw the buttons
       var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
 
-      cursor.X = origin.X / 3;
+      cursor.X = backgroundRectangle.X + 75;
       cursor.Y = backgroundRectangle.Bottom - font.LineSpacing; // This was changed - Jorenz
       
 
@@ -149,7 +159,7 @@ namespace PuzzlePathDimension {
           button.Draw(spriteBatch, buttonCursor, label == SelectedItem, gameTime);
         }
 
-        cursor.X += 2 * origin.X / 3;
+        cursor.X += backgroundRectangle.Width / 3;
       }
 
       spriteBatch.End();

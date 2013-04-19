@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
-  class HowToPlayScreen3 : GameScreen {
+  class HowToPlayScreen4 : GameScreen {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
-
-    /// <summary>
-    /// Next menu entry on the screen.
-    /// </summary>
-    MenuButton nextMenuEntry;
 
     /// <summary>
     /// Back menu entry on the screen.
@@ -25,50 +20,29 @@ namespace PuzzlePathDimension {
     /// </summary>
     MenuButton exitMenuEntry;
 
-    string[] ControlScheme = new string[] {
-      "Rotate Launcher Left:     Left Arrow Key/ Left on DPad",
-      "Rotate Launcher Right:    Right Arrow Key/ Right on DPad",
-      "Increase Magnitude:       Up Arrow Key/ Up on DPad",
-      "Decrease Magnitude:       Down Array Key/ Down on DPad",
-      "Launch Ball:              Space Bar/ A Button ",
-      "Pause Game:               Esc/ Start Button",
-    };
-
 
     /// <summary>
     /// Contructor
     /// </summary>
-    public HowToPlayScreen3() {
+    public HowToPlayScreen4() {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont titleFont = shared.Load<SpriteFont>("Font/menufont");
+      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("Controls", titleFont, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
 
-      IList<IMenuLine> controlScheme = detailsTemplate.Lines;
-      controlScheme.Clear();
-
-      foreach (string name in ControlScheme)
-        controlScheme.Add(new TextLine(name, titleFont, Color.Black, .75f));
-
-      nextMenuEntry = new MenuButton("Next", titleFont);
-      nextMenuEntry.Selected += NextMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
-      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
-
-      backMenuEntry = new MenuButton("Back", titleFont);
+      backMenuEntry = new MenuButton("Back", font);
       backMenuEntry.Selected += BackMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
 
-      exitMenuEntry = new MenuButton("Exit", titleFont);
+      exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
-
-
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
     }
 
     /// <summary>
@@ -103,18 +77,10 @@ namespace PuzzlePathDimension {
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
+
       detailsTemplate.Draw(spriteBatch, gameTime);
     }
 
-    /// <summary>
-    /// Event handler for when the Next menu entry is selected.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen4(), e.PlayerIndex);
-    }
 
     /// <summary>
     /// Event handler for when the Back menu entry is selected.
@@ -123,14 +89,9 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void BackMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
+      ScreenList.AddScreen(new HowToPlayScreen3(), e.PlayerIndex);
     }
 
-    /// <summary>
-    /// Event handler for when the Exit menu entry is selected.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
     }

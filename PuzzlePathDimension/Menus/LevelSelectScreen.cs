@@ -120,6 +120,7 @@ namespace PuzzlePathDimension {
 
     void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
+      ScreenList.AddScreen(new MainMenuScreen(), e.PlayerIndex);
     }
 
     /// <summary>
