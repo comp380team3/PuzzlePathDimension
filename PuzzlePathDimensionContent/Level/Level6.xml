@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<level name="Level 6" balls="4">
+  <platform breakable="false" x="588" y="150" width="25" height="100" />
+  <platform breakable="false" x="613" y="225" width="100" height="25" />
+  <platform breakable="false" x="650" y="250" width="25" height="200" />
+  <platform breakable="false" x="713" y="150" width="25" height="100" />
+  <platform breakable="true" x="588" y="125" width="150" height="25" />
+
+  <platform breakable="false" x="88" y="300" width="25" height="100" />
+  <platform breakable="false" x="113" y="375" width="100" height="25" />
+  <platform breakable="false" x="150" y="400" width="25" height="100" />
+  <platform breakable="false" x="213" y="300" width="25" height="100" />
+  <platform breakable="true" x="88" y="275" width="150" height="25" />
+
+  <platform breakable="false" x="338" y="225" width="25" height="100" />
+  <platform breakable="false" x="363" y="300" width="100" height="25" />
+  <platform breakable="false" x="400" y="325" width="25" height="150" />
+  <platform breakable="false" x="463" y="225" width="25" height="100" />
+  <platform breakable="true" x="338" y="200" width="150" height="25" />
+
+  <goal x="132" y="310" />
+  <launcher x="400" y="580" />
+  <treasure x="10" y="10" />
+  <treasure x="398" y="250" />
+  <treasure x="628" y="155" />
+  <treasure x="648" y="190" />
+  <treasure x="668" y="155" />
+</level>
