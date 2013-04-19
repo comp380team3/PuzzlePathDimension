@@ -38,7 +38,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     public IDictionary<Selection, MenuButton> Buttons { get; private set; }
 
-    public string message;
+    /// <summary>
+    /// The title of the Message Box.
+    /// </summary>
+    public string TitleMessage { get; set; }
 
     /// <summary>
     /// The currently selected button.
@@ -49,7 +52,7 @@ namespace PuzzlePathDimension {
       Lines = new List<IMenuLine>();
       Buttons = new Dictionary<Selection, MenuButton>();
       TransitionPosition = 1.0f;
-      this.message = message;
+      this.TitleMessage = message;
     }
 
     /// <summary>
@@ -82,7 +85,7 @@ namespace PuzzlePathDimension {
       Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
 
       //Draw Message Box.
-      Vector2 textSize = font.MeasureString(message);
+      Vector2 textSize = font.MeasureString(TitleMessage);
       Vector2 textPosition = (viewportSize - textSize) / 2;
 
       // The background includes a border somewhat larger than the text itself.
@@ -90,31 +93,29 @@ namespace PuzzlePathDimension {
       const int vPad = 16;
 
       Rectangle backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
-                                                    (int)textPosition.Y - vPad,
+                                                    (int)textPosition.Y - vPad - 100,
                                                     (int)textSize.X + hPad * 2,
-                                                    (int)textSize.Y + vPad * 6);
+                                                    (int)textSize.Y + vPad + 125);
 
       // Draw the background rectangle.
       spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
-
-      // Draw the message box text.
-      //spriteBatch.DrawString(font, message, textPosition, color);
       
       // Draw the title
-      cursor.Y = 80.0f;
-      //-2 * font.LineSpacing;
+      cursor.Y = backgroundRectangle.Top + font.LineSpacing;
+      //+font.LineSpacing; // This was changed - Jorenz
 
       if (Title != null) {
         GraphicsCursor titleCursor = cursor;
 
         //Shift the title based on the current transition state.
         titleCursor = (new OffsetEffect(0, -transitionOffset * 100)).ApplyTo(titleCursor);
+        //Console.WriteLine(titleCursor.X + " " + titleCursor.Y);
 
         Title.Draw(spriteBatch, titleCursor, gameTime);
       }
 
       //Draw the content
-      cursor.Y = 175.0f; //+2 * font.LineSpacing;
+      cursor.Y = 175.0f;
       {
         GraphicsCursor lineCursor = cursor;
 
@@ -132,7 +133,8 @@ namespace PuzzlePathDimension {
       var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
 
       cursor.X = origin.X / 3;
-      cursor.Y = 550;
+      cursor.Y = backgroundRectangle.Bottom - font.LineSpacing; // This was changed - Jorenz
+      
 
       foreach (Selection label in labels) {
         MenuButton button;

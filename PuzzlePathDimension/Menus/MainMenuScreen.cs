@@ -90,6 +90,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -152,7 +158,7 @@ namespace PuzzlePathDimension {
     /// When the user cancels the main menu, ask if they want to exit the sample.
     /// </summary>
     void OnCancel(object sender, PlayerIndexEventArgs e) {
-      const string message = "Are you sure you want to exit this sample?";
+      const string message = "Are you sure you want to exit the game?";
 
       MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
