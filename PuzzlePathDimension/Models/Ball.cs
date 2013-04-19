@@ -119,6 +119,8 @@ namespace PuzzlePathDimension {
       _body.LinearDamping = .1f;
       // Associate this Body object with the ball.
       _body.UserData = "ball";
+      // Put this object in its own collision category (for breakable platforms).
+      _body.CollisionCategories = Category.Cat1;
     }
 
     /// <summary>
