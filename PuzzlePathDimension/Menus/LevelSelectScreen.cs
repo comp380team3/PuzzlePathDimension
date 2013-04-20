@@ -18,7 +18,7 @@ namespace PuzzlePathDimension {
     MenuButton aLevelMenuEntry;
     MenuButton exitMenuEntry;
 
-    struct LevelInfo {
+    public struct LevelInfo {
 
       public string LevelName { get; set; }
 
@@ -39,8 +39,7 @@ namespace PuzzlePathDimension {
     }
 
     List<LevelInfo> levelSet;
-    LevelInfo levelInfo;
-
+    LevelInfo levelInfo; 
 
     #region Initialization
 
@@ -92,8 +91,8 @@ namespace PuzzlePathDimension {
 
       foreach(LevelInfo level in levelSet) {
         aLevelMenuEntry = new MenuButton(level.LevelName, font);
-        aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
         items.Add(aLevelMenuEntry);
+        aLevelMenuEntry.Selected += delegate(object sender, PlayerIndexEventArgs e) { ALevelMenuEntrySelected(sender, e, menuTemplate.SelectedItem); };
       }
 
       exitMenuEntry = new MenuButton("Exit", font);
@@ -143,8 +142,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event handler for when the Level menu entry is selected.
     /// </summary>
-    void ALevelMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new LevelStatusScreen(levelInfo.Completed, levelInfo.LevelScore, levelInfo.LevelName, levelInfo.CompletionTime), e.PlayerIndex);
+    void ALevelMenuEntrySelected(object sender, PlayerIndexEventArgs e,  int selected) {
+      LevelInfo level = levelSet.ElementAt<LevelInfo>(selected);
+      ScreenList.AddScreen(new LevelStatusScreen(level.Completed, level.LevelScore, level.LevelName, level.CompletionTime), e.PlayerIndex);
     }
 
     #endregion

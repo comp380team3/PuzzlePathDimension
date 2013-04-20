@@ -22,9 +22,14 @@ namespace PuzzlePathDimension {
 
     SpriteFont font;
 
+    public string LevelName { get; set; }
+
     float pauseAlpha;
 
-    public GameplayScreen() {
+    public GameplayScreen(string levelName) {
+
+      LevelName = levelName;
+
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -269,7 +274,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/TestLevel.xml", content), content);
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/"+ LevelName.Replace(" ","") +".xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
@@ -292,7 +297,7 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
-      ScreenList.AddScreen(new GameplayScreen(), ControllingPlayer);
+      ScreenList.AddScreen(new GameplayScreen(LevelName), ControllingPlayer);
     }
   }
 }
