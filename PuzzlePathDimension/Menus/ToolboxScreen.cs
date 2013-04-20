@@ -21,21 +21,55 @@ namespace PuzzlePathDimension {
   /// confirmation messages.
   /// </summary>
   class ToolboxScreen : GameScreen {
+
+    /// <summary>
+    /// Message displayed at the top of Toolbox
+    /// </summary>
     string message;
+
+    /// <summary>
+    /// Backgorund texture
+    /// </summary>
     Texture2D gradientTexture;
-    List<Rectangle> positions;
+
+    /// <summary>
+    /// List of the position of platform  positions.
+    /// </summary>
+    List<Rectangle> platforms;
+
+    /// <summary>
+    /// List of the position of breakable platforms.
+    /// </summary>
+    List<Rectangle> breakablePlatforms;
+
+    /// <summary>
+    /// Texture used to draw regular platforms
+    /// </summary>
     Texture2D platformTexture;
 
+    /// <summary>
+    /// Texture for breakable platforms.
+    /// </summary>
+    Texture2D breakablePlatformTexture;
+
+    //Mouse states to determine clicks.
     MouseState previousMouseState;
     MouseState currentMouseState;
+
+    /// <summary>
+    /// The new platform to be sent to the emuator
+    /// </summary>
     Platform selected;
+
+    /// <summary>
+    /// Returns the selected platform
+    /// </summary>
     public Platform Selected {
-      get{ return selected; }
+      get { return selected; }
     }
     SpriteFont font;
 
     public event EventHandler<PlayerIndexEventArgs> Accepted;
-    public event EventHandler<PlayerIndexEventArgs> Cancelled;
 
 
     /// <summary>
@@ -47,17 +81,28 @@ namespace PuzzlePathDimension {
 
     /// <summary>
     /// Constructor lets the caller specify whether to include the standard
-    /// "A=ok, B=cancel" usage text prompt.
     /// </summary>
     public ToolboxScreen(string message, bool includeUsageText) {
-      //if (includeUsageText)
-        this.message = "Choose a platform to add(right click to cancel)";
-      //else
-      //  this.message = message;
-        positions = new List<Rectangle>();
-        positions.Add(new Rectangle(100, 100, 100, 20));
-        positions.Add(new Rectangle(210, 100, 20, 100));
-        previousMouseState = currentMouseState = Mouse.GetState();
+      this.message = message;
+
+      //initializa the position of regular platforms
+      platforms = new List<Rectangle>();
+      platforms.Add(new Rectangle(100, 130, 100, 25));
+      platforms.Add(new Rectangle(300, 130, 150, 25));
+      platforms.Add(new Rectangle(500, 130, 200, 25));
+      platforms.Add(new Rectangle(100, 210, 25, 100));
+      platforms.Add(new Rectangle(300, 210, 25, 150));
+      platforms.Add(new Rectangle(500, 210, 25, 200));
+
+      //Initializes the position of breakable platforms.
+      breakablePlatforms = new List<Rectangle>();
+      breakablePlatforms.Add(new Rectangle(100, 160, 100, 25));
+      breakablePlatforms.Add(new Rectangle(300, 160, 150, 25));
+      breakablePlatforms.Add(new Rectangle(500, 160, 200, 25));
+      breakablePlatforms.Add(new Rectangle(175, 210, 25, 100));
+      breakablePlatforms.Add(new Rectangle(425, 210, 25, 150));
+      breakablePlatforms.Add(new Rectangle(675, 210, 25, 200));
+      previousMouseState = currentMouseState = Mouse.GetState();
 
       base.IsPopup = true;
       base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
@@ -74,6 +119,7 @@ namespace PuzzlePathDimension {
       gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       font = shared.Load<SpriteFont>("Font/menufont");
       platformTexture = shared.Load<Texture2D>("Texture/platform");
+      breakablePlatformTexture = shared.Load<Texture2D>("Texture/platform_breakable");
     }
 
 
@@ -84,10 +130,19 @@ namespace PuzzlePathDimension {
       previousMouseState = currentMouseState;
       currentMouseState = Mouse.GetState();
       if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
-        foreach (Rectangle rect in positions) {
+        foreach (Rectangle rect in platforms) {
           if (currentMouseState.X > rect.X && currentMouseState.X < rect.X + rect.Width) {
             if (currentMouseState.Y > rect.Y && currentMouseState.Y < rect.Y + rect.Height) {
               selected = new Platform(platformTexture, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
+              Console.WriteLine(selected.Origin);
+              //ExitScreen();
+            }
+          }
+        }
+        foreach (Rectangle rect in breakablePlatforms) {
+          if (currentMouseState.X > rect.X && currentMouseState.X < rect.X + rect.Width) {
+            if (currentMouseState.Y > rect.Y && currentMouseState.Y < rect.Y + rect.Height) {
+              selected = new Platform(breakablePlatformTexture, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
               Console.WriteLine(selected.Origin);
               ExitScreen();
             }
@@ -98,11 +153,6 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         if (Accepted != null)
           Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
-
-        ExitScreen();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        if (Cancelled != null)
-          Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
         ExitScreen();
       }
@@ -128,18 +178,22 @@ namespace PuzzlePathDimension {
       // Fade the popup alpha during transitions.
       Color color = Color.White * TransitionAlpha;
 
-      
+
 
       spriteBatch.Begin();
 
-     
+
 
       // Draw the background rectangle.
       spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
-      
-      foreach (Rectangle rect in positions) {
+
+      foreach (Rectangle rect in platforms) {
         Vector2 scale = new Vector2(rect.Width / (float)platformTexture.Width, rect.Height / (float)platformTexture.Height);
         spriteBatch.Draw(platformTexture, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+      }
+      foreach (Rectangle rect in breakablePlatforms) {
+        Vector2 scale = new Vector2(rect.Width / (float)platformTexture.Width, rect.Height / (float)platformTexture.Height);
+        spriteBatch.Draw(breakablePlatformTexture, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
       }
       // Draw the message box text.
       spriteBatch.DrawString(font, message, textPosition, color);

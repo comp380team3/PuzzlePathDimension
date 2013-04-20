@@ -134,12 +134,25 @@ namespace PuzzlePathDimension {
     /// The number of attempts that the player has left.
     /// </summary>
     private int _attemptsLeft;
-
+    
     /// <summary>
     /// Gets the number of attempts that the player has left.
     /// </summary>
     public int AttemptsLeft {
       get { return _attemptsLeft; }
+    }
+
+
+    /// <summary>
+    /// The maximum number of platforms the player can add.
+    /// </summary>
+    private int _additionsAllowed;
+
+    /// <summary>
+    /// The number of platforms the player can still add.
+    /// </summary>
+    public int AdditionsLeft {
+      get { return _additionsAllowed - _moveablePlatforms.Count; }
     }
 
     /// <summary>
@@ -242,6 +255,9 @@ namespace PuzzlePathDimension {
       _attemptsLeft = _startingAttempts;
       _collectedTreasures = 0;
       _bounces = 0;
+
+      //hard coded amount of additions.
+      _additionsAllowed = 3;
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
@@ -461,6 +477,9 @@ namespace PuzzlePathDimension {
       foreach (Platform platform in _platforms) {
         platform.Reset();
       }
+      foreach (Platform platform in _moveablePlatforms) {
+        platform.Reset();
+      }
       foreach (Treasure treasure in _treasures) {
         treasure.Reset();
       }
@@ -508,8 +527,6 @@ namespace PuzzlePathDimension {
             return true;
         }
       }
-
-
       return false;
     }
 
