@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,25 +18,29 @@ namespace PuzzlePathDimension {
     MenuButton aLevelMenuEntry;
     MenuButton exitMenuEntry;
 
-    /// <summary>
-    /// The level which the user has selected.
-    /// </summary>
-    int levelNumber;
+    struct LevelInfo {
 
-    /// <summary>
-    /// The score for the current level.
-    /// </summary>
-    int levelScore;
+      public string LevelName { get; set; }
 
-    /// <summary>
-    /// The level is complete if true, otherwise the level is incomplete.
-    /// </summary>
-    bool completed;
+      /// <summary>
+      /// The score for the current level.
+      /// </summary>
+      public int LevelScore { get; set; }
 
-    /// <summary>
-    /// The time that the user spent to complete the current level.
-    /// </summary>
-    string completionTime;
+      /// <summary>
+      /// The level is complete if true, otherwise the level is incomplete.
+      /// </summary>
+      public bool Completed { get; set; }
+
+      /// <summary>
+      /// The time that the user spent to complete the current level.
+      /// </summary>
+      public string CompletionTime { get; set; }
+    }
+
+    List<LevelInfo> levelSet;
+    LevelInfo levelInfo;
+
 
     #region Initialization
 
@@ -42,13 +48,34 @@ namespace PuzzlePathDimension {
     /// Contructor
     /// Read an xml file and obtain information for each level in the xml file.
     /// </summary>
-    public LevelSelectScreen() {
+    public LevelSelectScreen(ContentManager Content) {
       // Add the levels to the screen
       // Note: need xml file format to be completed to add level information
-      levelNumber = 1;
-      levelScore = 0;
-      completed = false;
-      completionTime = "0:00";
+      XmlDocument doc;
+      XmlElement node;
+      string[] levels = Directory.GetFiles(Content.RootDirectory + "\\Level");
+      levelSet = new List<LevelInfo>();
+      levelInfo = new LevelInfo();
+
+
+      foreach (string name in levels) {
+        doc = new XmlDocument();
+        doc.Load(name);
+
+        node = (XmlElement)doc.GetElementsByTagName("level")[0];
+        levelInfo.LevelName = Convert.ToString(node.Attributes["name"].Value);
+
+        node = (XmlElement)doc.GetElementsByTagName("score")[0];
+        levelInfo.LevelScore = Convert.ToInt16(node.Attributes["value"].Value);
+
+        node = (XmlElement)doc.GetElementsByTagName("completed")[0];
+        levelInfo.Completed = Convert.ToBoolean(node.Attributes["value"].Value);
+
+        node = (XmlElement)doc.GetElementsByTagName("completionTime")[0];
+        levelInfo.CompletionTime = Convert.ToString(node.Attributes["time"].Value);
+
+        levelSet.Add(levelInfo);
+      }
 
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -63,16 +90,15 @@ namespace PuzzlePathDimension {
 
       IList<MenuButton> items = menuTemplate.Items;
 
-      aLevelMenuEntry = new MenuButton(string.Empty, font);
-      aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
-      items.Add(aLevelMenuEntry);
+      foreach(LevelInfo level in levelSet) {
+        aLevelMenuEntry = new MenuButton(level.LevelName, font);
+        aLevelMenuEntry.Selected += ALevelMenuEntrySelected;
+        items.Add(aLevelMenuEntry);
+      }
 
-      exitMenuEntry = new MenuButton(string.Empty, font);
+      exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
-
-
-      SetMenuEntryText();
     }
 
     public override void HandleInput(VirtualController vtroller) {
@@ -105,15 +131,6 @@ namespace PuzzlePathDimension {
       menuTemplate.Draw(spriteBatch, gameTime);
     }
 
-    /// <summary>
-    /// Set the text that will be displayed for the menu entries
-    /// </summary>
-    void SetMenuEntryText() {
-      // Set the text of each level
-      aLevelMenuEntry.Text = "Level " + levelNumber;
-      exitMenuEntry.Text = "Back";
-    }
-
     #endregion
 
     #region Handle Input
@@ -127,7 +144,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Level menu entry is selected.
     /// </summary>
     void ALevelMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new LevelStatusScreen(completed, levelScore, levelNumber, completionTime), e.PlayerIndex);
+      ScreenList.AddScreen(new LevelStatusScreen(levelInfo.Completed, levelInfo.LevelScore, levelInfo.LevelName, levelInfo.CompletionTime), e.PlayerIndex);
     }
 
     #endregion

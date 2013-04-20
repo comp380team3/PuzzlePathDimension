@@ -26,7 +26,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Return the numnber identifier of the current level.
     /// </summary>
-    public int LevelNumber { get; private set; }
+    public string LevelName { get; private set; }
 
     /// <summary>
     /// Return the time spent on completing a level with the highest score.
@@ -43,13 +43,13 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, int levelNumber, string completionTime) {
+    public LevelStatusScreen(bool completed, int levelScore, string levelName, string completionTime) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
       Completed = completed;
       LevelScore = levelScore;
-      LevelNumber = levelNumber;
+      LevelName = levelName;
       CompletionTime = completionTime;
     }
 
@@ -57,7 +57,7 @@ namespace PuzzlePathDimension {
       base.LoadContent(shared);
       Font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("Level " + LevelNumber, Font, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine(LevelName, Font, new Color(192, 192, 192));
 
       startMenuEntry = new MenuButton("Start", Font);
       startMenuEntry.Selected += StartMenuEntrySelected;

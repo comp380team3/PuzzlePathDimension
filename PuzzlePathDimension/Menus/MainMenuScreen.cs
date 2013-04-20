@@ -18,6 +18,8 @@ namespace PuzzlePathDimension {
   class MainMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
+    ContentManager content;
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -33,6 +35,8 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+
+      content = shared;
 
       menuTemplate.Title = new TextLine("Puzzle Path", font, new Color(192, 192, 192));
 
@@ -119,7 +123,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Play Game menu entry is selected.
     /// </summary>
     void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new LevelSelectScreen(), e.PlayerIndex);
+      ScreenList.AddScreen(new LevelSelectScreen(content), e.PlayerIndex);
     }
 
     /// <summary>

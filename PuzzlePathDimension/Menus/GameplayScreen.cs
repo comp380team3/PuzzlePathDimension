@@ -282,7 +282,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     void ConfirmLevelMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
       LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
-                                                     new LevelSelectScreen());
+                                                     new LevelSelectScreen(content));
     }
 
     /// <summary>
