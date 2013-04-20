@@ -240,7 +240,7 @@ namespace PuzzlePathDimension {
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
       // Create the physics simulation.
-      InitWorld();
+      //InitWorld();
 
       // Allow the user to interact with the simulation, and start the timer.
       _currentState = SimulationState.Active;
@@ -250,7 +250,10 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Initializes the World object and everything in it.
     /// </summary>
-    private void InitWorld() {
+    public void InitWorld() {
+      //Change to public so it can be called from the gameplay screen.
+      //the world wont exist till it is class from the GameplayScreen
+
       // Create the World object.
       Vector2 gravity = new Vector2(0f, 9.8f);
       _world = new World(gravity);
@@ -481,5 +484,23 @@ namespace PuzzlePathDimension {
         }
       }
     }
+
+    public Boolean FindCollision() {
+      List<Rectangle> rects = new List<Rectangle>();
+      foreach(Platform platform in _platforms){
+        rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
+      }
+
+      for (int i = 0; i < rects.Count; i++) {
+        for (int j = i + 1; j < rects.Count; j++) {
+          if(rects[i].Intersects(rects[j]))
+            return true;
+        }
+      }
+
+
+      return false;
+    }
+
   }
 }

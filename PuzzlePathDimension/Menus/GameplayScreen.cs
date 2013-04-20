@@ -34,6 +34,17 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+
+    /// <summary>
+    /// Initializes the GamePlayScreen with a simulation already built.
+    /// </summary>
+    /// <param name="sim"></param>
+    public GameplayScreen(Simulation sim) {
+      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+      simulation = sim;
+    }
+
     /// <summary>
     /// Load graphics content for the game.
     /// </summary>
@@ -46,10 +57,16 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/textfont");
 
       // Create the hard-coded level.
+      if(simulation == null){
       simulation = CreateTestLevel();
-      // Set up the sounds.
-      SetupSoundEvents();
+      }
 
+      //Initialize the bodies in the simulation
+      simulation.InitWorld();
+
+       // Set up the sounds.
+      SetupSoundEvents();
+      
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
@@ -89,7 +106,6 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime, bool otherScreenHasFocus,
                                                    bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, false);
-
       // Gradually fade in or out depending on whether we are covered by the pause screen.
       if (coveredByOtherScreen)
         pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
@@ -99,6 +115,7 @@ namespace PuzzlePathDimension {
       // Bail early if this isn't the active screen.
       if (!IsActive)
         return;
+
 
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -279,6 +296,7 @@ namespace PuzzlePathDimension {
 
       return simulation;
     }
+
 
     /// <summary>
     /// Event handler for when the user selects ok on the level select
