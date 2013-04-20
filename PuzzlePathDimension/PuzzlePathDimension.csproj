@@ -77,6 +77,13 @@
   <ItemGroup>
     <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\IMenuEntry.cs" />
+    <Compile Include="Menus\Effects\AlphaEffect.cs" />
+    <Compile Include="Menus\Effects\EffectGroup.cs" />
+    <Compile Include="Menus\Effects\EffectGuard.cs" />
+    <Compile Include="Menus\Effects\IEffect.cs" />
+    <Compile Include="Menus\Effects\OffsetEffect.cs" />
+    <Compile Include="Menus\Effects\ScaleEffect.cs" />
+    <Compile Include="Menus\GraphicsCursor.cs" />
     <Compile Include="Menus\IMenuLine.cs" />
     <Compile Include="Menus\LevelSelectScreen.cs" />
     <Compile Include="Menus\LevelStatusScreen.cs" />
@@ -87,6 +94,8 @@
     <Compile Include="Menus\Templates\LinesTemplate.cs" />
     <Compile Include="Menus\ToolboxScreen.cs" />
     <Compile Include="Models\ILevelObject.cs" />
+    <Compile Include="Menus\Templates\DetailsTemplate.cs" />
+    <Compile Include="Menus\Templates\MenuTemplate.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Models\Ball.cs" />
@@ -105,8 +114,7 @@
     <Compile Include="Menus\HowToPlayScreen3.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />
     <Compile Include="Menus\MainMenuScreen.cs" />
-    <Compile Include="Menus\MenuEntry.cs" />
-    <Compile Include="Menus\MenuScreen.cs" />
+    <Compile Include="Menus\MenuButton.cs" />
     <Compile Include="Menus\MessageBoxScreen.cs" />
     <Compile Include="Menus\OptionsMenuScreen.cs" />
     <Compile Include="Menus\PauseMenuScreen.cs" />

@@ -212,6 +212,8 @@ namespace PuzzlePathDimension {
         // A ball should only bounce off a breakable platform once.
         if (_breakable && _visible) {
           Break();
+          // Don't collide with the ball anymore.
+          _body.CollidesWith = Category.All & ~Category.Cat1;
           shouldCollisionOccur = true;
           // Don't bounce off broken platforms.
         } else if (_breakable && !_visible) {
@@ -239,15 +241,20 @@ namespace PuzzlePathDimension {
     private void Break() {
       if (!_breakable) {
         throw new InvalidOperationException("You can't break a non-breakable platform.");
+      } else {
+        _visible = false;
       }
-      _visible = false;
     }
 
     /// <summary>
     /// Restores a platform to its original state.
     /// </summary>
     public void Reset() {
-      _visible = true;
+      if (_breakable) {
+        _visible = true;
+        // Restore collision with the ball.
+        _body.CollidesWith = Category.All;
+      }
     }
 
     /// <summary>

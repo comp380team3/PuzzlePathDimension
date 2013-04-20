@@ -7,9 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
-  class LevelStatusScreen : MenuScreen {
-    MenuEntry startMenuEntry = new MenuEntry("Start");
-    MenuEntry exitMenuEntry = new MenuEntry("Back");
+  class LevelStatusScreen : GameScreen {
+    DetailsTemplate detailsTemplate = new DetailsTemplate();
+
+    MenuButton startMenuEntry;
+    MenuButton exitMenuEntry;
 
     /// <summary>
     /// Return true if level is completed, otherwise false.
@@ -31,6 +33,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string CompletionTime { get; private set; }
 
+    private SpriteFont Font { get; set; }
+
 
     /// <summary>
     /// Constructor
@@ -39,111 +43,73 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, int levelNumber, string completionTime)
-        : base("Level " + levelNumber) {
+    public LevelStatusScreen(bool completed, int levelScore, int levelNumber, string completionTime) {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
       Completed = completed;
       LevelScore = levelScore;
       LevelNumber = levelNumber;
       CompletionTime = completionTime;
+    }
 
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+      Font = shared.Load<SpriteFont>("Font/menufont");
+
+      detailsTemplate.Title = new TextLine("Level " + LevelNumber, Font, new Color(192, 192, 192));
+
+      startMenuEntry = new MenuButton("Start", Font);
       startMenuEntry.Selected += StartMenuEntrySelected;
-      MenuEntries.Add(startMenuEntry);
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = startMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
 
+      exitMenuEntry = new MenuButton("Back", Font);
       exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
-    }
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = exitMenuEntry;
 
 
-    /// <summary>
-    /// Update the MenuEntry's location.
-    /// </summary>
-    protected override void UpdateMenuEntryLocations() {
-      base.UpdateMenuEntryLocations();
+      IList<IMenuLine> stats = detailsTemplate.Lines;
+      stats.Clear();
 
-      // TODO: Use virtual coordinate system instead of physical screen viewport.
-      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-
-      // start at Y = 80; start at the center of the screen
-      Vector2 position = new Vector2(viewport.Width / 4, 400);
-      exitMenuEntry.Position = position;
-
-      position.X += 400;
-      startMenuEntry.Position = position;
-    }
-
-    /// <summary>
-    /// Draw onto the screen the level's completion status,
-    /// the time it took to complete, and the score obtained
-    /// by the user.
-    /// </summary>
-    /// <param name="gameTime"></param>
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      base.Draw(gameTime, spriteBatch);
-
-      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
-      SpriteFont font = base.TitleFont;
-
-      spriteBatch.Begin();
-
-      // Make the menu slide into place during transitions, using a
-      // power curve to make things look more interesting (this makes
-      // the movement slow down as it nears the end).
-      float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
-
-      // Draw the menu title centered on the screen
-      Vector2 titlePosition = new Vector2(viewport.Width / 2, 80);
-      Vector2 titleOrigin = font.MeasureString("Competion Time: 0:00") / 2;
-      Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
-      float titleScale = 1.25f;
-      titlePosition.Y -= transitionOffset * 100;
-
-      // Make space between the menu title and the level information
-      titlePosition.Y = titlePosition.Y + font.LineSpacing * 2;
-
-      // Draw the level information to the screen
-      spriteBatch.DrawString(font, "Status: " + (Completed ? "Completed" : "Incomplete"), titlePosition,
-                             Color.White, 0, titleOrigin, titleScale, SpriteEffects.None, 0);
-      
-      titlePosition.Y += font.LineSpacing * 2;
-
-      spriteBatch.DrawString(font, "Completion Time: " + CompletionTime, titlePosition, Color.White, 
-                             0, titleOrigin, titleScale, SpriteEffects.None, 0);
-
-      titlePosition.Y += font.LineSpacing * 2;
-
-      spriteBatch.DrawString(font, "Score: " + LevelScore, titlePosition, Color.White,
-                             0, titleOrigin, titleScale, SpriteEffects.None, 0);
-      spriteBatch.End();
+      stats.Add(new TextLine("Status: " + (Completed ? "Completed" : "Incomplete"), Font, Color.White));
+      stats.Add(new Spacer(Font.LineSpacing));
+      stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White));
+      stats.Add(new Spacer(Font.LineSpacing));
+      stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
     public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
+
       if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        SelectedEntry -= 1;
-
-        if (SelectedEntry < 0)
-          SelectedEntry = MenuEntries.Count - 1;
+        detailsTemplate.SelectPrev();
       }
 
-      // Move to the next menu entry?
       if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-        SelectedEntry += 1;
-
-        if (SelectedEntry >= MenuEntries.Count)
-          SelectedEntry = 0;
+        detailsTemplate.SelectNext();
       }
-
-      // Accept or cancel the menu? We pass in our ControllingPlayer, which may
-      // either be null (to accept input from any player) or a specific index.
-      // If we pass a null controlling player, the InputState helper returns to
-      // us which player actually provided the input. We pass that through to
-      // OnSelectEntry and OnCancel, so they can tell which player triggered them.
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        OnSelectEntry(SelectedEntry, PlayerIndex.One);
+        detailsTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(PlayerIndex.One);
+        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
       }
     }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      detailsTemplate.TransitionPosition = TransitionPosition;
+      detailsTemplate.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
+      detailsTemplate.Draw(spriteBatch, gameTime);
+    }
+
 
     /// <summary>
     /// Event handler for when the Start menu entry is selected.
@@ -153,6 +119,10 @@ namespace PuzzlePathDimension {
     void StartMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       LoadingScreen.Load(ScreenList, true, e.PlayerIndex,
                          new GameEditorScreen());
+    }
+
+    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
     }
   }
 }

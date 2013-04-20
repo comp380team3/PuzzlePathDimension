@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<level name="Level 7" balls="5">
+  <platform breakable="false" x="155" y="250" width="100" height="25" />
+  <platform breakable="false" x="155" y="275" width="100" height="25" />
+  <platform breakable="false" x="155" y="300" width="100" height="25" />
+  <platform breakable="false" x="155" y="325" width="100" height="25" />
+
+  <platform breakable="false" x="545" y="250" width="100" height="25" />
+  <platform breakable="false" x="545" y="275" width="100" height="25" />
+  <platform breakable="false" x="545" y="300" width="100" height="25" />
+  <platform breakable="false" x="545" y="325" width="100" height="25" />
+
+  <platform breakable="true" x="5" y="250" width="150" height="25" />
+  <platform breakable="true" x="5" y="325" width="150" height="25" />
+
+  <platform breakable="true" x="645" y="250" width="150" height="25" />
+  <platform breakable="true" x="645" y="325" width="150" height="25" />
+
+  <platform breakable="true" x="180" y="30" width="25" height="200" />
+  <platform breakable="true" x="595" y="30" width="25" height="200" />
+
+  <platform breakable="true" x="275" y="5" width="25" height="100" />
+  <platform breakable="true" x="300" y="105" width="200" height="25" />
+  <platform breakable="true" x="500" y="5" width="25" height="100" />
+  
+  <goal x="370" y="20" />
+  <launcher x="400" y="580" />
+  <deathtrap x="370" y="275" />
+  <deathtrap x="65" y="500" />
+  <deathtrap x="675" y="500" />
+  <treasure x="60" y="285" />
+  <treasure x="700" y="285" />
+  <treasure x="385" y="235" />
+</level>

@@ -4,48 +4,81 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
-  class HowToPlayScreen3 : MenuScreen {
+  class HowToPlayScreen3 : GameScreen {
+    DetailsTemplate detailsTemplate = new DetailsTemplate();
+
     /// <summary>
     /// Back menu entry on the screen.
     /// </summary>
-    MenuEntry backMenuEntry = new MenuEntry("Back");
+    MenuButton backMenuEntry;
 
     /// <summary>
     /// Exit menu entry on the screen.
     /// </summary>
-    MenuEntry exitMenuEntry = new MenuEntry("Exit");
+    MenuButton exitMenuEntry;
 
 
     /// <summary>
     /// Contructor
     /// </summary>
-    public HowToPlayScreen3()
-        : base("How To Play") {
-      backMenuEntry.Selected += BackMenuEntrySelected;
-      MenuEntries.Add(backMenuEntry);
-
-      exitMenuEntry.Selected += OnCancel;
-      MenuEntries.Add(exitMenuEntry);
+    public HowToPlayScreen3() {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+
+      detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
+
+      backMenuEntry = new MenuButton("Back", font);
+      backMenuEntry.Selected += BackMenuEntrySelected;
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
+
+      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry.Selected += OnCancel;
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
+    }
 
     /// <summary>
-    /// Update the MenuEntry's location.
+    /// Handle the input of the user. If the user wants to move
+    /// to a diffenrent menu entry, they can press left or right.
     /// </summary>
-    protected override void UpdateMenuEntryLocations() {
-      base.UpdateMenuEntryLocations();
+    /// <param name="vtroller"></param>
+    public override void HandleInput(VirtualController vtroller) {
+      base.HandleInput(vtroller);
 
-      // TODO: Use virtual coordinate system instead of physical screen viewport.
-      Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+        detailsTemplate.SelectPrev();
+      }
 
-      // start at Y = 550; start at the lower end of the screen
-      Vector2 position = new Vector2(viewport.Width / 6, 550);
-      exitMenuEntry.Position = position;
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        detailsTemplate.SelectNext();
+      }
 
-      position.X += 450;
-      backMenuEntry.Position = position;
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        detailsTemplate.Confirm();
+      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+      }
+    }
+
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      detailsTemplate.TransitionPosition = TransitionPosition;
+      detailsTemplate.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
+      base.Draw(gameTime, spriteBatch);
+
+      detailsTemplate.Draw(spriteBatch, gameTime);
     }
 
 
@@ -59,38 +92,8 @@ namespace PuzzlePathDimension {
       ScreenList.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
     }
 
-    /// <summary>
-    /// Handle the input of the user. If the user wants to move
-    /// to a diffenrent menu entry, they can press left or right.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        SelectedEntry -= 1;
-
-        if (SelectedEntry < 0)
-          SelectedEntry = MenuEntries.Count - 1;
-      }
-
-      // Move to the next menu entry?
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-        SelectedEntry += 1;
-
-        if (SelectedEntry >= MenuEntries.Count)
-          SelectedEntry = 0;
-      }
-
-      // Accept or cancel the menu? We pass in our ControllingPlayer, which may
-      // either be null (to accept input from any player) or a specific index.
-      // If we pass a null controlling player, the InputState helper returns to
-      // us which player actually provided the input. We pass that through to
-      // OnSelectEntry and OnCancel, so they can tell which player triggered them.
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        OnSelectEntry(SelectedEntry, PlayerIndex.One);
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(PlayerIndex.One);
-      }
+    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
     }
   }
 }

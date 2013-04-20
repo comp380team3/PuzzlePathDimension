@@ -29,6 +29,15 @@ namespace PuzzlePathDimension {
 
     private static Level LoadLevel(XmlDocument doc, ContentManager Content) {
       Level level = new Level();
+      
+      XmlElement levelNode = (XmlElement)doc.GetElementsByTagName("level")[0];
+
+      if (levelNode.Attributes["balls"] == null) { // Fall back
+        level.Attempts = 3;
+        Console.WriteLine("Warning: the number of attempts wasn't specified.");
+      } else {
+        level.Attempts = Convert.ToInt16(levelNode.Attributes["balls"].Value);
+      }
 
       foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
         level.Platforms.Add(LoadPlatform(node, Content));
@@ -53,11 +62,11 @@ namespace PuzzlePathDimension {
 
       Vector2 size = new Vector2();
       size.X = Convert.ToInt16(node.Attributes["width"].Value);
-      size.Y = Convert.ToInt16(node.Attributes["length"].Value);
+      size.Y = Convert.ToInt16(node.Attributes["height"].Value);
 
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
       Texture2D texture = breakable ? 
-        Content.Load<Texture2D>("platform_breakable") : Content.Load<Texture2D>("platform");
+        Content.Load<Texture2D>("Texture/platform_breakable") : Content.Load<Texture2D>("Texture/platform");
       Platform platform = new Platform(texture, position, size, breakable);
 
       return platform;
@@ -68,7 +77,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Treasure treasure = new Treasure(Content.Load<Texture2D>("treasure"), position);
+      Treasure treasure = new Treasure(Content.Load<Texture2D>("Texture/treasure"), position);
 
       return treasure;
     }
@@ -78,7 +87,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      DeathTrap deathtrap = new DeathTrap(Content.Load<Texture2D>("deathtrap"), position);
+      DeathTrap deathtrap = new DeathTrap(Content.Load<Texture2D>("Texture/deathtrap"), position);
 
       return deathtrap;
     }
@@ -88,8 +97,8 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Launcher launcher = new Launcher(Content.Load<Texture2D>("launcher"), 
-        Content.Load<Texture2D>("power_meter"), position);
+      Launcher launcher = new Launcher(Content.Load<Texture2D>("Texture/launcher"), 
+        Content.Load<Texture2D>("Texture/power_meter"), position);
 
       return launcher;
     }
@@ -99,7 +108,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Goal goal = new Goal(Content.Load<Texture2D>("goal"), position);
+      Goal goal = new Goal(Content.Load<Texture2D>("Texture/goal"), position);
 
       return goal;
     }

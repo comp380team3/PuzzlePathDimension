@@ -232,13 +232,13 @@ namespace PuzzlePathDimension {
 
       // TODO: The attempts are hard-coded for now; this should be loaded from the level.
       // Initialize various stats.
-      _startingAttempts = 3;
+      _startingAttempts = level.Attempts;
       _attemptsLeft = _startingAttempts;
       _collectedTreasures = 0;
       _bounces = 0;
 
       // Load the ball's texture and store it.
-      _ballTex = content.Load<Texture2D>("ball");
+      _ballTex = content.Load<Texture2D>("Texture/ball");
       // Create the physics simulation.
       //InitWorld();
 
