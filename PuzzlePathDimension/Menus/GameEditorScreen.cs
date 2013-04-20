@@ -43,7 +43,7 @@ namespace PuzzlePathDimension {
       if (content == null)
         content = new ContentManager(shared.ServiceProvider, "Content");
 
-      font = shared.Load<SpriteFont>("textfont");
+      font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched =  false;
       // Create the hard-coded level.
       simulation = CreateTestLevel();
@@ -90,7 +90,7 @@ namespace PuzzlePathDimension {
       }
       if (addedPlatform != null) {
         Console.WriteLine(addedPlatform.Origin);
-        simulation.Platforms.Add(addedPlatform);
+        simulation.MoveablePlatforms.Add(addedPlatform);
         ScreenList.RemoveScreen(confirmExitMessageBox);
         addedPlatform = null;
         toolboxLaunched = false;
@@ -131,12 +131,6 @@ namespace PuzzlePathDimension {
         ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       }
 
-      // TODO: Replace this restart mechanism
-      if (Keyboard.GetState().IsKeyDown(Keys.R) ||
-        GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
-        Console.WriteLine("Completely restarted.");
-        simulation.Restart();
-      }
     }
 
     /// <summary>
@@ -193,6 +187,11 @@ namespace PuzzlePathDimension {
       foreach (Platform platform in simulation.Platforms) {
         platform.Draw(spriteBatch);
       }
+      foreach (Platform platform in simulation.MoveablePlatforms) {
+        platform.Draw(spriteBatch);
+      }
+      
+
       // Draw the treasures onto the canvas.
       foreach (Treasure treasure in simulation.Treasures) {
         treasure.Draw(spriteBatch);
@@ -230,8 +229,8 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/TestLevel.xml", content), content);
-      simulation.Background = content.Load<Texture2D>("GameScreen");
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/TestLevel.xml", content), content);
+      simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
     }
@@ -274,21 +273,21 @@ namespace PuzzlePathDimension {
     /// <param name="mousePosition"></param>
     /// <returns></returns>
     public ILevelObject FindTarget(MouseState mousePosition) {
-      if (simulation.Goal.IsSelected(mousePosition)) {
-        return simulation.Goal;
-      }
-      foreach (Platform platform in simulation.Platforms) {
+      //if (simulation.Goal.IsSelected(mousePosition)) {
+      //  return simulation.Goal;
+      //}
+      foreach (Platform platform in simulation.MoveablePlatforms) {
         if (platform.IsSelected(mousePosition))
           return platform;
       }
-      foreach (DeathTrap deathtrap in simulation.DeathTraps) {
-        if (deathtrap.IsSelected(mousePosition))
-          return deathtrap;
-      }
-      foreach (Treasure treasure in simulation.Treasures) {
-        if (treasure.IsSelected(mousePosition))
-          return treasure;
-      }
+      //foreach (DeathTrap deathtrap in simulation.DeathTraps) {
+      //  if (deathtrap.IsSelected(mousePosition))
+      //    return deathtrap;
+      //}
+      //foreach (Treasure treasure in simulation.Treasures) {
+      //  if (treasure.IsSelected(mousePosition))
+      //    return treasure;
+      //}
       return null;
     }
 

@@ -60,7 +60,7 @@ namespace PuzzlePathDimension {
       simulation.InitWorld();
 
        // Set up the sounds.
-      SetupSoundEvents();
+      //SetupSoundEvents();
       
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
@@ -71,19 +71,19 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Assign sounds to various events.
     /// </summary>
-    private void SetupSoundEvents() {
-      // The sounds actually take enough time to load that there's a delay when
-      // the ball is launched, so cache them first.
-      content.Load<SoundEffect>("Sound/launch");
-      content.Load<SoundEffect>("Sound/bounce");
+    //private void SetupSoundEvents() {
+    //  // The sounds actually take enough time to load that there's a delay when
+    //  // the ball is launched, so cache them first.
+    //  content.Load<SoundEffect>("Sound/launch");
+    //  content.Load<SoundEffect>("Sound/bounce");
 
-      // Assign the sound effects to the proper places.
-      foreach (Platform plat in simulation.Platforms) {
-        plat.OnPlatformCollision += PlayBounce;
-      }
-      simulation.OnWallCollision += PlayBounce;
-      simulation.Launcher.OnBallLaunch += PlayLaunch;
-    }
+    //  // Assign the sound effects to the proper places.
+    //  foreach (Platform plat in simulation.Platforms) {
+    //    plat.OnPlatformCollision += PlayBounce;
+    //  }
+    //  simulation.OnWallCollision += PlayBounce;
+    //  simulation.Launcher.OnBallLaunch += PlayLaunch;
+    //}
 
     /// <summary>
     /// Unload graphics content used by the game.
@@ -206,6 +206,9 @@ namespace PuzzlePathDimension {
 
       // Draw the platforms onto the canvas.
       foreach (Platform platform in simulation.Platforms) {
+        platform.Draw(spriteBatch);
+      }
+      foreach (Platform platform in simulation.MoveablePlatforms) {
         platform.Draw(spriteBatch);
       }
       // Draw the treasures onto the canvas.

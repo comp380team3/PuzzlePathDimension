@@ -68,6 +68,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     private List<Platform> _platforms;
 
+
+    private List<Platform> _moveablePlatforms;
     /// <summary>
     /// The simulation's list of treasures.
     /// </summary>
@@ -104,6 +106,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     public List<Platform> Platforms {
       get { return _platforms; }
+    }
+
+    public List<Platform> MoveablePlatforms {
+      get { return _moveablePlatforms; }
     }
 
     /// <summary>
@@ -229,7 +235,7 @@ namespace PuzzlePathDimension {
       _deathTraps = new List<DeathTrap>(level.DeathTraps);
       _goal = level.Goal;
       _launcher = level.Launcher;
-
+      _moveablePlatforms = new List<Platform>();
       // TODO: The attempts are hard-coded for now; this should be loaded from the level.
       // Initialize various stats.
       _startingAttempts = level.Attempts;
@@ -278,7 +284,10 @@ namespace PuzzlePathDimension {
         plat.InitBody(_world);
         plat.OnPlatformCollision += IncrementBounces;
       }
-
+      foreach (Platform plat in _moveablePlatforms) {
+        plat.InitBody(_world);
+        plat.OnPlatformCollision += IncrementBounces;
+      }
       // Add the treasures to the world.
       foreach (Treasure treasure in _treasures) {
         treasure.InitBody(_world);
@@ -490,7 +499,9 @@ namespace PuzzlePathDimension {
       foreach(Platform platform in _platforms){
         rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
       }
-
+      foreach (Platform platform in _moveablePlatforms) {
+        rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
+      }
       for (int i = 0; i < rects.Count; i++) {
         for (int j = i + 1; j < rects.Count; j++) {
           if(rects[i].Intersects(rects[j]))
