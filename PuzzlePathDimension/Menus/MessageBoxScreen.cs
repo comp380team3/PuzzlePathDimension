@@ -16,32 +16,73 @@ namespace PuzzlePathDimension {
   /// confirmation messages.
   /// </summary>
   class MessageBoxScreen : GameScreen {
-    string message;
+    /// <summary>
+    /// Title of the Message Box Screen.
+    /// </summary>
+    string title;
+
+    /// <summary>
+    /// Texture for the Message Box Screen.
+    /// </summary>
     Texture2D gradientTexture;
+
+    /// <summary>
+    /// Font for the text written on the Message Box.
+    /// </summary>
     SpriteFont font;
+
+    MessageBoxTemplate messageBoxTemplate;
+
+    /// <summary>
+    /// The left button's text of the Message Box.
+    /// </summary>
+    public string LeftButtonText { get; set; }
+
+    /// <summary>
+    /// The middle button's text of the Message Box.
+    /// </summary>
+    public string MiddleButtonText { get; set; }
+
+    /// <summary>
+    /// The right button's text of the Message Box.
+    /// </summary>
+    public string RightButtonText { get; set; }
 
     public event EventHandler<PlayerIndexEventArgs> Accepted;
     public event EventHandler<PlayerIndexEventArgs> Cancelled;
 
 
     /// <summary>
-    /// Constructor automatically includes the standard "A=ok, B=cancel"
-    /// usage text prompt.
+    /// Constructor automatically includes a Left button to Cancel
+    /// and a Right button to Confirm the message. 
     /// </summary>
-    public MessageBoxScreen(string message)
-      : this(message, true) { }
+    public MessageBoxScreen(string message) {
+
+        this.title = message; // Added. - Jorenz
+
+        messageBoxTemplate = new MessageBoxTemplate(message);
+        LeftButtonText = "Cancel";
+        MiddleButtonText = null;
+        RightButtonText = "Confirm";
+
+        base.IsPopup = true;
+        base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
+        base.TransitionOffTime = TimeSpan.FromSeconds(0.2);
+    }
 
     /// <summary>
-    /// Constructor lets the caller specify whether to include the standard
-    /// "A=ok, B=cancel" usage text prompt.
+    /// Constructor lets the caller specify whether to include any
+    /// of the three Buttons available, and to allows the caller
+    /// to specify the text of the button.
     /// </summary>
-    public MessageBoxScreen(string message, bool includeUsageText) {
-      const string usageText = "\nA button, Space, Enter = ok" +
-                               "\nB button, Esc = cancel";
-      if (includeUsageText)
-        this.message = message + usageText;
-      else
-        this.message = message;
+    public MessageBoxScreen(string message, string leftButtonText, string middleButtonText, string rightButtonText) {
+
+      this.title = message;
+
+      messageBoxTemplate = new MessageBoxTemplate(message);
+      LeftButtonText = leftButtonText;
+      MiddleButtonText = middleButtonText;
+      RightButtonText = rightButtonText;
 
       base.IsPopup = true;
       base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
@@ -57,61 +98,81 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       font = shared.Load<SpriteFont>("Font/menufont");
+
+      messageBoxTemplate.Title = new TextLine(title, font, new Color(192, 192, 192));
+
+      if (LeftButtonText != null) {
+        MenuButton leftButton = new MenuButton(LeftButtonText, font);
+        leftButton.Selected += CancelMenuEntrySelected;
+        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left] = leftButton;
+      }
+
+      if (MiddleButtonText != null) {
+        MenuButton centerButton = new MenuButton(MiddleButtonText, font);
+        centerButton.Selected += CancelMenuEntrySelected;
+        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Middle] = centerButton;
+      }
+
+      if (RightButtonText != null) {
+        MenuButton rightButton = new MenuButton(RightButtonText, font);
+        rightButton.Selected += ConfirmMenuEntrySelected;
+        messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
+        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
+      }
     }
 
+    public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+      base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+      messageBoxTemplate.TransitionPosition = TransitionPosition;
+      messageBoxTemplate.Update(gameTime);
+    }
 
     /// <summary>
     /// Responds to user input, accepting or cancelling the message box.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        if (Accepted != null)
-          Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+        
+        messageBoxTemplate.SelectPrev();
 
-        ExitScreen();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        if (Cancelled != null)
-          Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
+      } 
+      
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
 
-        ExitScreen();
+        messageBoxTemplate.SelectNext();
+
       }
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        messageBoxTemplate.Confirm();
+      } 
     }
 
+    void ConfirmMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+      if (Accepted != null)
+        Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
+
+      ExitScreen();
+    }
+
+    void CancelMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+      if (Cancelled != null)
+        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
+
+      ExitScreen();
+    }
 
     /// <summary>
     /// Draws the message box.
     /// </summary>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
-      // Darken down any other screens that were drawn beneath the popup.
-      spriteBatch.FadeBackBufferToBlack(TransitionAlpha * 2 / 3);
-
-      // Center the message text in the viewport.
-      Viewport viewport = spriteBatch.GraphicsDevice.Viewport;
-      Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
-      Vector2 textSize = font.MeasureString(message);
-      Vector2 textPosition = (viewportSize - textSize) / 2;
-
-      // The background includes a border somewhat larger than the text itself.
-      const int hPad = 32;
-      const int vPad = 16;
-
-      Rectangle backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
-                                                    (int)textPosition.Y - vPad,
-                                                    (int)textSize.X + hPad * 2,
-                                                    (int)textSize.Y + vPad * 2);
+      base.Draw(gameTime, spriteBatch);
 
       // Fade the popup alpha during transitions.
       Color color = Color.White * TransitionAlpha;
 
-      spriteBatch.Begin();
-
-      // Draw the background rectangle.
-      spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
-
-      // Draw the message box text.
-      spriteBatch.DrawString(font, message, textPosition, color);
-
-      spriteBatch.End();
+      messageBoxTemplate.Draw(spriteBatch, gameTime, font, TransitionAlpha, color, gradientTexture);
     }
   }
 }
