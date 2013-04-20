@@ -20,6 +20,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     MenuButton exitMenuEntry;
 
+    /// <summary>
+    /// Image for the help menu screen.
+    /// </summary>
     Texture2D helpImage;
 
 
@@ -31,6 +34,10 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load content the will be used to create the help screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
@@ -72,6 +79,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -79,6 +92,11 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the image to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
@@ -102,6 +120,11 @@ namespace PuzzlePathDimension {
       ScreenList.AddScreen(new HowToPlayScreen3(), e.PlayerIndex);
     }
 
+    /// <summary>
+    /// Event handler for when the Exit menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
     }

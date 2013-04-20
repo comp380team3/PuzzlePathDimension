@@ -16,9 +16,21 @@ namespace PuzzlePathDimension {
   /// confirmation messages.
   /// </summary>
   class MessageBoxScreen : GameScreen {
-    string message;
+    /// <summary>
+    /// Title of the Message Box Screen.
+    /// </summary>
+    string title;
+
+    /// <summary>
+    /// Texture for the Message Box Screen.
+    /// </summary>
     Texture2D gradientTexture;
+
+    /// <summary>
+    /// Font for the text written on the Message Box.
+    /// </summary>
     SpriteFont font;
+
     MessageBoxTemplate messageBoxTemplate;
 
     /// <summary>
@@ -41,12 +53,12 @@ namespace PuzzlePathDimension {
 
 
     /// <summary>
-    /// Constructor automatically includes the standard "A=ok, B=cancel"
-    /// usage text prompt.
+    /// Constructor automatically includes a Left button to Cancel
+    /// and a Right button to Confirm the message. 
     /// </summary>
     public MessageBoxScreen(string message) {
 
-        this.message = message; // Added. - Jorenz
+        this.title = message; // Added. - Jorenz
 
         messageBoxTemplate = new MessageBoxTemplate(message);
         LeftButtonText = "Cancel";
@@ -59,12 +71,13 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Constructor lets the caller specify whether to include the standard
-    /// "A=ok, B=cancel" usage text prompt.
+    /// Constructor lets the caller specify whether to include any
+    /// of the three Buttons available, and to allows the caller
+    /// to specify the text of the button.
     /// </summary>
     public MessageBoxScreen(string message, string leftButtonText, string middleButtonText, string rightButtonText) {
 
-      this.message = message;
+      this.title = message;
 
       messageBoxTemplate = new MessageBoxTemplate(message);
       LeftButtonText = leftButtonText;
@@ -86,7 +99,7 @@ namespace PuzzlePathDimension {
       gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       font = shared.Load<SpriteFont>("Font/menufont");
 
-      messageBoxTemplate.Title = new TextLine(message, font, new Color(192, 192, 192));
+      messageBoxTemplate.Title = new TextLine(title, font, new Color(192, 192, 192));
 
       if (LeftButtonText != null) {
         MenuButton leftButton = new MenuButton(LeftButtonText, font);

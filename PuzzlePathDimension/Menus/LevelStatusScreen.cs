@@ -10,7 +10,14 @@ namespace PuzzlePathDimension {
   class LevelStatusScreen : GameScreen {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
+    /// <summary>
+    /// Menu Button for the Start menu entry.
+    /// </summary>
     MenuButton startMenuEntry;
+
+    /// <summary>
+    /// Menu Button for the Exit menu entry.
+    /// </summary>
     MenuButton exitMenuEntry;
 
     /// <summary>
@@ -53,6 +60,10 @@ namespace PuzzlePathDimension {
       CompletionTime = completionTime;
     }
 
+    /// <summary>
+    /// Load the content that will be used to create the screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       Font = shared.Load<SpriteFont>("Font/menufont");
@@ -79,6 +90,10 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
+    /// <summary>
+    /// Handle user input.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
       base.HandleInput(vtroller);
 
@@ -97,6 +112,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -104,6 +125,11 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the Stats of the current selected level to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 

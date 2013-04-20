@@ -26,8 +26,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     MenuButton exitMenuEntry;
 
+    /// <summary>
+    /// Font to write to Draw on the Screen.
+    /// </summary>
     SpriteFont font;
 
+    /// <summary>
+    /// Names of objects in the game.
+    /// </summary>
     string[] gameObjects = new string[] {
       "Ball: ",
       "Platform: ",
@@ -37,6 +43,9 @@ namespace PuzzlePathDimension {
       "Treasure: ",
     };
 
+    /// <summary>
+    /// Names of the Textures that correspond the objects of the game.
+    /// </summary>
     string[] gameContent = new string[] {
       "Texture/ball",
       "Texture/platform",
@@ -46,6 +55,9 @@ namespace PuzzlePathDimension {
       "Texture/treasure",
     };
 
+    /// <summary>
+    /// List of game object Textures.
+    /// </summary>
     List<Texture2D> objectContent = new List<Texture2D>();
 
 
@@ -58,6 +70,10 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load the content that will be used to create the help screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       font = shared.Load<SpriteFont>("Font/menufont");
@@ -105,6 +121,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -112,6 +134,11 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the descriptions of the game objects and the Textures that correspond to those objects.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
@@ -132,7 +159,7 @@ namespace PuzzlePathDimension {
 
       foreach (Texture2D name in objectContent) {
         spriteBatch.Draw(name, new Rectangle(textPositionX, textPositionY, name.Width, name.Height), Color.White);
-        textPositionY += font.LineSpacing + name.Height / 2;
+        textPositionY += font.LineSpacing + 5 + name.Height / 2;
       }
 
       spriteBatch.End();
@@ -140,7 +167,7 @@ namespace PuzzlePathDimension {
 
 
     /// <summary>
-    /// Event handler for when the Next menu entry is selected
+    /// Event handler for when the Next menu entry is selected.
     /// </summary>
     void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
@@ -148,13 +175,18 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Event handler for when the Back menu entry is selected
+    /// Event handler for when the Back menu entry is selected.
     /// </summary>
     void BackMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
       ScreenList.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
     }
 
+    /// <summary>
+    /// Event handler for when the Exit menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
     }

@@ -10,14 +10,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   class LevelSelectScreen : GameScreen {
-    MenuTemplate menuTemplate = new MenuTemplate();
 
     /// <summary>
-    /// Menu entries for the Level Select Screen.
+    /// Structure that contains information for a level.
     /// </summary>
-    MenuButton aLevelMenuEntry;
-    MenuButton exitMenuEntry;
-
     public struct LevelInfo {
 
       public string LevelName { get; set; }
@@ -38,7 +34,26 @@ namespace PuzzlePathDimension {
       public string CompletionTime { get; set; }
     }
 
+    MenuTemplate menuTemplate = new MenuTemplate();
+
+    /// <summary>
+    /// Menu Button for the Level menu entry.
+    /// </summary>
+    MenuButton aLevelMenuEntry;
+
+    /// <summary>
+    /// Menu Button for the Exit menu entry.
+    /// </summary>
+    MenuButton exitMenuEntry;
+
+    /// <summary>
+    /// List of LevelInfo structures.
+    /// </summary>
     List<LevelInfo> levelSet;
+
+    /// <summary>
+    /// Contains the information of the current level.
+    /// </summary>
     LevelInfo levelInfo; 
 
     #region Initialization
@@ -48,8 +63,7 @@ namespace PuzzlePathDimension {
     /// Read an xml file and obtain information for each level in the xml file.
     /// </summary>
     public LevelSelectScreen(ContentManager Content) {
-      // Add the levels to the screen
-      // Note: need xml file format to be completed to add level information
+
       XmlDocument doc;
       XmlElement node;
       string[] levels = Directory.GetFiles(Content.RootDirectory + "\\Level");
@@ -80,6 +94,10 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load content that will be used to create the level select screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
@@ -100,6 +118,10 @@ namespace PuzzlePathDimension {
       items.Add(exitMenuEntry);
     }
 
+    /// <summary>
+    /// Handle user Input.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
       base.HandleInput(vtroller);
 
@@ -118,6 +140,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -125,6 +153,11 @@ namespace PuzzlePathDimension {
       menuTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw all the Level menu entries to the screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
       menuTemplate.Draw(spriteBatch, gameTime);
@@ -134,6 +167,11 @@ namespace PuzzlePathDimension {
 
     #region Handle Input
 
+    /// <summary>
+    /// Event handler for when the Exit menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
       ScreenList.AddScreen(new MainMenuScreen(), e.PlayerIndex);

@@ -10,6 +10,10 @@ namespace PuzzlePathDimension {
   /// that contributed toward the games completion.
   /// </summary>
   class CreditsMenuScreen : GameScreen {
+
+    /// <summary>
+    /// List of Team members for Puzzle Path.
+    /// </summary>
     string[] TeamMembers = new string[] {
       "Chris Babayas",
       "Jonathan Castello",
@@ -18,11 +22,17 @@ namespace PuzzlePathDimension {
       "Michael Sandoval",
     };
 
+    /// <summary>
+    /// List of organizations that contributed to Puzzle Path.
+    /// </summary>
     string[] Organizations = new string[] {
       "Microsoft XNA Community Game Platform",
       "Farseer Physics Engine",
     };
 
+    /// <summary>
+    /// List of individuals that contributed to Puzzle Path.
+    /// </summary>
     string[] Individuals = new string[] { };
 
     DetailsTemplate detailsTemplate = new DetailsTemplate();
@@ -35,6 +45,10 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load the buttons and the Content that will be used to display the Credits.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont titleFont = shared.Load<SpriteFont>("Font/menufont");
@@ -65,6 +79,10 @@ namespace PuzzlePathDimension {
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
     }
 
+    /// <summary>
+    /// Handle User input.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
       base.HandleInput(vtroller);
 
@@ -83,6 +101,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -90,12 +114,22 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the Credits title, members, organizations, and contributers to the screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
       detailsTemplate.Draw(spriteBatch, gameTime);
     }
 
+    /// <summary>
+    /// Event handler for when the Exit Menu Entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
     }

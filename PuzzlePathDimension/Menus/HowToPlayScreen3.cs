@@ -25,11 +25,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     MenuButton exitMenuEntry;
 
+    /// <summary>
+    /// Description for the Controls of the game.
+    /// </summary>
     string[] ControlScheme = new string[] {
       "Rotate Launcher Left:     Left Arrow Key/ Left on DPad",
       "Rotate Launcher Right:    Right Arrow Key/ Right on DPad",
       "Increase Magnitude:       Up Arrow Key/ Up on DPad",
-      "Decrease Magnitude:       Down Array Key/ Down on DPad",
+      "Decrease Magnitude:       Down Arrow Key/ Down on DPad",
       "Launch Ball:              Space Bar/ A Button ",
       "Pause Game:               Esc/ Start Button",
     };
@@ -43,6 +46,10 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load content that will be used to create the help screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont titleFont = shared.Load<SpriteFont>("Font/menufont");
@@ -94,6 +101,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -101,6 +114,11 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the control scheme to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
       detailsTemplate.Draw(spriteBatch, gameTime);

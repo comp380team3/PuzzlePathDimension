@@ -8,7 +8,8 @@
   <deathtrap x="100" y="500" />
   <goal x="200" y="10" />
   <launcher x="680" y="580" />
-  <score value="10" />
+  
+  <score value="0" />
   <completed value="false" />
   <completionTime time="0:00" />
 </level>

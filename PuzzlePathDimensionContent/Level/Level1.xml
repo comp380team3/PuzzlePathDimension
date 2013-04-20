@@ -5,6 +5,7 @@
   <launcher x="400" y="580" />
   <treasure x="650" y="300" />
   <treasure x="385" y ="20" />
+  
   <score value="0" />
   <completed value="false" />
   <completionTime time="0:00" />
