@@ -20,6 +20,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     MenuButton exitMenuEntry;
 
+    Texture2D helpImage;
+
 
     /// <summary>
     /// Contructor
@@ -43,6 +45,8 @@ namespace PuzzlePathDimension {
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
       detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
+
+      helpImage = shared.Load<Texture2D>("Texture/PuzzlePathScreenShot");
     }
 
     /// <summary>
@@ -79,6 +83,12 @@ namespace PuzzlePathDimension {
       base.Draw(gameTime, spriteBatch);
 
       detailsTemplate.Draw(spriteBatch, gameTime);
+
+      spriteBatch.Begin();
+
+      spriteBatch.Draw(helpImage, new Rectangle(100, 100, helpImage.Width - 175, helpImage.Height - 175), Color.White);
+
+      spriteBatch.End();
     }
 
 

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace PuzzlePathDimension {
   class HowToPlayScreen2 : GameScreen {
+
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     /// <summary>
@@ -25,6 +26,29 @@ namespace PuzzlePathDimension {
     /// </summary>
     MenuButton exitMenuEntry;
 
+    SpriteFont font;
+
+    string[] gameObjects = new string[] {
+      "Ball: ",
+      "Platform: ",
+      "Breakable Platform: ",
+      "Goal: ",
+      "DeathTrap: ",
+      "Treasure: ",
+    };
+
+    string[] gameContent = new string[] {
+      "Texture/ball",
+      "Texture/platform",
+      "Texture/platform_breakable",
+      "Texture/goal",
+      "Texture/deathtrap",
+      "Texture/treasure",
+    };
+
+    List<Texture2D> objectContent = new List<Texture2D>();
+
+
 
     /// <summary>
     /// Contructor
@@ -36,9 +60,9 @@ namespace PuzzlePathDimension {
 
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+      font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine("Game Objects", font, new Color(192, 192, 192));
 
       nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
@@ -52,6 +76,10 @@ namespace PuzzlePathDimension {
       exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
+
+      foreach ( string name in gameContent) {
+        objectContent.Add(shared.Load<Texture2D>(name));
+      }
     }
     
     /// <summary>
@@ -87,7 +115,27 @@ namespace PuzzlePathDimension {
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
+      int textPositionX = 100;
+      int textPositionY = 150;
+
       detailsTemplate.Draw(spriteBatch, gameTime);
+
+      spriteBatch.Begin();
+
+      foreach (string name in gameObjects) {
+        spriteBatch.DrawString(font, name, new Vector2(textPositionX, textPositionY), Color.Black, 0, Vector2.Zero, .75f, SpriteEffects.None, 0f);
+        textPositionY += font.LineSpacing + 20;
+      }
+
+      textPositionX = 400;
+      textPositionY = 150;
+
+      foreach (Texture2D name in objectContent) {
+        spriteBatch.Draw(name, new Rectangle(textPositionX, textPositionY, name.Width, name.Height), Color.White);
+        textPositionY += font.LineSpacing + name.Height / 2;
+      }
+
+      spriteBatch.End();
     }
 
 

@@ -18,6 +18,16 @@ namespace PuzzlePathDimension {
     MenuButton nextMenuEntry;
     MenuButton exitMenuEntry;
 
+    string[] gameDescription = new string[] {
+      "The objective of this game is to find a path for a ball to reach ",
+      "the goal. You have to launch the ball from a launcher, utilize ",
+      "the maps environment, and reach the goal in order to complete a ",
+      "level. Platforms are your main tool to help you complete a level. ",
+      "You can bounce the ball off the platforms to change the direction ",
+      "of the ball. The number of balls used, time, and the number, ",
+      "of treasures collectd determine your score.",
+    };
+
     public HowToPlayScreen1() {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -27,7 +37,13 @@ namespace PuzzlePathDimension {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine("Welcome to Puzzle Path", font, new Color(192, 192, 192));
+
+      IList<IMenuLine> description = detailsTemplate.Lines;
+      description.Clear();
+
+      foreach (string name in gameDescription)
+        description.Add(new TextLine(name, font, Color.Black, .75f));
 
       nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
