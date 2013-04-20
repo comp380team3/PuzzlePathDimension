@@ -6,6 +6,7 @@ using System.Text;
 namespace PuzzlePathDimension {
   class Level {
     public int Attempts { get; set; }
+
     public Goal Goal { get; set; }
     public Launcher Launcher { get; set; }
     public List<Platform> Platforms { get; set; }

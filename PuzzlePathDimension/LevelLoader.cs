@@ -29,6 +29,15 @@ namespace PuzzlePathDimension {
 
     private static Level LoadLevel(XmlDocument doc, ContentManager Content) {
       Level level = new Level();
+      
+      XmlElement levelNode = (XmlElement)doc.GetElementsByTagName("level")[0];
+
+      if (levelNode.Attributes["balls"] == null) { // Fall back
+        level.Attempts = 3;
+        Console.WriteLine("Warning: the number of attempts wasn't specified.");
+      } else {
+        level.Attempts = Convert.ToInt16(levelNode.Attributes["balls"].Value);
+      }
 
       XmlElement levelNode = (XmlElement)doc.GetElementsByTagName("level")[0];
 
@@ -62,7 +71,7 @@ namespace PuzzlePathDimension {
 
       Vector2 size = new Vector2();
       size.X = Convert.ToInt16(node.Attributes["width"].Value);
-      size.Y = Convert.ToInt16(node.Attributes["length"].Value);
+      size.Y = Convert.ToInt16(node.Attributes["height"].Value);
 
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
       Texture2D texture = breakable ? 
