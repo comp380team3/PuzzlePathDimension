@@ -19,6 +19,7 @@ namespace PuzzlePathDimension {
     MouseState previousMouseState;
     MouseState currentMouseState;
 
+
     //The level object that is selected
     ILevelObject target;
     SpriteFont font;
