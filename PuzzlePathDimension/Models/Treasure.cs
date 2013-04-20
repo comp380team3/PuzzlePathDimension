@@ -3,13 +3,14 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// The Treasure class contains a treasure's data.
   /// </summary>
-  public class Treasure {
+  public class Treasure:ILevelObject {
     /// <summary>
     /// The hard-coded height of a treasure, in pixels.
     /// </summary>
@@ -212,5 +213,62 @@ namespace PuzzlePathDimension {
         spriteBatch.Draw(_texture, _center, null, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
       }
     }
+    private Side CheckLeftRight(Vector2 v) {
+      // Subtract 1 to account for the fact that the origin is at (0,0).
+      if (v.X < 5) {
+        return Side.Left;
+      }
+      if (v.X + Width > Simulation.FieldWidth - 5) {
+        return Side.Right;
+      }
+      //else if(v.X >=5 && v.X+Width <= Simulation.FieldWidth - 5 && v.Y >= 5 && v.Y+Height <= Simulation.FieldHeight - 5)
+      //  return Side.None; 
+      return Side.None;
+    }
+    private Side CheckTopBottom(Vector2 v) {
+      // Subtract 1 to account for the fact that the origin is at (0,0).
+      if (v.Y < 5) {
+        return Side.Top;
+      }
+      if (v.Y + Height > Simulation.FieldHeight - 5) {
+        return Side.Bottom;
+      }
+      //else if(v.X >=5 && v.X+Width <= Simulation.FieldWidth - 5 && v.Y >= 5 && v.Y+Height <= Simulation.FieldHeight - 5)
+      //  return Side.None; 
+      return Side.None;
+    }
+
+    //Vector2 originalPosition;
+    public enum Side { Top, Right, Bottom, Left, None };
+
+    public Boolean IsSelected(MouseState ms) {
+      Vector2 mouse = new Vector2(ms.X, ms.Y);
+      if (Vector2.Distance(Center, mouse) < Vector2.Distance(Center, Center + new Vector2(0, Height / 2)))
+        return true;
+      return false;
+    }
+
+    public void Move(Vector2 change) {
+
+      Vector2 newPosition = Origin + change;
+      Side horizontal = CheckLeftRight(newPosition);
+      Side vertical = CheckTopBottom(newPosition);
+
+      if (horizontal == Side.Left) {
+        change.X = 5 - Origin.X;
+      } else if (horizontal == Side.Right) {
+        change.X = (Simulation.FieldWidth - 5) - (Origin.X + Width);
+      }
+
+      if (vertical == Side.Top) {
+        change.Y = 5 - Origin.Y;
+      } else if (vertical == Side.Bottom) {
+        change.Y = Simulation.FieldHeight - 5 - (Origin.Y + Height);
+      }
+
+      Origin = Origin + change;
+
+    }
+  
   }
 }

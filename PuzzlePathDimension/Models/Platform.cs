@@ -1,6 +1,7 @@
 ﻿using System;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Dynamics.Contacts;
@@ -9,7 +10,7 @@ namespace PuzzlePathDimension {
   /// <summary>
   /// The Platform class describes a platform.
   /// </summary>
-  public class Platform {
+  public class Platform : ILevelObject {
     /// <summary>
     /// The texture that the platform uses.
     /// </summary>
@@ -151,6 +152,8 @@ namespace PuzzlePathDimension {
 
       // Leave the Body object uninitialized until a World object comes by to initialize it.
       _body = null;
+
+      // originalPosition = new Vector2(position.X, position.Y);
     }
 
     /// <summary>
@@ -210,10 +213,10 @@ namespace PuzzlePathDimension {
         if (_breakable && _visible) {
           Break();
           shouldCollisionOccur = true;
-        // Don't bounce off broken platforms.
+          // Don't bounce off broken platforms.
         } else if (_breakable && !_visible) {
           shouldCollisionOccur = false;
-        // Always bounce off regular platforms.
+          // Always bounce off regular platforms.
         } else {
           shouldCollisionOccur = true;
         }
@@ -229,10 +232,6 @@ namespace PuzzlePathDimension {
         return false;
       }
     }
-
-    /*****************************
-     * Brian's Physics stuff ends*
-     * **************************/
 
     /// <summary>
     /// Breaks a breakable platform.
@@ -265,15 +264,83 @@ namespace PuzzlePathDimension {
         spriteBatch.Draw(_texture, _center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
       }
     }
-
+    //editor stuff
     /// <summary>
-    /// Checks if the origin of the platform is within the level boundaries.
+    /// Checks if the platforms falls of the left or right of the screen
     /// </summary>
     /// <param name="v">The origin.</param>
-    /// <returns>Whether the origin of the platform is inside the level.</returns>
-    private bool InBounds(Vector2 v) {
-      // Subtract 1 to account for the fact that the origin is at (0,0).
-      return v.X >= 0 && v.X <= Simulation.FieldWidth - 1 && v.Y >= 0 && v.Y <= Simulation.FieldHeight - 1;
+    /// <returns>Whether the origin of      the platform is inside the level.</returns>
+    /// 
+    private Side CheckLeftRight(Vector2 v) {
+      if (v.X < 5) {
+        return Side.Left;
+      }
+      if (v.X + Width > Simulation.FieldWidth - 5) {
+        return Side.Right;
+      }
+      return Side.None;
     }
+    /// <summary>
+    /// Checks if the platform goes out of bounds on the top or bottom
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    private Side CheckTopBottom(Vector2 v) {
+      if (v.Y < 5) {
+        return Side.Top;
+      }
+      if (v.Y + Height > Simulation.FieldHeight - 5) {
+        return Side.Bottom;
+      }
+      return Side.None;
+    }
+
+    //Vector2 originalPosition;
+    public enum Side { Top, Right, Bottom, Left, None };
+
+    /// <summary>
+    /// Returns true is a mouseclick was in the region of the platform,
+    /// </summary>
+    /// <param name="ms"></param>
+    /// <returns></returns>
+    public Boolean IsSelected(MouseState ms) {
+      if (Origin.X <= ms.X && Origin.X + Width >= ms.X) {
+        if (Origin.Y <= ms.Y && Origin.Y + Height >= ms.Y) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+
+    /// <summary>
+    /// Moves the plateform
+    /// </summary>
+    /// <param name="change"></param>
+    public void Move(Vector2 change) {
+
+      Vector2 newPosition = Origin + change;
+      Side horizontal = CheckLeftRight(newPosition);
+      Side vertical = CheckTopBottom(newPosition);
+
+      if (horizontal == Side.Left) {
+        change.X = 5 - Origin.X;
+      } else if (horizontal == Side.Right) {
+        change.X = (Simulation.FieldWidth - 5) - (Origin.X + Width);
+      }
+
+      if (vertical == Side.Top) {
+        change.Y = 5 - Origin.Y;
+      } else if (vertical == Side.Bottom) {
+        change.Y = Simulation.FieldHeight - 5 - (Origin.Y + Height);
+      }
+
+
+
+      Origin = Origin + change;
+
+    }
+
+
   }
 }

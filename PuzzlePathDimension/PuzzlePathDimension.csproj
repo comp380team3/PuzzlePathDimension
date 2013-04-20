@@ -75,6 +75,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\IMenuEntry.cs" />
     <Compile Include="Menus\IMenuLine.cs" />
     <Compile Include="Menus\LevelSelectScreen.cs" />
@@ -84,6 +85,8 @@
     <Compile Include="Input\VirtualController.cs" />
     <Compile Include="Input\Xbox360ControllerAdapter.cs" />
     <Compile Include="Menus\Templates\LinesTemplate.cs" />
+    <Compile Include="Menus\ToolboxScreen.cs" />
+    <Compile Include="Models\ILevelObject.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Models\Ball.cs" />
