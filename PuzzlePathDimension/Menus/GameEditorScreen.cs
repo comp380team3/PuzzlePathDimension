@@ -1,10 +1,3 @@
-//-----------------------------------------------------------------------------
-// GameplayScreen.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-
 using System;
 using System.Threading;
 using Microsoft.Xna.Framework;
@@ -15,29 +8,30 @@ using FarseerPhysics.Dynamics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
 
+
 namespace PuzzlePathDimension {
-  class GameplayScreen : GameScreen {
+  /// <summary>
+  /// This is a game component that implements IUpdateable.
+  /// </summary>
+  public class GameEditorScreen : GameScreen {
     ContentManager content;
     Simulation simulation;
+    MouseState previousMouseState;
+    MouseState currentMouseState;
 
+
+    //The level object that is selected
+    ILevelObject target;
     SpriteFont font;
+    Boolean foundCollision, launchToolbox, toolboxLaunched;
+    Platform addedPlatform;
+    ToolboxScreen confirmExitMessageBox;
 
     float pauseAlpha;
 
-    public GameplayScreen() {
+    public GameEditorScreen() {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
-    }
-
-
-    /// <summary>
-    /// Initializes the GamePlayScreen with a simulation already built.
-    /// </summary>
-    /// <param name="sim"></param>
-    public GameplayScreen(Simulation sim) {
-      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
-      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
-      simulation = sim;
     }
 
     /// <summary>
@@ -50,39 +44,11 @@ namespace PuzzlePathDimension {
         content = new ContentManager(shared.ServiceProvider, "Content");
 
       font = shared.Load<SpriteFont>("Font/textfont");
-
+      launchToolbox = toolboxLaunched =  false;
       // Create the hard-coded level.
-      if(simulation == null){
       simulation = CreateTestLevel();
-      }
 
-      //Initialize the bodies in the simulation
-      simulation.InitWorld();
-
-       // Set up the sounds.
-      SetupSoundEvents();
-      
-      // once the load has finished, we use ResetElapsedTime to tell the game's
-      // timing mechanism that we have just finished a very long frame, and that
-      // it should not try to catch up.
-      ScreenManager.Game.ResetElapsedTime();
-    }
-
-    /// <summary>
-    /// Assign sounds to various events.
-    /// </summary>
-    private void SetupSoundEvents() {
-      // The sounds actually take enough time to load that there's a delay when
-      // the ball is launched, so cache them first.
-      content.Load<SoundEffect>("Sound/launch");
-      content.Load<SoundEffect>("Sound/bounce");
-
-      // Assign the sound effects to the proper places.
-      foreach (Platform plat in simulation.Platforms) {
-        plat.OnPlatformCollision += PlayBounce;
-      }
-      simulation.OnWallCollision += PlayBounce;
-      simulation.Launcher.OnBallLaunch += PlayLaunch;
+      foundCollision = false;
     }
 
     /// <summary>
@@ -101,6 +67,7 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime, bool otherScreenHasFocus,
                                                    bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, false);
+
       // Gradually fade in or out depending on whether we are covered by the pause screen.
       if (coveredByOtherScreen)
         pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
@@ -110,11 +77,26 @@ namespace PuzzlePathDimension {
       // Bail early if this isn't the active screen.
       if (!IsActive)
         return;
+      if (launchToolbox && !toolboxLaunched) {
+        String message = "Select a platform to add to the level";
+        confirmExitMessageBox = new ToolboxScreen(message);
+        ScreenList.AddScreen(confirmExitMessageBox, PlayerIndex.One);
+        launchToolbox = false;
+        toolboxLaunched = true;
+        //Console.WriteLine(addedPlatform.Origin)
+      }
+      if (toolboxLaunched) {
+        addedPlatform = confirmExitMessageBox.Selected;
+      }
+      if (addedPlatform != null) {
+        Console.WriteLine(addedPlatform.Origin);
+        simulation.Platforms.Add(addedPlatform);
+        ScreenList.RemoveScreen(confirmExitMessageBox);
+        addedPlatform = null;
+        toolboxLaunched = false;
 
-
-      // Update the simulation's state.
-      simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-      //}
+      }
+      
     }
 
     /// <summary>
@@ -122,28 +104,31 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      // The game pauses either if the user presses the pause button, or if
-      // they unplug the active gamepad. This requires us to keep track of
-      // whether a gamepad was ever plugged in, because we don't want to pause
-      // on PC if they are playing with a keyboard and have no gamepad at all!
 
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+      //Calls the UpdateMovement method to move object on the scree
+      UpdateMovement();
+
+      //Check if there is collisions in the simulation. 
+      if (simulation.FindCollision()) {
+        foundCollision = true;
+      } else {
+        foundCollision = false;
       }
 
-      Launcher launcher = simulation.Launcher;
+      //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
+      if (previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton ==  ButtonState.Pressed) {
+        launchToolbox = true;
+      }
 
-      // Route user input to the appropriate action
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        simulation.HandleConfirm();
-      } else if (vtroller.IsButtonDown(VirtualButtons.Left)) {
-        launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Right)) {
-        launcher.AdjustAngle((float)-Math.PI / 64);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Up)) {
-        launcher.AdjustMagnitude(0.25f);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Down)) {
-        launcher.AdjustMagnitude(-0.25f);
+      if(!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)){
+        ScreenList.AddScreen(new GameplayScreen(simulation), ControllingPlayer);
+
+      }
+
+
+      //Pause Screen
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
       }
 
       // TODO: Replace this restart mechanism
@@ -217,8 +202,9 @@ namespace PuzzlePathDimension {
         deathTrap.Draw(spriteBatch);
       }
 
-      // Draw the ball onto the canvas.
-      simulation.Ball.Draw(spriteBatch);
+      // Since we are not playing do not draw the ball. 
+      //simulation.Ball.Draw(spriteBatch);
+
       // Draw the launcher onto the canvas.
       simulation.Launcher.Draw(spriteBatch);
     }
@@ -232,39 +218,10 @@ namespace PuzzlePathDimension {
       string attemptsText = "Balls left: " + simulation.AttemptsLeft;
       spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
 
-      // If the simulation has concluded in some way, display the approriate message.
-      if (simulation.CurrentState == SimulationState.Completed) {
-        spriteBatch.DrawString(font, "You win!", new Vector2(400f, 300f), Color.Black);
-      } else if (simulation.CurrentState == SimulationState.Failed) {
-        spriteBatch.DrawString(font, "You lose.", new Vector2(400f, 300f), Color.Black);
-      }
-    }
 
-    /// <summary>
-    /// Plays the launcher's sound effect.
-    /// </summary>
-    private void PlayLaunch() {
-      if (base.Prefs.PlaySounds) {
-        SoundEffect launch = content.Load<SoundEffect>("Sound/launch");
-        launch.Play();
-      }
-    }
-
-    /// <summary>
-    /// Plays the bouncing sound.
-    /// </summary>
-    private void PlayBounce() {
-      PlayBounce(false);
-    }
-
-    /// <summary>
-    /// Plays the bouncing sound. This particular overload of the method is for
-    /// the PlatformTouched delegate.
-    /// </summary>
-    private void PlayBounce(bool breakable) {
-      if (base.Prefs.PlaySounds) {
-        SoundEffect bounce = content.Load<SoundEffect>("Sound/bounce");
-        bounce.Play();
+      // If there is a collision this is where the message will be displayed
+      if (foundCollision) {
+        spriteBatch.DrawString(font, "Collision!", new Vector2(400f, 300f), Color.Black);
       }
     }
 
@@ -277,6 +234,62 @@ namespace PuzzlePathDimension {
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
+    }
+
+
+
+    /// <summary>
+    /// Handles the movement of level objects
+    /// </summary>
+    public void UpdateMovement() {
+      previousMouseState = currentMouseState;
+      currentMouseState = Mouse.GetState();
+
+      if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
+        target = FindTarget(currentMouseState);
+      }
+      if (target != null) {
+        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Pressed) {
+          float changeInX = currentMouseState.X - previousMouseState.X;
+          float changeInY = currentMouseState.Y - previousMouseState.Y;
+          //if(currentMouseState.X < 5||  > Simulation.FieldWidth- 5){
+          //    changeInX = 0;
+          //}
+
+
+          //if (currentMouseState.Y < 5 || currentMouseState.Y > Simulation.FieldHeight - 5) {
+          //    changeInY = 0;
+          //}
+          target.Move(new Vector2(changeInX, changeInY));
+        }
+        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
+          target = null;
+        }
+      }
+    }
+
+    /// <summary>
+    /// After clicking it will select the Level Object the user wants to move.
+    /// </summary>
+    /// <param name="mousePosition"></param>
+    /// <returns></returns>
+    public ILevelObject FindTarget(MouseState mousePosition) {
+      if (simulation.Goal.IsSelected(mousePosition)) {
+        return simulation.Goal;
+      }
+      foreach (Platform platform in simulation.Platforms) {
+        if (platform.IsSelected(mousePosition))
+          return platform;
+      }
+      foreach (DeathTrap deathtrap in simulation.DeathTraps) {
+        if (deathtrap.IsSelected(mousePosition))
+          return deathtrap;
+      }
+      foreach (Treasure treasure in simulation.Treasures) {
+        if (treasure.IsSelected(mousePosition))
+          return treasure;
+      }
+      return null;
     }
 
   }

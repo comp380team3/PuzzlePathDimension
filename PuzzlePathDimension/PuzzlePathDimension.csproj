@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UserPrefs.cs" />
+    <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\Effects\AlphaEffect.cs" />
     <Compile Include="Menus\Effects\EffectGroup.cs" />
     <Compile Include="Menus\Effects\EffectGuard.cs" />
@@ -90,6 +91,8 @@
     <Compile Include="Input\IVirtualAdapter.cs" />
     <Compile Include="Input\VirtualController.cs" />
     <Compile Include="Input\Xbox360ControllerAdapter.cs" />
+    <Compile Include="Menus\ToolboxScreen.cs" />
+    <Compile Include="Models\ILevelObject.cs" />
     <Compile Include="Menus\Templates\DetailsTemplate.cs" />
     <Compile Include="Menus\Templates\MenuTemplate.cs" />
     <Compile Include="Models\Level.cs" />
