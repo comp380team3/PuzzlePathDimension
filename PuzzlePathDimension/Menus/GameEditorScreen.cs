@@ -44,7 +44,7 @@ namespace PuzzlePathDimension {
         content = new ContentManager(shared.ServiceProvider, "Content");
 
       font = shared.Load<SpriteFont>("Font/textfont");
-      launchToolbox = toolboxLaunched =  false;
+      launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
       simulation = CreateTestLevel();
 
@@ -75,8 +75,8 @@ namespace PuzzlePathDimension {
         pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
       // Bail early if this isn't the active screen.
-      
-      
+
+
       if (toolboxLaunched) {
         addedPlatform = toolbox.Selected;
       }
@@ -99,7 +99,7 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      
+
       // there was a bug where if you exit the toolbox without
       // selecting a platform the toolbox was unreachable.
       if (addedPlatform == null) {
@@ -131,11 +131,17 @@ namespace PuzzlePathDimension {
       }
 
       //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
-      if (previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton ==  ButtonState.Pressed) {
+      if (previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Pressed) {
         launchToolbox = true;
       }
 
-      if(!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)){
+      if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
+                      currentMouseState.LeftButton == ButtonState.Pressed) {
+        target = FindTarget(currentMouseState);
+        simulation.MoveablePlatforms.Remove((Platform)target);
+      }
+
+      if (!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         ScreenList.AddScreen(new GameplayScreen(simulation), ControllingPlayer);
 
       }
@@ -198,8 +204,8 @@ namespace PuzzlePathDimension {
       // Draw the goal onto the canvas.
       simulation.Goal.Draw(spriteBatch);
 
-     
-      
+
+
 
       // Draw the treasures onto the canvas.
       foreach (Treasure treasure in simulation.Treasures) {
@@ -243,7 +249,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/Level3.xml", content), content);
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/Level5.xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
