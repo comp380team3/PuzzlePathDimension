@@ -2,6 +2,11 @@
 using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
+  public enum AdapterType {
+    KeyboardMouse = 0,
+    Xbox360Controller
+  }
+
   /// <summary>
   /// The VirtualButtonState enum represents the two states of a digital button.
   /// </summary>
@@ -82,6 +87,11 @@ namespace PuzzlePathDimension {
     /// The total number of digital inputs that the virtual controller supports.
     /// </summary>
     private static readonly int DigitalInputsCount = Enum.GetNames(typeof(VirtualButtons)).Length;
+    /// <summary>
+    /// The adapters that are supported by the virtual controller.
+    /// </summary>
+    private static readonly IVirtualAdapter[] _availableAdapters = 
+      { new KeyboardMouseAdapter(), new Xbox360ControllerAdapter() };
 
     /// <summary>
     /// The array that contains the current state of all the buttons.
@@ -222,6 +232,14 @@ namespace PuzzlePathDimension {
 
       // Set the current adapter.
       _activeAdapter = adapter;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    public void ChangeAdapter(AdapterType type) {
+      _activeAdapter = _availableAdapters[(int)type];
     }
 
     /// <summary>

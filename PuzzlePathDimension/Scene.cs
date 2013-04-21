@@ -59,6 +59,18 @@ namespace PuzzlePathDimension {
       bool otherScreenHasFocus = !hasFocus;
       bool coveredByOtherScreen = false;
 
+      // If the controller type changed due to the options menu, change the active adapter.
+      // Is there a better way of doing this?
+      if (prefs.ControllerChanged) {
+        prefs.ControllerChanged = false;
+        vtroller.ChangeAdapter(prefs.ControllerType);
+      }
+
+      // Read the keyboard and/or gamepad before we go through the screens.
+      // I moved it here because I couldn't find it at all and it makes more
+      // sense for it to be nearer to the HandleInput() call. - Jorenz
+      vtroller.Update();
+
       // Loop as long as there are screens waiting to be updated.
       while (screensToUpdate.Count > 0) {
         // Pop the topmost screen off the waiting list.

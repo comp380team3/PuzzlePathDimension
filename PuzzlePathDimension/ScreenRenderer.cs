@@ -96,9 +96,6 @@ namespace PuzzlePathDimension {
     /// Allows each screen to run logic.
     /// </summary>
     public override void Update(GameTime gameTime) {
-      // Read the keyboard and gamepad.
-      vtroller.Update();
-
       Scene.Update(gameTime, vtroller, Game.IsActive);
     }
 

@@ -14,13 +14,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     public bool PlaySounds { get; set; }
     /// <summary>
-    /// Gets or sets an integer (maybe an enum?) that represents the currently
+    /// Gets or sets the enum value that represents the currently
     /// selected controller.
     /// </summary>
-    public int ControllerType { get; set; }
+    public AdapterType ControllerType { get; set; }
     /// <summary>
     /// Gets or sets whether the active controller type was changed. This is mainly for
-    /// the virtual controller's use.
+    /// the virtual controller's use. (Maybe just move it there?)
     /// </summary>
     public bool ControllerChanged { get; set; }
 
