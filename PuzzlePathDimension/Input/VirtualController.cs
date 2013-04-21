@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace PuzzlePathDimension {
   public enum AdapterType {
@@ -209,6 +210,15 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets the list of available adapters.
+    /// </summary>
+    /// <remarks>This is needed because a 'readonly' array only makes the
+    /// reference to the array readonly, not the contents of the array.</remarks>
+    public static IList<IVirtualAdapter> AvailableAdapters {
+      get { return Array.AsReadOnly<IVirtualAdapter>(_availableAdapters); }
+    }
+
+    /// <summary>
     /// Constructs a VirtualController object.
     /// </summary>
     /// <param name="adapter">The VirtualAdapter object that will send input to the 
@@ -235,9 +245,9 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// 
+    /// Changes the active adapter by providing the type of adapter.
     /// </summary>
-    /// <param name="type"></param>
+    /// <param name="type">The type of adapter to change the virtual controller to.</param>
     public void ChangeAdapter(AdapterType type) {
       _activeAdapter = _availableAdapters[(int)type];
     }

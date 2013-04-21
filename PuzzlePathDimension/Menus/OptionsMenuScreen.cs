@@ -19,14 +19,9 @@ namespace PuzzlePathDimension {
   /// </summary>
   class OptionsMenuScreen : GameScreen {
     /// <summary>
-    /// 
+    /// The strings that represent the possible input types.
     /// </summary>
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
-    /// <summary>
-    /// 
-    /// </summary>
-    static IVirtualAdapter[] availableAdapters = 
-      { new KeyboardMouseAdapter(), new Xbox360ControllerAdapter() };
 
     /// <summary>
     /// Whether sound is on or not.
@@ -41,36 +36,39 @@ namespace PuzzlePathDimension {
     /// </summary>
     bool currentControllerConnected;
 
+    /// <summary>
+    /// The menu template that forms the basis of the options screen.
+    /// </summary>
     MenuTemplate menuTemplate = new MenuTemplate();
 
     /// <summary>
-    /// 
+    /// The menu button that represents the sound option.
     /// </summary>
     MenuButton soundMenuEntry;
     /// <summary>
-    /// 
+    /// The menu button that represents the controller type option.
     /// </summary>
     MenuButton controllerConfigurationMenuEntry;
     /// <summary>
-    /// 
+    /// The menu button that, when selected, saves all changes made to the options.
     /// </summary>
     MenuButton apply;
     /// <summary>
-    /// 
+    /// The menu button that, when selected, cancels all changes made to the options.
     /// </summary>
     MenuButton back;
 
     /// <summary>
-    /// 
+    /// The first line of text that warns that a controller is not connected.
     /// </summary>
     TextLine firstWarningLine;
     /// <summary>
-    /// 
+    /// The first line of text that warns that a controller is not connected.
     /// </summary>
     TextLine secondWarningLine;
 
     /// <summary>
-    /// 
+    /// The user's preferences.
     /// </summary>
     UserPrefs prefs;
 
@@ -138,6 +136,11 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
+      // Check whether the currently selected controller is connected. This is for
+      // the warning message.
+      IList<IVirtualAdapter> adapters = VirtualController.AvailableAdapters;
+      currentControllerConnected = adapters[currentControllerType].Connected;
+
       menuTemplate.TransitionPosition = TransitionPosition;
       menuTemplate.Update(gameTime);
     }
@@ -182,6 +185,7 @@ namespace PuzzlePathDimension {
       if (currentControllerConnected) {
         prefs.ControllerType = (AdapterType)currentControllerType;
         // There must be a better way of notifying the virtual controller. - Jorenz
+        // This variable is checked in Scene.Update().
         prefs.ControllerChanged = true;
       }
 
@@ -189,6 +193,7 @@ namespace PuzzlePathDimension {
     }
 
     void OnCancel(object sender, PlayerIndexEventArgs e) {
+      // Don't change anything.
       ExitScreen();
     }
 
@@ -206,10 +211,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     void ControllerConfigurationMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       currentControllerType = (currentControllerType + 1) % controllerType.Length;
-
-      // Probably not the best way to check this, since it involves keeping the two adapters
-      // in memory until the options screen is closed... - Jorenz
-      currentControllerConnected = availableAdapters[currentControllerType].Connected;
 
       SetMenuEntryText();
     }
