@@ -109,10 +109,10 @@ namespace PuzzlePathDimension {
       if (launchToolbox && !toolboxLaunched) {
         String message = "Select a platform to add to the level";
         if (simulation.AdditionsLeft > 0) {
-          toolbox = new ToolboxScreen(message);
+          toolbox = new ToolboxScreen(message, false);
         } else {
           message += "\n    Platform addition limit reached";
-          toolbox = new ToolboxScreen(message);
+          toolbox = new ToolboxScreen(message, true);
         }
         ScreenList.AddScreen(toolbox, PlayerIndex.One);
         launchToolbox = false;

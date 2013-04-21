@@ -52,6 +52,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     Texture2D breakablePlatformTexture;
 
+    Boolean cantAdd;
+
     //Mouse states to determine clicks.
     MouseState previousMouseState;
     MouseState currentMouseState;
@@ -82,9 +84,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor lets the caller specify whether to include the standard
     /// </summary>
-    public ToolboxScreen(string message, bool includeUsageText) {
+    public ToolboxScreen(string message, bool limitReached) {
       this.message = message;
-
+      cantAdd = limitReached;
       //initializa the position of regular platforms
       platforms = new List<Rectangle>();
       platforms.Add(new Rectangle(100, 130, 100, 25));
@@ -150,7 +152,12 @@ namespace PuzzlePathDimension {
         }
       }
 
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+      if (cantAdd && previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
+        ExitScreen();
+      }
+
+
+      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         if (Accepted != null)
           Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
 
