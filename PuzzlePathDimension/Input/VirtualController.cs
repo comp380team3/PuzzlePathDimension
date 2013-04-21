@@ -3,8 +3,17 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace PuzzlePathDimension {
-  public enum AdapterType {
+  /// <summary>
+  /// The type of input device that input is being received from.
+  /// </summary>
+  public enum InputType {
+    /// <summary>
+    /// Corresponds to the keyboard and mouse combination.
+    /// </summary>
     KeyboardMouse = 0,
+    /// <summary>
+    /// Corresponds to the Xbox 360 controller combination.
+    /// </summary>
     Xbox360Controller
   }
 
@@ -248,7 +257,7 @@ namespace PuzzlePathDimension {
     /// Changes the active adapter by providing the type of adapter.
     /// </summary>
     /// <param name="type">The type of adapter to change the virtual controller to.</param>
-    public void ChangeAdapter(AdapterType type) {
+    public void ChangeAdapter(InputType type) {
       _activeAdapter = _availableAdapters[(int)type];
     }
 

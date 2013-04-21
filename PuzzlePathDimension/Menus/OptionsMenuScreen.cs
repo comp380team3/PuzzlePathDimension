@@ -183,7 +183,7 @@ namespace PuzzlePathDimension {
 
       // Make sure the user doesn't accidentally make the game unplayable.
       if (currentControllerConnected) {
-        prefs.ControllerType = (AdapterType)currentControllerType;
+        prefs.ControllerType = (InputType)currentControllerType;
         // There must be a better way of notifying the virtual controller. - Jorenz
         // This variable is checked in Scene.Update().
         prefs.ControllerChanged = true;
