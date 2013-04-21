@@ -134,7 +134,7 @@ namespace PuzzlePathDimension {
     /// The number of attempts that the player has left.
     /// </summary>
     private int _attemptsLeft;
-    
+
     /// <summary>
     /// Gets the number of attempts that the player has left.
     /// </summary>
@@ -389,7 +389,7 @@ namespace PuzzlePathDimension {
       _world.Step(time);
 
       // Checks if a launched ball has no velocity, which ends the current attempt.
-      if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable 
+      if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable
         && _currentState == SimulationState.Active) {
         EndAttempt();
       }
@@ -427,7 +427,7 @@ namespace PuzzlePathDimension {
 
       // Get the amount of time spent.
       TimeSpan timeSpent = DateTime.Now - _startTime;
-      
+
       Console.WriteLine("You're winner!");
       Console.WriteLine("Balls remaining: " + _attemptsLeft);
       Console.WriteLine("Time spent (seconds): " + timeSpent.Seconds);
@@ -515,7 +515,7 @@ namespace PuzzlePathDimension {
 
     public Boolean FindCollision() {
       List<Rectangle> rects = new List<Rectangle>();
-      foreach(Platform platform in _platforms){
+      foreach (Platform platform in _platforms) {
         rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
       }
       foreach (Platform platform in _moveablePlatforms) {
@@ -523,8 +523,19 @@ namespace PuzzlePathDimension {
       }
       for (int i = 0; i < rects.Count; i++) {
         for (int j = i + 1; j < rects.Count; j++) {
-          if(rects[i].Intersects(rects[j]))
+          if (rects[i].Intersects(rects[j]))
             return true;
+        }
+      }
+
+      //not accurate but it works for now.
+      Rectangle circle;
+      foreach (DeathTrap deathTrap in DeathTraps) {
+        circle = new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height);
+        foreach (Rectangle rect in rects) {
+          if (circle.Intersects(rect)) {
+            return true;
+          }
         }
       }
       return false;
