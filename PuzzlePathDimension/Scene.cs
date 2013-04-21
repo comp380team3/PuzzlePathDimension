@@ -16,7 +16,7 @@ namespace PuzzlePathDimension {
   public class Scene : IScreenList {
     ScreenRenderer screenRenderer;
     /// <summary>
-    /// 
+    /// The user's preferences.
     /// </summary>
     UserPrefs prefs;
 
