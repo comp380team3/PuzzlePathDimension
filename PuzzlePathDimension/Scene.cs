@@ -15,6 +15,10 @@ namespace PuzzlePathDimension {
 
   public class Scene : IScreenList {
     ScreenRenderer screenRenderer;
+    /// <summary>
+    /// 
+    /// </summary>
+    UserPrefs prefs;
 
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
@@ -28,6 +32,8 @@ namespace PuzzlePathDimension {
 
     public Scene(ScreenRenderer screenRenderer) {
       this.screenRenderer = screenRenderer;
+
+      prefs = new UserPrefs();
     }
 
     public void LoadContent(ContentManager shared) {
@@ -110,6 +116,7 @@ namespace PuzzlePathDimension {
       screen.ControllingPlayer = controllingPlayer;
       screen.ScreenManager = screenRenderer;
       screen.ScreenList = this;
+      screen.Prefs = prefs;
       screen.IsExiting = false;
 
       // If we have a graphics device, tell the screen to load content.

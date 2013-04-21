@@ -75,6 +75,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserPrefs.cs" />
     <Compile Include="Menus\Effects\AlphaEffect.cs" />
     <Compile Include="Menus\Effects\EffectGroup.cs" />
     <Compile Include="Menus\Effects\EffectGuard.cs" />

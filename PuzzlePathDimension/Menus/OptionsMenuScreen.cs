@@ -18,15 +18,28 @@ namespace PuzzlePathDimension {
   /// in various hopefully useful ways.
   /// </summary>
   class OptionsMenuScreen : GameScreen {
-    static bool sound = true;
+    //static bool sound = true;
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
-    static int currentControllerType = 0;
+
+    //static int currentControllerType = 0;
+
+    bool sound;
+    int currentControllerType;
 
     MenuTemplate menuTemplate = new MenuTemplate();
 
     MenuButton soundMenuEntry;
     MenuButton controllerConfigurationMenuEntry;
+    /// <summary>
+    /// 
+    /// </summary>
+    MenuButton apply;
     MenuButton back;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    UserPrefs prefs;
 
     /// <summary>
     /// Constructor.
@@ -42,7 +55,6 @@ namespace PuzzlePathDimension {
 
       menuTemplate.Title = new TextLine("Options", font, new Color(192, 192, 192));
 
-
       IList<MenuButton> items = menuTemplate.Items;
 
       soundMenuEntry = new MenuButton(string.Empty, font);
@@ -53,10 +65,18 @@ namespace PuzzlePathDimension {
       controllerConfigurationMenuEntry.Selected += ControllerConfigurationMenuEntrySelected;
       items.Add(controllerConfigurationMenuEntry);
 
-      back = new MenuButton("back", font);
+      apply = new MenuButton("Apply Changes", font);
+      apply.Selected += OnApply;
+      items.Add(apply);
+
+      back = new MenuButton("Cancel", font);
       back.Selected += OnCancel;
       items.Add(back);
-
+      
+      // Get the current settings of the game.
+      prefs = base.Prefs;
+      sound = prefs.PlaySounds;
+      currentControllerType = prefs.ControllerType;
 
       SetMenuEntryText();
     }
@@ -92,10 +112,17 @@ namespace PuzzlePathDimension {
     /// Fills in the latest values for the options screen menu text.
     /// </summary>
     void SetMenuEntryText() {
-      soundMenuEntry.Text = "Sound: " + (sound ? "on" : "off");
+      soundMenuEntry.Text = "Sound: " + (sound ? "On" : "Off");
       controllerConfigurationMenuEntry.Text = "Controller Type: " + controllerType[currentControllerType];
     }
 
+    void OnApply(object sender, PlayerIndexEventArgs e) {
+      // Apply any changes here.
+      prefs.PlaySounds = sound;
+
+      // This is probably not the best way to check this - Jorenz
+      ExitScreen();
+    }
 
     void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
