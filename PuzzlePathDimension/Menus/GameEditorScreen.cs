@@ -20,6 +20,8 @@ namespace PuzzlePathDimension {
     MouseState currentMouseState;
 
 
+    string LevelName { get; set; }
+
     //The level object that is selected
     ILevelObject target;
     SpriteFont font;
@@ -29,9 +31,11 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameEditorScreen() {
+    public GameEditorScreen(string levelName) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+      LevelName = levelName;
     }
 
     /// <summary>
@@ -149,7 +153,7 @@ namespace PuzzlePathDimension {
 
       //Pause Screen
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+        ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
       }
 
     }

@@ -15,19 +15,52 @@ namespace PuzzlePathDimension {
   class HowToPlayScreen1 : GameScreen {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
+    /// <summary>
+    /// Menu Button for the Next menu entry.
+    /// </summary>
     MenuButton nextMenuEntry;
+
+    /// <summary>
+    /// Menu Button for the Exit menu entry.
+    /// </summary>
     MenuButton exitMenuEntry;
 
+    /// <summary>
+    /// Description of the concepts and objectives that surround Puzzle Path.
+    /// </summary>
+    string[] gameDescription = new string[] {
+      "The objective of this game is to find a path for a ball to reach ",
+      "the goal. You have to launch the ball from a launcher, utilize ",
+      "the map's environment, and reach the goal in order to complete a ",
+      "level. Platforms are your main tool to help you complete a level. ",
+      "You can bounce the ball off the platforms to change the direction ",
+      "of the ball. The number of balls used, time, and the number ",
+      "of treasures collected determine your score.",
+    };
+
+    /// <summary>
+    /// Contructor
+    /// </summary>
     public HowToPlayScreen1() {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load content the will be used to create the help menu screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine("Welcome to Puzzle Path", font, new Color(192, 192, 192));
+
+      IList<IMenuLine> description = detailsTemplate.Lines;
+      description.Clear();
+
+      foreach (string name in gameDescription)
+        description.Add(new TextLine(name, font, Color.Black, .75f));
 
       nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
@@ -62,6 +95,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -69,6 +108,11 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the game's description and the Buttons to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
@@ -76,13 +120,18 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Event handler for when the Next menu entry is selected
+    /// Event handler for when the Next menu entry is selected.
     /// </summary>
     void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
       ScreenList.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
     }
 
+    /// <summary>
+    /// Event handler for when the Exit menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
     }

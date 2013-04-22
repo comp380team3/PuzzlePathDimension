@@ -10,7 +10,14 @@ namespace PuzzlePathDimension {
   class LevelStatusScreen : GameScreen {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
+    /// <summary>
+    /// Menu Button for the Start menu entry.
+    /// </summary>
     MenuButton startMenuEntry;
+
+    /// <summary>
+    /// Menu Button for the Exit menu entry.
+    /// </summary>
     MenuButton exitMenuEntry;
 
     /// <summary>
@@ -26,7 +33,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Return the numnber identifier of the current level.
     /// </summary>
-    public int LevelNumber { get; private set; }
+    public string LevelName { get; private set; }
 
     /// <summary>
     /// Return the time spent on completing a level with the highest score.
@@ -43,21 +50,25 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, int levelNumber, string completionTime) {
+    public LevelStatusScreen(bool completed, int levelScore, string levelName, string completionTime) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
       Completed = completed;
       LevelScore = levelScore;
-      LevelNumber = levelNumber;
+      LevelName = levelName;
       CompletionTime = completionTime;
     }
 
+    /// <summary>
+    /// Load the content that will be used to create the screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       Font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("Level " + LevelNumber, Font, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine(LevelName, Font, new Color(192, 192, 192));
 
       startMenuEntry = new MenuButton("Start", Font);
       startMenuEntry.Selected += StartMenuEntrySelected;
@@ -79,6 +90,10 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
+    /// <summary>
+    /// Handle user input.
+    /// </summary>
+    /// <param name="vtroller"></param>
     public override void HandleInput(VirtualController vtroller) {
       base.HandleInput(vtroller);
 
@@ -97,6 +112,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -104,6 +125,11 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the Stats of the current selected level to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
@@ -117,8 +143,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenList, true, e.PlayerIndex,
-                         new GameEditorScreen());
+      LoadingScreen.Load(ScreenList, true, e.PlayerIndex, new GameEditorScreen(LevelName));
     }
 
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {

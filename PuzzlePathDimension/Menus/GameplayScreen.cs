@@ -22,9 +22,14 @@ namespace PuzzlePathDimension {
 
     SpriteFont font;
 
+    public string LevelName { get; set; }
+
     float pauseAlpha;
 
-    public GameplayScreen() {
+    public GameplayScreen(string levelName) {
+
+      LevelName = levelName;
+
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -114,7 +119,24 @@ namespace PuzzlePathDimension {
 
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-      //}
+
+      if (simulation.CurrentState == SimulationState.Completed) {
+        MessageBoxScreen completedMessageBox = new MessageBoxScreen("Congratulations, Level Completed!",
+                                                                    "Retry", null, "Level Select");
+        completedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
+        completedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
+
+        ScreenList.AddScreen(completedMessageBox, ControllingPlayer);
+      }
+
+      if (simulation.CurrentState == SimulationState.Failed) {
+        MessageBoxScreen failedMessageBox = new MessageBoxScreen("Level Failed. Please try again.",
+                                                                 "Retry", null, "Level Select");
+        failedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
+        failedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
+
+        ScreenList.AddScreen(failedMessageBox, ControllingPlayer);
+      }
     }
 
     /// <summary>
@@ -128,8 +150,8 @@ namespace PuzzlePathDimension {
       // on PC if they are playing with a keyboard and have no gamepad at all!
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(), ControllingPlayer);
-      }
+        ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
+      } 
 
       Launcher launcher = simulation.Launcher;
 
@@ -272,11 +294,31 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/TestLevel.xml", content), content);
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/"+ LevelName.Replace(" ","") +".xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
     }
 
+
+    /// <summary>
+    /// Event handler for when the user selects ok on the level select
+    /// button on the message box. This uses the loading screen to
+    /// transition from the game back to the level select screen.
+    /// </summary>
+    void ConfirmLevelMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
+      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
+                                                     new LevelSelectScreen(content));
+    }
+
+    /// <summary>
+    /// Event handler for when the user selects the Retry menu entry.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
+      ScreenList.AddScreen(new GameplayScreen(LevelName), ControllingPlayer);
+    }
   }
 }

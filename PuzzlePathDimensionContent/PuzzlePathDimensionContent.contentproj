@@ -144,6 +144,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Texture\PuzzlePathScreenShot.png">
+      <Name>PuzzlePathScreenShot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <None Include="Level\Level1.xml">
       <Name>Level1</Name>
       <Importer>XmlImporter</Importer>

@@ -11,6 +11,11 @@ namespace PuzzlePathDimension {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     /// <summary>
+    /// Next menu entry on the screen.
+    /// </summary>
+    MenuButton nextMenuEntry;
+
+    /// <summary>
     /// Back menu entry on the screen.
     /// </summary>
     MenuButton backMenuEntry;
@@ -19,6 +24,18 @@ namespace PuzzlePathDimension {
     /// Exit menu entry on the screen.
     /// </summary>
     MenuButton exitMenuEntry;
+
+    /// <summary>
+    /// Description for the Controls of the game.
+    /// </summary>
+    string[] ControlScheme = new string[] {
+      "Rotate Launcher Left:     Left Arrow Key/ Left on DPad",
+      "Rotate Launcher Right:    Right Arrow Key/ Right on DPad",
+      "Increase Magnitude:       Up Arrow Key/ Up on DPad",
+      "Decrease Magnitude:       Down Arrow Key/ Down on DPad",
+      "Launch Ball:              Space Bar/ A Button ",
+      "Pause Game:               Esc/ Start Button",
+    };
 
 
     /// <summary>
@@ -29,20 +46,36 @@ namespace PuzzlePathDimension {
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
 
+    /// <summary>
+    /// Load content that will be used to create the help screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+      SpriteFont titleFont = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
+      detailsTemplate.Title = new TextLine("Controls", titleFont, new Color(192, 192, 192));
 
-      backMenuEntry = new MenuButton("Back", font);
+      IList<IMenuLine> controlScheme = detailsTemplate.Lines;
+      controlScheme.Clear();
+
+      foreach (string name in ControlScheme)
+        controlScheme.Add(new TextLine(name, titleFont, Color.Black, .75f));
+
+      nextMenuEntry = new MenuButton("Next", titleFont);
+      nextMenuEntry.Selected += NextMenuEntrySelected;
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
+
+      backMenuEntry = new MenuButton("Back", titleFont);
       backMenuEntry.Selected += BackMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
 
-      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry = new MenuButton("Exit", titleFont);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
-      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
+
+
     }
 
     /// <summary>
@@ -68,6 +101,12 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Update the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -75,12 +114,25 @@ namespace PuzzlePathDimension {
       detailsTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the control scheme to the Screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
-
       detailsTemplate.Draw(spriteBatch, gameTime);
     }
 
+    /// <summary>
+    /// Event handler for when the Next menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+      ExitScreen();
+      ScreenList.AddScreen(new HowToPlayScreen4(), e.PlayerIndex);
+    }
 
     /// <summary>
     /// Event handler for when the Back menu entry is selected.
@@ -92,6 +144,11 @@ namespace PuzzlePathDimension {
       ScreenList.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
     }
 
+    /// <summary>
+    /// Event handler for when the Exit menu entry is selected.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void OnCancel(object sender, PlayerIndexEventArgs e) {
       ExitScreen();
     }
