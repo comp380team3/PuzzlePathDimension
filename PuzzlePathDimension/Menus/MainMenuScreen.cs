@@ -49,10 +49,6 @@ namespace PuzzlePathDimension {
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       items.Add(playGameMenuEntry);
 
-      MenuButton levelEditorMenuEntry = new MenuButton("Level Editor", font);
-      levelEditorMenuEntry.Selected += LevelEditorMenuEntrySelected;
-      items.Add(levelEditorMenuEntry);
-
       MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       items.Add(howToPlayMenuEntry);
@@ -124,15 +120,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
       ScreenList.AddScreen(new LevelSelectScreen(content), e.PlayerIndex);
-    }
-
-    /// <summary>
-    /// Event handler for when the Level Editor menu entry is selected.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void LevelEditorMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      // Add the Level Editor Screen Here
     }
 
     /// <summary>
