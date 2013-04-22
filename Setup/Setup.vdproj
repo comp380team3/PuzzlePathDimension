@@ -27,37 +27,31 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_05DCAB357DD645588389DC0B1C4D248C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_140E8A08745742B59071CE5606B7A85A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1980AB75F87541BDA282DBD6674BFF92"
+        "MsmKey" = "8:_21691D44FB72496F8559E13D135DE3E5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_28C1786C69A745C9BFB8DC54A76896D6"
+        "MsmKey" = "8:_2A1D65A8BB1E444295E19ECC8175652C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_2C09E9ED26C6432C8FB21176472F130C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3745322BCA3344CEAB3D78433FAFD35A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3935B0395CF84895B77E5D058D7FC396"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -75,19 +69,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_48592D4DF64442B1B691EEF3542B5DDE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_514E2DA706398993A7977F13B02586A9"
         "OwnerKey" = "8:_B33672D001A348CCBD3A3DC5452169A4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_66AC166958864A209BE9F1353AB69219"
+        "MsmKey" = "8:_52FBEE12E9D447B8879CC55C3DBC512C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_610138C034FB41F3A18C830E9B942AB4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_659F1E9DC9E04D149CDCF94F0B4DA7C4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -105,6 +105,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7BC06EDE16414184AD7AC6C79CBD202D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7F12619044FB424FA1E573A80E1C097E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -117,7 +123,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_AC1E489FC08D40C4AA9F04FFFFF156C1"
+        "MsmKey" = "8:_84B48F80FFC146449104F3307A431B28"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A75306840DD64CB98C36E95F18FCA935"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -141,25 +153,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B799372107254F6EAE03E8CF0B2EB630"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C068465B36B444FE8E12EC1327897B70"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C16020034F3C44B796B002C64B893D15"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CC88AB6A6AC643B0884F86628178BBC2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DF28E1E474C440628CA27865F7A934AC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E1DFBF09BF8344CF934139D7B6D27512"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E31B7F899C91484EB915D438914116FF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -172,12 +184,6 @@
         "Entry"
         {
         "MsmKey" = "8:_F9A06BC352104A61ADC6E4B6C1BE04A4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FC3B29D4887247A7B38F5CFFD20643B5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -215,7 +221,7 @@
             {
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
+            "PrerequisitesLocation" = "2:2"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
                 "Items"
@@ -229,6 +235,11 @@
                     {
                     "Name" = "8:Windows Installer 3.1"
                     "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Xna.Framework.4.0"
+                    {
+                    "Name" = "8:Microsoft XNA Framework Redistributable 4.0"
+                    "ProductCode" = "8:Microsoft.Xna.Framework.4.0"
                     }
                 }
             }
@@ -252,15 +263,15 @@
             {
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
+            "PrerequisitesLocation" = "2:2"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    "Name" = "8:Microsoft .NET Framework 4 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
                     {
@@ -295,7 +306,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=131000"
                 }
@@ -343,6 +354,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_05DCAB357DD645588389DC0B1C4D248C"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\background.xnb"
+            "TargetName" = "8:background.xnb"
+            "Tag" = "8:"
+            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_140E8A08745742B59071CE5606B7A85A"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Level\\Level8.xml"
@@ -363,10 +394,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1980AB75F87541BDA282DBD6674BFF92"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_21691D44FB72496F8559E13D135DE3E5"
             {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\deathtrap.xnb"
-            "TargetName" = "8:deathtrap.xnb"
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\launcher.xnb"
+            "TargetName" = "8:launcher.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
@@ -383,10 +414,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_28C1786C69A745C9BFB8DC54A76896D6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A1D65A8BB1E444295E19ECC8175652C"
             {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\platform_breakable.xnb"
-            "TargetName" = "8:platform_breakable.xnb"
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\deathtrap.xnb"
+            "TargetName" = "8:deathtrap.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
@@ -409,46 +440,6 @@
             "TargetName" = "8:Level5.xml"
             "Tag" = "8:"
             "Folder" = "8:_9D4E354A23044B05906F9561D1F9C3A9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3745322BCA3344CEAB3D78433FAFD35A"
-            {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\GameScreen.xnb"
-            "TargetName" = "8:GameScreen.xnb"
-            "Tag" = "8:"
-            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3935B0395CF84895B77E5D058D7FC396"
-            {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\background.xnb"
-            "TargetName" = "8:background.xnb"
-            "Tag" = "8:"
-            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -503,31 +494,11 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_48592D4DF64442B1B691EEF3542B5DDE"
-            {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\power_meter.xnb"
-            "TargetName" = "8:power_meter.xnb"
-            "Tag" = "8:"
-            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_514E2DA706398993A7977F13B02586A9"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FarseerPhysicsXNA, Version=3.3.4858.37744, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:FarseerPhysicsXNA, Version=3.3.4859.42015, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_514E2DA706398993A7977F13B02586A9"
@@ -554,10 +525,50 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_66AC166958864A209BE9F1353AB69219"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_52FBEE12E9D447B8879CC55C3DBC512C"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\platform.xnb"
             "TargetName" = "8:platform.xnb"
+            "Tag" = "8:"
+            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_610138C034FB41F3A18C830E9B942AB4"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\GameScreen.xnb"
+            "TargetName" = "8:GameScreen.xnb"
+            "Tag" = "8:"
+            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_659F1E9DC9E04D149CDCF94F0B4DA7C4"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\power_meter.xnb"
+            "TargetName" = "8:power_meter.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
@@ -614,6 +625,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7BC06EDE16414184AD7AC6C79CBD202D"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\PuzzlePathScreenShot.xnb"
+            "TargetName" = "8:PuzzlePathScreenShot.xnb"
+            "Tag" = "8:"
+            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F12619044FB424FA1E573A80E1C097E"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Level\\Level3.xml"
@@ -654,10 +685,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AC1E489FC08D40C4AA9F04FFFFF156C1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_84B48F80FFC146449104F3307A431B28"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\goal.xnb"
             "TargetName" = "8:goal.xnb"
+            "Tag" = "8:"
+            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A75306840DD64CB98C36E95F18FCA935"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\platform_breakable.xnb"
+            "TargetName" = "8:platform_breakable.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
@@ -714,30 +765,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CC88AB6A6AC643B0884F86628178BBC2"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B799372107254F6EAE03E8CF0B2EB630"
             {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Level\\Level1.xml"
-            "TargetName" = "8:Level1.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_9E670957A98F41188A4D11CE354CDDFC"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF28E1E474C440628CA27865F7A934AC"
-            {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\launcher.xnb"
-            "TargetName" = "8:launcher.xnb"
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\gradient.xnb"
+            "TargetName" = "8:gradient.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
@@ -754,7 +785,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E1DFBF09BF8344CF934139D7B6D27512"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C068465B36B444FE8E12EC1327897B70"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\treasure.xnb"
             "TargetName" = "8:treasure.xnb"
@@ -774,12 +805,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E31B7F899C91484EB915D438914116FF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C16020034F3C44B796B002C64B893D15"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\ball.xnb"
             "TargetName" = "8:ball.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CC88AB6A6AC643B0884F86628178BBC2"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Level\\Level1.xml"
+            "TargetName" = "8:Level1.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_9E670957A98F41188A4D11CE354CDDFC"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -820,26 +871,6 @@
             "TargetName" = "8:Level2.xml"
             "Tag" = "8:"
             "Folder" = "8:_9E670957A98F41188A4D11CE354CDDFC"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC3B29D4887247A7B38F5CFFD20643B5"
-            {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Texture\\gradient.xnb"
-            "TargetName" = "8:gradient.xnb"
-            "Tag" = "8:"
-            "Folder" = "8:_F222F45689794319BF330A7774F7510A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1000,7 +1031,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Puzzle Path"
         "ProductCode" = "8:{C4699D07-FC2E-4735-BA1E-8685B2382646}"
-        "PackageCode" = "8:{EF5A7C55-70D9-42EC-B256-C42D93E7A8D1}"
+        "PackageCode" = "8:{8BFB8445-11CA-47C8-A6B6-594811CA590C}"
         "UpgradeCode" = "8:{A95B9942-1D59-4032-A105-B6B7F3AA052D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
