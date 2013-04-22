@@ -29,7 +29,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Font to write to Draw on the Screen.
     /// </summary>
-    SpriteFont font;
+    SpriteFont Font;
 
     /// <summary>
     /// Names of objects in the game.
@@ -76,26 +76,38 @@ namespace PuzzlePathDimension {
     /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      font = shared.Load<SpriteFont>("Font/menufont");
+      Font = shared.Load<SpriteFont>("Font/menufont");
 
-      detailsTemplate.Title = new TextLine("Game Objects", font, new Color(192, 192, 192));
+      foreach (string name in gameContent) {
+        objectContent.Add(shared.Load<Texture2D>(name));
+      }
 
-      nextMenuEntry = new MenuButton("Next", font);
+      detailsTemplate.Title = new TextLine("Game Objects", Font, new Color(192, 192, 192));
+
+      IList<IMenuLine> lines = detailsTemplate.Lines;
+      lines.Clear();
+
+      for (int i = 0; i < gameObjects.Length; ++i) {
+        string text = gameObjects[i];
+        Texture2D image = objectContent[i];
+
+        TextLine caption = new TextLine(text, Font, Color.Black, 0.75f);
+        caption.Align = TextAlignment.LEFT;
+        lines.Add(new ImageMenuLine(image, caption));
+      }
+
+      nextMenuEntry = new MenuButton("Next", Font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
       detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
 
-      backMenuEntry = new MenuButton("Back", font);
+      backMenuEntry = new MenuButton("Back", Font);
       backMenuEntry.Selected += BackMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
 
-      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry = new MenuButton("Exit", Font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
-
-      foreach ( string name in gameContent) {
-        objectContent.Add(shared.Load<Texture2D>(name));
-      }
     }
     
     /// <summary>
@@ -142,27 +154,7 @@ namespace PuzzlePathDimension {
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
-      int textPositionX = 100;
-      int textPositionY = 150;
-
       detailsTemplate.Draw(spriteBatch, gameTime);
-
-      spriteBatch.Begin();
-
-      foreach (string name in gameObjects) {
-        spriteBatch.DrawString(font, name, new Vector2(textPositionX, textPositionY), Color.Black, 0, Vector2.Zero, .75f, SpriteEffects.None, 0f);
-        textPositionY += font.LineSpacing + 20;
-      }
-
-      textPositionX = 400;
-      textPositionY = 150;
-
-      foreach (Texture2D name in objectContent) {
-        spriteBatch.Draw(name, new Rectangle(textPositionX, textPositionY, name.Width, name.Height), Color.White);
-        textPositionY += font.LineSpacing + 5 + name.Height / 2;
-      }
-
-      spriteBatch.End();
     }
 
 
