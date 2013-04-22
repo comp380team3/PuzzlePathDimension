@@ -50,7 +50,7 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
-      simulation = CreateTestLevel();
+      simulation = LoadLevel(LevelName);
 
       foundCollision = false;
     }
@@ -252,8 +252,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
-    internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/TestLevel.xml", content), content);
+    internal Simulation LoadLevel(string level) {
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/" + LevelName.Replace(" ", "") + ".xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;

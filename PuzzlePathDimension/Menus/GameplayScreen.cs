@@ -321,8 +321,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
-      ExitScreen();
-      ScreenList.AddScreen(new GameplayScreen(LevelName), ControllingPlayer);
+      simulation.Restart();
     }
   }
 }
