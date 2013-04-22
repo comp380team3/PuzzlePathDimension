@@ -18,15 +18,59 @@ namespace PuzzlePathDimension {
   /// in various hopefully useful ways.
   /// </summary>
   class OptionsMenuScreen : GameScreen {
-    static bool sound = true;
+    /// <summary>
+    /// The strings that represent the possible input types.
+    /// </summary>
     static string[] controllerType = { "Keyboard/Mouse", "Xbox 360 Gamepad" };
-    static int currentControllerType = 0;
 
+    /// <summary>
+    /// Whether sound is on or not.
+    /// </summary>
+    bool sound;
+    /// <summary>
+    /// The current input device being used.
+    /// </summary>
+    int currentControllerType; // could be AdapterType
+    /// <summary>
+    /// Whether the currently selected controller is connected.
+    /// </summary>
+    bool currentControllerConnected;
+
+    /// <summary>
+    /// The menu template that forms the basis of the options screen.
+    /// </summary>
     MenuTemplate menuTemplate = new MenuTemplate();
 
+    /// <summary>
+    /// The menu button that represents the sound option.
+    /// </summary>
     MenuButton soundMenuEntry;
+    /// <summary>
+    /// The menu button that represents the controller type option.
+    /// </summary>
     MenuButton controllerConfigurationMenuEntry;
+    /// <summary>
+    /// The menu button that, when selected, saves all changes made to the options.
+    /// </summary>
+    MenuButton apply;
+    /// <summary>
+    /// The menu button that, when selected, cancels all changes made to the options.
+    /// </summary>
     MenuButton back;
+
+    /// <summary>
+    /// The first line of text that warns that a controller is not connected.
+    /// </summary>
+    TextLine firstWarningLine;
+    /// <summary>
+    /// The first line of text that warns that a controller is not connected.
+    /// </summary>
+    TextLine secondWarningLine;
+
+    /// <summary>
+    /// The user's preferences.
+    /// </summary>
+    UserPrefs prefs;
 
     /// <summary>
     /// Constructor.
@@ -42,7 +86,6 @@ namespace PuzzlePathDimension {
 
       menuTemplate.Title = new TextLine("Options", font, new Color(192, 192, 192));
 
-
       IList<MenuButton> items = menuTemplate.Items;
 
       soundMenuEntry = new MenuButton(string.Empty, font);
@@ -53,10 +96,23 @@ namespace PuzzlePathDimension {
       controllerConfigurationMenuEntry.Selected += ControllerConfigurationMenuEntrySelected;
       items.Add(controllerConfigurationMenuEntry);
 
-      back = new MenuButton("back", font);
+      apply = new MenuButton("Apply Changes", font);
+      apply.Selected += OnApply;
+      items.Add(apply);
+
+      back = new MenuButton("Cancel", font);
       back.Selected += OnCancel;
       items.Add(back);
 
+      // Warning messages
+      firstWarningLine = new TextLine("The currently selected controller is not connected.", font, Color.Black);
+      secondWarningLine = new TextLine("The change will not take effect.", font, Color.Black);
+      
+      // Get the current settings of the game.
+      prefs = base.Prefs;
+      sound = prefs.PlaySounds;
+      currentControllerType = (int)prefs.ControllerType;
+      currentControllerConnected = true; // Well, it has to be to even open this menu (for now).
 
       SetMenuEntryText();
     }
@@ -80,24 +136,64 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
+      // Check whether the currently selected controller is connected. This is for
+      // the warning message.
+      IList<IVirtualAdapter> adapters = VirtualController.AvailableAdapters;
+      currentControllerConnected = adapters[currentControllerType].Connected;
+
       menuTemplate.TransitionPosition = TransitionPosition;
       menuTemplate.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       menuTemplate.Draw(spriteBatch, gameTime);
+
+      // Display a warning message if the currently selected controller isn't even connected.
+      if (!currentControllerConnected) {
+        // Um...should the template really be in charge of calling Begin and End? 
+        // Or should it be the Screen's job? - Jorenz
+        spriteBatch.Begin();
+
+        GraphicsCursor cursor = new GraphicsCursor();
+        cursor.Position = new Vector2(400, 400);
+
+        // Modify the alpha to fade text out during transitions.
+        cursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(cursor);
+
+        // Draw the warning messages.
+        firstWarningLine.Draw(spriteBatch, cursor, gameTime);
+        cursor.Y += 50;
+        secondWarningLine.Draw(spriteBatch, cursor, gameTime);
+
+        spriteBatch.End();
+      }
     }
 
     /// <summary>
     /// Fills in the latest values for the options screen menu text.
     /// </summary>
     void SetMenuEntryText() {
-      soundMenuEntry.Text = "Sound: " + (sound ? "on" : "off");
+      soundMenuEntry.Text = "Sound: " + (sound ? "On" : "Off");
       controllerConfigurationMenuEntry.Text = "Controller Type: " + controllerType[currentControllerType];
     }
 
+    void OnApply(object sender, PlayerIndexEventArgs e) {
+      // Apply any changes here.
+      prefs.PlaySounds = sound;
+
+      // Make sure the user doesn't accidentally make the game unplayable.
+      if (currentControllerConnected) {
+        prefs.ControllerType = (InputType)currentControllerType;
+        // There must be a better way of notifying the virtual controller. - Jorenz
+        // This variable is checked in Scene.Update().
+        prefs.ControllerChanged = true;
+      }
+
+      ExitScreen();
+    }
 
     void OnCancel(object sender, PlayerIndexEventArgs e) {
+      // Don't change anything.
       ExitScreen();
     }
 

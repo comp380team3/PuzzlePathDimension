@@ -1,7 +1,22 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace PuzzlePathDimension {
+  /// <summary>
+  /// The type of input device that input is being received from.
+  /// </summary>
+  public enum InputType {
+    /// <summary>
+    /// Corresponds to the keyboard and mouse combination.
+    /// </summary>
+    KeyboardMouse = 0,
+    /// <summary>
+    /// Corresponds to the Xbox 360 controller combination.
+    /// </summary>
+    Xbox360Controller
+  }
+
   /// <summary>
   /// The VirtualButtonState enum represents the two states of a digital button.
   /// </summary>
@@ -82,6 +97,11 @@ namespace PuzzlePathDimension {
     /// The total number of digital inputs that the virtual controller supports.
     /// </summary>
     private static readonly int DigitalInputsCount = Enum.GetNames(typeof(VirtualButtons)).Length;
+    /// <summary>
+    /// The adapters that are supported by the virtual controller.
+    /// </summary>
+    private static readonly IVirtualAdapter[] _availableAdapters = 
+      { new KeyboardMouseAdapter(), new Xbox360ControllerAdapter() };
 
     /// <summary>
     /// The array that contains the current state of all the buttons.
@@ -199,6 +219,15 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// Gets the list of available adapters.
+    /// </summary>
+    /// <remarks>This is needed because a 'readonly' array only makes the
+    /// reference to the array readonly, not the contents of the array.</remarks>
+    public static IList<IVirtualAdapter> AvailableAdapters {
+      get { return Array.AsReadOnly<IVirtualAdapter>(_availableAdapters); }
+    }
+
+    /// <summary>
     /// Constructs a VirtualController object.
     /// </summary>
     /// <param name="adapter">The VirtualAdapter object that will send input to the 
@@ -222,6 +251,14 @@ namespace PuzzlePathDimension {
 
       // Set the current adapter.
       _activeAdapter = adapter;
+    }
+
+    /// <summary>
+    /// Changes the active adapter by providing the type of adapter.
+    /// </summary>
+    /// <param name="type">The type of adapter to change the virtual controller to.</param>
+    public void ChangeAdapter(InputType type) {
+      _activeAdapter = _availableAdapters[(int)type];
     }
 
     /// <summary>

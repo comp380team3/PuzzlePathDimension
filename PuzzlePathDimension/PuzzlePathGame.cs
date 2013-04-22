@@ -15,7 +15,7 @@ namespace PuzzlePathDimension {
   /// </summary>
   public class PuzzlePathGame : Microsoft.Xna.Framework.Game {
     /// <summary>
-    /// Creates a Game1 object.
+    /// Creates a PuzzlePathGame object.
     /// </summary>
     public PuzzlePathGame() {
       // Set the resolution to 800x600
