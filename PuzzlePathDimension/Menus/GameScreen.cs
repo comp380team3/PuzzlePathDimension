@@ -85,6 +85,11 @@ namespace PuzzlePathDimension {
     public IScreenList ScreenList { get; internal set; }
 
     /// <summary>
+    /// Gets the user's set of preferences.
+    /// </summary>
+    public UserPrefs Prefs { get; set; }
+
+    /// <summary>
     /// Gets the index of the player who is currently controlling this screen,
     /// or null if it is accepting input from any player. This is used to lock
     /// the game to a specific player profile. The main menu responds to input

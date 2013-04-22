@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +15,10 @@ namespace PuzzlePathDimension {
 
   public class Scene : IScreenList {
     ScreenRenderer screenRenderer;
+    /// <summary>
+    /// The user's preferences.
+    /// </summary>
+    UserPrefs prefs;
 
     // The list of screens that will receive Update and Draw events.
     List<GameScreen> screens = new List<GameScreen>();
@@ -28,6 +32,8 @@ namespace PuzzlePathDimension {
 
     public Scene(ScreenRenderer screenRenderer) {
       this.screenRenderer = screenRenderer;
+
+      prefs = new UserPrefs();
     }
 
     public void LoadContent(ContentManager shared) {
@@ -52,6 +58,18 @@ namespace PuzzlePathDimension {
 
       bool otherScreenHasFocus = !hasFocus;
       bool coveredByOtherScreen = false;
+
+      // If the controller type changed due to the options menu, change the active adapter.
+      // Is there a better way of doing this?
+      if (prefs.ControllerChanged) {
+        prefs.ControllerChanged = false;
+        vtroller.ChangeAdapter(prefs.ControllerType);
+      }
+
+      // Read the keyboard and/or gamepad before we go through the screens.
+      // I moved it here because I couldn't find it at all and it makes more
+      // sense for it to be nearer to the HandleInput() call. - Jorenz
+      vtroller.Update();
 
       // Loop as long as there are screens waiting to be updated.
       while (screensToUpdate.Count > 0) {
@@ -110,6 +128,7 @@ namespace PuzzlePathDimension {
       screen.ControllingPlayer = controllingPlayer;
       screen.ScreenManager = screenRenderer;
       screen.ScreenList = this;
+      screen.Prefs = prefs;
       screen.IsExiting = false;
 
       // If we have a graphics device, tell the screen to load content.
