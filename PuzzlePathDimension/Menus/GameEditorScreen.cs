@@ -27,7 +27,7 @@ namespace PuzzlePathDimension {
     SpriteFont font;
     Boolean foundCollision, launchToolbox, toolboxLaunched;
     Platform addedPlatform;
-    ToolboxScreen confirmExitMessageBox;
+    ToolboxScreen toolbox;
 
     float pauseAlpha;
 
@@ -48,7 +48,7 @@ namespace PuzzlePathDimension {
         content = new ContentManager(shared.ServiceProvider, "Content");
 
       font = shared.Load<SpriteFont>("Font/textfont");
-      launchToolbox = toolboxLaunched =  false;
+      launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
       simulation = CreateTestLevel();
 
@@ -79,28 +79,23 @@ namespace PuzzlePathDimension {
         pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
       // Bail early if this isn't the active screen.
-      if (!IsActive)
-        return;
-      if (launchToolbox && !toolboxLaunched) {
-        String message = "Select a platform to add to the level";
-        confirmExitMessageBox = new ToolboxScreen(message);
-        ScreenList.AddScreen(confirmExitMessageBox, PlayerIndex.One);
-        launchToolbox = false;
-        toolboxLaunched = true;
-        //Console.WriteLine(addedPlatform.Origin)
-      }
+
+
       if (toolboxLaunched) {
-        addedPlatform = confirmExitMessageBox.Selected;
+        addedPlatform = toolbox.Selected;
       }
       if (addedPlatform != null) {
         Console.WriteLine(addedPlatform.Origin);
-        simulation.Platforms.Add(addedPlatform);
-        ScreenList.RemoveScreen(confirmExitMessageBox);
+        if (simulation.AdditionsLeft > 0) {
+          simulation.MoveablePlatforms.Add(addedPlatform);
+        }
+        ScreenList.RemoveScreen(toolbox);
         addedPlatform = null;
         toolboxLaunched = false;
 
       }
-      
+      if (!IsActive)
+        return;
     }
 
     /// <summary>
@@ -108,6 +103,26 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
+
+      // there was a bug where if you exit the toolbox without
+      // selecting a platform the toolbox was unreachable.
+      if (addedPlatform == null) {
+        toolboxLaunched = false;
+      }
+
+      if (launchToolbox && !toolboxLaunched) {
+        String message = "Select a platform to add to the level";
+        if (simulation.AdditionsLeft > 0) {
+          toolbox = new ToolboxScreen(message, false);
+        } else {
+          message += "\n    Platform addition limit reached";
+          toolbox = new ToolboxScreen(message, true);
+        }
+        ScreenList.AddScreen(toolbox, PlayerIndex.One);
+        launchToolbox = false;
+        toolboxLaunched = true;
+        //Console.WriteLine(addedPlatform.Origin)
+      }
 
       //Calls the UpdateMovement method to move object on the scree
       UpdateMovement();
@@ -120,11 +135,17 @@ namespace PuzzlePathDimension {
       }
 
       //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
-      if (previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton ==  ButtonState.Pressed) {
+      if (previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Pressed) {
         launchToolbox = true;
       }
 
-      if(!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)){
+      if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
+                      currentMouseState.LeftButton == ButtonState.Pressed) {
+        target = FindTarget(currentMouseState);
+        simulation.MoveablePlatforms.Remove((Platform)target);
+      }
+
+      if (!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         ScreenList.AddScreen(new GameplayScreen(simulation), ControllingPlayer);
 
       }
@@ -135,12 +156,6 @@ namespace PuzzlePathDimension {
         ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
       }
 
-      // TODO: Replace this restart mechanism
-      if (Keyboard.GetState().IsKeyDown(Keys.R) ||
-        GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
-        Console.WriteLine("Completely restarted.");
-        simulation.Restart();
-      }
     }
 
     /// <summary>
@@ -193,10 +208,9 @@ namespace PuzzlePathDimension {
       // Draw the goal onto the canvas.
       simulation.Goal.Draw(spriteBatch);
 
-      // Draw the platforms onto the canvas.
-      foreach (Platform platform in simulation.Platforms) {
-        platform.Draw(spriteBatch);
-      }
+
+
+
       // Draw the treasures onto the canvas.
       foreach (Treasure treasure in simulation.Treasures) {
         treasure.Draw(spriteBatch);
@@ -206,8 +220,13 @@ namespace PuzzlePathDimension {
         deathTrap.Draw(spriteBatch);
       }
 
-      // Since we are not playing do not draw the ball. 
-      //simulation.Ball.Draw(spriteBatch);
+      // Draw the platforms onto the canvas.
+      foreach (Platform platform in simulation.Platforms) {
+        platform.Draw(spriteBatch);
+      }
+      foreach (Platform platform in simulation.MoveablePlatforms) {
+        platform.Draw(spriteBatch);
+      }
 
       // Draw the launcher onto the canvas.
       simulation.Launcher.Draw(spriteBatch);
@@ -219,7 +238,7 @@ namespace PuzzlePathDimension {
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
     private void DrawText(SpriteBatch spriteBatch) {
       // Draw the number of balls left.
-      string attemptsText = "Balls left: " + simulation.AttemptsLeft;
+      string attemptsText = "Number of platforms available: " + simulation.AdditionsLeft;
       spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
 
 
@@ -256,14 +275,6 @@ namespace PuzzlePathDimension {
         if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Pressed) {
           float changeInX = currentMouseState.X - previousMouseState.X;
           float changeInY = currentMouseState.Y - previousMouseState.Y;
-          //if(currentMouseState.X < 5||  > Simulation.FieldWidth- 5){
-          //    changeInX = 0;
-          //}
-
-
-          //if (currentMouseState.Y < 5 || currentMouseState.Y > Simulation.FieldHeight - 5) {
-          //    changeInY = 0;
-          //}
           target.Move(new Vector2(changeInX, changeInY));
         }
         if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
@@ -273,25 +284,14 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// After clicking it will select the Level Object the user wants to move.
+    /// Looks for a ILevelObject that intersects with a mouse click.
     /// </summary>
     /// <param name="mousePosition"></param>
     /// <returns></returns>
     public ILevelObject FindTarget(MouseState mousePosition) {
-      if (simulation.Goal.IsSelected(mousePosition)) {
-        return simulation.Goal;
-      }
-      foreach (Platform platform in simulation.Platforms) {
+      foreach (Platform platform in simulation.MoveablePlatforms) {
         if (platform.IsSelected(mousePosition))
           return platform;
-      }
-      foreach (DeathTrap deathtrap in simulation.DeathTraps) {
-        if (deathtrap.IsSelected(mousePosition))
-          return deathtrap;
-      }
-      foreach (Treasure treasure in simulation.Treasures) {
-        if (treasure.IsSelected(mousePosition))
-          return treasure;
       }
       return null;
     }
