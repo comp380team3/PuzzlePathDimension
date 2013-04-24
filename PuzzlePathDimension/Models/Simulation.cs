@@ -521,12 +521,17 @@ namespace PuzzlePathDimension {
       foreach (Platform platform in _moveablePlatforms) {
         rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
       }
+      Rectangle launcherBoundingBox = new Rectangle((int)(_launcher.Position.X - 100), (int)(_launcher.Position.Y - 100), 200, 100);
       for (int i = 0; i < rects.Count; i++) {
         for (int j = i + 1; j < rects.Count; j++) {
           if (rects[i].Intersects(rects[j]))
             return true;
         }
+        if (rects[i].Intersects(launcherBoundingBox))
+          return true;
       }
+
+      
 
       //not accurate but it works for now.
       Rectangle circle;
