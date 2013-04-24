@@ -57,8 +57,8 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/textfont");
 
       // Create the hard-coded level.
-      if(simulation == null){
-      simulation = CreateTestLevel();
+      if (simulation == null) {
+        simulation = CreateTestLevel();
       }
 
       //Initialize the bodies in the simulation
@@ -66,7 +66,7 @@ namespace PuzzlePathDimension {
 
       // Set up the sounds.
       SetupSoundEvents();
-      
+
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
@@ -151,20 +151,24 @@ namespace PuzzlePathDimension {
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
-      } 
+      }
 
       Launcher launcher = simulation.Launcher;
 
       // Route user input to the appropriate action
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         simulation.HandleConfirm();
-      } else if (vtroller.IsButtonDown(VirtualButtons.Left)) {
+      }
+      if (vtroller.IsButtonDown(VirtualButtons.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Right)) {
+      }
+      if (vtroller.IsButtonDown(VirtualButtons.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Up)) {
+      }
+      if (vtroller.IsButtonDown(VirtualButtons.Up)) {
         launcher.AdjustMagnitude(0.25f);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Down)) {
+      }
+      if (vtroller.IsButtonDown(VirtualButtons.Down)) {
         launcher.AdjustMagnitude(-0.25f);
       }
 
@@ -298,7 +302,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation CreateTestLevel() {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/"+ LevelName.Replace(" ","") +".xml", content), content);
+      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/" + LevelName.Replace(" ", "") + ".xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
