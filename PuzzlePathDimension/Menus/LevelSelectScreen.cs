@@ -18,6 +18,8 @@ namespace PuzzlePathDimension {
 
       public string LevelName { get; set; }
 
+      public string FileName { get; set; }
+
       /// <summary>
       /// The score for the current level.
       /// </summary>
@@ -36,6 +38,8 @@ namespace PuzzlePathDimension {
 
     MenuTemplate menuTemplate = new MenuTemplate();
 
+    IList<MenuButton> items;
+
     /// <summary>
     /// Menu Button for the Level menu entry.
     /// </summary>
@@ -47,6 +51,16 @@ namespace PuzzlePathDimension {
     MenuButton exitMenuEntry;
 
     /// <summary>
+    /// Menu Button for the Next menu entry.
+    /// </summary>
+    MenuButton nextMenuEntry;
+
+    /// <summary>
+    /// Menu Button for the Back menu entry.
+    /// </summary>
+    MenuButton backMenuEntry;
+
+    /// <summary>
     /// List of LevelInfo structures.
     /// </summary>
     List<LevelInfo> levelSet;
@@ -54,7 +68,19 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Contains the information of the current level.
     /// </summary>
-    LevelInfo levelInfo; 
+    LevelInfo levelInfo;
+
+    int currentLevel;
+
+    int numberOfLevelsPerPage = 7;
+
+    int setOfLevels = 0;
+
+    int numberOfTimesNextSelected = 0;
+
+    ContentManager content;
+
+    SpriteFont font;
 
     #region Initialization
 
@@ -69,11 +95,14 @@ namespace PuzzlePathDimension {
       string[] levels = Directory.GetFiles(Content.RootDirectory + "\\Level");
       levelSet = new List<LevelInfo>();
       levelInfo = new LevelInfo();
+      currentLevel = 0;
 
-
+      // go through all the levels in the file
       foreach (string name in levels) {
         doc = new XmlDocument();
         doc.Load(name);
+
+        levelInfo.FileName = name;
 
         node = (XmlElement)doc.GetElementsByTagName("level")[0];
         levelInfo.LevelName = Convert.ToString(node.Attributes["name"].Value);
@@ -92,6 +121,8 @@ namespace PuzzlePathDimension {
 
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+      
+      items = menuTemplate.Items;
     }
 
     /// <summary>
@@ -100,21 +131,42 @@ namespace PuzzlePathDimension {
     /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+      font = shared.Load<SpriteFont>("Font/menufont");
+      content = shared;
 
       menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
 
-
-      IList<MenuButton> items = menuTemplate.Items;
-
-      foreach(LevelInfo level in levelSet) {
-        aLevelMenuEntry = new MenuButton(level.LevelName, font);
+      for (int count = 0; currentLevel < levelSet.Count && count < numberOfLevelsPerPage; count++) {
+        levelInfo = levelSet.ElementAt<LevelInfo>(currentLevel);
+        aLevelMenuEntry = new MenuButton(levelInfo.LevelName, font);
         items.Add(aLevelMenuEntry);
         aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
+        currentLevel = currentLevel + 1;
+        setOfLevels = count + 1;
       }
 
       exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
+      
+
+      nextMenuEntry = new MenuButton("Next", font);
+
+      backMenuEntry = new MenuButton("Back", font);
+
+      
+      nextMenuEntry.Selected += NextMenuEntrySelected;
+
+      
+      backMenuEntry.Selected += BackMenuEntrySelected;
+
+      if ((levelSet.Count - currentLevel) > 0) {
+          items.Add(nextMenuEntry);
+      } 
+
+      if ((currentLevel - numberOfLevelsPerPage) > 0) {
+          items.Add(backMenuEntry);
+      }
+
       items.Add(exitMenuEntry);
     }
 
@@ -150,6 +202,7 @@ namespace PuzzlePathDimension {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
       menuTemplate.TransitionPosition = TransitionPosition;
+
       menuTemplate.Update(gameTime);
     }
 
@@ -181,10 +234,38 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Level menu entry is selected.
     /// </summary>
     void ALevelMenuEntrySelected(int selected) {
+      if (currentLevel > numberOfLevelsPerPage * (numberOfTimesNextSelected)) {
+        selected = selected + (numberOfLevelsPerPage * (numberOfTimesNextSelected));
+      } else {
+        selected = selected + currentLevel - setOfLevels;
+      }
       LevelInfo level = levelSet.ElementAt<LevelInfo>(selected);
-      ScreenList.AddScreen(new LevelStatusScreen(level.Completed, level.LevelScore, level.LevelName, level.CompletionTime));
+      ScreenList.AddScreen(new LevelStatusScreen(level));
+    }
+
+    void NextMenuEntrySelected() {
+      turnPage(false);
+      numberOfTimesNextSelected++;
+    }
+
+    void BackMenuEntrySelected() {
+      turnPage(true);
     }
 
     #endregion
+
+    private void turnPage(bool back) {
+      items.Clear();
+      if (back) {
+        currentLevel = currentLevel - numberOfLevelsPerPage - setOfLevels;
+        LoadContent(content);
+        menuTemplate.SelectedItem = 0;//currentLevel - setOfLevels;
+      } else {
+        LoadContent(content);
+        menuTemplate.SelectedItem = 0;
+      }
+    }
+
+
   }
 }

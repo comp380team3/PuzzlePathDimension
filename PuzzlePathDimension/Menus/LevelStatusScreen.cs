@@ -40,6 +40,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string CompletionTime { get; private set; }
 
+    public string LevelFileName { get; private set; }
+
     private SpriteFont Font { get; set; }
 
 
@@ -50,14 +52,15 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, string levelName, string completionTime) {
+    public LevelStatusScreen(PuzzlePathDimension.LevelSelectScreen.LevelInfo levelInfo ) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-      Completed = completed;
-      LevelScore = levelScore;
-      LevelName = levelName;
-      CompletionTime = completionTime;
+      Completed = levelInfo.Completed;
+      LevelScore = levelInfo.LevelScore;
+      LevelName = levelInfo.LevelName;
+      CompletionTime = levelInfo.CompletionTime;
+      LevelFileName = levelInfo.FileName;
     }
 
     /// <summary>
@@ -143,7 +146,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected() {
-      LoadingScreen.Load(ScreenList, true, new GameEditorScreen(LevelName));
+      LoadingScreen.Load(ScreenList, true, new GameEditorScreen(LevelFileName));
     }
 
     protected void OnCancel() {

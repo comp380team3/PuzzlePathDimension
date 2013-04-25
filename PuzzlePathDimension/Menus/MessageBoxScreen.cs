@@ -105,6 +105,7 @@ namespace PuzzlePathDimension {
         MenuButton leftButton = new MenuButton(LeftButtonText, font);
         leftButton.Selected += CancelMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left] = leftButton;
+        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Left;
       }
 
       if (MiddleButtonText != null) {
@@ -117,7 +118,6 @@ namespace PuzzlePathDimension {
         MenuButton rightButton = new MenuButton(RightButtonText, font);
         rightButton.Selected += ConfirmMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
-        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
       }
     }
 

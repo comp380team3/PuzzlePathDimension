@@ -1,21 +1,14 @@
-//-----------------------------------------------------------------------------
-// MainMenuScreen.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  /// <summary>
-  /// The main menu screen is the first thing displayed when the game starts up.
-  /// </summary>
-  class MainMenuScreen : GameScreen {
+  class HowToPlayScreenContentList : GameScreen {
+
     MenuTemplate menuTemplate = new MenuTemplate();
 
     ContentManager content;
@@ -23,45 +16,45 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor
     /// </summary>
-    public MainMenuScreen() {
+    public HowToPlayScreenContentList() {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
-    
-    /// <summary>
-    /// Load the assets required for the Main Menu.
-    /// </summary>
-    /// <param name="shared"></param>
+
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
       content = shared;
 
-      menuTemplate.Title = new TextLine("Puzzle Path", font, new Color(192, 192, 192));
+      menuTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
 
       // List that contains the menu buttons
       IList<MenuButton> items = menuTemplate.Items;
 
       // Create the Menu Buttons, attach what happens for each entry,
       // and add the menu buttons to the list of buttons.
-      MenuButton playGameMenuEntry = new MenuButton("Play Game", font);
-      playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-      items.Add(playGameMenuEntry);
+      MenuButton gameDescriptionMenuEntry = new MenuButton("The Game's Objective", font);
+      gameDescriptionMenuEntry.Selected += GameObjectiveMenuEntrySelected;
+      items.Add(gameDescriptionMenuEntry);
 
-      MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
-      howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
-      items.Add(howToPlayMenuEntry);
+      MenuButton controlsDescriptionMenuEntry = new MenuButton("Controls", font);
+      controlsDescriptionMenuEntry.Selected += ControlsDescriptionMenuEntrySelected;
+      items.Add(controlsDescriptionMenuEntry);
 
-      MenuButton optionsMenuEntry = new MenuButton("Options", font);
-      optionsMenuEntry.Selected += OptionsMenuEntrySelected;
-      items.Add(optionsMenuEntry);
+      MenuButton gameObjectsDescriptionMenuEntry = new MenuButton("Game Objects", font);
+      gameObjectsDescriptionMenuEntry.Selected += GameObjectsDescriptionMenuEntrySelected;
+      items.Add(gameObjectsDescriptionMenuEntry);
 
-      MenuButton creditsMenuEntry = new MenuButton("Credits", font);
-      creditsMenuEntry.Selected += CreditsMenuEntrySelected;
-      items.Add(creditsMenuEntry);
+      MenuButton gameScreenShotMenuEntry = new MenuButton("Example", font);
+      gameScreenShotMenuEntry.Selected += GameScreenShotMenuEntrySelected;
+      items.Add(gameScreenShotMenuEntry);
 
-      MenuButton exitMenuEntry = new MenuButton("Exit", font);
+      MenuButton levelEditorDescriptionMenuEntry = new MenuButton("Editing Levels", font);
+      levelEditorDescriptionMenuEntry.Selected += LevelEditorDescriptionMenuEntrySelected;
+      items.Add(levelEditorDescriptionMenuEntry);
+
+      MenuButton exitMenuEntry = new MenuButton("Back To Main Menu", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
     }
@@ -114,54 +107,48 @@ namespace PuzzlePathDimension {
       menuTemplate.Draw(spriteBatch, gameTime);
     }
 
-
     /// <summary>
-    /// Event handler for when the Play Game menu entry is selected.
+    /// Event handler for when the Game Objective menu entry is selected.
     /// </summary>
-    void PlayGameMenuEntrySelected() {
-      ScreenList.AddScreen(new LevelSelectScreen(content));
+    void GameObjectiveMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreen1());
     }
 
     /// <summary>
-    /// Event handler for when the How To Play menu entry is selected.
+    /// Event handler for when the Game Objects description menu entry is selected.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void howToPlayMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreenContentList());
+    void GameObjectsDescriptionMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreen2());
     }
 
     /// <summary>
-    /// Event handler for when the Options menu entry is selected.
+    /// Event handler for when the Controls description menu entry is selected.
     /// </summary>
-    void OptionsMenuEntrySelected() {
-      ScreenList.AddScreen(new OptionsMenuScreen());
+    void ControlsDescriptionMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreen3());
     }
 
     /// <summary>
-    /// Event handler for when the Credits meny entry is selected.
+    /// Event handler for when the Game Screen Shot meny entry is selected.
     /// </summary>
-    void CreditsMenuEntrySelected() {
-      ScreenList.AddScreen(new CreditsMenuScreen());
+    void GameScreenShotMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreen4());
     }
 
     /// <summary>
-    /// When the user cancels the main menu, ask if they want to exit the sample.
+    /// Event handler for when the Level Editor description meny entry is selected.
     /// </summary>
-    void OnCancel() {
-      const string message = "Are you sure you want to exit the game?";
-
-      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
-      confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
-      ScreenList.AddScreen(confirmExitMessageBox);
+    void LevelEditorDescriptionMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreen5());
     }
 
     /// <summary>
-    /// Event handler for when the user selects ok on the "are you sure
-    /// you want to exit" message box.
+    /// When the user cancels the How to play screen content list.
     /// </summary>
-    void ConfirmExitMessageBoxAccepted() {
-      ScreenManager.Game.Exit();
+    protected void OnCancel() {
+      ExitScreen();
     }
   }
 }
