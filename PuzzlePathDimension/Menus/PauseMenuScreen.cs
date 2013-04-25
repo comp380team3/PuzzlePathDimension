@@ -67,7 +67,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         menuTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        OnCancel();
       }
     }
 
@@ -85,7 +85,7 @@ namespace PuzzlePathDimension {
     }
 
 
-    void OnCancel(object sender, PlayerIndexEventArgs e) {
+    void OnCancel() {
       ExitScreen();
     }
 
@@ -94,24 +94,24 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void RetryGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void RetryGameMenuEntrySelected() {
       // Put what happens when the person clicks retry
       const string message = "Are you sure you want to restart this level?";
 
       MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(message);
       confirmRetryMessageBox.Accepted += ConfirmRetryBoxAccepted;
-      ScreenList.AddScreen(confirmRetryMessageBox, ControllingPlayer);
+      ScreenList.AddScreen(confirmRetryMessageBox);
     }
 
     /// <summary>
     /// Event handler for when the Quit Game menu entry is selected.
     /// </summary>
-    void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void QuitGameMenuEntrySelected() {
       const string message = "Are you sure you want to quit this level?";
 
       MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(message);
       confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
-      ScreenList.AddScreen(confirmQuitMessageBox, ControllingPlayer);
+      ScreenList.AddScreen(confirmQuitMessageBox);
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ namespace PuzzlePathDimension {
     /// you want to quit" message box. This uses the loading screen to
     /// transition from the game back to the main menu screen.
     /// </summary>
-    void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
+    void ConfirmQuitMessageBoxAccepted() {
       LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
                                                      new MainMenuScreen());
     }
@@ -129,7 +129,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
+    void ConfirmRetryBoxAccepted() {
       simulation.Restart();
       ExitScreen();
     }

@@ -114,7 +114,7 @@ namespace PuzzlePathDimension {
     /// Confirm the currently selected menu button.
     /// </summary>
     public void Confirm() {
-      Items[SelectedItem].OnSelectEntry(PlayerIndex.One);
+      Items[SelectedItem].OnSelectEntry();
     }
   }
 }

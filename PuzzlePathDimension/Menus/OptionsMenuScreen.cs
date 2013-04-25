@@ -129,7 +129,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         menuTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        OnCancel();
       }
     }
 
@@ -177,7 +177,7 @@ namespace PuzzlePathDimension {
       controllerConfigurationMenuEntry.Text = "Controller Type: " + controllerType[currentControllerType];
     }
 
-    void OnApply(object sender, PlayerIndexEventArgs e) {
+    void OnApply() {
       // Apply any changes here.
       prefs.PlaySounds = sound;
 
@@ -192,7 +192,7 @@ namespace PuzzlePathDimension {
       ExitScreen();
     }
 
-    void OnCancel(object sender, PlayerIndexEventArgs e) {
+    void OnCancel() {
       // Don't change anything.
       ExitScreen();
     }
@@ -200,7 +200,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event handler for when the Sound menu entry is selected.
     /// </summary>
-    void SoundMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void SoundMenuEntrySelected() {
       sound = !sound;
 
       SetMenuEntryText();
@@ -209,7 +209,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event handler for when the Controller Configuration menu entry is selected.
     /// </summary>
-    void ControllerConfigurationMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void ControllerConfigurationMenuEntrySelected() {
       currentControllerType = (currentControllerType + 1) % controllerType.Length;
 
       SetMenuEntryText();

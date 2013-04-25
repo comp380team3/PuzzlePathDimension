@@ -110,7 +110,7 @@ namespace PuzzlePathDimension {
       foreach(LevelInfo level in levelSet) {
         aLevelMenuEntry = new MenuButton(level.LevelName, font);
         items.Add(aLevelMenuEntry);
-        aLevelMenuEntry.Selected += delegate(object sender, PlayerIndexEventArgs e) { ALevelMenuEntrySelected(sender, e, menuTemplate.SelectedItem); };
+        aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
       }
 
       exitMenuEntry = new MenuButton("Exit", font);
@@ -136,7 +136,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         menuTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        OnCancel();
       }
     }
 
@@ -172,17 +172,17 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void OnCancel(object sender, PlayerIndexEventArgs e) {
+    void OnCancel() {
       ExitScreen();
-      ScreenList.AddScreen(new MainMenuScreen(), e.PlayerIndex);
+      ScreenList.AddScreen(new MainMenuScreen());
     }
 
     /// <summary>
     /// Event handler for when the Level menu entry is selected.
     /// </summary>
-    void ALevelMenuEntrySelected(object sender, PlayerIndexEventArgs e,  int selected) {
+    void ALevelMenuEntrySelected(int selected) {
       LevelInfo level = levelSet.ElementAt<LevelInfo>(selected);
-      ScreenList.AddScreen(new LevelStatusScreen(level.Completed, level.LevelScore, level.LevelName, level.CompletionTime), e.PlayerIndex);
+      ScreenList.AddScreen(new LevelStatusScreen(level.Completed, level.LevelScore, level.LevelName, level.CompletionTime));
     }
 
     #endregion

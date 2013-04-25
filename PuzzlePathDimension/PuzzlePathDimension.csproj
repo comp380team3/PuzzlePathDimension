@@ -10,7 +10,8 @@
     <RootNamespace>PuzzlePathDimension</RootNamespace>
     <AssemblyName>PuzzlePathDimension</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>Reach</XnaProfile>
@@ -119,7 +120,6 @@
     <Compile Include="Menus\MessageBoxScreen.cs" />
     <Compile Include="Menus\OptionsMenuScreen.cs" />
     <Compile Include="Menus\PauseMenuScreen.cs" />
-    <Compile Include="Menus\PlayerIndexEventArgs.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="ScreenRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

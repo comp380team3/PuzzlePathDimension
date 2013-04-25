@@ -28,8 +28,8 @@ namespace PuzzlePathDimension {
       Content.RootDirectory = "Content";
 
       ScreenRenderer menus = new ScreenRenderer(this);
-      menus.Scene.AddScreen(new BackgroundScreen(), null);
-      menus.Scene.AddScreen(new MainMenuScreen(), null);
+      menus.Scene.AddScreen(new BackgroundScreen());
+      menus.Scene.AddScreen(new MainMenuScreen());
       Components.Add(menus);
 
       // Make the mouse visible

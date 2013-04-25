@@ -71,7 +71,7 @@ namespace PuzzlePathDimension {
     }
     SpriteFont font;
 
-    public event EventHandler<PlayerIndexEventArgs> Accepted;
+    public event Action Accepted;
 
 
     /// <summary>
@@ -159,7 +159,7 @@ namespace PuzzlePathDimension {
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
         if (Accepted != null)
-          Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
+          Accepted();
 
         ExitScreen();
       }

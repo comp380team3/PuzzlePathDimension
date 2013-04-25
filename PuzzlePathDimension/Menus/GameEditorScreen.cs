@@ -118,7 +118,7 @@ namespace PuzzlePathDimension {
           message += "\n    Platform addition limit reached";
           toolbox = new ToolboxScreen(message, true);
         }
-        ScreenList.AddScreen(toolbox, PlayerIndex.One);
+        ScreenList.AddScreen(toolbox);
         launchToolbox = false;
         toolboxLaunched = true;
         //Console.WriteLine(addedPlatform.Origin)
@@ -146,14 +146,14 @@ namespace PuzzlePathDimension {
       }
 
       if (!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        ScreenList.AddScreen(new GameplayScreen(simulation), ControllingPlayer);
+        ScreenList.AddScreen(new GameplayScreen(simulation));
 
       }
 
 
       //Pause Screen
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
+        ScreenList.AddScreen(new PauseMenuScreen(simulation));
       }
 
     }

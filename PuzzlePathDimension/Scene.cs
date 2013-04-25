@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
   public interface IScreenList {
-    void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer);
+    void AddScreen(GameScreen screen);
     void RemoveScreen(GameScreen screen);
 
     GameScreen[] GetScreens();
@@ -124,8 +124,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Adds a new screen to the screen manager.
     /// </summary>
-    public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer) {
-      screen.ControllingPlayer = controllingPlayer;
+    public void AddScreen(GameScreen screen) {
       screen.ScreenManager = screenRenderer;
       screen.ScreenList = this;
       screen.Prefs = prefs;

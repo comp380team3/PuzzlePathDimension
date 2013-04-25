@@ -48,8 +48,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string RightButtonText { get; set; }
 
-    public event EventHandler<PlayerIndexEventArgs> Accepted;
-    public event EventHandler<PlayerIndexEventArgs> Cancelled;
+    public event Action Accepted;
+    public event Action Cancelled;
 
 
     /// <summary>
@@ -149,16 +149,16 @@ namespace PuzzlePathDimension {
       } 
     }
 
-    void ConfirmMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void ConfirmMenuEntrySelected() {
       if (Accepted != null)
-        Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
+        Accepted();
 
       ExitScreen();
     }
 
-    void CancelMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void CancelMenuEntrySelected() {
       if (Cancelled != null)
-        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
+        Cancelled();
 
       ExitScreen();
     }
