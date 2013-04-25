@@ -126,7 +126,7 @@ namespace PuzzlePathDimension {
         completedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
         completedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
 
-        ScreenList.AddScreen(completedMessageBox, ControllingPlayer);
+        ScreenList.AddScreen(completedMessageBox);
       }
 
       if (simulation.CurrentState == SimulationState.Failed) {
@@ -135,7 +135,7 @@ namespace PuzzlePathDimension {
         failedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
         failedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
 
-        ScreenList.AddScreen(failedMessageBox, ControllingPlayer);
+        ScreenList.AddScreen(failedMessageBox);
       }
     }
 
@@ -150,7 +150,7 @@ namespace PuzzlePathDimension {
       // on PC if they are playing with a keyboard and have no gamepad at all!
 
       if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
+        ScreenList.AddScreen(new PauseMenuScreen(simulation));
       } 
 
       Launcher launcher = simulation.Launcher;
@@ -310,7 +310,7 @@ namespace PuzzlePathDimension {
     /// button on the message box. This uses the loading screen to
     /// transition from the game back to the level select screen.
     /// </summary>
-    void ConfirmLevelMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
+    void ConfirmLevelMessageBoxAccepted() {
       LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
                                                      new LevelSelectScreen(content));
     }
@@ -320,7 +320,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
+    void ConfirmRetryBoxAccepted() {
       simulation.Restart();
     }
   }

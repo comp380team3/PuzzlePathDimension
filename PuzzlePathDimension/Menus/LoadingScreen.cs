@@ -54,8 +54,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Activates the loading screen.
     /// </summary>
-    public static void Load(IScreenList screenList, bool loadingIsSlow,
-                            PlayerIndex? controllingPlayer,
+    public static void Load(IScreenList screenList,
+                            bool loadingIsSlow,
                             params GameScreen[] screensToLoad) {
       // Tell all the current screens to transition off.
       foreach (GameScreen screen in screenList.GetScreens())
@@ -65,7 +65,7 @@ namespace PuzzlePathDimension {
       LoadingScreen loadingScreen = new LoadingScreen(loadingIsSlow,
                                                       screensToLoad);
 
-      screenList.AddScreen(loadingScreen, controllingPlayer);
+      screenList.AddScreen(loadingScreen);
     }
 
 
@@ -83,7 +83,7 @@ namespace PuzzlePathDimension {
 
         foreach (GameScreen screen in screensToLoad) {
           if (screen != null) {
-            ScreenList.AddScreen(screen, ControllingPlayer);
+            ScreenList.AddScreen(screen);
           }
         }
 

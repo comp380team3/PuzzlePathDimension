@@ -108,7 +108,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         detailsTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        OnCancel();
       }
     }
 
@@ -142,11 +142,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void StartMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenList, true, e.PlayerIndex, new GameEditorScreen(LevelName));
+    void StartMenuEntrySelected() {
+      LoadingScreen.Load(ScreenList, true, new GameEditorScreen(LevelName));
     }
 
-    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+    protected void OnCancel() {
       ExitScreen();
     }
   }

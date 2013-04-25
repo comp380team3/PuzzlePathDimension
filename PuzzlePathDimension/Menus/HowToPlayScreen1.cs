@@ -91,7 +91,7 @@ namespace PuzzlePathDimension {
       if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
         detailsTemplate.Confirm();
       } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        OnCancel();
       }
     }
 
@@ -122,9 +122,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event handler for when the Next menu entry is selected.
     /// </summary>
-    void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void NextMenuEntrySelected() {
       ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen2(), e.PlayerIndex);
+      ScreenList.AddScreen(new HowToPlayScreen2());
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+    protected void OnCancel() {
       ExitScreen();
     }
   }

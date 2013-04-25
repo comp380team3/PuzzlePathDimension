@@ -37,15 +37,15 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event raised when the menu entry is selected.
     /// </summary>
-    public event EventHandler<PlayerIndexEventArgs> Selected;
+    public event Action Selected;
 
 
     /// <summary>
     /// Method for raising the Selected event.
     /// </summary>
-    public virtual void OnSelectEntry(PlayerIndex playerIndex) {
+    public virtual void OnSelectEntry() {
       if (Selected != null)
-        Selected(this, new PlayerIndexEventArgs(playerIndex));
+        Selected();
     }
 
 

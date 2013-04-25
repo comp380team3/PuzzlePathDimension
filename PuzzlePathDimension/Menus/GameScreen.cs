@@ -90,16 +90,6 @@ namespace PuzzlePathDimension {
     public UserPrefs Prefs { get; set; }
 
     /// <summary>
-    /// Gets the index of the player who is currently controlling this screen,
-    /// or null if it is accepting input from any player. This is used to lock
-    /// the game to a specific player profile. The main menu responds to input
-    /// from any connected gamepad, but whichever player makes a selection from
-    /// this menu is given control over all subsequent screens, so other gamepads
-    /// are inactive until the controlling player returns to the main menu.
-    /// </summary>
-    public PlayerIndex? ControllingPlayer { get; internal set; }
-
-    /// <summary>
     /// Checks whether this screen is active and can respond to user input.
     /// </summary>
     public bool IsActive {
