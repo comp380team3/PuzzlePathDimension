@@ -76,6 +76,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\Effects\AlphaEffect.cs" />

@@ -27,7 +27,7 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
-    
+
     /// <summary>
     /// Load the assets required for the Main Menu.
     /// </summary>
