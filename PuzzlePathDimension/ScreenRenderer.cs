@@ -21,10 +21,7 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenRenderer : DrawableGameComponent {
-    /// <summary>
-    /// The VirtualController object that provides input to the Screen objects.
-    /// </summary>
-    VirtualController vtroller = new VirtualController(new KeyboardMouseAdapter());
+    private TopLevelModel TopLevel { get; set; }
 
     // The rendering device that all screens share.
     SpriteBatch spriteBatch;
@@ -38,8 +35,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
-    public ScreenRenderer(Game game)
-        : base(game) {
+    public ScreenRenderer(Game game, TopLevelModel toplevel)
+      : base(game) {
+      TopLevel = toplevel;
       Scene = new Scene(this);
     }
 
@@ -74,7 +72,7 @@ namespace PuzzlePathDimension {
     /// Allows each screen to run logic.
     /// </summary>
     public override void Update(GameTime gameTime) {
-      Scene.Update(gameTime, vtroller, Game.IsActive);
+      Scene.Update(gameTime, TopLevel.Controller, Game.IsActive);
     }
 
     /// <summary>
