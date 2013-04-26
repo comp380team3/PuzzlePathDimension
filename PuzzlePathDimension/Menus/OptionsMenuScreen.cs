@@ -117,11 +117,12 @@ namespace PuzzlePathDimension {
       currentControllerConnected = true; // Well, it has to be to even open this menu (for now).
 
       SetMenuEntryText();
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Up:
         menuTemplate.SelectPrev();

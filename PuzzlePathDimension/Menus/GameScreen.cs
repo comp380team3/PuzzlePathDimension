@@ -96,7 +96,9 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Retrieves the game controller.
     /// </summary>
-    public WritableVirtualController Controller { get; set; }
+    public VirtualController Controller {
+      get { return TopLevel.Controller; }
+    }
 
 
     /// <summary>
@@ -122,7 +124,33 @@ namespace PuzzlePathDimension {
 
     public GameScreen(TopLevelModel topLevel) {
       TopLevel = topLevel;
-      Controller = new WritableVirtualController(TopLevel.Controller);
+
+      Controller.ButtonPressed += OnButtonPressed;
+      Controller.ButtonReleased += OnButtonReleased;
+      Controller.Connected += OnControllerConnected;
+      Controller.Disconnected += OnControllerDisconnected;
+      Controller.PointChanged += OnPointChanged;
+    }
+
+    /// <summary>
+    /// Tells the screen to go away. Unlike ScreenManager.RemoveScreen, which
+    /// instantly kills the screen, this method respects the transition timings
+    /// and will give the screen a chance to gradually transition off.
+    /// </summary>
+    public void ExitScreen() {
+      Controller.ButtonPressed -= OnButtonPressed;
+      Controller.ButtonReleased -= OnButtonReleased;
+      Controller.Connected -= OnControllerConnected;
+      Controller.Disconnected -= OnControllerDisconnected;
+      Controller.PointChanged -= OnPointChanged;
+
+      if (TransitionOffTime == TimeSpan.Zero) {
+        // If the screen has a zero transition time, remove it immediately.
+        ScreenList.RemoveScreen(this);
+      } else {
+        // Otherwise flag that it should transition off and then exit.
+        IsExiting = true;
+      }
     }
 
 
@@ -217,20 +245,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
 
-
-    /// <summary>
-    /// Tells the screen to go away. Unlike ScreenManager.RemoveScreen, which
-    /// instantly kills the screen, this method respects the transition timings
-    /// and will give the screen a chance to gradually transition off.
-    /// </summary>
-    public void ExitScreen() {
-      if (TransitionOffTime == TimeSpan.Zero) {
-        // If the screen has a zero transition time, remove it immediately.
-        ScreenList.RemoveScreen(this);
-      } else {
-        // Otherwise flag that it should transition off and then exit.
-        IsExiting = true;
-      }
-    }
+    /* Input-handling hooks */
+    protected virtual void OnButtonPressed(VirtualButtons button) { }
+    protected virtual void OnButtonReleased(VirtualButtons button) { }
+    protected virtual void OnControllerConnected() { }
+    protected virtual void OnControllerDisconnected() { }
+    protected virtual void OnPointChanged(Point point) { }
   }
 }

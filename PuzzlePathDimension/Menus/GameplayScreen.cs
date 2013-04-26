@@ -72,8 +72,6 @@ namespace PuzzlePathDimension {
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
       Game.ResetElapsedTime();
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
     /// <summary>
@@ -171,7 +169,10 @@ namespace PuzzlePathDimension {
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
     /// </summary>
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       // The game pauses either if the user presses the pause button, or if
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause

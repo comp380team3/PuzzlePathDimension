@@ -89,11 +89,12 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Left:
         detailsTemplate.SelectPrev();

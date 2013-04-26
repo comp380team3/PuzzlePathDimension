@@ -54,8 +54,6 @@ namespace PuzzlePathDimension {
       simulation = LoadLevel(LevelName);
 
       foundCollision = false;
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
     /// <summary>
@@ -149,7 +147,10 @@ namespace PuzzlePathDimension {
       }
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Confirm:
         if (!simulation.FindCollision())

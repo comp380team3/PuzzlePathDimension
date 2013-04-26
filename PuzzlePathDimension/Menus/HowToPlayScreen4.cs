@@ -55,11 +55,12 @@ namespace PuzzlePathDimension {
       detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
 
       helpImage = shared.Load<Texture2D>("Texture/PuzzlePathScreenShot");
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Left:
         detailsTemplate.SelectPrev();

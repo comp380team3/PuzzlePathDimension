@@ -109,11 +109,12 @@ namespace PuzzlePathDimension {
       exitMenuEntry = new MenuButton("Exit", Font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Left:
         detailsTemplate.SelectPrev();

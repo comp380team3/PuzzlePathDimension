@@ -51,15 +51,16 @@ namespace PuzzlePathDimension {
       MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       items.Add(quitGameMenuEntry);
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
     public override void UnloadContent() {
       base.UnloadContent();
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Up:
         menuTemplate.SelectPrev();

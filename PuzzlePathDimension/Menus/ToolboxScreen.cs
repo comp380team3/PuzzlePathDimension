@@ -123,8 +123,6 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/menufont");
       platformTexture = shared.Load<Texture2D>("Texture/platform");
       breakablePlatformTexture = shared.Load<Texture2D>("Texture/platform_breakable");
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
 
@@ -160,7 +158,10 @@ namespace PuzzlePathDimension {
       }
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       if (button == VirtualButtons.Back) {
         if (Accepted != null)
           Accepted();

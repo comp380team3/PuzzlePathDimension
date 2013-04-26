@@ -56,7 +56,7 @@ namespace PuzzlePathDimension {
       controller.InputType = InputType.KeyboardMouse;
       TopLevel.Controller = controller;
 
-      Scene scene = new Scene(controller);
+      Scene scene = new Scene();
       TopLevel.Scene = scene;
 
       // Create the input component.

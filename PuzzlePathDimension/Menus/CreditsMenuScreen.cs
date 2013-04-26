@@ -78,11 +78,12 @@ namespace PuzzlePathDimension {
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
       foreach (string name in Individuals)
         credits.Add(new TextLine(name, textFont, Color.Black, 1.25f));
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Left:
         detailsTemplate.SelectPrev();

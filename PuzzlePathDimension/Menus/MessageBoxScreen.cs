@@ -121,8 +121,6 @@ namespace PuzzlePathDimension {
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
         messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
       }
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
@@ -132,7 +130,10 @@ namespace PuzzlePathDimension {
       messageBoxTemplate.Update(gameTime);
     }
 
-    public void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Left:
         messageBoxTemplate.SelectPrev();

@@ -65,11 +65,12 @@ namespace PuzzlePathDimension {
       MenuButton exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
-
-      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    private void OnButtonReleased(VirtualButtons button) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (!IsActive)
+        return;
+
       switch (button) {
       case VirtualButtons.Up:
         menuTemplate.SelectPrev();
