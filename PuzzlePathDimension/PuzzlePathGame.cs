@@ -10,14 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 namespace PuzzlePathDimension {
-  // Please, please, please ensure that this does not become a god object.
-  public class TopLevelModel {
-    public WritableVirtualController Controller { get; set; }
-    public UserPrefs Prefs { get; set; }
-    public Game Game { get; set; }
-    public Scene Scene { get; set; }
-  }
-
   /// <summary>
   /// This is the main type for your game
   /// </summary>
