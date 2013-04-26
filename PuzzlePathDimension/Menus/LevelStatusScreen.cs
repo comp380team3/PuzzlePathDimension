@@ -88,27 +88,24 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
+
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    /// <summary>
-    /// Handle user input.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+    private void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         detailsTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        break;
+      case VirtualButtons.Right:
         detailsTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         detailsTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 

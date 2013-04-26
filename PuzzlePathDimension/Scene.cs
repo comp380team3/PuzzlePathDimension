@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -28,12 +29,21 @@ namespace PuzzlePathDimension {
     //   during the update process, and removed screens shouldn't be updated.
     List<GameScreen> screensToUpdate = new List<GameScreen>();
 
+    WritableVirtualController controller = null;
+
     public bool TraceEnabled { get; set; }
 
-    public Scene(ScreenRenderer screenRenderer) {
+    public Scene(ScreenRenderer screenRenderer, WritableVirtualController controller) {
       this.screenRenderer = screenRenderer;
+      this.controller = controller;
 
       prefs = new UserPrefs();
+
+      controller.ButtonPressed += OnButtonPressed;
+      controller.ButtonReleased += OnButtonReleased;
+      controller.Connected += OnConnected;
+      controller.Disconnected += OnDisconnected;
+      controller.PointChanged += OnPointChanged;
     }
 
     public void LoadContent(ContentManager shared) {
@@ -50,7 +60,7 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public void Update(GameTime gameTime, VirtualController vtroller, bool hasFocus) {
+    public void Update(GameTime gameTime, bool hasFocus) {
       // Make a copy of the master screen list, to avoid confusion if
       // the process of updating one screen adds or removes others.
       screensToUpdate.Clear();
@@ -63,13 +73,8 @@ namespace PuzzlePathDimension {
       // Is there a better way of doing this?
       if (prefs.ControllerChanged) {
         prefs.ControllerChanged = false;
-        vtroller.ChangeAdapter(prefs.ControllerType);
+        controller.InputType = prefs.ControllerType;
       }
-
-      // Read the keyboard and/or gamepad before we go through the screens.
-      // I moved it here because I couldn't find it at all and it makes more
-      // sense for it to be nearer to the HandleInput() call. - Jorenz
-      vtroller.Update();
 
       // Loop as long as there are screens waiting to be updated.
       while (screensToUpdate.Count > 0) {
@@ -85,7 +90,7 @@ namespace PuzzlePathDimension {
           // If this is the first active screen we came across,
           // give it a chance to handle input.
           if (!otherScreenHasFocus) {
-            screen.HandleInput(vtroller);
+            screen.HandleInput(controller);
             otherScreenHasFocus = true;
           }
 
@@ -129,6 +134,7 @@ namespace PuzzlePathDimension {
       screen.ScreenList = this;
       screen.Prefs = prefs;
       screen.IsExiting = false;
+      screen.Controller = new WritableVirtualController(controller);
 
       // If we have a graphics device, tell the screen to load content.
       if (screenRenderer.HasDevice) {
@@ -161,6 +167,45 @@ namespace PuzzlePathDimension {
     /// </summary>
     public GameScreen[] GetScreens() {
       return screens.ToArray();
+    }
+
+
+    private void WithActiveScreen(Action<GameScreen> action) {
+      GameScreen activeScreen = screens.Last((screen) =>
+        screen.ScreenState == ScreenState.TransitionOn ||
+        screen.ScreenState == ScreenState.Active);
+
+      action(activeScreen);
+    }
+
+    private void OnButtonPressed(VirtualButtons button) {
+      WithActiveScreen((screen) => {
+        screen.Controller.SetButtonState(button, true);
+      });
+    }
+
+    private void OnButtonReleased(VirtualButtons button) {
+      WithActiveScreen((screen) => {
+        screen.Controller.SetButtonState(button, false);
+      });
+    }
+
+    private void OnConnected() {
+      WithActiveScreen((screen) => {
+        screen.Controller.IsConnected = true;
+      });
+    }
+
+    private void OnDisconnected() {
+      WithActiveScreen((screen) => {
+        screen.Controller.IsConnected = false;
+      });
+    }
+
+    private void OnPointChanged(Point point) {
+      WithActiveScreen((screen) => {
+        screen.Controller.Point = point;
+      });
     }
   }
 }

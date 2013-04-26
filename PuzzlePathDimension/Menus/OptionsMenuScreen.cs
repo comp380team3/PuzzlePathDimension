@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -115,21 +116,24 @@ namespace PuzzlePathDimension {
       currentControllerConnected = true; // Well, it has to be to even open this menu (for now).
 
       SetMenuEntryText();
+
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    public override void HandleInput(VirtualController vtroller) {
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    private void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -138,8 +142,14 @@ namespace PuzzlePathDimension {
 
       // Check whether the currently selected controller is connected. This is for
       // the warning message.
-      IList<IVirtualAdapter> adapters = VirtualController.AvailableAdapters;
-      currentControllerConnected = adapters[currentControllerType].Connected;
+      switch ((InputType)currentControllerType) {
+      case InputType.KeyboardMouse:
+        currentControllerConnected = true;
+        break;
+      case InputType.Xbox360Controller:
+        currentControllerConnected = GamePad.GetState(PlayerIndex.One).IsConnected;
+        break;
+      }
 
       menuTemplate.TransitionPosition = TransitionPosition;
       menuTemplate.Update(gameTime);

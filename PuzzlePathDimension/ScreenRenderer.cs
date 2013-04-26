@@ -21,8 +21,6 @@ namespace PuzzlePathDimension {
   /// topmost active screen.
   /// </summary>
   public class ScreenRenderer : DrawableGameComponent {
-    private TopLevelModel TopLevel { get; set; }
-
     // The rendering device that all screens share.
     SpriteBatch spriteBatch;
 
@@ -37,8 +35,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public ScreenRenderer(Game game, TopLevelModel toplevel)
       : base(game) {
-      TopLevel = toplevel;
-      Scene = new Scene(this);
+      Scene = new Scene(this, toplevel.Controller);
     }
 
     /// <summary>
@@ -72,7 +69,7 @@ namespace PuzzlePathDimension {
     /// Allows each screen to run logic.
     /// </summary>
     public override void Update(GameTime gameTime) {
-      Scene.Update(gameTime, TopLevel.Controller, Game.IsActive);
+      Scene.Update(gameTime, Game.IsActive);
     }
 
     /// <summary>

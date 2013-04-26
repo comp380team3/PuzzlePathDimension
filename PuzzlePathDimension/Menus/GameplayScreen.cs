@@ -71,6 +71,8 @@ namespace PuzzlePathDimension {
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
       ScreenManager.Game.ResetElapsedTime();
+
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
     /// <summary>
@@ -139,32 +141,20 @@ namespace PuzzlePathDimension {
       }
     }
 
-    /// <summary>
-    /// Lets the game respond to player input. Unlike the Update method,
-    /// this will only be called when the gameplay screen is active.
-    /// </summary>
-    public override void HandleInput(VirtualController vtroller) {
-      // The game pauses either if the user presses the pause button, or if
-      // they unplug the active gamepad. This requires us to keep track of
-      // whether a gamepad was ever plugged in, because we don't want to pause
-      // on PC if they are playing with a keyboard and have no gamepad at all!
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(simulation));
-      } 
+    public override void HandleInput(VirtualController Controller) {
+      base.HandleInput(Controller);
 
       Launcher launcher = simulation.Launcher;
 
-      // Route user input to the appropriate action
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        simulation.HandleConfirm();
-      } else if (vtroller.IsButtonDown(VirtualButtons.Left)) {
+      if (Controller.IsButtonPressed(VirtualButtons.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Right)) {
+      } else if (Controller.IsButtonPressed(VirtualButtons.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Up)) {
+      }
+
+      if (Controller.IsButtonPressed(VirtualButtons.Up)) {
         launcher.AdjustMagnitude(0.25f);
-      } else if (vtroller.IsButtonDown(VirtualButtons.Down)) {
+      } else if (Controller.IsButtonPressed(VirtualButtons.Down)) {
         launcher.AdjustMagnitude(-0.25f);
       }
 
@@ -173,6 +163,27 @@ namespace PuzzlePathDimension {
         GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
+      }
+    }
+
+    /// <summary>
+    /// Lets the game respond to player input. Unlike the Update method,
+    /// this will only be called when the gameplay screen is active.
+    /// </summary>
+    private void OnButtonReleased(VirtualButtons button) {
+      // The game pauses either if the user presses the pause button, or if
+      // they unplug the active gamepad. This requires us to keep track of
+      // whether a gamepad was ever plugged in, because we don't want to pause
+      // on PC if they are playing with a keyboard and have no gamepad at all!
+
+      // Route user input to the appropriate action
+      switch (button) {
+      case VirtualButtons.Back:
+        ScreenList.AddScreen(new PauseMenuScreen(simulation));
+        break;
+      case VirtualButtons.Confirm:
+        simulation.HandleConfirm();
+        break;
       }
     }
 

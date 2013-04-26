@@ -119,6 +119,8 @@ namespace PuzzlePathDimension {
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
         messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
       }
+
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
@@ -128,25 +130,18 @@ namespace PuzzlePathDimension {
       messageBoxTemplate.Update(gameTime);
     }
 
-    /// <summary>
-    /// Responds to user input, accepting or cancelling the message box.
-    /// </summary>
-    public override void HandleInput(VirtualController vtroller) {
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        
+    public void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         messageBoxTemplate.SelectPrev();
-
-      } 
-      
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-
+        break;
+      case VirtualButtons.Right:
         messageBoxTemplate.SelectNext();
-
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         messageBoxTemplate.Confirm();
-      } 
+        break;
+      }
     }
 
     void ConfirmMenuEntrySelected() {

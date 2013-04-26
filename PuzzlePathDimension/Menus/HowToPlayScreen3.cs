@@ -75,29 +75,23 @@ namespace PuzzlePathDimension {
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
 
-
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    /// <summary>
-    /// Handle the input of the user. If the user wants to move
-    /// to a diffenrent menu entry, they can press left or right.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+    private void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         detailsTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        break;
+      case VirtualButtons.Right:
         detailsTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         detailsTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 

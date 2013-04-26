@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 namespace PuzzlePathDimension {
   // Please, please, please ensure that this does not become a god object.
   public class TopLevelModel {
-    public VirtualController Controller { get; set; }
+    public WritableVirtualController Controller { get; set; }
   }
 
   /// <summary>
@@ -45,14 +45,22 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // Create the graphical module.
+      // Initialize the top-level context model
+      WritableVirtualController controller = new WritableVirtualController();
+      controller.InputType = InputType.KeyboardMouse;
+      TopLevel.Controller = controller;
+
+      // Create the input component.
+      InputComponent input = new InputComponent(this, controller);
+      input.UpdateOrder = 0;
+      Components.Add(input);
+
+      // Create the graphical component.
       ScreenRenderer menus = new ScreenRenderer(this, TopLevel);
       menus.Scene.AddScreen(new BackgroundScreen());
       menus.Scene.AddScreen(new MainMenuScreen());
+      menus.UpdateOrder = 1;
       Components.Add(menus);
-
-      // Initialize the top-level context model
-      TopLevel.Controller = new VirtualController(new KeyboardMouseAdapter());
 
       // Initialize all sub-components.
       base.Initialize();

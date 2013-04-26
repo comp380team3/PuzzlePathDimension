@@ -64,29 +64,24 @@ namespace PuzzlePathDimension {
       MenuButton exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
+
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
-    /// <summary>
-    /// Handle the input from the user. Down moves the selected Menu Button
-    /// to the next Menu Button in the list. Up moves the selected Menu Button
-    /// to the previous Menu Button in the list.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    private void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 

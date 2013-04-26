@@ -33,7 +33,6 @@ namespace PuzzlePathDimension {
   public abstract class GameScreen {
     bool otherScreenHasFocus;
 
-
     /// <summary>
     /// Normally when one screen is brought up over the top of another,
     /// the first screen will transition off to make room for the new
@@ -90,6 +89,12 @@ namespace PuzzlePathDimension {
     public UserPrefs Prefs { get; set; }
 
     /// <summary>
+    /// Retrieves the game controller.
+    /// </summary>
+    public WritableVirtualController Controller { get; set; }
+
+
+    /// <summary>
     /// Checks whether this screen is active and can respond to user input.
     /// </summary>
     public bool IsActive {
@@ -119,7 +124,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Unload content for the screen.
     /// </summary>
-    public virtual void UnloadContent() { }
+    public virtual void UnloadContent() {
+    }
 
 
     /// <summary>

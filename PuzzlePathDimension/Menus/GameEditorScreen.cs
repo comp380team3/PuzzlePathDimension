@@ -53,6 +53,8 @@ namespace PuzzlePathDimension {
       simulation = LoadLevel(LevelName);
 
       foundCollision = false;
+
+      Controller.ButtonReleased += OnButtonReleased;
     }
 
     /// <summary>
@@ -144,18 +146,18 @@ namespace PuzzlePathDimension {
         target = FindTarget(currentMouseState);
         simulation.MoveablePlatforms.Remove((Platform)target);
       }
+    }
 
-      if (!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        ScreenList.AddScreen(new GameplayScreen(simulation));
-
-      }
-
-
-      //Pause Screen
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+    private void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Confirm:
+        if (!simulation.FindCollision())
+          ScreenList.AddScreen(new GameplayScreen(simulation));
+        break;
+      case VirtualButtons.Back:
         ScreenList.AddScreen(new PauseMenuScreen(simulation));
+        break;
       }
-
     }
 
     /// <summary>

@@ -76,6 +76,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InputComponent.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="Menus\GameEditorScreen.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="Menus\LevelSelectScreen.cs" />
     <Compile Include="Menus\LevelStatusScreen.cs" />
     <Compile Include="Input\KeyboardMouseAdapter.cs" />
-    <Compile Include="Input\IVirtualAdapter.cs" />
     <Compile Include="Input\VirtualController.cs" />
     <Compile Include="Input\Xbox360ControllerAdapter.cs" />
     <Compile Include="Menus\ToolboxScreen.cs" />
