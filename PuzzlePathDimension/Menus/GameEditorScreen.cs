@@ -90,7 +90,7 @@ namespace PuzzlePathDimension {
         if (simulation.AdditionsLeft > 0) {
           simulation.MoveablePlatforms.Add(addedPlatform);
         }
-        ScreenList.RemoveScreen(toolbox);
+        toolbox.ExitScreen();
         addedPlatform = null;
         toolboxLaunched = false;
 
