@@ -65,7 +65,7 @@ namespace PuzzlePathDimension {
       Components.Add(input);
 
       // Create the graphical component.
-      ScreenRenderer menus = new ScreenRenderer(this, scene);
+      RenderComponent menus = new RenderComponent(this, scene);
       TopLevel.Scene.AddScreen(new BackgroundScreen(TopLevel));
       TopLevel.Scene.AddScreen(new MainMenuScreen(TopLevel));
       menus.UpdateOrder = 1;

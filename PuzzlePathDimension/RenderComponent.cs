@@ -20,7 +20,7 @@ namespace PuzzlePathDimension {
   /// methods at the appropriate times, and automatically routes input to the
   /// topmost active screen.
   /// </summary>
-  public class ScreenRenderer : DrawableGameComponent {
+  public class RenderComponent : DrawableGameComponent {
     // The scene containing all current screens.
     public Scene Scene { get; private set; }
 
@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructs a new screen manager component.
     /// </summary>
-    public ScreenRenderer(Game game, Scene scene)
+    public RenderComponent(Game game, Scene scene)
       : base(game) {
       Scene = scene;
 
