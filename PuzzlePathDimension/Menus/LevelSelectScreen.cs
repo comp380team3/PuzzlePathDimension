@@ -173,7 +173,6 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void OnCancel() {
       ExitScreen();
-      ScreenList.AddScreen(new MainMenuScreen(TopLevel));
     }
 
     /// <summary>
