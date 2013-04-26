@@ -95,8 +95,6 @@ namespace PuzzlePathDimension {
         toolboxLaunched = false;
 
       }
-      if (!IsActive)
-        return;
     }
 
     /// <summary>
@@ -148,9 +146,6 @@ namespace PuzzlePathDimension {
     }
 
     protected override void OnButtonReleased(VirtualButtons button) {
-      if (!IsActive)
-        return;
-
       switch (button) {
       case VirtualButtons.Confirm:
         if (!simulation.FindCollision())

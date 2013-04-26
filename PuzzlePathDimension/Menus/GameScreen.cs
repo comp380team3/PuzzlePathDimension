@@ -125,11 +125,11 @@ namespace PuzzlePathDimension {
     public GameScreen(TopLevelModel topLevel) {
       TopLevel = topLevel;
 
-      Controller.ButtonPressed += OnButtonPressed;
-      Controller.ButtonReleased += OnButtonReleased;
       Controller.Connected += OnControllerConnected;
       Controller.Disconnected += OnControllerDisconnected;
-      Controller.PointChanged += OnPointChanged;
+      Controller.ButtonPressed += OnButtonPressed__;
+      Controller.ButtonReleased += OnButtonReleased__;
+      Controller.PointChanged += OnPointChanged__;
     }
 
     /// <summary>
@@ -138,11 +138,11 @@ namespace PuzzlePathDimension {
     /// and will give the screen a chance to gradually transition off.
     /// </summary>
     public void ExitScreen() {
-      Controller.ButtonPressed -= OnButtonPressed;
-      Controller.ButtonReleased -= OnButtonReleased;
       Controller.Connected -= OnControllerConnected;
       Controller.Disconnected -= OnControllerDisconnected;
-      Controller.PointChanged -= OnPointChanged;
+      Controller.ButtonPressed -= OnButtonPressed__;
+      Controller.ButtonReleased -= OnButtonReleased__;
+      Controller.PointChanged -= OnPointChanged__;
 
       if (TransitionOffTime == TimeSpan.Zero) {
         // If the screen has a zero transition time, remove it immediately.
@@ -202,7 +202,7 @@ namespace PuzzlePathDimension {
         }
       }
 
-      if (!otherScreenHasFocus)
+      if (IsActive)
         HandleInput(Controller);
     }
 
@@ -246,10 +246,25 @@ namespace PuzzlePathDimension {
     public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
 
     /* Input-handling hooks */
-    protected virtual void OnButtonPressed(VirtualButtons button) { }
-    protected virtual void OnButtonReleased(VirtualButtons button) { }
     protected virtual void OnControllerConnected() { }
     protected virtual void OnControllerDisconnected() { }
+    protected virtual void OnButtonPressed(VirtualButtons button) { }
+    protected virtual void OnButtonReleased(VirtualButtons button) { }
     protected virtual void OnPointChanged(Point point) { }
+
+    private void OnButtonPressed__(VirtualButtons button) {
+      if (IsActive)
+        OnButtonPressed(button);
+    }
+
+    private void OnButtonReleased__(VirtualButtons button) {
+      if (IsActive)
+        OnButtonReleased(button);
+    }
+
+    private void OnPointChanged__(Point point) {
+      if (IsActive)
+        OnPointChanged(point);
+    }
   }
 }

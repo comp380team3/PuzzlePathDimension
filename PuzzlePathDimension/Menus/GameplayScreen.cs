@@ -170,9 +170,6 @@ namespace PuzzlePathDimension {
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     protected override void OnButtonReleased(VirtualButtons button) {
-      if (!IsActive)
-        return;
-
       // The game pauses either if the user presses the pause button, or if
       // they unplug the active gamepad. This requires us to keep track of
       // whether a gamepad was ever plugged in, because we don't want to pause
@@ -324,7 +321,7 @@ namespace PuzzlePathDimension {
     /// transition from the game back to the level select screen.
     /// </summary>
     void ConfirmLevelMessageBoxAccepted() {
-      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new LevelSelectScreen(TopLevel, content));
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new MainMenuScreen(TopLevel), new LevelSelectScreen(TopLevel, content));
     }
 
     /// <summary>

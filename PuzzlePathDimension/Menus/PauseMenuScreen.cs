@@ -58,9 +58,6 @@ namespace PuzzlePathDimension {
     }
 
     protected override void OnButtonReleased(VirtualButtons button) {
-      if (!IsActive)
-        return;
-
       switch (button) {
       case VirtualButtons.Up:
         menuTemplate.SelectPrev();

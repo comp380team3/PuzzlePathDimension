@@ -159,9 +159,6 @@ namespace PuzzlePathDimension {
     }
 
     protected override void OnButtonReleased(VirtualButtons button) {
-      if (!IsActive)
-        return;
-
       if (button == VirtualButtons.Back) {
         if (Accepted != null)
           Accepted();
