@@ -40,7 +40,8 @@ namespace PuzzlePathDimension {
     ///<summary>
     ///Constructor
     ///<summary>
-    public CreditsMenuScreen() {
+    public CreditsMenuScreen(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }

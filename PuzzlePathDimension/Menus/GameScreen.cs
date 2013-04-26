@@ -76,17 +76,22 @@ namespace PuzzlePathDimension {
     /// </summary>
     public bool IsExiting { get; protected internal set; }
 
-    /// <summary>
-    /// Gets the manager that this screen belongs to.
-    /// </summary>
-    public ScreenRenderer ScreenManager { get; internal set; }
+    protected TopLevelModel TopLevel { get; private set; }
 
-    public IScreenList ScreenList { get; internal set; }
+    public Game Game {
+      get { return TopLevel.Game; }
+    }
+
+    public IScreenList ScreenList {
+      get { return TopLevel.Scene; }
+    }
 
     /// <summary>
     /// Gets the user's set of preferences.
     /// </summary>
-    public UserPrefs Prefs { get; set; }
+    public UserPrefs Prefs {
+      get { return TopLevel.Prefs; }
+    }
 
     /// <summary>
     /// Retrieves the game controller.
@@ -115,6 +120,11 @@ namespace PuzzlePathDimension {
       protected set { TransitionAlpha = 1f - value; }
     }
 
+    public GameScreen(TopLevelModel topLevel) {
+      TopLevel = topLevel;
+      Controller = new WritableVirtualController(TopLevel.Controller);
+    }
+
 
     /// <summary>
     /// Load graphics content for the screen.
@@ -124,8 +134,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Unload content for the screen.
     /// </summary>
-    public virtual void UnloadContent() {
-    }
+    public virtual void UnloadContent() { }
 
 
     /// <summary>
@@ -164,6 +173,9 @@ namespace PuzzlePathDimension {
           ScreenState = ScreenState.Active;
         }
       }
+
+      if (!otherScreenHasFocus)
+        HandleInput(Controller);
     }
 
     /// <summary>

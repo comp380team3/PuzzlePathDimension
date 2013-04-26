@@ -31,7 +31,8 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameEditorScreen(string levelName) {
+    public GameEditorScreen(TopLevelModel topLevel, string levelName)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -115,10 +116,10 @@ namespace PuzzlePathDimension {
       if (launchToolbox && !toolboxLaunched) {
         String message = "Select a platform to add to the level";
         if (simulation.AdditionsLeft > 0) {
-          toolbox = new ToolboxScreen(message, false);
+          toolbox = new ToolboxScreen(TopLevel, message, false);
         } else {
           message += "\n    Platform addition limit reached";
-          toolbox = new ToolboxScreen(message, true);
+          toolbox = new ToolboxScreen(TopLevel, message, true);
         }
         ScreenList.AddScreen(toolbox);
         launchToolbox = false;
@@ -152,10 +153,10 @@ namespace PuzzlePathDimension {
       switch (button) {
       case VirtualButtons.Confirm:
         if (!simulation.FindCollision())
-          ScreenList.AddScreen(new GameplayScreen(simulation));
+          ScreenList.AddScreen(new GameplayScreen(TopLevel, simulation));
         break;
       case VirtualButtons.Back:
-        ScreenList.AddScreen(new PauseMenuScreen(simulation));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
         break;
       }
     }

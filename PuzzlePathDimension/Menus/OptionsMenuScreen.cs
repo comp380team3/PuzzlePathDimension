@@ -76,7 +76,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor.
     /// </summary>
-    public OptionsMenuScreen() {
+    public OptionsMenuScreen(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -194,9 +195,7 @@ namespace PuzzlePathDimension {
       // Make sure the user doesn't accidentally make the game unplayable.
       if (currentControllerConnected) {
         prefs.ControllerType = (InputType)currentControllerType;
-        // There must be a better way of notifying the virtual controller. - Jorenz
-        // This variable is checked in Scene.Update().
-        prefs.ControllerChanged = true;
+        Controller.InputType = prefs.ControllerType;
       }
 
       ExitScreen();

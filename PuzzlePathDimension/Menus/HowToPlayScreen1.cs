@@ -41,7 +41,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Contructor
     /// </summary>
-    public HowToPlayScreen1() {
+    public HowToPlayScreen1(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -120,7 +121,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     void NextMenuEntrySelected() {
       ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen2());
+      ScreenList.AddScreen(new HowToPlayScreen2(TopLevel));
     }
 
     /// <summary>

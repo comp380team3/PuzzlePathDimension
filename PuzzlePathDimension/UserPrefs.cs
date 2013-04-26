@@ -21,18 +21,11 @@ namespace PuzzlePathDimension {
     public InputType ControllerType { get; set; }
 
     /// <summary>
-    /// Gets or sets whether the active controller type was changed. This is mainly for
-    /// the virtual controller's use. (Maybe just move it there?)
-    /// </summary>
-    public bool ControllerChanged { get; set; }
-
-    /// <summary>
     /// Constructs a UserPrefs object.
     /// </summary>
     public UserPrefs() {
       PlaySounds = true;
       ControllerType = 0;
-      ControllerChanged = false;
     }
   }
 }

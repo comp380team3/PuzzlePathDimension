@@ -23,7 +23,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor
     /// </summary>
-    public MainMenuScreen() {
+    public MainMenuScreen(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -114,7 +115,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Play Game menu entry is selected.
     /// </summary>
     void PlayGameMenuEntrySelected() {
-      ScreenList.AddScreen(new LevelSelectScreen(content));
+      ScreenList.AddScreen(new LevelSelectScreen(TopLevel, content));
     }
 
     /// <summary>
@@ -123,21 +124,21 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void howToPlayMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreen1());
+      ScreenList.AddScreen(new HowToPlayScreen1(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Options menu entry is selected.
     /// </summary>
     void OptionsMenuEntrySelected() {
-      ScreenList.AddScreen(new OptionsMenuScreen());
+      ScreenList.AddScreen(new OptionsMenuScreen(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Credits meny entry is selected.
     /// </summary>
     void CreditsMenuEntrySelected() {
-      ScreenList.AddScreen(new CreditsMenuScreen());
+      ScreenList.AddScreen(new CreditsMenuScreen(TopLevel));
     }
 
     /// <summary>
@@ -146,7 +147,7 @@ namespace PuzzlePathDimension {
     void OnCancel() {
       const string message = "Are you sure you want to exit the game?";
 
-      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
+      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(TopLevel, message);
       confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
       ScreenList.AddScreen(confirmExitMessageBox);
     }
@@ -156,7 +157,7 @@ namespace PuzzlePathDimension {
     /// you want to exit" message box.
     /// </summary>
     void ConfirmExitMessageBoxAccepted() {
-      ScreenManager.Game.Exit();
+      Game.Exit();
     }
   }
 }

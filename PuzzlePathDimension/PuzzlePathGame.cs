@@ -13,6 +13,9 @@ namespace PuzzlePathDimension {
   // Please, please, please ensure that this does not become a god object.
   public class TopLevelModel {
     public WritableVirtualController Controller { get; set; }
+    public UserPrefs Prefs { get; set; }
+    public Game Game { get; set; }
+    public Scene Scene { get; set; }
   }
 
   /// <summary>
@@ -45,10 +48,16 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
-      // Initialize the top-level context model
+      // Bootstrap the top-level context model
+      TopLevel.Game = this;
+      TopLevel.Prefs = new UserPrefs();
+
       WritableVirtualController controller = new WritableVirtualController();
       controller.InputType = InputType.KeyboardMouse;
       TopLevel.Controller = controller;
+
+      Scene scene = new Scene(controller);
+      TopLevel.Scene = scene;
 
       // Create the input component.
       InputComponent input = new InputComponent(this, controller);
@@ -56,9 +65,9 @@ namespace PuzzlePathDimension {
       Components.Add(input);
 
       // Create the graphical component.
-      ScreenRenderer menus = new ScreenRenderer(this, TopLevel);
-      menus.Scene.AddScreen(new BackgroundScreen());
-      menus.Scene.AddScreen(new MainMenuScreen());
+      ScreenRenderer menus = new ScreenRenderer(this, scene);
+      TopLevel.Scene.AddScreen(new BackgroundScreen(TopLevel));
+      TopLevel.Scene.AddScreen(new MainMenuScreen(TopLevel));
       menus.UpdateOrder = 1;
       Components.Add(menus);
 

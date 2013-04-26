@@ -26,8 +26,8 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameplayScreen(string levelName) {
-
+    public GameplayScreen(TopLevelModel topLevel, string levelName)
+      : base(topLevel) {
       LevelName = levelName;
 
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -39,7 +39,8 @@ namespace PuzzlePathDimension {
     /// Initializes the GamePlayScreen with a simulation already built.
     /// </summary>
     /// <param name="sim"></param>
-    public GameplayScreen(Simulation sim) {
+    public GameplayScreen(TopLevelModel topLevel, Simulation sim)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       simulation = sim;
@@ -70,7 +71,7 @@ namespace PuzzlePathDimension {
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
-      ScreenManager.Game.ResetElapsedTime();
+      Game.ResetElapsedTime();
 
       Controller.ButtonReleased += OnButtonReleased;
     }
@@ -123,7 +124,7 @@ namespace PuzzlePathDimension {
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
       if (simulation.CurrentState == SimulationState.Completed) {
-        MessageBoxScreen completedMessageBox = new MessageBoxScreen("Congratulations, Level Completed!",
+        MessageBoxScreen completedMessageBox = new MessageBoxScreen(TopLevel, "Congratulations, Level Completed!",
                                                                     "Retry", null, "Level Select");
         completedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
         completedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
@@ -132,7 +133,7 @@ namespace PuzzlePathDimension {
       }
 
       if (simulation.CurrentState == SimulationState.Failed) {
-        MessageBoxScreen failedMessageBox = new MessageBoxScreen("Level Failed. Please try again.",
+        MessageBoxScreen failedMessageBox = new MessageBoxScreen(TopLevel, "Level Failed. Please try again.",
                                                                  "Retry", null, "Level Select");
         failedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
         failedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
@@ -179,7 +180,7 @@ namespace PuzzlePathDimension {
       // Route user input to the appropriate action
       switch (button) {
       case VirtualButtons.Back:
-        ScreenList.AddScreen(new PauseMenuScreen(simulation));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
         break;
       case VirtualButtons.Confirm:
         simulation.HandleConfirm();
@@ -322,8 +323,7 @@ namespace PuzzlePathDimension {
     /// transition from the game back to the level select screen.
     /// </summary>
     void ConfirmLevelMessageBoxAccepted() {
-      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
-                                                     new LevelSelectScreen(content));
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new LevelSelectScreen(TopLevel, content));
     }
 
     /// <summary>

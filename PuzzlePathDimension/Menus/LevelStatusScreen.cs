@@ -50,7 +50,8 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, string levelName, string completionTime) {
+    public LevelStatusScreen(TopLevelModel topLevel, bool completed, int levelScore, string levelName, string completionTime)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -140,7 +141,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected() {
-      LoadingScreen.Load(ScreenList, true, new GameEditorScreen(LevelName));
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
     }
 
     protected void OnCancel() {
