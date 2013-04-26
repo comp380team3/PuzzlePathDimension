@@ -23,7 +23,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor.
     /// </summary>
-    public PauseMenuScreen(Simulation simulation) {
+    public PauseMenuScreen(TopLevelModel topLevel, Simulation simulation)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -52,22 +53,24 @@ namespace PuzzlePathDimension {
       items.Add(quitGameMenuEntry);
     }
 
+    public override void UnloadContent() {
+      base.UnloadContent();
+    }
 
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -98,7 +101,7 @@ namespace PuzzlePathDimension {
       // Put what happens when the person clicks retry
       const string message = "Are you sure you want to restart this level?";
 
-      MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(message);
+      MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(TopLevel, message);
       confirmRetryMessageBox.Accepted += ConfirmRetryBoxAccepted;
       ScreenList.AddScreen(confirmRetryMessageBox);
     }
@@ -109,7 +112,7 @@ namespace PuzzlePathDimension {
     void QuitGameMenuEntrySelected() {
       const string message = "Are you sure you want to quit this level?";
 
-      MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(message);
+      MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(TopLevel, message);
       confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
       ScreenList.AddScreen(confirmQuitMessageBox);
     }
@@ -120,8 +123,7 @@ namespace PuzzlePathDimension {
     /// transition from the game back to the main menu screen.
     /// </summary>
     void ConfirmQuitMessageBoxAccepted() {
-      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
-                                                     new MainMenuScreen());
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new MainMenuScreen(TopLevel));
     }
 
     /// <summary>

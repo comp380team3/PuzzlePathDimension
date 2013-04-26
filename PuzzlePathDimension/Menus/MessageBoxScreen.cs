@@ -56,7 +56,8 @@ namespace PuzzlePathDimension {
     /// Constructor automatically includes a Left button to Cancel
     /// and a Right button to Confirm the message. 
     /// </summary>
-    public MessageBoxScreen(string message) {
+    public MessageBoxScreen(TopLevelModel topLevel, string message)
+      : base(topLevel) {
 
         this.title = message; // Added. - Jorenz
 
@@ -75,7 +76,8 @@ namespace PuzzlePathDimension {
     /// of the three Buttons available, and to allows the caller
     /// to specify the text of the button.
     /// </summary>
-    public MessageBoxScreen(string message, string leftButtonText, string middleButtonText, string rightButtonText) {
+    public MessageBoxScreen(TopLevelModel topLevel, string message, string leftButtonText, string middleButtonText, string rightButtonText)
+      : base(topLevel) {
 
       this.title = message;
 
@@ -128,25 +130,18 @@ namespace PuzzlePathDimension {
       messageBoxTemplate.Update(gameTime);
     }
 
-    /// <summary>
-    /// Responds to user input, accepting or cancelling the message box.
-    /// </summary>
-    public override void HandleInput(VirtualController vtroller) {
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         messageBoxTemplate.SelectPrev();
-
-      } 
-      
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-
+        break;
+      case VirtualButtons.Right:
         messageBoxTemplate.SelectNext();
-
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         messageBoxTemplate.Confirm();
-      } 
+        break;
+      }
     }
 
     void ConfirmMenuEntrySelected() {

@@ -62,7 +62,8 @@ namespace PuzzlePathDimension {
     /// Contructor
     /// Read an xml file and obtain information for each level in the xml file.
     /// </summary>
-    public LevelSelectScreen(ContentManager Content) {
+    public LevelSelectScreen(TopLevelModel topLevel, ContentManager Content)
+      : base(topLevel) {
 
       XmlDocument doc;
       XmlElement node;
@@ -118,25 +119,20 @@ namespace PuzzlePathDimension {
       items.Add(exitMenuEntry);
     }
 
-    /// <summary>
-    /// Handle user Input.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -174,7 +170,6 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void OnCancel() {
       ExitScreen();
-      ScreenList.AddScreen(new MainMenuScreen());
     }
 
     /// <summary>
@@ -182,7 +177,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     void ALevelMenuEntrySelected(int selected) {
       LevelInfo level = levelSet.ElementAt<LevelInfo>(selected);
-      ScreenList.AddScreen(new LevelStatusScreen(level.Completed, level.LevelScore, level.LevelName, level.CompletionTime));
+      ScreenList.AddScreen(new LevelStatusScreen(TopLevel, level.Completed, level.LevelScore, level.LevelName, level.CompletionTime));
     }
 
     #endregion

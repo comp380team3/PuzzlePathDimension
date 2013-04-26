@@ -41,7 +41,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Contructor
     /// </summary>
-    public HowToPlayScreen3() {
+    public HowToPlayScreen3(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -74,30 +75,22 @@ namespace PuzzlePathDimension {
       exitMenuEntry = new MenuButton("Exit", titleFont);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
-
-
     }
 
-    /// <summary>
-    /// Handle the input of the user. If the user wants to move
-    /// to a diffenrent menu entry, they can press left or right.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         detailsTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        break;
+      case VirtualButtons.Right:
         detailsTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         detailsTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -131,7 +124,7 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void NextMenuEntrySelected() {
       ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen4());
+      ScreenList.AddScreen(new HowToPlayScreen4(TopLevel));
     }
 
     /// <summary>
@@ -141,7 +134,7 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void BackMenuEntrySelected() {
       ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen2());
+      ScreenList.AddScreen(new HowToPlayScreen2(TopLevel));
     }
 
     /// <summary>

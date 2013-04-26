@@ -23,7 +23,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor.
     /// </summary>
-    public BackgroundScreen() {
+    public BackgroundScreen(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }

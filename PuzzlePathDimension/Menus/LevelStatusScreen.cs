@@ -50,7 +50,8 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, string levelName, string completionTime) {
+    public LevelStatusScreen(TopLevelModel topLevel, bool completed, int levelScore, string levelName, string completionTime)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -90,25 +91,20 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
-    /// <summary>
-    /// Handle user input.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         detailsTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        break;
+      case VirtualButtons.Right:
         detailsTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         detailsTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -143,7 +139,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected() {
-      LoadingScreen.Load(ScreenList, true, new GameEditorScreen(LevelName));
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
     }
 
     protected void OnCancel() {
