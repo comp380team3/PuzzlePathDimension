@@ -152,7 +152,7 @@ namespace PuzzlePathDimension {
       const string message = "Are you sure you want to exit the game?";
 
       MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
-      confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
+      confirmExitMessageBox.RightButton += ConfirmExitMessageBoxAccepted;
       ScreenList.AddScreen(confirmExitMessageBox);
     }
 

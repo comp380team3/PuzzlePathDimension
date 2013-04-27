@@ -19,6 +19,7 @@ namespace PuzzlePathDimension {
   class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
     Simulation simulation;
+    ContentManager content;
 
     /// <summary>
     /// Constructor.
@@ -33,6 +34,7 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+      content = shared;
 
       menuTemplate.Title = new TextLine("Paused", font, new Color(192, 192, 192));
 
@@ -46,6 +48,10 @@ namespace PuzzlePathDimension {
       MenuButton retryGameMenuEntry = new MenuButton("Retry Level", font);
       retryGameMenuEntry.Selected += RetryGameMenuEntrySelected;
       items.Add(retryGameMenuEntry);
+
+      MenuButton levelSelectMenuEntry = new MenuButton("Level Select", font);
+      levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
+      items.Add(levelSelectMenuEntry);
 
       MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
@@ -84,7 +90,9 @@ namespace PuzzlePathDimension {
       menuTemplate.Draw(spriteBatch, gameTime);
     }
 
-
+    /// <summary>
+    /// Event handler when the exit menu entry is selected.
+    /// </summary>
     void OnCancel() {
       ExitScreen();
     }
@@ -99,7 +107,7 @@ namespace PuzzlePathDimension {
       const string message = "Are you sure you want to restart this level?";
 
       MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(message);
-      confirmRetryMessageBox.Accepted += ConfirmRetryBoxAccepted;
+      confirmRetryMessageBox.RightButton += ConfirmRetryBoxAccepted;
       ScreenList.AddScreen(confirmRetryMessageBox);
     }
 
@@ -110,8 +118,18 @@ namespace PuzzlePathDimension {
       const string message = "Are you sure you want to quit this level?";
 
       MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(message);
-      confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
+      confirmQuitMessageBox.RightButton += ConfirmQuitMessageBoxAccepted;
       ScreenList.AddScreen(confirmQuitMessageBox);
+    }
+
+    /// <summary>
+    /// Event handler for when the Level Select menu entry is selected.
+    /// </summary>
+    void LevelSelectMenuEntrySelected() {
+      const string message = "Are you sure you want to quit this level?";
+      MessageBoxScreen confirmLevelSelectMessageBox = new MessageBoxScreen(message);
+      confirmLevelSelectMessageBox.RightButton += ConfirmLevelSelectMessageBoxAccepted;
+      ScreenList.AddScreen(confirmLevelSelectMessageBox);
     }
 
     /// <summary>
@@ -125,13 +143,19 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Event handler for when the user selects the Retry menu entry.
+    /// Event handler for when the user selects confirm when the Retry menu entry.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     void ConfirmRetryBoxAccepted() {
       simulation.Restart();
       ExitScreen();
+    }
+
+    /// <summary>
+    /// Event handler for when the user selects confirm for the level select menu entry.
+    /// </summary>
+    void ConfirmLevelSelectMessageBoxAccepted() {
+      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
+                                                    new LevelSelectScreen(content));
     }
   }
 }

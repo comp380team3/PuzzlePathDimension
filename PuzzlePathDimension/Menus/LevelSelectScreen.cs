@@ -16,8 +16,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     public struct LevelInfo {
 
+      /// <summary>
+      /// The name for the current level.
+      /// </summary>
       public string LevelName { get; set; }
 
+      /// <summary>
+      /// The file name for the current level.
+      /// </summary>
       public string FileName { get; set; }
 
       /// <summary>
@@ -36,8 +42,14 @@ namespace PuzzlePathDimension {
       public string CompletionTime { get; set; }
     }
 
+    /// <summary>
+    /// Menu template
+    /// </summary>
     MenuTemplate menuTemplate = new MenuTemplate();
 
+    /// <summary>
+    /// List of level menu entries and menu buttons.
+    /// </summary>
     IList<MenuButton> items;
 
     /// <summary>
@@ -70,12 +82,29 @@ namespace PuzzlePathDimension {
     /// </summary>
     LevelInfo levelInfo;
 
-    int currentLevel;
+    /// <summary>
+    /// Number that has the location of the current level in a list of levels.
+    /// </summary>
+    public int CurrentLevel { get; set; }
 
+    /// <summary>
+    /// List of the levels
+    /// </summary>
+    public string[] Levels { get; private set; }
+
+    /// <summary>
+    /// Maximum number of levels that are displayed to the screen. 
+    /// </summary>
     int numberOfLevelsPerPage = 7;
 
+    /// <summary>
+    /// The set of levels that have been shown on the screen.
+    /// </summary>
     int setOfLevels = 0;
 
+    /// <summary>
+    /// Keeps track of the number of times the user selects the next menu entry.
+    /// </summary>
     int numberOfTimesNextSelected = 0;
 
     ContentManager content;
@@ -92,13 +121,13 @@ namespace PuzzlePathDimension {
 
       XmlDocument doc;
       XmlElement node;
-      string[] levels = Directory.GetFiles(Content.RootDirectory + "\\Level");
+      Levels = Directory.GetFiles(Content.RootDirectory + "\\Level");
       levelSet = new List<LevelInfo>();
       levelInfo = new LevelInfo();
-      currentLevel = 0;
+      CurrentLevel = 0;
 
       // go through all the levels in the file
-      foreach (string name in levels) {
+      foreach (string name in Levels) {
         doc = new XmlDocument();
         doc.Load(name);
 
@@ -136,12 +165,12 @@ namespace PuzzlePathDimension {
 
       menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
 
-      for (int count = 0; currentLevel < levelSet.Count && count < numberOfLevelsPerPage; count++) {
-        levelInfo = levelSet.ElementAt<LevelInfo>(currentLevel);
+      for (int count = 0; CurrentLevel < levelSet.Count && count < numberOfLevelsPerPage; count++) {
+        levelInfo = levelSet.ElementAt<LevelInfo>(CurrentLevel);
         aLevelMenuEntry = new MenuButton(levelInfo.LevelName, font);
         items.Add(aLevelMenuEntry);
         aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
-        currentLevel = currentLevel + 1;
+        CurrentLevel = CurrentLevel + 1;
         setOfLevels = count + 1;
       }
 
@@ -159,11 +188,11 @@ namespace PuzzlePathDimension {
       
       backMenuEntry.Selected += BackMenuEntrySelected;
 
-      if ((levelSet.Count - currentLevel) > 0) {
+      if ((levelSet.Count - CurrentLevel) > 0) {
           items.Add(nextMenuEntry);
       } 
 
-      if ((currentLevel - numberOfLevelsPerPage) > 0) {
+      if ((CurrentLevel - numberOfLevelsPerPage) > 0) {
           items.Add(backMenuEntry);
       }
 
@@ -234,10 +263,10 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Level menu entry is selected.
     /// </summary>
     void ALevelMenuEntrySelected(int selected) {
-      if (currentLevel > numberOfLevelsPerPage * (numberOfTimesNextSelected)) {
+      if (CurrentLevel > numberOfLevelsPerPage * (numberOfTimesNextSelected)) {
         selected = selected + (numberOfLevelsPerPage * (numberOfTimesNextSelected));
       } else {
-        selected = selected + currentLevel - setOfLevels;
+        selected = selected + CurrentLevel - setOfLevels;
       }
       LevelInfo level = levelSet.ElementAt<LevelInfo>(selected);
       ScreenList.AddScreen(new LevelStatusScreen(level));
@@ -257,7 +286,7 @@ namespace PuzzlePathDimension {
     private void turnPage(bool back) {
       items.Clear();
       if (back) {
-        currentLevel = currentLevel - numberOfLevelsPerPage - setOfLevels;
+        CurrentLevel = CurrentLevel - numberOfLevelsPerPage - setOfLevels;
         LoadContent(content);
         menuTemplate.SelectedItem = 0;//currentLevel - setOfLevels;
       } else {
