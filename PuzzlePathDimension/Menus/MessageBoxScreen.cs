@@ -48,15 +48,19 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string RightButtonText { get; set; }
 
-    public event EventHandler<PlayerIndexEventArgs> Accepted;
-    public event EventHandler<PlayerIndexEventArgs> Cancelled;
+    //public event Action Accepted;
+    //public event Action Cancelled;
+    public event Action RightButton;
+    public event Action MiddleButton;
+    public event Action LeftButton;
 
 
     /// <summary>
     /// Constructor automatically includes a Left button to Cancel
     /// and a Right button to Confirm the message. 
     /// </summary>
-    public MessageBoxScreen(string message) {
+    public MessageBoxScreen(TopLevelModel topLevel, string message)
+      : base(topLevel) {
 
         this.title = message; // Added. - Jorenz
 
@@ -75,7 +79,8 @@ namespace PuzzlePathDimension {
     /// of the three Buttons available, and to allows the caller
     /// to specify the text of the button.
     /// </summary>
-    public MessageBoxScreen(string message, string leftButtonText, string middleButtonText, string rightButtonText) {
+    public MessageBoxScreen(TopLevelModel topLevel, string message, string leftButtonText, string middleButtonText, string rightButtonText)
+      : base(topLevel) {
 
       this.title = message;
 
@@ -103,21 +108,21 @@ namespace PuzzlePathDimension {
 
       if (LeftButtonText != null) {
         MenuButton leftButton = new MenuButton(LeftButtonText, font);
-        leftButton.Selected += CancelMenuEntrySelected;
+        leftButton.Selected += LeftMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left] = leftButton;
+        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Left;
       }
 
       if (MiddleButtonText != null) {
         MenuButton centerButton = new MenuButton(MiddleButtonText, font);
-        centerButton.Selected += CancelMenuEntrySelected;
+        centerButton.Selected += MiddleMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Middle] = centerButton;
       }
 
       if (RightButtonText != null) {
         MenuButton rightButton = new MenuButton(RightButtonText, font);
-        rightButton.Selected += ConfirmMenuEntrySelected;
+        rightButton.Selected += RightMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
-        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
       }
     }
 
@@ -128,37 +133,51 @@ namespace PuzzlePathDimension {
       messageBoxTemplate.Update(gameTime);
     }
 
-    /// <summary>
-    /// Responds to user input, accepting or cancelling the message box.
-    /// </summary>
-    public override void HandleInput(VirtualController vtroller) {
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
-        
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         messageBoxTemplate.SelectPrev();
-
-      } 
-      
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
-
+        break;
+      case VirtualButtons.Right:
         messageBoxTemplate.SelectNext();
-
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         messageBoxTemplate.Confirm();
-      } 
+        break;
+      }
     }
 
-    void ConfirmMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      if (Accepted != null)
-        Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
+    /*void ConfirmMenuEntrySelected() {
+      if (LeftButton != null)
+        LeftButton();
 
       ExitScreen();
     }
 
-    void CancelMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      if (Cancelled != null)
-        Cancelled(this, new PlayerIndexEventArgs(PlayerIndex.One));
+    void CancelMenuEntrySelected() {
+      if (RightButton != null)
+        RightButton();
+
+      ExitScreen();
+    }*/
+
+    void LeftMenuEntrySelected() {
+      if (LeftButton != null)
+        LeftButton();
+
+      ExitScreen();
+    }
+
+    void MiddleMenuEntrySelected() {
+      if (MiddleButton != null)
+        MiddleButton();
+
+      ExitScreen();
+    }
+
+    void RightMenuEntrySelected() {
+      if (RightButton != null)
+        RightButton();
 
       ExitScreen();
     }

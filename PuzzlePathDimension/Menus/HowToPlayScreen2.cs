@@ -12,16 +12,6 @@ namespace PuzzlePathDimension {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     /// <summary>
-    /// Next button entry on the screen.
-    /// </summary>
-    MenuButton nextMenuEntry;
-
-    /// <summary>
-    /// Back button entry on the screen.
-    /// </summary>
-    MenuButton backMenuEntry;
-
-    /// <summary>
     /// Exit button entry on the screen.
     /// </summary>
     MenuButton exitMenuEntry;
@@ -65,7 +55,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Contructor
     /// </summary>
-    public HowToPlayScreen2() {
+    public HowToPlayScreen2(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -96,40 +87,26 @@ namespace PuzzlePathDimension {
         lines.Add(new ImageMenuLine(image, caption));
       }
 
-      nextMenuEntry = new MenuButton("Next", Font);
-      nextMenuEntry.Selected += NextMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
-      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
-
-      backMenuEntry = new MenuButton("Back", Font);
-      backMenuEntry.Selected += BackMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
-
       exitMenuEntry = new MenuButton("Exit", Font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
     }
-    
-    /// <summary>
-    /// Handle the input of the user. If the user wants to move
-    /// to a diffenrent menu entry, they can press left or right.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
 
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         detailsTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        break;
+      case VirtualButtons.Right:
         detailsTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         detailsTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        break;
+      case VirtualButtons.Back:
+        OnCancel();
+        break;
       }
     }
 
@@ -157,29 +134,12 @@ namespace PuzzlePathDimension {
       detailsTemplate.Draw(spriteBatch, gameTime);
     }
 
-
-    /// <summary>
-    /// Event handler for when the Next menu entry is selected.
-    /// </summary>
-    void NextMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen3(), e.PlayerIndex);
-    }
-
-    /// <summary>
-    /// Event handler for when the Back menu entry is selected.
-    /// </summary>
-    void BackMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
-    }
-
     /// <summary>
     /// Event handler for when the Exit menu entry is selected.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+    protected void OnCancel() {
       ExitScreen();
     }
   }

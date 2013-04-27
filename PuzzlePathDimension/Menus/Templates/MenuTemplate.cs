@@ -29,7 +29,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The currently selected button.
     /// </summary>
-    public int SelectedItem { get; private set; }
+    public int SelectedItem { get; set; }
 
 
     public MenuTemplate() {
@@ -114,7 +114,7 @@ namespace PuzzlePathDimension {
     /// Confirm the currently selected menu button.
     /// </summary>
     public void Confirm() {
-      Items[SelectedItem].OnSelectEntry(PlayerIndex.One);
+      Items[SelectedItem].OnSelectEntry();
     }
   }
 }

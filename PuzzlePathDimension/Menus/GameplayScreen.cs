@@ -26,8 +26,8 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameplayScreen(string levelName) {
-
+    public GameplayScreen(TopLevelModel topLevel, string levelName)
+      : base(topLevel) {
       LevelName = levelName;
 
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -39,7 +39,8 @@ namespace PuzzlePathDimension {
     /// Initializes the GamePlayScreen with a simulation already built.
     /// </summary>
     /// <param name="sim"></param>
-    public GameplayScreen(Simulation sim) {
+    public GameplayScreen(TopLevelModel topLevel, Simulation sim)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       simulation = sim;
@@ -70,7 +71,7 @@ namespace PuzzlePathDimension {
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
       // it should not try to catch up.
-      ScreenManager.Game.ResetElapsedTime();
+      Game.ResetElapsedTime();
     }
 
     /// <summary>
@@ -121,54 +122,40 @@ namespace PuzzlePathDimension {
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
       if (simulation.CurrentState == SimulationState.Completed) {
-        MessageBoxScreen completedMessageBox = new MessageBoxScreen("Congratulations, Level Completed!",
-                                                                    "Retry", null, "Level Select");
-        completedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
-        completedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
+        MessageBoxScreen completedMessageBox = new MessageBoxScreen(TopLevel, "Congratulations, Level Completed!",
+                                                                    "Retry", "Main Menu", "Level Select");
+        completedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
+        completedMessageBox.LeftButton += ConfirmRetryBoxAccepted;
+        completedMessageBox.RightButton += ConfirmLevelMessageBoxAccepted;
 
-        ScreenList.AddScreen(completedMessageBox, ControllingPlayer);
+        ScreenList.AddScreen(completedMessageBox);
       }
 
       if (simulation.CurrentState == SimulationState.Failed) {
-        MessageBoxScreen failedMessageBox = new MessageBoxScreen("Level Failed. Please try again.",
-                                                                 "Retry", null, "Level Select");
-        failedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
-        failedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
+        MessageBoxScreen failedMessageBox = new MessageBoxScreen(TopLevel, "Level Failed. Please try again.",
+                                                                 "Retry", "Main Menu", "Level Select");
+        failedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
+        failedMessageBox.LeftButton += ConfirmLevelMessageBoxAccepted;
+        failedMessageBox.RightButton += ConfirmRetryBoxAccepted;
 
-        ScreenList.AddScreen(failedMessageBox, ControllingPlayer);
+        ScreenList.AddScreen(failedMessageBox);
       }
     }
 
-    /// <summary>
-    /// Lets the game respond to player input. Unlike the Update method,
-    /// this will only be called when the gameplay screen is active.
-    /// </summary>
-    public override void HandleInput(VirtualController vtroller) {
-      // The game pauses either if the user presses the pause button, or if
-      // they unplug the active gamepad. This requires us to keep track of
-      // whether a gamepad was ever plugged in, because we don't want to pause
-      // on PC if they are playing with a keyboard and have no gamepad at all!
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
-      }
+    public override void HandleInput(VirtualController Controller) {
+      base.HandleInput(Controller);
 
       Launcher launcher = simulation.Launcher;
 
-      // Route user input to the appropriate action
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        simulation.HandleConfirm();
-      }
-      if (vtroller.IsButtonDown(VirtualButtons.Left)) {
+      if (Controller.IsButtonPressed(VirtualButtons.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      }
-      if (vtroller.IsButtonDown(VirtualButtons.Right)) {
+      } else if (Controller.IsButtonPressed(VirtualButtons.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
       }
-      if (vtroller.IsButtonDown(VirtualButtons.Up)) {
+
+      if (Controller.IsButtonPressed(VirtualButtons.Up)) {
         launcher.AdjustMagnitude(0.25f);
-      }
-      if (vtroller.IsButtonDown(VirtualButtons.Down)) {
+      } else if (Controller.IsButtonPressed(VirtualButtons.Down)) {
         launcher.AdjustMagnitude(-0.25f);
       }
 
@@ -177,6 +164,27 @@ namespace PuzzlePathDimension {
         GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
         Console.WriteLine("Completely restarted.");
         simulation.Restart();
+      }
+    }
+
+    /// <summary>
+    /// Lets the game respond to player input. Unlike the Update method,
+    /// this will only be called when the gameplay screen is active.
+    /// </summary>
+    protected override void OnButtonReleased(VirtualButtons button) {
+      // The game pauses either if the user presses the pause button, or if
+      // they unplug the active gamepad. This requires us to keep track of
+      // whether a gamepad was ever plugged in, because we don't want to pause
+      // on PC if they are playing with a keyboard and have no gamepad at all!
+
+      // Route user input to the appropriate action
+      switch (button) {
+      case VirtualButtons.Back:
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
+        break;
+      case VirtualButtons.Confirm:
+        simulation.HandleConfirm();
+        break;
       }
     }
 
@@ -260,13 +268,6 @@ namespace PuzzlePathDimension {
       // Draw the number of balls left.
       string attemptsText = "Balls left: " + simulation.AttemptsLeft;
       spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
-
-      // If the simulation has concluded in some way, display the approriate message.
-      if (simulation.CurrentState == SimulationState.Completed) {
-        spriteBatch.DrawString(font, "You win!", new Vector2(400f, 300f), Color.Black);
-      } else if (simulation.CurrentState == SimulationState.Failed) {
-        spriteBatch.DrawString(font, "You lose.", new Vector2(400f, 300f), Color.Black);
-      }
     }
 
     /// <summary>
@@ -314,9 +315,13 @@ namespace PuzzlePathDimension {
     /// button on the message box. This uses the loading screen to
     /// transition from the game back to the level select screen.
     /// </summary>
-    void ConfirmLevelMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
-                                                     new LevelSelectScreen(content));
+    void ConfirmLevelMessageBoxAccepted() {
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new MainMenuScreen(TopLevel), new LevelSelectScreen(TopLevel, content));
+    }
+
+    void MainMenuMessageBoxAccepted() {
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel),
+                                                     new MainMenuScreen(TopLevel));
     }
 
     /// <summary>
@@ -324,7 +329,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
+    void ConfirmRetryBoxAccepted() {
       simulation.Restart();
     }
   }

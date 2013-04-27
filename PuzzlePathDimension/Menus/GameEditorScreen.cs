@@ -31,7 +31,8 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameEditorScreen(string levelName) {
+    public GameEditorScreen(TopLevelModel topLevel, string levelName)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -89,13 +90,11 @@ namespace PuzzlePathDimension {
         if (simulation.AdditionsLeft > 0) {
           simulation.MoveablePlatforms.Add(addedPlatform);
         }
-        ScreenList.RemoveScreen(toolbox);
+        toolbox.ExitScreen();
         addedPlatform = null;
         toolboxLaunched = false;
 
       }
-      if (!IsActive)
-        return;
     }
 
     /// <summary>
@@ -113,12 +112,12 @@ namespace PuzzlePathDimension {
       if (launchToolbox && !toolboxLaunched) {
         String message = "Select a platform to add to the level";
         if (simulation.AdditionsLeft > 0) {
-          toolbox = new ToolboxScreen(message, false);
+          toolbox = new ToolboxScreen(TopLevel, message, false);
         } else {
           message += "\n    Platform addition limit reached";
-          toolbox = new ToolboxScreen(message, true);
+          toolbox = new ToolboxScreen(TopLevel, message, true);
         }
-        ScreenList.AddScreen(toolbox, PlayerIndex.One);
+        ScreenList.AddScreen(toolbox);
         launchToolbox = false;
         toolboxLaunched = true;
         //Console.WriteLine(addedPlatform.Origin)
@@ -144,18 +143,18 @@ namespace PuzzlePathDimension {
         target = FindTarget(currentMouseState);
         simulation.MoveablePlatforms.Remove((Platform)target);
       }
+    }
 
-      if (!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        ScreenList.AddScreen(new GameplayScreen(simulation), ControllingPlayer);
-
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Confirm:
+        if (!simulation.FindCollision())
+          ScreenList.AddScreen(new GameplayScreen(TopLevel, simulation));
+        break;
+      case VirtualButtons.Back:
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
+        break;
       }
-
-
-      //Pause Screen
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        ScreenList.AddScreen(new PauseMenuScreen(simulation), ControllingPlayer);
-      }
-
     }
 
     /// <summary>
@@ -253,7 +252,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal Simulation LoadLevel(string level) {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/" + LevelName.Replace(" ", "") + ".xml", content), content);
+      Simulation simulation = new Simulation(LevelLoader.Load(LevelName, content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;

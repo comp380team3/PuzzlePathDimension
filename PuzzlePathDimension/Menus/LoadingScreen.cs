@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -37,7 +38,8 @@ namespace PuzzlePathDimension {
     /// The constructor is private: loading screens should
     /// be activated via the static Load method instead.
     /// </summary>
-    private LoadingScreen(bool loadingIsSlow, GameScreen[] screensToLoad) {
+    private LoadingScreen(TopLevelModel topLevel, bool loadingIsSlow, GameScreen[] screensToLoad)
+      : base(topLevel) {
       this.loadingIsSlow = loadingIsSlow;
       this.screensToLoad = screensToLoad;
 
@@ -54,18 +56,13 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Activates the loading screen.
     /// </summary>
-    public static void Load(IScreenList screenList, bool loadingIsSlow,
-                            PlayerIndex? controllingPlayer,
-                            params GameScreen[] screensToLoad) {
+    public static void Load(TopLevelModel topLevel, bool loadingIsSlow, params GameScreen[] screensToLoad) {
       // Tell all the current screens to transition off.
-      foreach (GameScreen screen in screenList.GetScreens())
+      foreach (GameScreen screen in topLevel.Scene)
         screen.ExitScreen();
 
       // Create and activate the loading screen.
-      LoadingScreen loadingScreen = new LoadingScreen(loadingIsSlow,
-                                                      screensToLoad);
-
-      screenList.AddScreen(loadingScreen, controllingPlayer);
+      topLevel.Scene.AddScreen(new LoadingScreen(topLevel, loadingIsSlow, screensToLoad));
     }
 
 
@@ -83,14 +80,14 @@ namespace PuzzlePathDimension {
 
         foreach (GameScreen screen in screensToLoad) {
           if (screen != null) {
-            ScreenList.AddScreen(screen, ControllingPlayer);
+            ScreenList.AddScreen(screen);
           }
         }
 
         // Once the load has finished, we use ResetElapsedTime to tell
         // the  game timing mechanism that we have just finished a very
         // long frame, and that it should not try to catch up.
-        ScreenManager.Game.ResetElapsedTime();
+        Game.ResetElapsedTime();
       }
     }
 
@@ -104,8 +101,8 @@ namespace PuzzlePathDimension {
       // method, rather than in Update, because it isn't enough just for the
       // screens to be gone: in order for the transition to look good we must
       // have actually drawn a frame without them before we perform the load.
-      if ((ScreenState == ScreenState.Active) &&
-          (ScreenList.GetScreens().Length == 1)) {
+      bool onlyLoadingScreenLeft = ScreenList.All((screen) => screen == this);
+      if ((ScreenState == ScreenState.Active) && onlyLoadingScreenLeft) {
         otherScreensAreGone = true;
       }
 

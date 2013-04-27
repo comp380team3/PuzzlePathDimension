@@ -40,6 +40,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string CompletionTime { get; private set; }
 
+    public string LevelFileName { get; private set; }
+
     private SpriteFont Font { get; set; }
 
 
@@ -50,14 +52,16 @@ namespace PuzzlePathDimension {
     /// <param name="levelScore"></param>
     /// <param name="levelNumber"></param>
     /// <param name="completionTime"></param>
-    public LevelStatusScreen(bool completed, int levelScore, string levelName, string completionTime) {
+    public LevelStatusScreen(TopLevelModel topLevel, PuzzlePathDimension.LevelSelectScreen.LevelInfo levelInfo)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-      Completed = completed;
-      LevelScore = levelScore;
-      LevelName = levelName;
-      CompletionTime = completionTime;
+      Completed = levelInfo.Completed;
+      LevelScore = levelInfo.LevelScore;
+      LevelName = levelInfo.LevelName;
+      CompletionTime = levelInfo.CompletionTime;
+      LevelFileName = levelInfo.FileName;
     }
 
     /// <summary>
@@ -90,25 +94,20 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
-    /// <summary>
-    /// Handle user input.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Left)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Left:
         detailsTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Right)) {
+        break;
+      case VirtualButtons.Right:
         detailsTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         detailsTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        break;
+      case VirtualButtons.Back:
+        OnCancel();
+        break;
       }
     }
 
@@ -142,11 +141,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void StartMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenList, true, e.PlayerIndex, new GameEditorScreen(LevelName));
+    void StartMenuEntrySelected() {
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelFileName));
     }
 
-    protected void OnCancel(object sender, PlayerIndexEventArgs e) {
+    protected void OnCancel() {
       ExitScreen();
     }
   }
