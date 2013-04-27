@@ -16,7 +16,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor
     /// </summary>
-    public HowToPlayScreenContentList() {
+    public HowToPlayScreenContentList(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -64,22 +65,20 @@ namespace PuzzlePathDimension {
     /// to the next Menu Button in the list. Up moves the selected Menu Button
     /// to the previous Menu Button in the list.
     /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -111,7 +110,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Game Objective menu entry is selected.
     /// </summary>
     void GameObjectiveMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreen1());
+      ScreenList.AddScreen(new HowToPlayScreen1(TopLevel));
     }
 
     /// <summary>
@@ -120,28 +119,28 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void GameObjectsDescriptionMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreen2());
+      ScreenList.AddScreen(new HowToPlayScreen2(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Controls description menu entry is selected.
     /// </summary>
     void ControlsDescriptionMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreen3());
+      ScreenList.AddScreen(new HowToPlayScreen3(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Game Screen Shot meny entry is selected.
     /// </summary>
     void GameScreenShotMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreen4());
+      ScreenList.AddScreen(new HowToPlayScreen4(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Level Editor description meny entry is selected.
     /// </summary>
     void LevelEditorDescriptionMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreen5());
+      ScreenList.AddScreen(new HowToPlayScreen5(TopLevel));
     }
 
     /// <summary>

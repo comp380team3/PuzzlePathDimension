@@ -14,6 +14,8 @@ namespace PuzzlePathDimension {
   /// This is the main type for your game
   /// </summary>
   public class PuzzlePathGame : Microsoft.Xna.Framework.Game {
+    private TopLevelModel TopLevel = new TopLevelModel();
+
     /// <summary>
     /// Creates a PuzzlePathGame object.
     /// </summary>
@@ -27,11 +29,6 @@ namespace PuzzlePathDimension {
       // Tells the game where the content directory is
       Content.RootDirectory = "Content";
 
-      ScreenRenderer menus = new ScreenRenderer(this);
-      menus.Scene.AddScreen(new BackgroundScreen());
-      menus.Scene.AddScreen(new MainMenuScreen());
-      Components.Add(menus);
-
       // Make the mouse visible
       IsMouseVisible = true;
     }
@@ -43,41 +40,31 @@ namespace PuzzlePathDimension {
     /// and initialize them as well.
     /// </summary>
     protected override void Initialize() {
+      // Bootstrap the top-level context model
+      TopLevel.Game = this;
+      TopLevel.Prefs = new UserPrefs();
+
+      WritableVirtualController controller = new WritableVirtualController();
+      controller.InputType = InputType.KeyboardMouse;
+      TopLevel.Controller = controller;
+
+      Scene scene = new Scene();
+      TopLevel.Scene = scene;
+
+      // Create the input component.
+      InputComponent input = new InputComponent(this, controller);
+      input.UpdateOrder = 0;
+      Components.Add(input);
+
+      // Create the graphical component.
+      RenderComponent menus = new RenderComponent(this, scene);
+      TopLevel.Scene.AddScreen(new BackgroundScreen(TopLevel));
+      TopLevel.Scene.AddScreen(new MainMenuScreen(TopLevel));
+      menus.UpdateOrder = 1;
+      Components.Add(menus);
+
+      // Initialize all sub-components.
       base.Initialize();
-    }
-
-    /// <summary>
-    /// LoadContent will be called once per game and is the place to load
-    /// all of your content.
-    /// </summary>
-    protected override void LoadContent() {
-      base.LoadContent();
-    }
-
-    /// <summary>
-    /// UnloadContent will be called once per game and is the place to unload
-    /// all content.
-    /// </summary>
-    protected override void UnloadContent() {
-      // TODO: Unload any non ContentManager content here
-      base.UnloadContent();
-    }
-
-    /// <summary>
-    /// Allows the game to run logic such as updating the world,
-    /// checking for collisions, gathering input, and playing audio.
-    /// </summary>
-    /// <param name="gameTime">Provides a snapshot of timing values.</param>
-    protected override void Update(GameTime gameTime) {
-      base.Update(gameTime);
-    }
-
-    /// <summary>
-    /// This is called when the game should draw itself.
-    /// </summary>
-    /// <param name="gameTime">Provides a snapshot of timing values.</param>
-    protected override void Draw(GameTime gameTime) {
-      base.Draw(gameTime);
     }
   }
 }

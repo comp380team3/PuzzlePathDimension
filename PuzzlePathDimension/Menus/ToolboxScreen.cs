@@ -78,13 +78,14 @@ namespace PuzzlePathDimension {
     /// Constructor automatically includes the standard "A=ok, B=cancel"
     /// usage text prompt.
     /// </summary>
-    public ToolboxScreen(string message)
-      : this(message, true) { }
+    public ToolboxScreen(TopLevelModel topLevel, string message)
+      : this(topLevel, message, true) { }
 
     /// <summary>
     /// Constructor lets the caller specify whether to include the standard
     /// </summary>
-    public ToolboxScreen(string message, bool limitReached) {
+    public ToolboxScreen(TopLevelModel topLevel, string message, bool limitReached)
+      : base(topLevel) {
       this.message = message;
       cantAdd = limitReached;
       //initializa the position of regular platforms
@@ -155,9 +156,10 @@ namespace PuzzlePathDimension {
       if (cantAdd && previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
         ExitScreen();
       }
+    }
 
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (button == VirtualButtons.Back) {
         if (Accepted != null)
           Accepted();
 

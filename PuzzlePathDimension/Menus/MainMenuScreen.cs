@@ -23,11 +23,12 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor
     /// </summary>
-    public MainMenuScreen() {
+    public MainMenuScreen(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
-    
+
     /// <summary>
     /// Load the assets required for the Main Menu.
     /// </summary>
@@ -66,27 +67,20 @@ namespace PuzzlePathDimension {
       items.Add(exitMenuEntry);
     }
 
-    /// <summary>
-    /// Handle the input from the user. Down moves the selected Menu Button
-    /// to the next Menu Button in the list. Up moves the selected Menu Button
-    /// to the previous Menu Button in the list.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+        break;
+      case VirtualButtons.Back:
         OnCancel();
+        break;
       }
     }
 
@@ -119,7 +113,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the Play Game menu entry is selected.
     /// </summary>
     void PlayGameMenuEntrySelected() {
-      ScreenList.AddScreen(new LevelSelectScreen(content));
+      ScreenList.AddScreen(new LevelSelectScreen(TopLevel, content));
     }
 
     /// <summary>
@@ -128,21 +122,21 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void howToPlayMenuEntrySelected() {
-      ScreenList.AddScreen(new HowToPlayScreenContentList());
+      ScreenList.AddScreen(new HowToPlayScreenContentList(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Options menu entry is selected.
     /// </summary>
     void OptionsMenuEntrySelected() {
-      ScreenList.AddScreen(new OptionsMenuScreen());
+      ScreenList.AddScreen(new OptionsMenuScreen(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Credits meny entry is selected.
     /// </summary>
     void CreditsMenuEntrySelected() {
-      ScreenList.AddScreen(new CreditsMenuScreen());
+      ScreenList.AddScreen(new CreditsMenuScreen(TopLevel));
     }
 
     /// <summary>
@@ -151,7 +145,7 @@ namespace PuzzlePathDimension {
     void OnCancel() {
       const string message = "Are you sure you want to exit the game?";
 
-      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
+      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(TopLevel, message);
       confirmExitMessageBox.RightButton += ConfirmExitMessageBoxAccepted;
       ScreenList.AddScreen(confirmExitMessageBox);
     }
@@ -161,7 +155,7 @@ namespace PuzzlePathDimension {
     /// you want to exit" message box.
     /// </summary>
     void ConfirmExitMessageBoxAccepted() {
-      ScreenManager.Game.Exit();
+      Game.Exit();
     }
   }
 }
