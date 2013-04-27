@@ -76,6 +76,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\UserProfile.cs" />
+    <Compile Include="Utilities\SerializableDictionary.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\Effects\AlphaEffect.cs" />
