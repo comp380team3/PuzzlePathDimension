@@ -16,7 +16,7 @@
   <platform breakable="true" x="470" y="465" width="100" height="25" />
 
   <platform breakable="true" x="500" y="200" width="25" height="200" />
-  <platform breakable="true" x="300" y="200" width="25" height="200" />
+  <platform breakable="true" x="300" y="260" width="25" height="200" />
   <platform breakable="true" x="100" y="200" width="25" height="200" />
 
   <platform breakable="true" x="580" y="80" width="200" height="25" />
