@@ -149,13 +149,15 @@ namespace PuzzlePathDimension {
 
       if (Controller.IsButtonPressed(VirtualButtons.Left)) {
         launcher.AdjustAngle((float)Math.PI / 64);
-      } else if (Controller.IsButtonPressed(VirtualButtons.Right)) {
+      }
+      if (Controller.IsButtonPressed(VirtualButtons.Right)) {
         launcher.AdjustAngle((float)-Math.PI / 64);
       }
 
       if (Controller.IsButtonPressed(VirtualButtons.Up)) {
         launcher.AdjustMagnitude(0.25f);
-      } else if (Controller.IsButtonPressed(VirtualButtons.Down)) {
+      }
+      if (Controller.IsButtonPressed(VirtualButtons.Down)) {
         launcher.AdjustMagnitude(-0.25f);
       }
 
