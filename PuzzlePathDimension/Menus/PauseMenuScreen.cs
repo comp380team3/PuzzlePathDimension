@@ -156,7 +156,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the user selects confirm for the level select menu entry.
     /// </summary>
     void ConfirmLevelSelectMessageBoxAccepted() {
-      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel),
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new MainMenuScreen(TopLevel),
                                                     new LevelSelectScreen(TopLevel, content));
     }
   }
