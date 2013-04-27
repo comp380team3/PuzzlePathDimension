@@ -81,6 +81,8 @@
     <Compile Include="InputComponent.cs" />
     <Compile Include="Models\TopLevelModel.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
+    <Compile Include="Models\UserProfile.cs" />
+    <Compile Include="Utilities\SerializableDictionary.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\Effects\AlphaEffect.cs" />
