@@ -16,11 +16,6 @@ namespace PuzzlePathDimension {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     /// <summary>
-    /// Menu Button for the Next menu entry.
-    /// </summary>
-    MenuButton nextMenuEntry;
-
-    /// <summary>
     /// Menu Button for the Exit menu entry.
     /// </summary>
     MenuButton exitMenuEntry;
@@ -62,14 +57,10 @@ namespace PuzzlePathDimension {
       foreach (string name in gameDescription)
         description.Add(new TextLine(name, font, Color.Black, .75f));
 
-      nextMenuEntry = new MenuButton("Next", font);
-      nextMenuEntry.Selected += NextMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
-      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
-
       exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
     }
 
     /// <summary>
@@ -117,14 +108,6 @@ namespace PuzzlePathDimension {
       base.Draw(gameTime, spriteBatch);
 
       detailsTemplate.Draw(spriteBatch, gameTime);
-    }
-
-    /// <summary>
-    /// Event handler for when the Next menu entry is selected.
-    /// </summary>
-    void NextMenuEntrySelected() {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen2());
     }
 
     /// <summary>

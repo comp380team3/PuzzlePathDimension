@@ -122,18 +122,20 @@ namespace PuzzlePathDimension {
 
       if (simulation.CurrentState == SimulationState.Completed) {
         MessageBoxScreen completedMessageBox = new MessageBoxScreen("Congratulations, Level Completed!",
-                                                                    "Retry", null, "Level Select");
-        completedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
-        completedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
+                                                                    "Retry", "Main Menu", "Level Select");
+        completedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
+        completedMessageBox.LeftButton += ConfirmRetryBoxAccepted;
+        completedMessageBox.RightButton += ConfirmLevelMessageBoxAccepted;
 
         ScreenList.AddScreen(completedMessageBox);
       }
 
       if (simulation.CurrentState == SimulationState.Failed) {
         MessageBoxScreen failedMessageBox = new MessageBoxScreen("Level Failed. Please try again.",
-                                                                 "Retry", null, "Level Select");
-        failedMessageBox.Accepted += ConfirmLevelMessageBoxAccepted;
-        failedMessageBox.Cancelled += ConfirmRetryBoxAccepted;
+                                                                 "Retry", "Main Menu", "Level Select");
+        failedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
+        failedMessageBox.LeftButton += ConfirmLevelMessageBoxAccepted;
+        failedMessageBox.RightButton += ConfirmRetryBoxAccepted;
 
         ScreenList.AddScreen(failedMessageBox);
       }
@@ -313,6 +315,11 @@ namespace PuzzlePathDimension {
     void ConfirmLevelMessageBoxAccepted() {
       LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
                                                      new LevelSelectScreen(content));
+    }
+
+    void MainMenuMessageBoxAccepted() {
+      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
+                                                     new MainMenuScreen());
     }
 
     /// <summary>

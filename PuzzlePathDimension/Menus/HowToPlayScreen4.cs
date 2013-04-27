@@ -11,11 +11,6 @@ namespace PuzzlePathDimension {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     /// <summary>
-    /// Back menu entry on the screen.
-    /// </summary>
-    MenuButton backMenuEntry;
-
-    /// <summary>
     /// Exit menu entry on the screen.
     /// </summary>
     MenuButton exitMenuEntry;
@@ -43,10 +38,6 @@ namespace PuzzlePathDimension {
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
 
       detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
-
-      backMenuEntry = new MenuButton("Back", font);
-      backMenuEntry.Selected += BackMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
 
       exitMenuEntry = new MenuButton("Exit", font);
       exitMenuEntry.Selected += OnCancel;
@@ -107,17 +98,6 @@ namespace PuzzlePathDimension {
       spriteBatch.Draw(helpImage, new Rectangle(100, 100, helpImage.Width - 175, helpImage.Height - 175), Color.White);
 
       spriteBatch.End();
-    }
-
-
-    /// <summary>
-    /// Event handler for when the Back menu entry is selected.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void BackMenuEntrySelected() {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen3());
     }
 
     /// <summary>

@@ -48,8 +48,11 @@ namespace PuzzlePathDimension {
     /// </summary>
     public string RightButtonText { get; set; }
 
-    public event Action Accepted;
-    public event Action Cancelled;
+    //public event Action Accepted;
+    //public event Action Cancelled;
+    public event Action RightButton;
+    public event Action MiddleButton;
+    public event Action LeftButton;
 
 
     /// <summary>
@@ -103,21 +106,21 @@ namespace PuzzlePathDimension {
 
       if (LeftButtonText != null) {
         MenuButton leftButton = new MenuButton(LeftButtonText, font);
-        leftButton.Selected += CancelMenuEntrySelected;
+        leftButton.Selected += LeftMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Left] = leftButton;
+        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Left;
       }
 
       if (MiddleButtonText != null) {
         MenuButton centerButton = new MenuButton(MiddleButtonText, font);
-        centerButton.Selected += CancelMenuEntrySelected;
+        centerButton.Selected += MiddleMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Middle] = centerButton;
       }
 
       if (RightButtonText != null) {
         MenuButton rightButton = new MenuButton(RightButtonText, font);
-        rightButton.Selected += ConfirmMenuEntrySelected;
+        rightButton.Selected += RightMenuEntrySelected;
         messageBoxTemplate.Buttons[MessageBoxTemplate.Selection.Right] = rightButton;
-        messageBoxTemplate.SelectedItem = MessageBoxTemplate.Selection.Right;
       }
     }
 
@@ -149,16 +152,37 @@ namespace PuzzlePathDimension {
       } 
     }
 
-    void ConfirmMenuEntrySelected() {
-      if (Accepted != null)
-        Accepted();
+    /*void ConfirmMenuEntrySelected() {
+      if (LeftButton != null)
+        LeftButton();
 
       ExitScreen();
     }
 
     void CancelMenuEntrySelected() {
-      if (Cancelled != null)
-        Cancelled();
+      if (RightButton != null)
+        RightButton();
+
+      ExitScreen();
+    }*/
+
+    void LeftMenuEntrySelected() {
+      if (LeftButton != null)
+        LeftButton();
+
+      ExitScreen();
+    }
+
+    void MiddleMenuEntrySelected() {
+      if (MiddleButton != null)
+        MiddleButton();
+
+      ExitScreen();
+    }
+
+    void RightMenuEntrySelected() {
+      if (RightButton != null)
+        RightButton();
 
       ExitScreen();
     }

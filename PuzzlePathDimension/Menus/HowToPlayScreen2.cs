@@ -12,16 +12,6 @@ namespace PuzzlePathDimension {
     DetailsTemplate detailsTemplate = new DetailsTemplate();
 
     /// <summary>
-    /// Next button entry on the screen.
-    /// </summary>
-    MenuButton nextMenuEntry;
-
-    /// <summary>
-    /// Back button entry on the screen.
-    /// </summary>
-    MenuButton backMenuEntry;
-
-    /// <summary>
     /// Exit button entry on the screen.
     /// </summary>
     MenuButton exitMenuEntry;
@@ -96,18 +86,10 @@ namespace PuzzlePathDimension {
         lines.Add(new ImageMenuLine(image, caption));
       }
 
-      nextMenuEntry = new MenuButton("Next", Font);
-      nextMenuEntry.Selected += NextMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextMenuEntry;
-      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
-
-      backMenuEntry = new MenuButton("Back", Font);
-      backMenuEntry.Selected += BackMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = backMenuEntry;
-
       exitMenuEntry = new MenuButton("Exit", Font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
     }
     
     /// <summary>
@@ -155,23 +137,6 @@ namespace PuzzlePathDimension {
       base.Draw(gameTime, spriteBatch);
 
       detailsTemplate.Draw(spriteBatch, gameTime);
-    }
-
-
-    /// <summary>
-    /// Event handler for when the Next menu entry is selected.
-    /// </summary>
-    void NextMenuEntrySelected() {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen3());
-    }
-
-    /// <summary>
-    /// Event handler for when the Back menu entry is selected.
-    /// </summary>
-    void BackMenuEntrySelected() {
-      ExitScreen();
-      ScreenList.AddScreen(new HowToPlayScreen1());
     }
 
     /// <summary>

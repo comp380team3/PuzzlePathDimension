@@ -29,7 +29,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The currently selected button.
     /// </summary>
-    public int SelectedItem { get; private set; }
+    public int SelectedItem { get; set; }
 
 
     public MenuTemplate() {
