@@ -349,6 +349,38 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="New Texture\LHorizontalPlatformBreakable.png">
+      <Name>LHorizontalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="New Texture\LVerticalPlatformBreakable.png">
+      <Name>LVerticalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="New Texture\MHorizontalPlatformBreakable.png">
+      <Name>MHorizontalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="New Texture\MVerticalPlatformBreakable.png">
+      <Name>MVerticalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="New Texture\SHorizontalPlatformBreakable.png">
+      <Name>SHorizontalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="New Texture\SVerticalPlatformBreakable.png">
+      <Name>SVerticalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

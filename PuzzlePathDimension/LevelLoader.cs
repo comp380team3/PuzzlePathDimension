@@ -1,18 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// Provides methods for deserializing Levels from XML files.
   /// </summary>
   static class LevelLoader {
+    /// <summary>
+    /// The hard-coded dictionary that maps platform dimensions to their respective textures. This
+    /// dictionary is for normal platforms.
+    /// </summary>
+    private static Dictionary<Vector2, string> normalPlatNames = new Dictionary<Vector2, string>
+    {
+      {new Vector2(100, 25), "New Texture/SHorizontalPlatform"},
+      {new Vector2(150, 25), "New Texture/MHorizontalPlatform"},
+      {new Vector2(200, 25), "New Texture/LHorizontalPlatform"},
+      {new Vector2(25, 100), "New Texture/SVerticalPlatform"},
+      {new Vector2(25, 150), "New Texture/MVerticalPlatform"},
+      {new Vector2(25, 200), "New Texture/LVerticalPlatform"}
+    };
+
+    /// <summary>
+    /// The hard-coded dictionary that maps platform dimensions to their respective textures. This
+    /// dictionary is for breakable platforms.
+    /// </summary>
+    private static Dictionary<Vector2, string> breakablePlatNames = new Dictionary<Vector2, string>
+    {
+      {new Vector2(100, 25), "New Texture/SHorizontalPlatformBreakable"},
+      {new Vector2(150, 25), "New Texture/MHorizontalPlatformBreakable"},
+      {new Vector2(200, 25), "New Texture/LHorizontalPlatformBreakable"},
+      {new Vector2(25, 100), "New Texture/SVerticalPlatformBreakable"},
+      {new Vector2(25, 150), "New Texture/MVerticalPlatformBreakable"},
+      {new Vector2(25, 200), "New Texture/LVerticalPlatformBreakable"}
+    };
+
     /// <summary>
     /// Load an XML file from disk, retrieving textures through Content
     /// as necessary.
@@ -72,23 +97,24 @@ namespace PuzzlePathDimension {
       return platform;
     }
 
+    /// <summary>
+    /// Loads the appropriate texture for a Platform object, based on its size and
+    /// whether it is breakable or not.
+    /// </summary>
+    /// <param name="size">The dimensions of the platform's size.</param>
+    /// <param name="breakable">Whether the platform is breakable.</param>
+    /// <param name="Content">The resource manager to load from.</param>
+    /// <returns>The texture that the platform will be drawn with.</returns>
     private static Texture2D LoadPlatformTexture(Vector2 size, bool breakable, ContentManager Content) {
-      // Ugh. - Jorenz
-      if (size.X == 100 && size.Y == 25) {
-        return Content.Load<Texture2D>("New Texture/SHorizontalPlatform");
-      } else if (size.X == 150 && size.Y == 25) {
-        return Content.Load<Texture2D>("New Texture/MHorizontalPlatform");
-      } else if (size.X == 200 && size.Y == 25) {
-        return Content.Load<Texture2D>("New Texture/LHorizontalPlatform");
-      } else if (size.X == 25 && size.Y == 100) {
-        return Content.Load<Texture2D>("New Texture/SVerticalPlatform");
-      } else if (size.X == 25 && size.Y == 150) {
-        return Content.Load<Texture2D>("New Texture/MVerticalPlatform");
-      } else if (size.X == 25 && size.Y == 200) {
-        return Content.Load<Texture2D>("New Texture/LVerticalPlatform");
+      // Based on the platform's breakability, figure out which set of textures to look in.
+      Dictionary<Vector2, string> dictToUse = breakable ? breakablePlatNames : normalPlatNames;
+
+      if (dictToUse.ContainsKey(size)) {
+        return Content.Load<Texture2D>(dictToUse[size]);
       } else { // fallback
-        Console.WriteLine("This should never be reached.");
-        return Content.Load<Texture2D>("New Texture/platform");
+        Console.WriteLine("Warning: This should never be reached.");
+        return breakable ? Content.Load<Texture2D>("Texture/platform_breakable") : 
+          Content.Load<Texture2D>("Texture/platform");
       }
     }
 
