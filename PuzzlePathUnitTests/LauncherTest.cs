@@ -164,14 +164,14 @@ namespace PuzzlePathUnitTests {
     /// Creates a launcher and passes in bad coordinates for its position.
     /// </summary>
     private void GarbageInput() {
-      Launcher launcher = new Launcher(null, null, new Vector2(-1491471, -2523953));
+      Launcher launcher = new Launcher(null, new Vector2(-1491471, -2523953));
     }
 
     /// <summary>
     /// Creates a launcher with a valid position.
     /// </summary>
     private void OkayInput() {
-      Launcher launcher = new Launcher(null, null, new Vector2(200, 300));
+      Launcher launcher = new Launcher(null, new Vector2(200, 300));
     }
 
     /* Put more tests here */
@@ -184,7 +184,7 @@ namespace PuzzlePathUnitTests {
     private Launcher CreateLauncher(bool createBall) {
       // Create the launcher. 
       // We don't need a texture for unit tests, so pass in null for the texture parameters.
-      Launcher launcher = new Launcher(null, null, new Vector2(0, 0));
+      Launcher launcher = new Launcher(null, new Vector2(0, 0));
 
       if (createBall) {
         // Give the launcher a ball; otherwise, it won't move.
