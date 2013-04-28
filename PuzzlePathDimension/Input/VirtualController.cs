@@ -11,11 +11,11 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The button that confirms something.
     /// </summary>
-    Confirm = 0,
+    Select = 0,
     /// <summary>
     /// The button that usually cancels something.
     /// </summary>
-    Back,
+    Delete,
     /// <summary>
     /// The button that has different functionality depending on the current
     /// state of the game.
@@ -25,6 +25,10 @@ namespace PuzzlePathDimension {
     /// The button that pauses the game.
     /// </summary>
     Pause,
+    Mode,
+    Debug,
+    Easter,
+
     /// <summary>
     /// The button that represents the up direction.
     /// </summary>
@@ -40,7 +44,13 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The button that represents the right direction.
     /// </summary>
-    Right
+    Right,
+
+    [Obsolete]
+    Back,
+
+    [Obsolete]
+    Confirm,
   }
 
   public interface VirtualController {
@@ -84,7 +94,7 @@ namespace PuzzlePathDimension {
         inputType = value;
 
         if (InputTypeChanged != null)
-          InputTypeChanged(InputType);
+          InputTypeChanged(value);
       }
     }
 

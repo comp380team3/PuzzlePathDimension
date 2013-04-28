@@ -12,16 +12,21 @@ namespace PuzzlePathDimension {
     }
 
     public void Update(WritableVirtualController controller, GameTime gameTime) {
-      controller.SetButtonState(VirtualButtons.Back, IsButtonDown(Buttons.B));
-      controller.SetButtonState(VirtualButtons.Confirm, IsButtonDown(Buttons.A));
+      controller.SetButtonState(VirtualButtons.Delete, IsButtonDown(Buttons.B));
+      controller.SetButtonState(VirtualButtons.Select, IsButtonDown(Buttons.A));
       controller.SetButtonState(VirtualButtons.Pause, IsButtonDown(Buttons.Start));
+      controller.SetButtonState(VirtualButtons.Context, IsButtonDown(Buttons.Y));
+
       controller.SetButtonState(VirtualButtons.Up, IsButtonDown(Buttons.DPadUp) || IsButtonDown(Buttons.LeftThumbstickUp));
       controller.SetButtonState(VirtualButtons.Down, IsButtonDown(Buttons.DPadDown) || IsButtonDown(Buttons.LeftThumbstickDown));
       controller.SetButtonState(VirtualButtons.Left, IsButtonDown(Buttons.DPadLeft) || IsButtonDown(Buttons.LeftThumbstickLeft));
       controller.SetButtonState(VirtualButtons.Right, IsButtonDown(Buttons.DPadRight) || IsButtonDown(Buttons.LeftThumbstickRight));
-      controller.SetButtonState(VirtualButtons.Context, IsButtonDown(Buttons.Y));
 
       controller.Point = new Point(0, 0);
+
+      // deprecated buttons
+      controller.SetButtonState(VirtualButtons.Back, controller.IsButtonPressed(VirtualButtons.Delete));
+      controller.SetButtonState(VirtualButtons.Confirm, controller.IsButtonPressed(VirtualButtons.Select));
     }
 
 
