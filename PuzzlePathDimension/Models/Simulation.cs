@@ -260,7 +260,7 @@ namespace PuzzlePathDimension {
       _additionsAllowed = 3;
 
       // Load the ball's texture and store it.
-      _ballTex = content.Load<Texture2D>("Texture/ball");
+      _ballTex = content.Load<Texture2D>("New Texture/Ball2");
       // Create the physics simulation.
       //InitWorld();
 
