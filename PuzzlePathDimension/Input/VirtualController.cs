@@ -88,16 +88,6 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public WritableVirtualController() {
-    }
-
-    public WritableVirtualController(WritableVirtualController original) {
-      this.connected = original.connected;
-      this.inputType = original.inputType;
-      this.point = original.point;
-      this.buttons = (bool[])original.buttons.Clone();
-    }
-
     /// <summary>
     /// Gets the current position of the Point input.
     /// </summary>
