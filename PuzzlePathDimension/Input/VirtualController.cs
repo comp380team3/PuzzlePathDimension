@@ -45,12 +45,6 @@ namespace PuzzlePathDimension {
     /// The button that represents the right direction.
     /// </summary>
     Right,
-
-    [Obsolete]
-    Back,
-
-    [Obsolete]
-    Confirm,
   }
 
   public interface VirtualController {

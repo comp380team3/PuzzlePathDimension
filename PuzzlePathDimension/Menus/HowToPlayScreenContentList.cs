@@ -73,10 +73,10 @@ namespace PuzzlePathDimension {
       case VirtualButtons.Down:
         menuTemplate.SelectNext();
         break;
-      case VirtualButtons.Confirm:
+      case VirtualButtons.Select:
         menuTemplate.Confirm();
         break;
-      case VirtualButtons.Back:
+      case VirtualButtons.Delete:
         OnCancel();
         break;
       }

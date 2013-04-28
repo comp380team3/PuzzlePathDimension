@@ -151,11 +151,11 @@ namespace PuzzlePathDimension {
     protected override void OnButtonReleased(VirtualButtons button) {
       
       switch (button) {
-      case VirtualButtons.Confirm:
+      case VirtualButtons.Select:
         if (!editableLevel.FindCollision())
           ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel()));
         break;
-      case VirtualButtons.Back:
+      case VirtualButtons.Delete:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel));
         break;
       }
