@@ -175,7 +175,7 @@ namespace PuzzlePathDimension {
     }
 
     protected override void OnButtonReleased(VirtualButtons button) {
-      if (button == VirtualButtons.Back) {
+      if (button == VirtualButtons.Delete) {
         if (Accepted != null)
           Accepted();
 

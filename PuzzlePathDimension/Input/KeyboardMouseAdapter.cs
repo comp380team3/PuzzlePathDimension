@@ -28,10 +28,6 @@ namespace PuzzlePathDimension {
       controller.SetButtonState(VirtualButtons.Right, IsKeyDown(Keys.Right));
 
       controller.Point = new Point(Mouse.GetState().X, Mouse.GetState().Y);
-
-      // deprecated buttons
-      controller.SetButtonState(VirtualButtons.Back, controller.IsButtonPressed(VirtualButtons.Delete));
-      controller.SetButtonState(VirtualButtons.Confirm, controller.IsButtonPressed(VirtualButtons.Select));
     }
 
 
