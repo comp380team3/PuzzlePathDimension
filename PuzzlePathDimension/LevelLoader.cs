@@ -11,34 +11,6 @@ namespace PuzzlePathDimension {
   /// </summary>
   static class LevelLoader {
     /// <summary>
-    /// The hard-coded dictionary that maps platform dimensions to their respective textures. This
-    /// dictionary is for normal platforms.
-    /// </summary>
-    private static Dictionary<Vector2, string> normalPlatNames = new Dictionary<Vector2, string>
-    {
-      {new Vector2(100, 25), "New Texture/SHorizontalPlatform"},
-      {new Vector2(150, 25), "New Texture/MHorizontalPlatform"},
-      {new Vector2(200, 25), "New Texture/LHorizontalPlatform"},
-      {new Vector2(25, 100), "New Texture/SVerticalPlatform"},
-      {new Vector2(25, 150), "New Texture/MVerticalPlatform"},
-      {new Vector2(25, 200), "New Texture/LVerticalPlatform"}
-    };
-
-    /// <summary>
-    /// The hard-coded dictionary that maps platform dimensions to their respective textures. This
-    /// dictionary is for breakable platforms.
-    /// </summary>
-    private static Dictionary<Vector2, string> breakablePlatNames = new Dictionary<Vector2, string>
-    {
-      {new Vector2(100, 25), "New Texture/SHorizontalPlatformBreakable"},
-      {new Vector2(150, 25), "New Texture/MHorizontalPlatformBreakable"},
-      {new Vector2(200, 25), "New Texture/LHorizontalPlatformBreakable"},
-      {new Vector2(25, 100), "New Texture/SVerticalPlatformBreakable"},
-      {new Vector2(25, 150), "New Texture/MVerticalPlatformBreakable"},
-      {new Vector2(25, 200), "New Texture/LVerticalPlatformBreakable"}
-    };
-
-    /// <summary>
     /// Load an XML file from disk, retrieving textures through Content
     /// as necessary.
     /// </summary>
@@ -107,7 +79,8 @@ namespace PuzzlePathDimension {
     /// <returns>The texture that the platform will be drawn with.</returns>
     private static Texture2D LoadPlatformTexture(Vector2 size, bool breakable, ContentManager Content) {
       // Based on the platform's breakability, figure out which set of textures to look in.
-      Dictionary<Vector2, string> dictToUse = breakable ? breakablePlatNames : normalPlatNames;
+      Dictionary<Vector2, string> dictToUse = breakable ? 
+        Platform.BreakablePlatNames : Platform.NormalPlatNames;
 
       if (dictToUse.ContainsKey(size)) {
         return Content.Load<Texture2D>(dictToUse[size]);
