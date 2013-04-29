@@ -55,6 +55,25 @@ namespace PuzzlePathDimension {
     Right,
   }
 
+  public struct VirtualControllerState {
+    public bool IsConnected { get; set; }
+
+    public Point Point { get; set; }
+    public bool Up { get; set; }
+    public bool Down { get; set; }
+    public bool Left { get; set; }
+    public bool Right { get; set; }
+
+    public bool Select { get; set; }
+    public bool Delete { get; set; }
+    public bool Context { get; set; }
+    public bool Mode { get; set; }
+    public bool Pause { get; set; }
+    public bool Debug { get; set; }
+
+    public bool Easter { get; set; }
+  }
+
   public interface VirtualController {
     event Action Connected;
     event Action Disconnected;

@@ -1,9 +1,11 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 namespace PuzzlePathDimension {
   public interface IVirtualAdapter {
-    void Update(WritableVirtualController controller, GameTime gameTime);
+    void Update(IObserver<VirtualControllerState> observer, GameTime gameTime);
   }
 
   /// <summary>
@@ -21,20 +23,28 @@ namespace PuzzlePathDimension {
   }
 
   public class InputComponent : GameComponent {
-    private WritableVirtualController Controller { get; set; }
-
+    private Subject<VirtualControllerState> Source { get; set; }
+    private VirtualControllerState PreviousState { get; set; }
     private IVirtualAdapter Adapter { get; set; }
 
-    public InputComponent(PuzzlePathGame game, WritableVirtualController controller)
+    public InputComponent(PuzzlePathGame game, IObserver<VirtualControllerState> observer, InputType type)
       : base(game) {
-      Controller = controller;
+      Source = new Subject<VirtualControllerState>();
+      PreviousState = new VirtualControllerState();
+
+      Source.Where((state) => {
+        if (state.Equals(PreviousState))
+          return false;
+
+        PreviousState = state;
+        return true;
+      }).Subscribe(observer);
+
+      SetAdapter(type);
     }
 
     public override void Initialize() {
       base.Initialize();
-
-      SetAdapter(Controller.InputType);
-      Controller.InputTypeChanged += SetAdapter;
     }
 
     public override void Update(GameTime gameTime) {
@@ -43,11 +53,11 @@ namespace PuzzlePathDimension {
       if (Adapter == null)
         return;
 
-      Adapter.Update(Controller, gameTime);
+      Adapter.Update(Source, gameTime);
     }
 
 
-    private void SetAdapter(InputType inputType) {
+    public void SetAdapter(InputType inputType) {
       switch (inputType) {
       case InputType.KeyboardMouse:
         Adapter = new KeyboardMouseAdapter();

@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using System.Reactive;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
+
 namespace PuzzlePathDimension {
   /// <summary>
   /// This is the main type for your game
@@ -44,15 +48,38 @@ namespace PuzzlePathDimension {
       TopLevel.Game = this;
       TopLevel.Prefs = new UserPrefs();
 
-      WritableVirtualController controller = new WritableVirtualController();
-      controller.InputType = InputType.KeyboardMouse;
-      TopLevel.Controller = controller;
-
       Scene scene = new Scene();
       TopLevel.Scene = scene;
 
+      Subject<VirtualControllerState> inputSubject = new Subject<VirtualControllerState>();
+      TopLevel.Input = inputSubject;
+
+      WritableVirtualController controller = new WritableVirtualController();
+      controller.InputType = InputType.KeyboardMouse;
+      inputSubject.Subscribe((state) => {
+        Console.WriteLine("State change.");
+
+        controller.IsConnected = state.IsConnected;
+        controller.Point = state.Point;
+
+        controller.SetButtonState(VirtualButtons.Up, state.Up);
+        controller.SetButtonState(VirtualButtons.Down, state.Down);
+        controller.SetButtonState(VirtualButtons.Left, state.Left);
+        controller.SetButtonState(VirtualButtons.Right, state.Right);
+        controller.SetButtonState(VirtualButtons.Select, state.Select);
+        controller.SetButtonState(VirtualButtons.Delete, state.Delete);
+        controller.SetButtonState(VirtualButtons.Context, state.Context);
+        controller.SetButtonState(VirtualButtons.Mode, state.Mode);
+        controller.SetButtonState(VirtualButtons.Pause, state.Pause);
+        controller.SetButtonState(VirtualButtons.Debug, state.Debug);
+        controller.SetButtonState(VirtualButtons.Easter, state.Easter);
+      });
+      TopLevel.Controller = controller;
+
+
       // Create the input component.
-      InputComponent input = new InputComponent(this, controller);
+      InputComponent input = new InputComponent(this, inputSubject, controller.InputType);
+      controller.InputTypeChanged += input.SetAdapter;
       input.UpdateOrder = 0;
       Components.Add(input);
 
