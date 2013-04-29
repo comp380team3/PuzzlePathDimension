@@ -43,12 +43,14 @@ namespace PuzzlePathDimension {
     List<Rectangle> breakablePlatforms;
 
     /// <summary>
-    /// Texture used to draw regular platforms
+    /// The dictionary that maps platform sizes to the appropriate texture.
+    /// This dictionary is for regular platforms.
     /// </summary>
     Dictionary<Vector2, Texture2D> platformTextures;
 
     /// <summary>
-    /// Texture for breakable platforms.
+    /// The dictionary that maps platform sizes to the appropriate texture.
+    /// This dictionary is for breakable platforms.
     /// </summary>
     Dictionary<Vector2, Texture2D> breakablePlatformTextures;
 
@@ -122,15 +124,16 @@ namespace PuzzlePathDimension {
       gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       font = shared.Load<SpriteFont>("Font/menufont");
 
+      // Create the dictionaries and cache all the textures needed to draw each
+      // platform in the toolbox.
       platformTextures = new Dictionary<Vector2, Texture2D>();
       breakablePlatformTextures = new Dictionary<Vector2, Texture2D>();
 
       foreach (Vector2 size in Platform.NormalPlatNames.Keys) {
         platformTextures.Add(size, shared.Load<Texture2D>(Platform.NormalPlatNames[size]));
       }
-
       foreach (Vector2 size in Platform.BreakablePlatNames.Keys) {
-        platformTextures.Add(size, shared.Load<Texture2D>(Platform.BreakablePlatNames[size]));
+        breakablePlatformTextures.Add(size, shared.Load<Texture2D>(Platform.BreakablePlatNames[size]));
       }
     }
 
@@ -209,6 +212,8 @@ namespace PuzzlePathDimension {
       // Draw the background rectangle.
       spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
 
+      // Draw the platforms in the toolbox, referring to the dictionaries to determine
+      // what textures to draw.
       foreach (Rectangle rect in platforms) {
         Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
         spriteBatch.Draw(textureToUse, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
