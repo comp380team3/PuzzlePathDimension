@@ -18,19 +18,23 @@ namespace PuzzlePathDimension {
   /// </summary>
   class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
+
     IRestarable restartable;
+    ContentManager content;
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public PauseMenuScreen(Simulation simulation) {
+    public PauseMenuScreen(TopLevelModel topLevel, Simulation simulation)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
       this.restartable = simulation;
     }
 
-    public PauseMenuScreen(EditableLevel editableLevel) {
+    public PauseMenuScreen(TopLevelModel topLevel, EditableLevel editableLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -40,6 +44,7 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+      content = shared;
 
       menuTemplate.Title = new TextLine("Paused", font, new Color(192, 192, 192));
 
@@ -54,27 +59,33 @@ namespace PuzzlePathDimension {
       retryGameMenuEntry.Selected += RetryGameMenuEntrySelected;
       items.Add(retryGameMenuEntry);
 
+      MenuButton levelSelectMenuEntry = new MenuButton("Level Select", font);
+      levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
+      items.Add(levelSelectMenuEntry);
+
       MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       items.Add(quitGameMenuEntry);
     }
 
+    public override void UnloadContent() {
+      base.UnloadContent();
+    }
 
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        break;
+      case VirtualButtons.Back:
+        OnCancel();
+        break;
       }
     }
 
@@ -91,8 +102,10 @@ namespace PuzzlePathDimension {
       menuTemplate.Draw(spriteBatch, gameTime);
     }
 
-
-    void OnCancel(object sender, PlayerIndexEventArgs e) {
+    /// <summary>
+    /// Event handler when the exit menu entry is selected.
+    /// </summary>
+    void OnCancel() {
       ExitScreen();
     }
 
@@ -101,24 +114,34 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void RetryGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void RetryGameMenuEntrySelected() {
       // Put what happens when the person clicks retry
       const string message = "Are you sure you want to restart this level?";
 
-      MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(message);
-      confirmRetryMessageBox.Accepted += ConfirmRetryBoxAccepted;
-      ScreenList.AddScreen(confirmRetryMessageBox, ControllingPlayer);
+      MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmRetryMessageBox.RightButton += ConfirmRetryBoxAccepted;
+      ScreenList.AddScreen(confirmRetryMessageBox);
     }
 
     /// <summary>
     /// Event handler for when the Quit Game menu entry is selected.
     /// </summary>
-    void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
+    void QuitGameMenuEntrySelected() {
       const string message = "Are you sure you want to quit this level?";
 
-      MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(message);
-      confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
-      ScreenList.AddScreen(confirmQuitMessageBox, ControllingPlayer);
+      MessageBoxScreen confirmQuitMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmQuitMessageBox.RightButton += ConfirmQuitMessageBoxAccepted;
+      ScreenList.AddScreen(confirmQuitMessageBox);
+    }
+
+    /// <summary>
+    /// Event handler for when the Level Select menu entry is selected.
+    /// </summary>
+    void LevelSelectMenuEntrySelected() {
+      const string message = "Are you sure you want to quit this level?";
+      MessageBoxScreen confirmLevelSelectMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmLevelSelectMessageBox.RightButton += ConfirmLevelSelectMessageBoxAccepted;
+      ScreenList.AddScreen(confirmLevelSelectMessageBox);
     }
 
     /// <summary>
@@ -126,19 +149,24 @@ namespace PuzzlePathDimension {
     /// you want to quit" message box. This uses the loading screen to
     /// transition from the game back to the main menu screen.
     /// </summary>
-    void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
-      LoadingScreen.Load(ScreenList, false, null, new BackgroundScreen(),
-                                                     new MainMenuScreen());
+    void ConfirmQuitMessageBoxAccepted() {
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new MainMenuScreen(TopLevel));
     }
 
     /// <summary>
-    /// Event handler for when the user selects the Retry menu entry.
+    /// Event handler for when the user selects confirm when the Retry menu entry.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
+    void ConfirmRetryBoxAccepted() {
       restartable.Restart();
       ExitScreen();
+    }
+
+    /// <summary>
+    /// Event handler for when the user selects confirm for the level select menu entry.
+    /// </summary>
+    void ConfirmLevelSelectMessageBoxAccepted() {
+      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel), new MainMenuScreen(TopLevel),
+                                                    new LevelSelectScreen(TopLevel, content));
     }
   }
 }

@@ -43,14 +43,16 @@ namespace PuzzlePathDimension {
     private List<Rectangle> _breakablePlatforms;
 
     /// <summary>
-    /// Texture used to draw regular platforms
+    /// The dictionary that maps platform sizes to the appropriate texture.
+    /// This dictionary is for regular platforms.
     /// </summary>
-    private Texture2D _platformTexture;
+    Dictionary<Vector2, Texture2D> platformTextures;
 
     /// <summary>
-    /// Texture for breakable platforms.
+    /// The dictionary that maps platform sizes to the appropriate texture.
+    /// This dictionary is for breakable platforms.
     /// </summary>
-    private Texture2D _breakablePlatformTexture;
+    Dictionary<Vector2, Texture2D> breakablePlatformTextures;
 
     /// <summary>
     /// Boolean to determine if more platforms can be selected
@@ -75,20 +77,21 @@ namespace PuzzlePathDimension {
 
     private SpriteFont _font;
 
-    public event EventHandler<PlayerIndexEventArgs> Accepted;
+    public event Action Accepted;
 
 
     /// <summary>
     /// Constructor automatically includes the standard "A=ok, B=cancel"
     /// usage text prompt.
     /// </summary>
-    public ToolboxScreen(string message)
-      : this(message, true) { }
+    public ToolboxScreen(TopLevelModel topLevel, string message)
+      : this(topLevel, message, true) { }
 
     /// <summary>
     /// Constructor that includes a message to be displayed and Boolean to determine if more platforms can be added
     /// </summary>
-    public ToolboxScreen(string message, bool limitReached) {
+    public ToolboxScreen(TopLevelModel topLevel, string message, bool limitReached)
+      : base(topLevel) {
       this._message = message;
       _cantAdd = limitReached;
       //initializa the position of regular platforms
@@ -122,10 +125,21 @@ namespace PuzzlePathDimension {
     /// it will just get back another reference to the already loaded data.
     /// </summary>
     public override void LoadContent(ContentManager shared) {
+
       _gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       _font = shared.Load<SpriteFont>("Font/menufont");
-      _platformTexture = shared.Load<Texture2D>("Texture/platform");
-      _breakablePlatformTexture = shared.Load<Texture2D>("Texture/platform_breakable");
+
+      // Create the dictionaries and cache all the textures needed to draw each
+      // platform in the toolbox.
+      platformTextures = new Dictionary<Vector2, Texture2D>();
+      breakablePlatformTextures = new Dictionary<Vector2, Texture2D>();
+
+      foreach (Vector2 size in Platform.NormalPlatNames.Keys) {
+        platformTextures.Add(size, shared.Load<Texture2D>(Platform.NormalPlatNames[size]));
+      }
+      foreach (Vector2 size in Platform.BreakablePlatNames.Keys) {
+        breakablePlatformTextures.Add(size, shared.Load<Texture2D>(Platform.BreakablePlatNames[size]));
+      }
     }
 
 
@@ -134,27 +148,29 @@ namespace PuzzlePathDimension {
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
 
-      //update the mouse state
       _previousMouseState = _currentMouseState;
       _currentMouseState = Mouse.GetState();
-      
-      //When click
       if (_previousMouseState.LeftButton == ButtonState.Released && _currentMouseState.LeftButton == ButtonState.Pressed) {
-        //Loop through regular platforms
         foreach (Rectangle rect in _platforms) {
-          if (Intersects(rect, _currentMouseState)) {
-            _selected = new Platform(_platformTexture, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
-            Console.WriteLine(_selected.Origin);
-            //ExitScreen();
+          if (_currentMouseState.X > rect.X && _currentMouseState.X < rect.X + rect.Width) {
+            if (_currentMouseState.Y > rect.Y && _currentMouseState.Y < rect.Y + rect.Height) {
+              Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
+
+              _selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
+              Console.WriteLine(_selected.Origin);
+              //ExitScreen();
+            }
           }
         }
-        //loop through breakable platforms
         foreach (Rectangle rect in _breakablePlatforms) {
-          if (Intersects(rect, _currentMouseState)) {
-            _selected = new Platform(_breakablePlatformTexture, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
-            Console.WriteLine(_selected.Origin);
-            ExitScreen();
-
+          if (_currentMouseState.X > rect.X && _currentMouseState.X < rect.X + rect.Width) {
+            if (_currentMouseState.Y > rect.Y && _currentMouseState.Y < rect.Y + rect.Height) {
+              Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
+              
+              _selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
+              Console.WriteLine(_selected.Origin);
+              ExitScreen();
+            }
           }
         }
       }
@@ -163,11 +179,12 @@ namespace PuzzlePathDimension {
       if (_cantAdd && _previousMouseState.LeftButton == ButtonState.Released && _currentMouseState.LeftButton == ButtonState.Pressed) {
         ExitScreen();
       }
+    }
 
-      //Back button to exit
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      if (button == VirtualButtons.Back) {
         if (Accepted != null)
-          Accepted(this, new PlayerIndexEventArgs(PlayerIndex.One));
+          Accepted();
 
         ExitScreen();
       }
@@ -214,13 +231,17 @@ namespace PuzzlePathDimension {
       // Draw the background rectangle.
       spriteBatch.Draw(_gradientTexture, backgroundRectangle, color);
 
+
+      // Draw the platforms in the toolbox, referring to the dictionaries to determine
+      // what textures to draw.
       foreach (Rectangle rect in _platforms) {
-        Vector2 scale = new Vector2(rect.Width / (float)_platformTexture.Width, rect.Height / (float)_platformTexture.Height);
-        spriteBatch.Draw(_platformTexture, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
+        spriteBatch.Draw(textureToUse, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       }
       foreach (Rectangle rect in _breakablePlatforms) {
-        Vector2 scale = new Vector2(rect.Width / (float)_platformTexture.Width, rect.Height / (float)_platformTexture.Height);
-        spriteBatch.Draw(_breakablePlatformTexture, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
+        spriteBatch.Draw(textureToUse, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
       }
       // Draw the message box text.
       spriteBatch.DrawString(_font, _message, textPosition, color);

@@ -5,12 +5,49 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Dynamics.Contacts;
+using System.Collections.Generic;
 
 namespace PuzzlePathDimension {
   /// <summary>
   /// The Platform class describes a platform.
   /// </summary>
   public class Platform : ILevelObject {
+    /// <summary>
+    /// The hard-coded dictionary that maps platform dimensions to their respective textures. This
+    /// dictionary is for normal platforms.
+    /// </summary>
+    /// <remarks>
+    /// There is no read-only dictionary in .NET 4.0, so please don't modify this! The "readonly"
+    /// keyword only affects the reference to the dictionary, not the dictionary itself.
+    /// </remarks>
+    public static readonly Dictionary<Vector2, string> NormalPlatNames = new Dictionary<Vector2, string>
+    {
+      {new Vector2(100, 25), "Texture/SHorizontalPlatform"},
+      {new Vector2(150, 25), "Texture/MHorizontalPlatform"},
+      {new Vector2(200, 25), "Texture/LHorizontalPlatform"},
+      {new Vector2(25, 100), "Texture/SVerticalPlatform"},
+      {new Vector2(25, 150), "Texture/MVerticalPlatform"},
+      {new Vector2(25, 200), "Texture/LVerticalPlatform"}
+    };
+
+    /// <summary>
+    /// The hard-coded dictionary that maps platform dimensions to their respective textures. This
+    /// dictionary is for breakable platforms.
+    /// </summary>
+    /// <remarks>
+    /// There is no read-only dictionary in .NET 4.0, so please don't modify this! The "readonly"
+    /// keyword only affects the reference to the dictionary, not the dictionary itself.
+    /// </remarks>
+    public static readonly Dictionary<Vector2, string> BreakablePlatNames = new Dictionary<Vector2, string>
+    {
+      {new Vector2(100, 25), "Texture/SHorizontalPlatformBreakable"},
+      {new Vector2(150, 25), "Texture/MHorizontalPlatformBreakable"},
+      {new Vector2(200, 25), "Texture/LHorizontalPlatformBreakable"},
+      {new Vector2(25, 100), "Texture/SVerticalPlatformBreakable"},
+      {new Vector2(25, 150), "Texture/MVerticalPlatformBreakable"},
+      {new Vector2(25, 200), "Texture/LVerticalPlatformBreakable"}
+    };
+
     /// <summary>
     /// The texture that the platform uses.
     /// </summary>

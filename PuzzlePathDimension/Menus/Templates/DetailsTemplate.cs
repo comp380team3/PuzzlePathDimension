@@ -181,7 +181,7 @@ namespace PuzzlePathDimension {
       if (button == null)
         return;
 
-      button.OnSelectEntry(PlayerIndex.One);
+      button.OnSelectEntry();
     }
   }
 }

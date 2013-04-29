@@ -142,7 +142,7 @@ namespace PuzzlePathDimension {
       // Draw the buttons
       var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
 
-      cursor.X = backgroundRectangle.X + 75;
+      cursor.X = backgroundRectangle.X + 100;
       cursor.Y = backgroundRectangle.Bottom - font.LineSpacing; // This was changed - Jorenz
       
 
@@ -220,7 +220,7 @@ namespace PuzzlePathDimension {
       if (button == null)
         return;
 
-      button.OnSelectEntry(PlayerIndex.One);
+      button.OnSelectEntry();
     }
   }
 }

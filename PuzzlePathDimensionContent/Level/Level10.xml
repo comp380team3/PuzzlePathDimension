@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<level name="Level 10" balls="5">
+  <platform breakable="false" x="110" y="225" width="200" height="25" />
+  <platform breakable="false" x="110" y="350" width="200" height="25" />
+  <platform breakable="false" x="310" y="150" width="25" height="150" />
+  <platform breakable="false" x="310" y="300" width="25" height="150" />
+  <platform breakable="false" x="460" y="5" width="25" height="200" />
+  <platform breakable="false" x="460" y="395" width="25" height="200" />
+
+  <platform breakable="true" x="460" y="225" width="25" height="150" />
+  <platform breakable="true" x="310" y="25" width="25" height="100" />
+  <platform breakable="true" x="310" y="470" width="25" height="100" />
+
+  <platform breakable="true" x="150" y="250" width="25" height="100" />
+  <platform breakable="true" x="190" y="250" width="25" height="100" />
+  
+  <goal x="240" y="270" />
+  <launcher x="680" y="580" />
+  <treasure x="15" y="15" />
+  <treasure x="750" y="15" />
+  <treasure x="270" y="385" />
+  
+  <score value="0" />
+  <completed value="false" />
+  <completionTime time="0:00" />
+</level>

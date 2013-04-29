@@ -23,11 +23,12 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructor
     /// </summary>
-    public MainMenuScreen() {
+    public MainMenuScreen(TopLevelModel topLevel)
+      : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
-    
+
     /// <summary>
     /// Load the assets required for the Main Menu.
     /// </summary>
@@ -66,27 +67,20 @@ namespace PuzzlePathDimension {
       items.Add(exitMenuEntry);
     }
 
-    /// <summary>
-    /// Handle the input from the user. Down moves the selected Menu Button
-    /// to the next Menu Button in the list. Up moves the selected Menu Button
-    /// to the previous Menu Button in the list.
-    /// </summary>
-    /// <param name="vtroller"></param>
-    public override void HandleInput(VirtualController vtroller) {
-      base.HandleInput(vtroller);
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Up)) {
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
         menuTemplate.SelectPrev();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Down)) {
+        break;
+      case VirtualButtons.Down:
         menuTemplate.SelectNext();
-      }
-
-      if (vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
+        break;
+      case VirtualButtons.Confirm:
         menuTemplate.Confirm();
-      } else if (vtroller.CheckForRecentRelease(VirtualButtons.Back)) {
-        OnCancel(null, new PlayerIndexEventArgs(PlayerIndex.One));
+        break;
+      case VirtualButtons.Back:
+        OnCancel();
+        break;
       }
     }
 
@@ -118,8 +112,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event handler for when the Play Game menu entry is selected.
     /// </summary>
-    void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new LevelSelectScreen(content), e.PlayerIndex);
+    void PlayGameMenuEntrySelected() {
+      ScreenList.AddScreen(new LevelSelectScreen(TopLevel, content));
     }
 
     /// <summary>
@@ -127,41 +121,41 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void howToPlayMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new HowToPlayScreen1(), e.PlayerIndex);
+    void howToPlayMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreenContentList(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Options menu entry is selected.
     /// </summary>
-    void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
+    void OptionsMenuEntrySelected() {
+      ScreenList.AddScreen(new OptionsMenuScreen(TopLevel));
     }
 
     /// <summary>
     /// Event handler for when the Credits meny entry is selected.
     /// </summary>
-    void CreditsMenuEntrySelected(object sender, PlayerIndexEventArgs e) {
-      ScreenList.AddScreen(new CreditsMenuScreen(), e.PlayerIndex);
+    void CreditsMenuEntrySelected() {
+      ScreenList.AddScreen(new CreditsMenuScreen(TopLevel));
     }
 
     /// <summary>
     /// When the user cancels the main menu, ask if they want to exit the sample.
     /// </summary>
-    void OnCancel(object sender, PlayerIndexEventArgs e) {
+    void OnCancel() {
       const string message = "Are you sure you want to exit the game?";
 
-      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(message);
-      confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
-      ScreenList.AddScreen(confirmExitMessageBox, e.PlayerIndex);
+      MessageBoxScreen confirmExitMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmExitMessageBox.RightButton += ConfirmExitMessageBoxAccepted;
+      ScreenList.AddScreen(confirmExitMessageBox);
     }
 
     /// <summary>
     /// Event handler for when the user selects ok on the "are you sure
     /// you want to exit" message box.
     /// </summary>
-    void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e) {
-      ScreenManager.Game.Exit();
+    void ConfirmExitMessageBoxAccepted() {
+      Game.Exit();
     }
   }
 }

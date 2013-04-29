@@ -33,7 +33,6 @@ namespace PuzzlePathDimension {
   public abstract class GameScreen {
     bool otherScreenHasFocus;
 
-
     /// <summary>
     /// Normally when one screen is brought up over the top of another,
     /// the first screen will transition off to make room for the new
@@ -77,27 +76,30 @@ namespace PuzzlePathDimension {
     /// </summary>
     public bool IsExiting { get; protected internal set; }
 
-    /// <summary>
-    /// Gets the manager that this screen belongs to.
-    /// </summary>
-    public ScreenRenderer ScreenManager { get; internal set; }
+    protected TopLevelModel TopLevel { get; private set; }
 
-    public IScreenList ScreenList { get; internal set; }
+    public Game Game {
+      get { return TopLevel.Game; }
+    }
+
+    public IScreenList ScreenList {
+      get { return TopLevel.Scene; }
+    }
 
     /// <summary>
     /// Gets the user's set of preferences.
     /// </summary>
-    public UserPrefs Prefs { get; set; }
+    public UserPrefs Prefs {
+      get { return TopLevel.Prefs; }
+    }
 
     /// <summary>
-    /// Gets the index of the player who is currently controlling this screen,
-    /// or null if it is accepting input from any player. This is used to lock
-    /// the game to a specific player profile. The main menu responds to input
-    /// from any connected gamepad, but whichever player makes a selection from
-    /// this menu is given control over all subsequent screens, so other gamepads
-    /// are inactive until the controlling player returns to the main menu.
+    /// Retrieves the game controller.
     /// </summary>
-    public PlayerIndex? ControllingPlayer { get; internal set; }
+    public VirtualController Controller {
+      get { return TopLevel.Controller; }
+    }
+
 
     /// <summary>
     /// Checks whether this screen is active and can respond to user input.
@@ -118,6 +120,37 @@ namespace PuzzlePathDimension {
     public float TransitionPosition {
       get { return 1f - TransitionAlpha; }
       protected set { TransitionAlpha = 1f - value; }
+    }
+
+    public GameScreen(TopLevelModel topLevel) {
+      TopLevel = topLevel;
+
+      Controller.Connected += OnControllerConnected;
+      Controller.Disconnected += OnControllerDisconnected;
+      Controller.ButtonPressed += OnButtonPressed__;
+      Controller.ButtonReleased += OnButtonReleased__;
+      Controller.PointChanged += OnPointChanged__;
+    }
+
+    /// <summary>
+    /// Tells the screen to go away. Unlike ScreenManager.RemoveScreen, which
+    /// instantly kills the screen, this method respects the transition timings
+    /// and will give the screen a chance to gradually transition off.
+    /// </summary>
+    public void ExitScreen() {
+      Controller.Connected -= OnControllerConnected;
+      Controller.Disconnected -= OnControllerDisconnected;
+      Controller.ButtonPressed -= OnButtonPressed__;
+      Controller.ButtonReleased -= OnButtonReleased__;
+      Controller.PointChanged -= OnPointChanged__;
+
+      if (TransitionOffTime == TimeSpan.Zero) {
+        // If the screen has a zero transition time, remove it immediately.
+        ScreenList.RemoveScreen(this);
+      } else {
+        // Otherwise flag that it should transition off and then exit.
+        IsExiting = true;
+      }
     }
 
 
@@ -168,6 +201,9 @@ namespace PuzzlePathDimension {
           ScreenState = ScreenState.Active;
         }
       }
+
+      if (IsActive)
+        HandleInput(Controller);
     }
 
     /// <summary>
@@ -209,20 +245,26 @@ namespace PuzzlePathDimension {
     /// </summary>
     public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
 
+    /* Input-handling hooks */
+    protected virtual void OnControllerConnected() { }
+    protected virtual void OnControllerDisconnected() { }
+    protected virtual void OnButtonPressed(VirtualButtons button) { }
+    protected virtual void OnButtonReleased(VirtualButtons button) { }
+    protected virtual void OnPointChanged(Point point) { }
 
-    /// <summary>
-    /// Tells the screen to go away. Unlike ScreenManager.RemoveScreen, which
-    /// instantly kills the screen, this method respects the transition timings
-    /// and will give the screen a chance to gradually transition off.
-    /// </summary>
-    public void ExitScreen() {
-      if (TransitionOffTime == TimeSpan.Zero) {
-        // If the screen has a zero transition time, remove it immediately.
-        ScreenList.RemoveScreen(this);
-      } else {
-        // Otherwise flag that it should transition off and then exit.
-        IsExiting = true;
-      }
+    private void OnButtonPressed__(VirtualButtons button) {
+      if (IsActive)
+        OnButtonPressed(button);
+    }
+
+    private void OnButtonReleased__(VirtualButtons button) {
+      if (IsActive)
+        OnButtonReleased(button);
+    }
+
+    private void OnPointChanged__(Point point) {
+      if (IsActive)
+        OnPointChanged(point);
     }
   }
 }

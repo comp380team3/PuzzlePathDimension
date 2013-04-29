@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using FarseerPhysics.Dynamics;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -65,11 +62,33 @@ namespace PuzzlePathDimension {
       size.Y = Convert.ToInt16(node.Attributes["height"].Value);
 
       bool breakable = Convert.ToBoolean(node.Attributes["breakable"].Value);
-      Texture2D texture = breakable ? 
-        Content.Load<Texture2D>("Texture/platform_breakable") : Content.Load<Texture2D>("Texture/platform");
+      Texture2D texture = LoadPlatformTexture(size, breakable, Content);
+
       Platform platform = new Platform(texture, position, size, breakable);
 
       return platform;
+    }
+
+    /// <summary>
+    /// Loads the appropriate texture for a Platform object, based on its size and
+    /// whether it is breakable or not.
+    /// </summary>
+    /// <param name="size">The dimensions of the platform's size.</param>
+    /// <param name="breakable">Whether the platform is breakable.</param>
+    /// <param name="Content">The resource manager to load from.</param>
+    /// <returns>The texture that the platform will be drawn with.</returns>
+    private static Texture2D LoadPlatformTexture(Vector2 size, bool breakable, ContentManager Content) {
+      // Based on the platform's breakability, figure out which set of textures to look in.
+      Dictionary<Vector2, string> dictToUse = breakable ? 
+        Platform.BreakablePlatNames : Platform.NormalPlatNames;
+
+      if (dictToUse.ContainsKey(size)) {
+        return Content.Load<Texture2D>(dictToUse[size]);
+      } else { // fallback
+        Console.WriteLine("Warning: This should never be reached.");
+        return breakable ? Content.Load<Texture2D>("Texture/platform_breakable") : 
+          Content.Load<Texture2D>("Texture/platform");
+      }
     }
 
     private static Treasure LoadTreasure(XmlElement node, ContentManager Content) {
@@ -97,8 +116,11 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Launcher launcher = new Launcher(Content.Load<Texture2D>("Texture/launcher"), 
-        Content.Load<Texture2D>("Texture/power_meter"), position);
+      Texture2D[] launcherTextures = {Content.Load<Texture2D>("Texture/launcher"),
+                                      Content.Load<Texture2D>("Texture/LauncherBase"),
+                                      Content.Load<Texture2D>("Texture/power_meter")};
+
+      Launcher launcher = new Launcher(launcherTextures, position);
 
       return launcher;
     }

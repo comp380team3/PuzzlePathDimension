@@ -16,91 +16,22 @@ namespace PuzzlePathDimension {
       get { return true; }
     }
 
-    /// <summary>
-    /// Constructs a KeyboardMouseAdapter object.
-    /// </summary>
-    public KeyboardMouseAdapter() { }
+    public void Update(WritableVirtualController controller, GameTime gameTime) {
+      controller.SetButtonState(VirtualButtons.Back, IsKeyDown(Keys.Escape));
+      controller.SetButtonState(VirtualButtons.Confirm, IsKeyDown(Keys.Enter) || IsKeyDown(Keys.Space));
+      controller.SetButtonState(VirtualButtons.Pause, IsKeyDown(Keys.Pause) || IsKeyDown(Keys.Escape));
+      controller.SetButtonState(VirtualButtons.Up, IsKeyDown(Keys.Up));
+      controller.SetButtonState(VirtualButtons.Down, IsKeyDown(Keys.Down));
+      controller.SetButtonState(VirtualButtons.Left, IsKeyDown(Keys.Left));
+      controller.SetButtonState(VirtualButtons.Right, IsKeyDown(Keys.Right));
+      controller.SetButtonState(VirtualButtons.Context, Mouse.GetState().RightButton == ButtonState.Pressed);
 
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Confirm input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Confirm input.</returns>
-    public VirtualButtonState Confirm() {
-      return Keyboard.GetState().IsKeyDown(Keys.Enter) || Keyboard.GetState().IsKeyDown(Keys.Space) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
+      controller.Point = new Point(Mouse.GetState().X, Mouse.GetState().Y);
     }
 
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Back input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Back input.</returns>
-    public VirtualButtonState Back() {
-      return Keyboard.GetState().IsKeyDown(Keys.Escape) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
 
-    /// <summary>
-    /// Defines the mouse input that corresponds to the Context input.
-    /// </summary>
-    /// <returns>The state of the mouse input that is mapped to the Context input.</returns>
-    public VirtualButtonState Context() {
-      return Mouse.GetState().RightButton == ButtonState.Pressed ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
-
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Pause input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Pause input.</returns>
-    public VirtualButtonState Pause() {
-      // Note: Escape is also bound to Back, but I think people do expect Escape to be bound to 
-      // some sort of pause functionality...
-      return Keyboard.GetState().IsKeyDown(Keys.Pause) || Keyboard.GetState().IsKeyDown(Keys.Escape) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
-
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Up input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Up input.</returns>
-    public VirtualButtonState Up() {
-      return Keyboard.GetState().IsKeyDown(Keys.Up) || Keyboard.GetState().IsKeyDown(Keys.W) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
-
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Down input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Down input.</returns>
-    public VirtualButtonState Down() {
-      return Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
-
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Left input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Left input.</returns>
-    public VirtualButtonState Left() {
-      return Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.A) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
-
-    /// <summary>
-    /// Defines the keyboard input that corresponds to the Right input.
-    /// </summary>
-    /// <returns>The state of the keyboard input that is mapped to the Right input.</returns>
-    public VirtualButtonState Right() {
-      return Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.D) ?
-        VirtualButtonState.Pressed : VirtualButtonState.Released;
-    }
-
-    /// <summary>
-    /// Defines the mouse input that corresponds to the Point input.
-    /// </summary>
-    /// <returns>The coordinates of the mouse pointer.</returns>
-    public Point Point() {
-      return new Point(Mouse.GetState().X, Mouse.GetState().Y);
+    private bool IsKeyDown(Keys key) {
+      return Keyboard.GetState().IsKeyDown(key);
     }
   }
 }

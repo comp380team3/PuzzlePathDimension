@@ -35,17 +35,23 @@ namespace PuzzlePathDimension {
     private const float _maxAngle = (float)Math.PI;
 
     /// <summary>
-    /// The texture that the launcher will be drawn with.
+    /// The texture that the launcher's hand will be drawn with.
     /// </summary>
-    private Texture2D _texture;
-    
+    private Texture2D _rotatorTex;
+
+    /// <summary>
+    /// The texture that the base of the launcher will be drawn with.
+    /// </summary>
+    private Texture2D _baseTex;
+
     /// <summary>
     /// The texture that the power meter will be drawn with.
     /// </summary>
     private Texture2D _meterTex;
 
     /// <summary>
-    /// The position of the launcher.
+    /// The position of the launcher. This is the upper left corner
+    /// of the "hand" of the launcher when it is completely horizontal.
     /// </summary>
     private Vector2 _position;
 
@@ -114,13 +120,18 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Constructs a Launcher object.
     /// </summary>
-    /// <param name="texture">The texture that the launcher will be drawn with.</param>
-    /// <param name="meterTex">The texture that the power meter will be drawn with.</param>
+    /// <param name="textures">An array of textures that will be used to draw the launcher's 
+    /// parts. The texture in index 0 is the "stick", the texture in index 1 is the base, and 
+    /// the texture in index 2 is the power meter. The "stick" should be of length 80, the
+    /// base should be 120x120, and the power meter should be 80x10.</param>
     /// <param name="position">The position of the launcher.</param>
-    public Launcher(Texture2D texture, Texture2D meterTex, Vector2 position) {
+    public Launcher(Texture2D[] textures, Vector2 position) {
       // Set the textures.
-      _texture = texture;
-      _meterTex = meterTex;
+      if (textures != null) {
+        _rotatorTex = textures[0];
+        _baseTex = textures[1];
+        _meterTex = textures[2];
+      }
 
       // TODO: add texture dimensions check
 
@@ -276,14 +287,18 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when launching the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
+      // Draw the base first, but figure out where to draw it in the first place.
+      Vector2 basePos = new Vector2(_position.X - 60, _position.Y - 115); // Based on the hand's position
+      spriteBatch.Draw(_baseTex, basePos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
       // The unit circle goes counter-clockwise, but the rotation parameter goes clockwise, so flip it.
       float rotateAngle = -1 * _angle;
 
       // Rotate at the midpoint of the upper-left and lower-left corners, for better precision
-      Vector2 rotatePos = new Vector2(0f, _texture.Height / 2.0f);
+      Vector2 rotatePos = new Vector2(0f, _rotatorTex.Height / 2.0f);
 
-      // Draw the launcher!
-      spriteBatch.Draw(_texture, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
+      // Draw the launcher's "hand", for lack of a better term.
+      spriteBatch.Draw(_rotatorTex, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
 
       // Display the power meter if the user is currently aiming the launcher.
       if (_movable) {
