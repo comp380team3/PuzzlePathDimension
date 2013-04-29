@@ -45,12 +45,12 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Texture used to draw regular platforms
     /// </summary>
-    Texture2D platformTexture;
+    Dictionary<Vector2, Texture2D> platformTextures;
 
     /// <summary>
     /// Texture for breakable platforms.
     /// </summary>
-    Texture2D breakablePlatformTexture;
+    Dictionary<Vector2, Texture2D> breakablePlatformTextures;
 
     Boolean cantAdd;
 
@@ -121,8 +121,17 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       font = shared.Load<SpriteFont>("Font/menufont");
-      platformTexture = shared.Load<Texture2D>("Texture/platform");
-      breakablePlatformTexture = shared.Load<Texture2D>("Texture/platform_breakable");
+
+      platformTextures = new Dictionary<Vector2, Texture2D>();
+      breakablePlatformTextures = new Dictionary<Vector2, Texture2D>();
+
+      foreach (Vector2 size in Platform.NormalPlatNames.Keys) {
+        platformTextures.Add(size, shared.Load<Texture2D>(Platform.NormalPlatNames[size]));
+      }
+
+      foreach (Vector2 size in Platform.BreakablePlatNames.Keys) {
+        platformTextures.Add(size, shared.Load<Texture2D>(Platform.BreakablePlatNames[size]));
+      }
     }
 
 
@@ -136,7 +145,9 @@ namespace PuzzlePathDimension {
         foreach (Rectangle rect in platforms) {
           if (currentMouseState.X > rect.X && currentMouseState.X < rect.X + rect.Width) {
             if (currentMouseState.Y > rect.Y && currentMouseState.Y < rect.Y + rect.Height) {
-              selected = new Platform(platformTexture, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
+              Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
+
+              selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
               Console.WriteLine(selected.Origin);
               //ExitScreen();
             }
@@ -145,7 +156,9 @@ namespace PuzzlePathDimension {
         foreach (Rectangle rect in breakablePlatforms) {
           if (currentMouseState.X > rect.X && currentMouseState.X < rect.X + rect.Width) {
             if (currentMouseState.Y > rect.Y && currentMouseState.Y < rect.Y + rect.Height) {
-              selected = new Platform(breakablePlatformTexture, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
+              Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
+
+              selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
               Console.WriteLine(selected.Origin);
               ExitScreen();
             }
@@ -197,12 +210,12 @@ namespace PuzzlePathDimension {
       spriteBatch.Draw(gradientTexture, backgroundRectangle, color);
 
       foreach (Rectangle rect in platforms) {
-        Vector2 scale = new Vector2(rect.Width / (float)platformTexture.Width, rect.Height / (float)platformTexture.Height);
-        spriteBatch.Draw(platformTexture, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
+        spriteBatch.Draw(textureToUse, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       }
       foreach (Rectangle rect in breakablePlatforms) {
-        Vector2 scale = new Vector2(rect.Width / (float)platformTexture.Width, rect.Height / (float)platformTexture.Height);
-        spriteBatch.Draw(breakablePlatformTexture, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
+        spriteBatch.Draw(textureToUse, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
       }
       // Draw the message box text.
       spriteBatch.DrawString(font, message, textPosition, color);
