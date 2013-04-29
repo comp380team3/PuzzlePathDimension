@@ -29,7 +29,7 @@ namespace PuzzlePathDimension {
       "Platform: ",
       "Breakable Platform: ",
       "Goal: ",
-      "DeathTrap: ",
+      "Death Trap: ",
       "Treasure: ",
     };
 
@@ -38,8 +38,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     string[] gameContent = new string[] {
       "Texture/ball",
-      "Texture/platform",
-      "Texture/platform_breakable",
+      "Texture/SHorizontalPlatform",
+      "Texture/SHorizontalPlatformBreakable",
       "Texture/goal",
       "Texture/deathtrap",
       "Texture/treasure",
