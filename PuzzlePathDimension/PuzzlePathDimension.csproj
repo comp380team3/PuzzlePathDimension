@@ -75,6 +75,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\EditableLevel.cs" />
+    <Compile Include="Models\IRestarable.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="Menus\GameEditorScreen.cs" />
     <Compile Include="Menus\Effects\AlphaEffect.cs" />

@@ -15,7 +15,7 @@ namespace PuzzlePathDimension {
   /// </summary>
   public class GameEditorScreen : GameScreen {
     ContentManager content;
-    Simulation simulation;
+    EditableLevel simulation;
     MouseState previousMouseState;
     MouseState currentMouseState;
 
@@ -146,8 +146,7 @@ namespace PuzzlePathDimension {
       }
 
       if (!foundCollision && vtroller.CheckForRecentRelease(VirtualButtons.Confirm)) {
-        ScreenList.AddScreen(new GameplayScreen(simulation), ControllingPlayer);
-
+        LaunchGamePlay();
       }
 
 
@@ -185,6 +184,24 @@ namespace PuzzlePathDimension {
       }
     }
 
+
+    public void LaunchGamePlay() {
+      Level level = new Level();
+      level.Goal = simulation.Goal;
+      level.DeathTraps = simulation.DeathTraps;
+      level.Treasures = simulation.Treasures;
+      level.Launcher = simulation.Launcher;
+      level.Attempts = simulation.Attempts;
+      foreach (Platform platform in simulation.Platforms) {
+        level.Platforms.Add(platform);
+      }
+      foreach (Platform platform in simulation.MoveablePlatforms) {
+        level.Platforms.Add(platform);
+      }
+      ScreenList.AddScreen(new GameplayScreen(level, content), ControllingPlayer);
+
+
+    }
 
     /// <summary>
     /// Draw the hard-coded walls.
@@ -252,8 +269,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
-    internal Simulation LoadLevel(string level) {
-      Simulation simulation = new Simulation(LevelLoader.Load("Content/Level/" + LevelName.Replace(" ", "") + ".xml", content), content);
+    internal EditableLevel LoadLevel(string level) {
+      EditableLevel simulation = new EditableLevel(LevelLoader.Load("Content/Level/" + LevelName.Replace(" ", "") + ".xml", content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;

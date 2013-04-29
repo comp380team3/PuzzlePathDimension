@@ -35,6 +35,15 @@ namespace PuzzlePathDimension {
     }
 
 
+    public GameplayScreen(Level level, ContentManager content) {
+
+      simulation = new Simulation(level, content);
+
+      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+    }
+
+
     /// <summary>
     /// Initializes the GamePlayScreen with a simulation already built.
     /// </summary>
@@ -43,6 +52,7 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       simulation = sim;
+
     }
 
     /// <summary>

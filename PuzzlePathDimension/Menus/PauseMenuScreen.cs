@@ -18,7 +18,7 @@ namespace PuzzlePathDimension {
   /// </summary>
   class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
-    Simulation simulation;
+    IRestarable restartable;
 
     /// <summary>
     /// Constructor.
@@ -27,7 +27,14 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-      this.simulation = simulation;
+      this.restartable = simulation;
+    }
+
+    public PauseMenuScreen(EditableLevel editableLevel) {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+      this.restartable = editableLevel;
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -130,7 +137,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void ConfirmRetryBoxAccepted(object sender, PlayerIndexEventArgs e) {
-      simulation.Restart();
+      restartable.Restart();
       ExitScreen();
     }
   }
