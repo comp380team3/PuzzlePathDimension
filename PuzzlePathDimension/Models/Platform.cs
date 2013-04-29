@@ -22,12 +22,12 @@ namespace PuzzlePathDimension {
     /// </remarks>
     public static readonly Dictionary<Vector2, string> NormalPlatNames = new Dictionary<Vector2, string>
     {
-      {new Vector2(100, 25), "New Texture/SHorizontalPlatform"},
-      {new Vector2(150, 25), "New Texture/MHorizontalPlatform"},
-      {new Vector2(200, 25), "New Texture/LHorizontalPlatform"},
-      {new Vector2(25, 100), "New Texture/SVerticalPlatform"},
-      {new Vector2(25, 150), "New Texture/MVerticalPlatform"},
-      {new Vector2(25, 200), "New Texture/LVerticalPlatform"}
+      {new Vector2(100, 25), "Texture/SHorizontalPlatform"},
+      {new Vector2(150, 25), "Texture/MHorizontalPlatform"},
+      {new Vector2(200, 25), "Texture/LHorizontalPlatform"},
+      {new Vector2(25, 100), "Texture/SVerticalPlatform"},
+      {new Vector2(25, 150), "Texture/MVerticalPlatform"},
+      {new Vector2(25, 200), "Texture/LVerticalPlatform"}
     };
 
     /// <summary>
@@ -40,12 +40,12 @@ namespace PuzzlePathDimension {
     /// </remarks>
     public static readonly Dictionary<Vector2, string> BreakablePlatNames = new Dictionary<Vector2, string>
     {
-      {new Vector2(100, 25), "New Texture/SHorizontalPlatformBreakable"},
-      {new Vector2(150, 25), "New Texture/MHorizontalPlatformBreakable"},
-      {new Vector2(200, 25), "New Texture/LHorizontalPlatformBreakable"},
-      {new Vector2(25, 100), "New Texture/SVerticalPlatformBreakable"},
-      {new Vector2(25, 150), "New Texture/MVerticalPlatformBreakable"},
-      {new Vector2(25, 200), "New Texture/LVerticalPlatformBreakable"}
+      {new Vector2(100, 25), "Texture/SHorizontalPlatformBreakable"},
+      {new Vector2(150, 25), "Texture/MHorizontalPlatformBreakable"},
+      {new Vector2(200, 25), "Texture/LHorizontalPlatformBreakable"},
+      {new Vector2(25, 100), "Texture/SVerticalPlatformBreakable"},
+      {new Vector2(25, 150), "Texture/MVerticalPlatformBreakable"},
+      {new Vector2(25, 200), "Texture/LVerticalPlatformBreakable"}
     };
 
     /// <summary>

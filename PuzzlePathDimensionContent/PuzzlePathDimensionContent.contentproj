@@ -93,13 +93,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Texture\deathtrap.png">
-      <Name>deathtrap</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Texture\platform_breakable.png">
       <Name>platform_breakable</Name>
       <Importer>TextureImporter</Importer>
@@ -288,102 +281,73 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="New Texture\Ball2.png">
-      <Name>Ball2</Name>
+    <Compile Include="Texture\death_trap.png">
+      <Name>death_trap</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\DeatTrap.png">
-      <Name>DeatTrap</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\Goal2.png">
-      <Name>Goal2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\Launcher2.png">
-      <Name>Launcher2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\LauncherBase.png">
+    <Compile Include="Texture\LauncherBase.png">
       <Name>LauncherBase</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\LHorizontalPlatform.png">
+    <Compile Include="Texture\LHorizontalPlatform.png">
       <Name>LHorizontalPlatform</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\LVerticalPlatform.png">
-      <Name>LVerticalPlatform</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\MHorizontalPlatform.png">
-      <Name>MHorizontalPlatform</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\MVerticalPlatform.png">
-      <Name>MVerticalPlatform</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\SHorizontalPlatform.png">
-      <Name>SHorizontalPlatform</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\SVerticalPlatform.png">
-      <Name>SVerticalPlatform</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="New Texture\Treasure2.png">
-      <Name>Treasure2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="New Texture\LHorizontalPlatformBreakable.png">
+    <Compile Include="Texture\LHorizontalPlatformBreakable.png">
       <Name>LHorizontalPlatformBreakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\LVerticalPlatformBreakable.png">
+    <Compile Include="Texture\LVerticalPlatform.png">
+      <Name>LVerticalPlatform</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Texture\LVerticalPlatformBreakable.png">
       <Name>LVerticalPlatformBreakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\MHorizontalPlatformBreakable.png">
+    <Compile Include="Texture\MHorizontalPlatform.png">
+      <Name>MHorizontalPlatform</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Texture\MHorizontalPlatformBreakable.png">
       <Name>MHorizontalPlatformBreakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\MVerticalPlatformBreakable.png">
+    <Compile Include="Texture\MVerticalPlatform.png">
+      <Name>MVerticalPlatform</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Texture\MVerticalPlatformBreakable.png">
       <Name>MVerticalPlatformBreakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\SHorizontalPlatformBreakable.png">
+    <Compile Include="Texture\SHorizontalPlatform.png">
+      <Name>SHorizontalPlatform</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Texture\SHorizontalPlatformBreakable.png">
       <Name>SHorizontalPlatformBreakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="New Texture\SVerticalPlatformBreakable.png">
-      <Name>SVerticalPlatformBreakable</Name>
+    <Compile Include="Texture\SVerticalPlatform.png">
+      <Name>SVerticalPlatform</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="New Texture\treasure.png">
-      <Name>treasure</Name>
+    <Compile Include="Texture\SVerticalPlatformBreakable.png">
+      <Name>SVerticalPlatformBreakable</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
