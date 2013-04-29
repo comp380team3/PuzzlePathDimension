@@ -96,7 +96,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      Treasure treasure = new Treasure(Content.Load<Texture2D>("New Texture/Treasure2"), position);
+      Treasure treasure = new Treasure(Content.Load<Texture2D>("New Texture/treasure"), position);
 
       return treasure;
     }
