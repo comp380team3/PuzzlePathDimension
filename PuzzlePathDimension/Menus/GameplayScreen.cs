@@ -135,8 +135,8 @@ namespace PuzzlePathDimension {
         MessageBoxScreen failedMessageBox = new MessageBoxScreen(TopLevel, "Level Failed. Please try again.",
                                                                  "Retry", "Main Menu", "Level Select");
         failedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
-        failedMessageBox.LeftButton += ConfirmLevelMessageBoxAccepted;
-        failedMessageBox.RightButton += ConfirmRetryBoxAccepted;
+        failedMessageBox.LeftButton += ConfirmRetryBoxAccepted;
+        failedMessageBox.RightButton += ConfirmLevelMessageBoxAccepted;
 
         ScreenList.AddScreen(failedMessageBox);
       }
