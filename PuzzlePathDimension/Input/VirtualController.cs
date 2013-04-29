@@ -25,10 +25,18 @@ namespace PuzzlePathDimension {
     /// The button that pauses the game.
     /// </summary>
     Pause,
+    /// <summary>
+    /// The button that switches between modes.
+    /// </summary>
     Mode,
+    /// <summary>
+    /// The button that exposes debugging functionality.
+    /// </summary>
     Debug,
+    /// <summary>
+    /// The button that does something silly.
+    /// </summary>
     Easter,
-
     /// <summary>
     /// The button that represents the up direction.
     /// </summary>
