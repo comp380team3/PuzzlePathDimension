@@ -17,22 +17,29 @@ namespace PuzzlePathDimension {
     }
 
     public void Update(WritableVirtualController controller, GameTime gameTime) {
-      controller.SetButtonState(VirtualButtons.Delete, IsKeyDown(Keys.Escape));
-      controller.SetButtonState(VirtualButtons.Select, IsKeyDown(Keys.Enter) || IsKeyDown(Keys.Space));
-      controller.SetButtonState(VirtualButtons.Pause, IsKeyDown(Keys.Pause) || IsKeyDown(Keys.Escape));
-      controller.SetButtonState(VirtualButtons.Context, Mouse.GetState().RightButton == ButtonState.Pressed);
+      KeyboardState kb = Keyboard.GetState();
+      MouseState mouse = Mouse.GetState();
 
-      controller.SetButtonState(VirtualButtons.Up, IsKeyDown(Keys.Up));
-      controller.SetButtonState(VirtualButtons.Down, IsKeyDown(Keys.Down));
-      controller.SetButtonState(VirtualButtons.Left, IsKeyDown(Keys.Left));
-      controller.SetButtonState(VirtualButtons.Right, IsKeyDown(Keys.Right));
+      controller.IsConnected = true;
 
-      controller.Point = new Point(Mouse.GetState().X, Mouse.GetState().Y);
-    }
+      controller.Point = new Point(mouse.X, mouse.Y);
 
+      controller.SetButtonState(VirtualButtons.Up, kb.IsKeyDown(Keys.Up));
+      controller.SetButtonState(VirtualButtons.Down, kb.IsKeyDown(Keys.Down));
+      controller.SetButtonState(VirtualButtons.Left, kb.IsKeyDown(Keys.Left));
+      controller.SetButtonState(VirtualButtons.Right, kb.IsKeyDown(Keys.Right));
 
-    private bool IsKeyDown(Keys key) {
-      return Keyboard.GetState().IsKeyDown(key);
+      controller.SetButtonState(VirtualButtons.Select, kb.IsKeyDown(Keys.Space) || mouse.LeftButton == ButtonState.Pressed);
+      controller.SetButtonState(VirtualButtons.Delete, kb.IsKeyDown(Keys.Back));
+      controller.SetButtonState(VirtualButtons.Context, kb.IsKeyDown(Keys.Enter));
+      controller.SetButtonState(VirtualButtons.Mode, kb.IsKeyDown(Keys.T) || mouse.RightButton == ButtonState.Pressed);
+      controller.SetButtonState(VirtualButtons.Pause, kb.IsKeyDown(Keys.Escape));
+      controller.SetButtonState(VirtualButtons.Debug, kb.IsKeyDown(Keys.LeftControl) && kb.IsKeyDown(Keys.OemTilde));
+
+      controller.SetButtonState(VirtualButtons.Easter,
+        kb.IsKeyDown(Keys.LeftShift) && kb.IsKeyDown(Keys.RightShift) &&
+        kb.IsKeyDown(Keys.LeftControl) && kb.IsKeyDown(Keys.RightControl) &&
+        kb.IsKeyDown(Keys.LeftAlt) && kb.IsKeyDown(Keys.RightAlt));
     }
   }
 }
