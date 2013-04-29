@@ -106,7 +106,7 @@ namespace PuzzlePathDimension {
       position.X = Convert.ToInt16(node.Attributes["x"].Value);
       position.Y = Convert.ToInt16(node.Attributes["y"].Value);
 
-      DeathTrap deathtrap = new DeathTrap(Content.Load<Texture2D>("Texture/death_trap"), position);
+      DeathTrap deathtrap = new DeathTrap(Content.Load<Texture2D>("Texture/deathtrap"), position);
 
       return deathtrap;
     }
