@@ -8,5 +8,7 @@ namespace PuzzlePathDimension {
     public UserPrefs Prefs { get; set; }
     public Game Game { get; set; }
     public Scene Scene { get; set; }
+
+    public IObservable<VirtualControllerState> Input { get; set; }
   }
 }
