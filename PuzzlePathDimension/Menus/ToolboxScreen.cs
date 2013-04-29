@@ -56,10 +56,6 @@ namespace PuzzlePathDimension {
 
     Boolean cantAdd;
 
-    //Mouse states to determine clicks.
-    MouseState previousMouseState;
-    MouseState currentMouseState;
-
     /// <summary>
     /// The new platform to be sent to the emuator
     /// </summary>
@@ -107,7 +103,6 @@ namespace PuzzlePathDimension {
       breakablePlatforms.Add(new Rectangle(175, 210, 25, 100));
       breakablePlatforms.Add(new Rectangle(425, 210, 25, 150));
       breakablePlatforms.Add(new Rectangle(675, 210, 25, 200));
-      previousMouseState = currentMouseState = Mouse.GetState();
 
       base.IsPopup = true;
       base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
@@ -142,12 +137,12 @@ namespace PuzzlePathDimension {
     /// Responds to user input, accepting or cancelling the message box.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      previousMouseState = currentMouseState;
-      currentMouseState = Mouse.GetState();
-      if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
+      if (Controller.IsButtonPressed(VirtualButtons.Select)) {
+        Point pointer = Controller.Point;
+
         foreach (Rectangle rect in platforms) {
-          if (currentMouseState.X > rect.X && currentMouseState.X < rect.X + rect.Width) {
-            if (currentMouseState.Y > rect.Y && currentMouseState.Y < rect.Y + rect.Height) {
+          if (pointer.X > rect.X && pointer.X < rect.X + rect.Width) {
+            if (pointer.Y > rect.Y && pointer.Y < rect.Y + rect.Height) {
               Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
 
               selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
@@ -156,9 +151,10 @@ namespace PuzzlePathDimension {
             }
           }
         }
+
         foreach (Rectangle rect in breakablePlatforms) {
-          if (currentMouseState.X > rect.X && currentMouseState.X < rect.X + rect.Width) {
-            if (currentMouseState.Y > rect.Y && currentMouseState.Y < rect.Y + rect.Height) {
+          if (pointer.X > rect.X && pointer.X < rect.X + rect.Width) {
+            if (pointer.Y > rect.Y && pointer.Y < rect.Y + rect.Height) {
               Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
 
               selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
@@ -169,7 +165,7 @@ namespace PuzzlePathDimension {
         }
       }
 
-      if (cantAdd && previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
+      if (cantAdd && Controller.IsButtonPressed(VirtualButtons.Select)) {
         ExitScreen();
       }
     }

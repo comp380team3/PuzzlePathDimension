@@ -96,7 +96,7 @@ namespace PuzzlePathDimension {
 
       }
     }
-
+    
     /// <summary>
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
@@ -107,6 +107,11 @@ namespace PuzzlePathDimension {
       // selecting a platform the toolbox was unreachable.
       if (addedPlatform == null) {
         toolboxLaunched = false;
+      }
+
+      //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
+      if (Controller.IsButtonPressed(VirtualButtons.Mode)) {
+        launchToolbox = true;
       }
 
       if (launchToolbox && !toolboxLaunched) {
@@ -133,11 +138,6 @@ namespace PuzzlePathDimension {
         foundCollision = false;
       }
 
-      //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
-      if (previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Pressed) {
-        launchToolbox = true;
-      }
-
       if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
                       currentMouseState.LeftButton == ButtonState.Pressed) {
         target = FindTarget(currentMouseState);
@@ -147,11 +147,11 @@ namespace PuzzlePathDimension {
 
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
-      case VirtualButtons.Select:
+      case VirtualButtons.Context:
         if (!simulation.FindCollision())
           ScreenList.AddScreen(new GameplayScreen(TopLevel, simulation));
         break;
-      case VirtualButtons.Delete:
+      case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
         break;
       }
