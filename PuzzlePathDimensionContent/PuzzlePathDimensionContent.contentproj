@@ -128,11 +128,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Texture\PuzzlePathScreenShot.png">
-      <Name>PuzzlePathScreenShot</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <None Include="Level\Level1.xml">
       <Name>Level1</Name>
       <Importer>XmlImporter</Importer>
@@ -281,8 +276,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Texture\death_trap.png">
-      <Name>death_trap</Name>
+    <Compile Include="Texture\deathtrap.png">
+      <Name>deathtrap</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -348,6 +343,20 @@
     </Compile>
     <Compile Include="Texture\SVerticalPlatformBreakable.png">
       <Name>SVerticalPlatformBreakable</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Texture\PuzzlePathScreenShot.png">
+      <Name>PuzzlePathScreenShot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Texture\PuzzlePathScreenShotWithBG.png">
+      <Name>PuzzlePathScreenShotWithBG</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
