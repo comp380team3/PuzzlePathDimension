@@ -17,7 +17,8 @@ namespace PuzzlePathDimension {
     /// dictionary is for normal platforms.
     /// </summary>
     /// <remarks>
-    /// There is no read-only dictionary in .NET 4.0, so please don't modify this!
+    /// There is no read-only dictionary in .NET 4.0, so please don't modify this! The "readonly"
+    /// keyword only affects the reference to the dictionary, not the dictionary itself.
     /// </remarks>
     public static readonly Dictionary<Vector2, string> NormalPlatNames = new Dictionary<Vector2, string>
     {
@@ -34,7 +35,8 @@ namespace PuzzlePathDimension {
     /// dictionary is for breakable platforms.
     /// </summary>
     /// <remarks>
-    /// There is no read-only dictionary in .NET 4.0, so please don't modify this!
+    /// There is no read-only dictionary in .NET 4.0, so please don't modify this! The "readonly"
+    /// keyword only affects the reference to the dictionary, not the dictionary itself.
     /// </remarks>
     public static readonly Dictionary<Vector2, string> BreakablePlatNames = new Dictionary<Vector2, string>
     {
