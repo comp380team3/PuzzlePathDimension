@@ -180,11 +180,11 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// The time when the simulation started.
+    /// The time that elapsed since the start of the simulation phase.
     /// </summary>
-    private DateTime _startTime;
+    private float _elapsedTime;
     /// <summary>
-    /// Gets the time when the simulation started.
+    /// Gets the time that elapsed since the start of the simulation phase.
     /// </summary>
     public DateTime StartTime {
       get { return _startTime; }
@@ -266,7 +266,7 @@ namespace PuzzlePathDimension {
 
       // Allow the user to interact with the simulation, and start the timer.
       _currentState = SimulationState.Active;
-      _startTime = DateTime.Now;
+      _elapsedTime = 0f;
     }
 
     /// <summary>
@@ -388,6 +388,9 @@ namespace PuzzlePathDimension {
       // Let the World do stuff.
       _world.Step(time);
 
+      // Add to the timer.
+      _elapsedTime += time;
+
       // Checks if a launched ball has no velocity, which ends the current attempt.
       if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable
         && _currentState == SimulationState.Active) {
@@ -425,12 +428,12 @@ namespace PuzzlePathDimension {
       _currentState = SimulationState.Completed;
       _ball.Stop(_world);
 
-      // Get the amount of time spent.
-      TimeSpan timeSpent = DateTime.Now - _startTime;
+      // Chop off the fractional part.
+      int secondsElapsed = (int)_elapsedTime;
 
       Console.WriteLine("You're winner!");
       Console.WriteLine("Balls remaining: " + _attemptsLeft);
-      Console.WriteLine("Time spent (seconds): " + timeSpent.Seconds);
+      Console.WriteLine("Time spent (seconds): " + secondsElapsed);
       Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
       Console.WriteLine("Ball bounces: " + _bounces);
 
@@ -468,7 +471,7 @@ namespace PuzzlePathDimension {
     public void Restart() {
       // Reset the number of attempts, the various statistics, and lets the user provide input again.
       _attemptsLeft = _startingAttempts;
-      _startTime = DateTime.Now;
+      _elapsedTime = 0f;
       _collectedTreasures = 0;
       _bounces = 0;
       _currentState = SimulationState.Active;
