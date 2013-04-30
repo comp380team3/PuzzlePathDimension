@@ -186,8 +186,19 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Gets the time that elapsed since the start of the simulation phase.
     /// </summary>
-    public DateTime StartTime {
-      get { return _startTime; }
+    public float ElapsedTime {
+      get { return _elapsedTime; }
+    }
+
+    /// <summary>
+    /// The par time of the level.
+    /// </summary>
+    private int _parTime;
+    /// <summary>
+    /// Gets the par time of the level.
+    /// </summary>
+    public int ParTime {
+      get { return _parTime; }
     }
 
     /// <summary>
@@ -249,9 +260,10 @@ namespace PuzzlePathDimension {
       _goal = level.Goal;
       _launcher = level.Launcher;
       _moveablePlatforms = new List<Platform>();
-      // TODO: The attempts are hard-coded for now; this should be loaded from the level.
+
       // Initialize various stats.
       _startingAttempts = level.Attempts;
+      _parTime = level.ParTime;
       _attemptsLeft = _startingAttempts;
       _collectedTreasures = 0;
       _bounces = 0;
@@ -438,10 +450,30 @@ namespace PuzzlePathDimension {
       Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
       Console.WriteLine("Ball bounces: " + _bounces);
 
+      int score = CalculateScore(secondsElapsed);
+      Console.WriteLine("Your score is: " + score);
+
       // Do anything that needs to be done when the level is completed.
       if (OnCompletion != null) {
         OnCompletion(this);
       }
+    }
+
+    /// <summary>
+    /// Calculates the score.
+    /// </summary>
+    /// <param name="timeSpent">The amount of time spent on the level, in seconds.</param>
+    /// <returns>The score.</returns>
+    private int CalculateScore(int timeSpent) {
+      int treasureScore = 500 * _collectedTreasures;
+      int ballsLeftScore = 150 * _attemptsLeft;
+
+      int score = treasureScore + ballsLeftScore + 42; // 42 = level completion bonus
+      if (timeSpent <= _parTime) {
+        Console.WriteLine("Par time met!");
+        score += 100;
+      }
+      return score;
     }
 
     /// <summary>
