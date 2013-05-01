@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
   public class Xbox360ControllerAdapter : IVirtualAdapter {
-    public void Update(IObserver<VirtualControllerState> observer, GameTime gameTime) {
+    public VirtualControllerState GetState(GameTime gameTime) {
       VirtualControllerState state = new VirtualControllerState();
 
       GamePadState pad = GamePad.GetState(PlayerIndex.One);
@@ -31,7 +31,7 @@ namespace PuzzlePathDimension {
         pad.IsButtonDown(Buttons.LeftShoulder) && pad.IsButtonDown(Buttons.LeftShoulder) &&
         pad.IsButtonDown(Buttons.LeftTrigger) && pad.IsButtonDown(Buttons.RightTrigger);
 
-      observer.OnNext(state);
+      return state;
     }
   }
 }

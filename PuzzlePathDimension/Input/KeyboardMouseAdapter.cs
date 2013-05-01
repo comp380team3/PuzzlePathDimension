@@ -8,7 +8,7 @@ namespace PuzzlePathDimension {
   /// expected by the VirtualController.
   /// </summary>
   public class KeyboardMouseAdapter : IVirtualAdapter {
-    public void Update(IObserver<VirtualControllerState> observer, GameTime gameTime) {
+    public VirtualControllerState GetState(GameTime gameTime) {
       VirtualControllerState state = new VirtualControllerState();
 
       KeyboardState kb = Keyboard.GetState();
@@ -35,7 +35,7 @@ namespace PuzzlePathDimension {
         kb.IsKeyDown(Keys.LeftControl) && kb.IsKeyDown(Keys.RightControl) &&
         kb.IsKeyDown(Keys.LeftAlt) && kb.IsKeyDown(Keys.RightAlt);
 
-      observer.OnNext(state);
+      return state;
     }
   }
 }
