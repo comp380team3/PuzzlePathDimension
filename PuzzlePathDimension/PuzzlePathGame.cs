@@ -42,7 +42,7 @@ namespace PuzzlePathDimension {
     protected override void Initialize() {
       // Bootstrap the top-level context model
       TopLevel.Game = this;
-      TopLevel.Prefs = new UserPrefs();
+      TopLevel.Profile = UserProfile.Load("Content/profile.xml");
 
       WritableVirtualController controller = new WritableVirtualController();
       controller.InputType = InputType.KeyboardMouse;
