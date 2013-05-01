@@ -79,6 +79,7 @@
     <Compile Include="Menus\HowToPlayScreen5.cs" />
     <Compile Include="Menus\HowToPlayScreenContentList.cs" />
     <Compile Include="InputComponent.cs" />
+    <Compile Include="Models\LevelGroup.cs" />
     <Compile Include="Models\TopLevelModel.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="Models\UserProfile.cs" />
