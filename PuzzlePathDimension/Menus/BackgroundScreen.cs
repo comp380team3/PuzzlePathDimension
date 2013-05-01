@@ -37,6 +37,8 @@ namespace PuzzlePathDimension {
     /// would remain loaded forever.
     /// </summary>
     public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
       if (content == null)
         content = new ContentManager(shared.ServiceProvider, "Content");
 
