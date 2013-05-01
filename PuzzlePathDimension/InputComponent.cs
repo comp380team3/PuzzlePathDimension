@@ -33,7 +33,7 @@ namespace PuzzlePathDimension {
       Source = new Subject<VirtualControllerState>();
 
       // Skip duplicate state-steps.
-      InputStates = Source.DistinctUntilChanged();
+      InputStates = Source.DistinctUntilChanged().Publish().RefCount();
     }
 
     public override void Initialize() {

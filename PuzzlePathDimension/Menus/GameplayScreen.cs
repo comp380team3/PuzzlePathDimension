@@ -26,6 +26,8 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
+    private Vector2 launcherChange = new Vector2(0.0f, 0.0f);
+
     public GameplayScreen(TopLevelModel topLevel, string levelName)
       : base(topLevel) {
       LevelName = levelName;
@@ -119,6 +121,9 @@ namespace PuzzlePathDimension {
       if (!IsActive)
         return;
 
+      Launcher launcher = simulation.Launcher;
+      launcher.AdjustAngle((float)Math.PI / 64 * launcherChange.X);
+      launcher.AdjustMagnitude(0.25f * launcherChange.Y);
 
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -151,22 +156,6 @@ namespace PuzzlePathDimension {
     public override void HandleInput(VirtualController Controller) {
       base.HandleInput(Controller);
 
-      Launcher launcher = simulation.Launcher;
-
-      // Route user input to the appropriate action
-      if (Controller.IsButtonPressed(VirtualButtons.Left)) {
-        launcher.AdjustAngle((float)Math.PI / 64);
-      }
-      if (Controller.IsButtonPressed(VirtualButtons.Right)) {
-        launcher.AdjustAngle((float)-Math.PI / 64);
-      }
-      if (Controller.IsButtonPressed(VirtualButtons.Up)) {
-        launcher.AdjustMagnitude(0.25f);
-      }
-      if (Controller.IsButtonPressed(VirtualButtons.Down)) {
-        launcher.AdjustMagnitude(-0.25f);
-      }
-
       // TODO: Replace this restart mechanism
       if (Keyboard.GetState().IsKeyDown(Keys.R) ||
         GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
@@ -175,18 +164,40 @@ namespace PuzzlePathDimension {
       }
     }
 
-    /// <summary>
-    /// Lets the game respond to player input. Unlike the Update method,
-    /// this will only be called when the gameplay screen is active.
-    /// </summary>
-    protected override void OnButtonReleased(VirtualButtons button) {
-      // The game pauses either if the user presses the pause button, or if
-      // they unplug the active gamepad. This requires us to keep track of
-      // whether a gamepad was ever plugged in, because we don't want to pause
-      // on PC if they are playing with a keyboard and have no gamepad at all!
-
-      // Route user input to the appropriate action
+    protected override void OnButtonPressed(VirtualButtons button) {
       switch (button) {
+      case VirtualButtons.Up:
+        launcherChange.Y += 1;
+        break;
+      case VirtualButtons.Down:
+        launcherChange.Y -= 1;
+        break;
+
+      case VirtualButtons.Left:
+        launcherChange.X += 1;
+        break;
+      case VirtualButtons.Right:
+        launcherChange.X -= 1;
+        break;
+      }
+    }
+
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
+        launcherChange.Y -= 1;
+        break;
+      case VirtualButtons.Down:
+        launcherChange.Y += 1;
+        break;
+
+      case VirtualButtons.Left:
+        launcherChange.X -= 1;
+        break;
+      case VirtualButtons.Right:
+        launcherChange.X += 1;
+        break;
+
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
         break;
