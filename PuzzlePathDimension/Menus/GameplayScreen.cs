@@ -187,10 +187,10 @@ namespace PuzzlePathDimension {
 
       // Route user input to the appropriate action
       switch (button) {
-      case VirtualButtons.Back:
+      case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
         break;
-      case VirtualButtons.Confirm:
+      case VirtualButtons.Select:
         simulation.HandleConfirm();
         break;
       }

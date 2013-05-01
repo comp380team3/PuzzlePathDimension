@@ -12,21 +12,29 @@ namespace PuzzlePathDimension {
     }
 
     public void Update(WritableVirtualController controller, GameTime gameTime) {
-      controller.SetButtonState(VirtualButtons.Back, IsButtonDown(Buttons.B));
-      controller.SetButtonState(VirtualButtons.Confirm, IsButtonDown(Buttons.A));
-      controller.SetButtonState(VirtualButtons.Pause, IsButtonDown(Buttons.Start));
-      controller.SetButtonState(VirtualButtons.Up, IsButtonDown(Buttons.DPadUp) || IsButtonDown(Buttons.LeftThumbstickUp));
-      controller.SetButtonState(VirtualButtons.Down, IsButtonDown(Buttons.DPadDown) || IsButtonDown(Buttons.LeftThumbstickDown));
-      controller.SetButtonState(VirtualButtons.Left, IsButtonDown(Buttons.DPadLeft) || IsButtonDown(Buttons.LeftThumbstickLeft));
-      controller.SetButtonState(VirtualButtons.Right, IsButtonDown(Buttons.DPadRight) || IsButtonDown(Buttons.LeftThumbstickRight));
-      controller.SetButtonState(VirtualButtons.Context, IsButtonDown(Buttons.Y));
+      GamePadState pad = GamePad.GetState(PlayerIndex.One);
 
-      controller.Point = new Point(0, 0);
-    }
+      controller.IsConnected = pad.IsConnected;
 
+      Point point = new Point(0, 0);
+      // TODO: Implement a virtualized pointer.
+      controller.Point = point;
 
-    private bool IsButtonDown(Buttons button) {
-      return GamePad.GetState(PlayerIndex.One).IsButtonDown(button);
+      controller.SetButtonState(VirtualButtons.Up, pad.IsButtonDown(Buttons.DPadUp));
+      controller.SetButtonState(VirtualButtons.Down, pad.IsButtonDown(Buttons.DPadDown));
+      controller.SetButtonState(VirtualButtons.Left, pad.IsButtonDown(Buttons.DPadLeft));
+      controller.SetButtonState(VirtualButtons.Right, pad.IsButtonDown(Buttons.DPadRight));
+
+      controller.SetButtonState(VirtualButtons.Select, pad.IsButtonDown(Buttons.A));
+      controller.SetButtonState(VirtualButtons.Delete, pad.IsButtonDown(Buttons.B));
+      controller.SetButtonState(VirtualButtons.Context, pad.IsButtonDown(Buttons.Y));
+      controller.SetButtonState(VirtualButtons.Mode, pad.IsButtonDown(Buttons.X));
+      controller.SetButtonState(VirtualButtons.Pause, pad.IsButtonDown(Buttons.Start));
+      controller.SetButtonState(VirtualButtons.Debug, pad.IsButtonDown(Buttons.Back));
+
+      controller.SetButtonState(VirtualButtons.Easter,
+        pad.IsButtonDown(Buttons.LeftShoulder) && pad.IsButtonDown(Buttons.LeftShoulder) &&
+        pad.IsButtonDown(Buttons.LeftTrigger) && pad.IsButtonDown(Buttons.RightTrigger));
     }
   }
 }
