@@ -282,7 +282,7 @@ namespace PuzzlePathDimension {
     /// Plays the launcher's sound effect.
     /// </summary>
     private void PlayLaunch() {
-      if (base.Prefs.PlaySounds) {
+      if (Profile.Prefs.PlaySounds) {
         SoundEffect launch = content.Load<SoundEffect>("Sound/launch");
         launch.Play();
       }
@@ -300,7 +300,7 @@ namespace PuzzlePathDimension {
     /// the PlatformTouched delegate.
     /// </summary>
     private void PlayBounce(bool breakable) {
-      if (base.Prefs.PlaySounds) {
+      if (base.Profile.Prefs.PlaySounds) {
         SoundEffect bounce = content.Load<SoundEffect>("Sound/bounce");
         bounce.Play();
       }
