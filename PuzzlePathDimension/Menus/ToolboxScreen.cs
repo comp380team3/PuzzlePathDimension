@@ -136,10 +136,10 @@ namespace PuzzlePathDimension {
     /// it will just get back another reference to the already loaded data.
     /// </summary>
     public override void LoadContent(ContentManager shared) {
-
+      base.LoadContent(shared);
       _gradientTexture = shared.Load<Texture2D>("Texture/gradient");
       _font = shared.Load<SpriteFont>("Font/menufont");
-
+      
       // Create the dictionaries and cache all the textures needed to draw each
       // platform in the toolbox.
       platformTextures = new Dictionary<Vector2, Texture2D>();

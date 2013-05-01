@@ -124,12 +124,6 @@ namespace PuzzlePathDimension {
 
     public GameScreen(TopLevelModel topLevel) {
       TopLevel = topLevel;
-
-      Controller.Connected += OnControllerConnected;
-      Controller.Disconnected += OnControllerDisconnected;
-      Controller.ButtonPressed += OnButtonPressed__;
-      Controller.ButtonReleased += OnButtonReleased__;
-      Controller.PointChanged += OnPointChanged__;
     }
 
     /// <summary>
@@ -157,7 +151,13 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Load graphics content for the screen.
     /// </summary>
-    public virtual void LoadContent(ContentManager shared) { }
+    public virtual void LoadContent(ContentManager shared) {
+      Controller.Connected += OnControllerConnected;
+      Controller.Disconnected += OnControllerDisconnected;
+      Controller.ButtonPressed += OnButtonPressed__;
+      Controller.ButtonReleased += OnButtonReleased__;
+      Controller.PointChanged += OnPointChanged__;
+    }
 
     /// <summary>
     /// Unload content for the screen.
