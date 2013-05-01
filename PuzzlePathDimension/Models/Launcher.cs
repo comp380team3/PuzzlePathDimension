@@ -287,10 +287,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when launching the ball.</param>
     public void Draw(SpriteBatch spriteBatch) {
-      // Draw the base first, but figure out where to draw it in the first place.
-      Vector2 basePos = new Vector2(_position.X - 60, _position.Y - 115); // Based on the hand's position
-      spriteBatch.Draw(_baseTex, basePos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-
       // The unit circle goes counter-clockwise, but the rotation parameter goes clockwise, so flip it.
       float rotateAngle = -1 * _angle;
 
@@ -300,7 +296,11 @@ namespace PuzzlePathDimension {
       // Draw the launcher's "hand", for lack of a better term.
       spriteBatch.Draw(_rotatorTex, _position, null, Color.White, rotateAngle, rotatePos, 1f, SpriteEffects.None, 0f);
 
-      // Display the power meter if the user is currently aiming the launcher.
+      // Draw the base after the "hand", but figure out where to draw it in the first place.
+      Vector2 basePos = new Vector2(_position.X - 60, _position.Y - 115); // Based on the hand's position
+      spriteBatch.Draw(_baseTex, basePos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+      // Last, display the power meter if the user is currently aiming the launcher.
       if (_movable) {
         // Determine how much of the texture to display based on the current magnitude.
         int displayedWidth = 10 + (int)(7 * (_magnitude - _minVelocity));
