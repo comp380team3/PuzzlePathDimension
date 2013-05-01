@@ -108,6 +108,9 @@ namespace PuzzlePathDimension {
 
 
 
+    private String typesAllowed;
+
+    public String TypesAllowed { get { return typesAllowed; } }
     /// <summary>
     /// Constructs a Simulation object.
     /// </summary>
@@ -125,15 +128,14 @@ namespace PuzzlePathDimension {
       _moveablePlatforms = new List<Platform>();
 
       _attempts = level.Attempts;
-
-
+      
       //hard coded amount of additions.
       _additionsAllowed = 3;
 
+      typesAllowed = "RBHV";
+
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
-      // Create the physics simulation.
-      //InitWorld();
 
       // Allow the user to interact with the simulation, and start the timer.
       // _currentState = SimulationState.Active;

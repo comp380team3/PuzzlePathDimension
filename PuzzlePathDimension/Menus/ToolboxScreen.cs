@@ -80,37 +80,48 @@ namespace PuzzlePathDimension {
     public event Action Accepted;
 
 
-    /// <summary>
-    /// Constructor automatically includes the standard "A=ok, B=cancel"
-    /// usage text prompt.
-    /// </summary>
-    public ToolboxScreen(TopLevelModel topLevel, string message)
-      : this(topLevel, message, true) { }
+    ///// <summary>
+    ///// Constructor automatically includes the standard "A=ok, B=cancel"
+    ///// usage text prompt.
+    ///// </summary>
+    //public ToolboxScreen(TopLevelModel topLevel, string message)
+    //  : this(topLevel, message, true) { }
 
     /// <summary>
     /// Constructor that includes a message to be displayed and Boolean to determine if more platforms can be added
     /// </summary>
-    public ToolboxScreen(TopLevelModel topLevel, string message, bool limitReached)
+    public ToolboxScreen(TopLevelModel topLevel, EditableLevel level, string message, bool limitReached)
       : base(topLevel) {
       this._message = message;
       _cantAdd = limitReached;
       //initializa the position of regular platforms
       _platforms = new List<Rectangle>();
-      _platforms.Add(new Rectangle(100, 130, 100, 25));
-      _platforms.Add(new Rectangle(300, 130, 150, 25));
-      _platforms.Add(new Rectangle(500, 130, 200, 25));
-      _platforms.Add(new Rectangle(100, 210, 25, 100));
-      _platforms.Add(new Rectangle(300, 210, 25, 150));
-      _platforms.Add(new Rectangle(500, 210, 25, 200));
-
+      if (level.TypesAllowed.Contains("R")) {
+        if (level.TypesAllowed.Contains("H")) {
+          _platforms.Add(new Rectangle(100, 130, 100, 25));
+          _platforms.Add(new Rectangle(300, 130, 150, 25));
+          _platforms.Add(new Rectangle(500, 130, 200, 25));
+        }
+        if (level.TypesAllowed.Contains("V")) {
+          _platforms.Add(new Rectangle(100, 210, 25, 100));
+          _platforms.Add(new Rectangle(300, 210, 25, 150));
+          _platforms.Add(new Rectangle(500, 210, 25, 200));
+        }
+      }
       //Initializes the position of breakable platforms.
       _breakablePlatforms = new List<Rectangle>();
-      _breakablePlatforms.Add(new Rectangle(100, 160, 100, 25));
-      _breakablePlatforms.Add(new Rectangle(300, 160, 150, 25));
-      _breakablePlatforms.Add(new Rectangle(500, 160, 200, 25));
-      _breakablePlatforms.Add(new Rectangle(175, 210, 25, 100));
-      _breakablePlatforms.Add(new Rectangle(425, 210, 25, 150));
-      _breakablePlatforms.Add(new Rectangle(675, 210, 25, 200));
+      if (level.TypesAllowed.Contains("B")) {
+        if (level.TypesAllowed.Contains("H")) {
+          _breakablePlatforms.Add(new Rectangle(100, 160, 100, 25));
+          _breakablePlatforms.Add(new Rectangle(300, 160, 150, 25));
+          _breakablePlatforms.Add(new Rectangle(500, 160, 200, 25));
+        }
+        if (level.TypesAllowed.Contains("V")) {
+          _breakablePlatforms.Add(new Rectangle(175, 210, 25, 100));
+          _breakablePlatforms.Add(new Rectangle(425, 210, 25, 150));
+          _breakablePlatforms.Add(new Rectangle(675, 210, 25, 200));
+        }
+      }
       _previousMouseState = _currentMouseState = Mouse.GetState();
 
       base.IsPopup = true;
@@ -166,7 +177,7 @@ namespace PuzzlePathDimension {
           if (_currentMouseState.X > rect.X && _currentMouseState.X < rect.X + rect.Width) {
             if (_currentMouseState.Y > rect.Y && _currentMouseState.Y < rect.Y + rect.Height) {
               Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
-              
+
               _selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
               Console.WriteLine(_selected.Origin);
               ExitScreen();
