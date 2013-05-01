@@ -36,6 +36,13 @@ namespace PuzzlePathDimension {
         level.Attempts = Convert.ToInt16(levelNode.Attributes["balls"].Value);
       }
 
+      if (levelNode.Attributes["par-seconds"] == null) { // Fall back
+        level.ParTime = 60;
+        Console.WriteLine("Warning: the par time wasn't specified.");
+      } else {
+        level.ParTime = Convert.ToInt16(levelNode.Attributes["par-seconds"].Value);
+      }
+
       foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
         level.Platforms.Add(LoadPlatform(node, Content));
       }
