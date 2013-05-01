@@ -9,6 +9,39 @@ using FarseerPhysics.Dynamics.Contacts;
 
 namespace PuzzlePathDimension {
   /// <summary>
+  /// The LevelScoreData structure contains data about the user's performance on
+  /// a given attempt of the level.
+  /// </summary>
+  public struct LevelScoreData {
+    /// <summary>
+    /// The number of treasures collected in the level.
+    /// </summary>
+    public int TreasuresCollected { get; set; }
+    /// <summary>
+    /// The total number of treasures, both collected and uncollected, that
+    /// are in the level.
+    /// </summary>
+    public int TreasuresInLevel { get; set; }
+    /// <summary>
+    /// The number of balls that the user had remaining when the level was
+    /// completed.
+    /// </summary>
+    public int BallsLeft { get; set; }
+    /// <summary>
+    /// The time spent in the simulation phase of the level, in seconds.
+    /// </summary>
+    public int TimeSpent { get; set; }
+    /// <summary>
+    /// The par time of the level, in seconds.
+    /// </summary>
+    public int ParTime { get; set; }
+    /// <summary>
+    /// The score that the user achieved on that level.
+    /// </summary>
+    public int Score { get; set; }
+  }
+
+  /// <summary>
   /// The current state of the simulation.
   /// </summary>
   public enum SimulationState {
@@ -224,22 +257,28 @@ namespace PuzzlePathDimension {
     private Texture2D _ballTex;
 
     /// <summary>
-    /// This delegate is usually called when the simulation's state is changed.
+    /// This delegate is called when the user completes a level.
     /// </summary>
-    /// <param name="simulation">The simulation object to pass.</param>
-    public delegate void SimulationStateChange(Simulation simulation);
+    /// <param name="scoreData">A structure containing information about
+    /// the user's performance.</param>
+    public delegate void LevelCompleted(LevelScoreData scoreData);
+    /// <summary>
+    /// This delegate is called when the user fails a level.
+    /// </summary>
+    public delegate void LevelFailed();
     /// <summary>
     /// This delegate is called when something touches a wall.
     /// </summary>
     public delegate void WallTouch();
+
     /// <summary>
     /// Occurs when the level has been completed.
     /// </summary>
-    public event SimulationStateChange OnCompletion;
+    public event LevelCompleted OnCompletion;
     /// <summary>
     /// Occurs when the level has been failed.
     /// </summary>
-    public event SimulationStateChange OnFailure;
+    public event LevelFailed OnFailure;
     /// <summary>
     /// Occurs when a wall has been touched.
     /// </summary>
@@ -440,39 +479,33 @@ namespace PuzzlePathDimension {
       _currentState = SimulationState.Completed;
       _ball.Stop(_world);
 
-      // Chop off the fractional part.
-      int secondsElapsed = (int)_elapsedTime;
-
-      Console.WriteLine("You're winner!");
-      Console.WriteLine("Balls remaining: " + _attemptsLeft);
-      Console.WriteLine("Time spent (seconds): " + secondsElapsed);
-      Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
-      Console.WriteLine("Ball bounces: " + _bounces);
-
-      int score = CalculateScore(secondsElapsed);
-      Console.WriteLine("Your score is: " + score);
-
       // Do anything that needs to be done when the level is completed.
       if (OnCompletion != null) {
-        OnCompletion(this);
+        OnCompletion(CreateScoreData());
       }
     }
 
     /// <summary>
-    /// Calculates the score.
+    /// Creates a LevelScoreData structure containing information about the
+    /// user's performance on a level.
     /// </summary>
-    /// <param name="timeSpent">The amount of time spent on the level, in seconds.</param>
-    /// <returns>The score.</returns>
-    private int CalculateScore(int timeSpent) {
+    /// <returns>Information about the user's score.</returns>
+    private LevelScoreData CreateScoreData() {
+      LevelScoreData clearData = new LevelScoreData();
+
+      clearData.TreasuresCollected = _collectedTreasures;
+      clearData.TreasuresInLevel = _treasures.Count;
+      clearData.BallsLeft = _attemptsLeft;
+      clearData.TimeSpent = (int)_elapsedTime; // Cut off the fractional part
+      clearData.ParTime = _parTime;
+
+      // 500 per treasure, 150 per ball left, 100 for beating the par time, 42 for level completion
       int treasureScore = 500 * _collectedTreasures;
       int ballsLeftScore = 150 * _attemptsLeft;
+      int parTimeScore = clearData.TimeSpent <= clearData.ParTime ? 100 : 0;
+      clearData.Score = treasureScore + ballsLeftScore + parTimeScore + 42;
 
-      int score = treasureScore + ballsLeftScore + 42; // 42 = level completion bonus
-      if (timeSpent <= _parTime) {
-        Console.WriteLine("Par time met!");
-        score += 100;
-      }
-      return score;
+      return clearData;
     }
 
     /// <summary>
@@ -543,7 +576,7 @@ namespace PuzzlePathDimension {
 
         // Do anything that needs to be done when the level is failed.
         if (OnFailure != null) {
-          OnFailure(this);
+          OnFailure();
         }
       }
     }
