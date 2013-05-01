@@ -149,9 +149,7 @@ namespace PuzzlePathDimension {
 
 
     protected override void OnButtonReleased(VirtualButtons button) {
-      if(editableLevel == null){
-        return;
-      }
+      
       switch (button) {
       case VirtualButtons.Confirm:
         if (!editableLevel.FindCollision())
