@@ -77,6 +77,9 @@ namespace PuzzlePathDimension {
       //Initialize the bodies in the simulation
       simulation.InitWorld();
 
+      // Set up the level completion event.
+      simulation.OnCompletion += OnLevelCompletion;
+
       // Set up the sounds.
       SetupSoundEvents();
 
@@ -330,6 +333,27 @@ namespace PuzzlePathDimension {
       return simulation;
     }
 
+    /// <summary>
+    /// Called when the level is completed.
+    /// </summary>
+    /// <param name="clearData">A struct containing information about the user's performance.</param>
+    void OnLevelCompletion(LevelScoreData clearData) {
+      // TODO: Michael should replace this with a call to the LevelComplete screen.
+      int treasureScore = 500 * clearData.TreasuresCollected;
+      int ballsLeftScore = 150 * clearData.BallsLeft;
+
+      Console.WriteLine("You're winner! (+42)");
+      Console.WriteLine("Treasures obtained: " + clearData.TreasuresCollected 
+        + "/" + clearData.TreasuresInLevel + " (+" + treasureScore + ")");
+      Console.WriteLine("Balls remaining: " + clearData.BallsLeft 
+        + " (+" + ballsLeftScore + ")");
+      Console.WriteLine("Time spent (seconds): " + clearData.TimeSpent);
+      Console.WriteLine("Par time (seconds): " + clearData.ParTime);
+      if (clearData.TimeSpent <= clearData.ParTime) {
+        Console.WriteLine("Par time met! (+100)");
+      }
+      Console.WriteLine("Your score is: " + clearData.Score);
+    }
 
     /// <summary>
     /// Event handler for when the user selects ok on the level select
