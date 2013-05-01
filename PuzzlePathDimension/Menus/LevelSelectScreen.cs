@@ -166,6 +166,20 @@ namespace PuzzlePathDimension {
 
       menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
 
+      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry.Selected += OnCancel;
+      
+      nextMenuEntry = new MenuButton("Next", font);
+      nextMenuEntry.Selected += NextMenuEntrySelected;
+
+      backMenuEntry = new MenuButton("Back", font);
+      backMenuEntry.Selected += BackMenuEntrySelected;
+
+      UpdateCurrentPage();
+    }
+
+    private void UpdateCurrentPage() {
+      items.Clear();
       for (int count = 0; CurrentLevel < levelSet.Count && count < numberOfLevelsPerPage; count++) {
         levelInfo = levelSet.ElementAt<LevelInfo>(CurrentLevel);
         aLevelMenuEntry = new MenuButton(levelInfo.LevelName, font);
@@ -175,26 +189,12 @@ namespace PuzzlePathDimension {
         setOfLevels = count + 1;
       }
 
-      exitMenuEntry = new MenuButton("Exit", font);
-      exitMenuEntry.Selected += OnCancel;
-      
-
-      nextMenuEntry = new MenuButton("Next", font);
-
-      backMenuEntry = new MenuButton("Back", font);
-
-      
-      nextMenuEntry.Selected += NextMenuEntrySelected;
-
-      
-      backMenuEntry.Selected += BackMenuEntrySelected;
-
       if ((levelSet.Count - CurrentLevel) > 0) {
-          items.Add(nextMenuEntry);
-      } 
+        items.Add(nextMenuEntry);
+      }
 
       if ((CurrentLevel - numberOfLevelsPerPage) > 0) {
-          items.Add(backMenuEntry);
+        items.Add(backMenuEntry);
       }
 
       items.Add(exitMenuEntry);
@@ -279,17 +279,12 @@ namespace PuzzlePathDimension {
     #endregion
 
     private void turnPage(bool back) {
-      items.Clear();
       if (back) {
         CurrentLevel = CurrentLevel - numberOfLevelsPerPage - setOfLevels;
-        LoadContent(content);
-        menuTemplate.SelectedItem = 0;//currentLevel - setOfLevels;
-      } else {
-        LoadContent(content);
-        menuTemplate.SelectedItem = 0;
       }
+
+      UpdateCurrentPage();
+      menuTemplate.SelectedItem = 0;
     }
-
-
   }
 }
