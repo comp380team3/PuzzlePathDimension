@@ -26,7 +26,7 @@ namespace PuzzlePathDimension {
     Failed
   }
 
-  class Simulation : IRestarable {
+  class Simulation : IRestartable {
     /// <summary>
     /// The width of the playing field, in pixels.
     /// </summary>

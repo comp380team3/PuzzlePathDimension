@@ -77,7 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\EditableLevel.cs" />
-    <Compile Include="Models\IRestarable.cs" />
+    <Compile Include="Models\IRestartable.cs" />
     <Compile Include="Menus\HowToPlayScreen5.cs" />
     <Compile Include="Menus\HowToPlayScreenContentList.cs" />
     <Compile Include="InputComponent.cs" />
@@ -147,8 +147,9 @@
       <Name>Farseer Physics XNA</Name>
     </ProjectReference>
     <ProjectReference Include="..\PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj">
-      <Name>PuzzlePathDimensionContent</Name>
+      <Name>PuzzlePathDimensionContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

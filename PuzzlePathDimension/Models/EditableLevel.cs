@@ -9,7 +9,7 @@ using FarseerPhysics.Dynamics.Contacts;
 
 namespace PuzzlePathDimension {
 
-  class EditableLevel : IRestarable {
+  class EditableLevel : IRestartable {
     /// <summary>
     /// The simulation's launcher.
     /// </summary>

@@ -19,7 +19,7 @@ namespace PuzzlePathDimension {
   class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
-    IRestarable restartable;
+    IRestartable restartable;
     ContentManager content;
 
     /// <summary>
