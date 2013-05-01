@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
-  class ScreenInput {
+  public class ScreenInput {
     public IObservable<VirtualButtons> ButtonPresses { get; private set; }
     public IObservable<VirtualButtons> ButtonReleases { get; private set; }
     public IObservable<Point> PointChanges { get; private set; }
@@ -22,6 +22,8 @@ namespace PuzzlePathDimension {
       var ButtonPresses = new Subject<VirtualButtons>();
       var ButtonReleases = new Subject<VirtualButtons>();
       var PointChanges = new Subject<Point>();
+
+      Input = Input.StartWith(new VirtualControllerState());
 
       // Wire up the buttons
       Input
@@ -159,7 +161,7 @@ namespace PuzzlePathDimension {
       protected set { TransitionAlpha = 1f - value; }
     }
 
-    private ScreenInput Input { get; set; }
+    protected ScreenInput Input { get; private set; }
     private IDisposable InputSubscription { get; set; }
 
     public GameScreen(TopLevelModel topLevel) {
@@ -187,12 +189,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     public virtual void LoadContent(ContentManager shared) {
       Subject<VirtualControllerState> subject = new Subject<VirtualControllerState>();
-      InputSubscription = TopLevel.Input.Subscribe(subject);
 
       Input = new ScreenInput(subject.Where((state) => IsActive));
       Input.ButtonPresses.Subscribe(OnButtonPressed);
       Input.ButtonReleases.Subscribe(OnButtonReleased);
       Input.PointChanges.Subscribe(OnPointChanged);
+
+      InputSubscription = TopLevel.Input.Subscribe(subject);
       // TODO: Add Connected/Disconnected events (maybe)
     }
 
