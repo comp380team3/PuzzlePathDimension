@@ -43,6 +43,8 @@ namespace PuzzlePathDimension {
     /// Load graphics content for the game.
     /// </summary>
     public override void LoadContent(ContentManager shared) {
+      base.LoadContent(shared);
+
       // Create a new ContentManager so that all level data is flushed
       // from the cache after the level ends.
       if (content == null)
