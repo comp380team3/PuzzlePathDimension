@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<level name="Level 7" balls="4">
+<level name="Level 7" balls="4" par-seconds="30">
   <platform breakable="false" x="100" y="100" width="200" height="25" />
   <platform breakable="false" x="300" y="100" width="200" height="25" />
   <platform breakable="false" x="400" y="400" width="100" height="25" />
