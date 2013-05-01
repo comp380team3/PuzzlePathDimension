@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="Models\EditableLevel.cs" />
     <Compile Include="Models\IRestartable.cs" />
+    <Compile Include="Menus\CompletionScreen.cs" />
     <Compile Include="Menus\HowToPlayScreen5.cs" />
     <Compile Include="Menus\HowToPlayScreenContentList.cs" />
     <Compile Include="InputComponent.cs" />
