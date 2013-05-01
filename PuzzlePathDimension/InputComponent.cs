@@ -1,11 +1,11 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Microsoft.Xna.Framework;
 
 namespace PuzzlePathDimension {
   public interface IVirtualAdapter {
-    void Update(IObserver<VirtualControllerState> observer, GameTime gameTime);
+    VirtualControllerState GetState(GameTime gameTime);
   }
 
   /// <summary>
@@ -23,24 +23,17 @@ namespace PuzzlePathDimension {
   }
 
   public class InputComponent : GameComponent {
-    private Subject<VirtualControllerState> Source { get; set; }
-    private VirtualControllerState PreviousState { get; set; }
+    private ISubject<VirtualControllerState> Source { get; set; }
     private IVirtualAdapter Adapter { get; set; }
 
-    public InputComponent(PuzzlePathGame game, IObserver<VirtualControllerState> observer, InputType type)
+    public IObservable<VirtualControllerState> InputStates { get; private set; }
+
+    public InputComponent(PuzzlePathGame game)
       : base(game) {
       Source = new Subject<VirtualControllerState>();
-      PreviousState = new VirtualControllerState();
 
-      Source.Where((state) => {
-        if (state.Equals(PreviousState))
-          return false;
-
-        PreviousState = state;
-        return true;
-      }).Subscribe(observer);
-
-      SetAdapter(type);
+      // Skip duplicate state-steps.
+      InputStates = Source.DistinctUntilChanged();
     }
 
     public override void Initialize() {
@@ -49,13 +42,8 @@ namespace PuzzlePathDimension {
 
     public override void Update(GameTime gameTime) {
       base.Update(gameTime);
-
-      if (Adapter == null)
-        return;
-
-      Adapter.Update(Source, gameTime);
+      Source.OnNext(Adapter.GetState(gameTime));
     }
-
 
     public void SetAdapter(InputType inputType) {
       switch (inputType) {

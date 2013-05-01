@@ -6,12 +6,50 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Microsoft.Xna.Framework;
-using System.IO;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzlePathDimension {
+  class ScreenInput {
+    public IObservable<VirtualButtons> ButtonPresses { get; private set; }
+    public IObservable<VirtualButtons> ButtonReleases { get; private set; }
+    public IObservable<Point> PointChanges { get; private set; }
+
+    public ScreenInput(IObservable<VirtualControllerState> Input) {
+      var ButtonPresses = new Subject<VirtualButtons>();
+      var ButtonReleases = new Subject<VirtualButtons>();
+      var PointChanges = new Subject<Point>();
+
+      // Wire up the buttons
+      Input
+        .Zip(Input.Skip(1), Tuple.Create)
+        .Subscribe((tuple) => {
+          var old = tuple.Item1;
+          var curr = tuple.Item2;
+
+          foreach (VirtualButtons button in Enum.GetValues(typeof(VirtualButtons))) {
+            if (old.IsButtonPressed(button) != curr.IsButtonPressed(button)) {
+              ((curr.IsButtonPressed(button)) ? ButtonPresses : ButtonReleases).OnNext(button);
+              Console.WriteLine(button.ToString() + " " + curr.IsButtonPressed(button));
+            }
+          }
+        });
+
+      // Wire up the point
+      Input
+        .Select((state) => state.Point)
+        .DistinctUntilChanged()
+        .Subscribe(PointChanges);
+
+      this.ButtonPresses = ButtonPresses;
+      this.ButtonReleases = ButtonReleases;
+      this.PointChanges = PointChanges;
+    }
+  }
+
   /// <summary>
   /// Enum describes the screen transition state.
   /// </summary>
@@ -21,7 +59,6 @@ namespace PuzzlePathDimension {
     TransitionOff,
     Hidden,
   }
-
 
   /// <summary>
   /// A screen is a single layer that has update and draw logic, and which
@@ -122,6 +159,9 @@ namespace PuzzlePathDimension {
       protected set { TransitionAlpha = 1f - value; }
     }
 
+    private ScreenInput Input { get; set; }
+    private IDisposable InputSubscription { get; set; }
+
     public GameScreen(TopLevelModel topLevel) {
       TopLevel = topLevel;
     }
@@ -132,12 +172,6 @@ namespace PuzzlePathDimension {
     /// and will give the screen a chance to gradually transition off.
     /// </summary>
     public void ExitScreen() {
-      Controller.Connected -= OnControllerConnected;
-      Controller.Disconnected -= OnControllerDisconnected;
-      Controller.ButtonPressed -= OnButtonPressed__;
-      Controller.ButtonReleased -= OnButtonReleased__;
-      Controller.PointChanged -= OnPointChanged__;
-
       if (TransitionOffTime == TimeSpan.Zero) {
         // If the screen has a zero transition time, remove it immediately.
         ScreenList.RemoveScreen(this);
@@ -152,17 +186,22 @@ namespace PuzzlePathDimension {
     /// Load graphics content for the screen.
     /// </summary>
     public virtual void LoadContent(ContentManager shared) {
-      Controller.Connected += OnControllerConnected;
-      Controller.Disconnected += OnControllerDisconnected;
-      Controller.ButtonPressed += OnButtonPressed__;
-      Controller.ButtonReleased += OnButtonReleased__;
-      Controller.PointChanged += OnPointChanged__;
+      Subject<VirtualControllerState> subject = new Subject<VirtualControllerState>();
+      InputSubscription = TopLevel.Input.Subscribe(subject);
+
+      Input = new ScreenInput(subject.Where((state) => IsActive));
+      Input.ButtonPresses.Subscribe(OnButtonPressed);
+      Input.ButtonReleases.Subscribe(OnButtonReleased);
+      Input.PointChanges.Subscribe(OnPointChanged);
+      // TODO: Add Connected/Disconnected events (maybe)
     }
 
     /// <summary>
     /// Unload content for the screen.
     /// </summary>
-    public virtual void UnloadContent() { }
+    public virtual void UnloadContent() {
+      InputSubscription.Dispose();
+    }
 
 
     /// <summary>
@@ -251,20 +290,5 @@ namespace PuzzlePathDimension {
     protected virtual void OnButtonPressed(VirtualButtons button) { }
     protected virtual void OnButtonReleased(VirtualButtons button) { }
     protected virtual void OnPointChanged(Point point) { }
-
-    private void OnButtonPressed__(VirtualButtons button) {
-      if (IsActive)
-        OnButtonPressed(button);
-    }
-
-    private void OnButtonReleased__(VirtualButtons button) {
-      if (IsActive)
-        OnButtonReleased(button);
-    }
-
-    private void OnPointChanged__(Point point) {
-      if (IsActive)
-        OnPointChanged(point);
-    }
   }
 }

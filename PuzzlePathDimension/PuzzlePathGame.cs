@@ -49,16 +49,16 @@ namespace PuzzlePathDimension {
       TopLevel.Prefs = new UserPrefs();
 
       Scene scene = new Scene();
+      scene.AddScreen(new BackgroundScreen(TopLevel));
+      scene.AddScreen(new MainMenuScreen(TopLevel));
       TopLevel.Scene = scene;
-
-      Subject<VirtualControllerState> inputSubject = new Subject<VirtualControllerState>();
-      TopLevel.Input = inputSubject;
 
       WritableVirtualController controller = new WritableVirtualController();
       controller.InputType = InputType.KeyboardMouse;
-      inputSubject.Subscribe((state) => {
-        Console.WriteLine("State change.");
+      TopLevel.Controller = controller;
 
+      Subject<VirtualControllerState> input = new Subject<VirtualControllerState>();
+      input.Subscribe((state) => {
         controller.IsConnected = state.IsConnected;
         controller.Point = state.Point;
 
@@ -74,21 +74,21 @@ namespace PuzzlePathDimension {
         controller.SetButtonState(VirtualButtons.Debug, state.Debug);
         controller.SetButtonState(VirtualButtons.Easter, state.Easter);
       });
-      TopLevel.Controller = controller;
+      TopLevel.Input = input;
 
 
       // Create the input component.
-      InputComponent input = new InputComponent(this, inputSubject, controller.InputType);
-      controller.InputTypeChanged += input.SetAdapter;
-      input.UpdateOrder = 0;
-      Components.Add(input);
+      InputComponent inputComponent = new InputComponent(this);
+      controller.InputTypeChanged += inputComponent.SetAdapter;
+      inputComponent.SetAdapter(controller.InputType);
+      inputComponent.InputStates.Subscribe(input);
+      inputComponent.UpdateOrder = 0;
+      Components.Add(inputComponent);
 
       // Create the graphical component.
-      RenderComponent menus = new RenderComponent(this, scene);
-      TopLevel.Scene.AddScreen(new BackgroundScreen(TopLevel));
-      TopLevel.Scene.AddScreen(new MainMenuScreen(TopLevel));
-      menus.UpdateOrder = 1;
-      Components.Add(menus);
+      RenderComponent renderComponent = new RenderComponent(this, scene);
+      renderComponent.UpdateOrder = 1;
+      Components.Add(renderComponent);
 
       // Initialize all sub-components.
       base.Initialize();
