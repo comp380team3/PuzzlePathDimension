@@ -46,7 +46,7 @@ namespace PuzzlePathDimension {
     protected override void Initialize() {
       // Bootstrap the top-level context model
       TopLevel.Game = this;
-      TopLevel.Prefs = new UserPrefs();
+      TopLevel.Profile = UserProfile.Load("Content/profile.xml");
 
       Scene scene = new Scene();
       scene.AddScreen(new BackgroundScreen(TopLevel));
