@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<level name="Bug 46" balls="4">
+<level name="Bug 46" balls="4" par-seconds="5">
   <platform breakable="true" x="300" y="570" width="200" height="25" />
   
   <goal x="370" y="20" />
