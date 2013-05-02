@@ -92,6 +92,7 @@ namespace PuzzlePathDimension {
       _cantAdd = limitReached;
       //initializa the position of regular platforms
       _platforms = new List<Rectangle>();
+
       if (level.TypesAllowed.Contains("R")) {
         if (level.TypesAllowed.Contains("H")) {
           _platforms.Add(new Rectangle(100, 130, 100, 25));

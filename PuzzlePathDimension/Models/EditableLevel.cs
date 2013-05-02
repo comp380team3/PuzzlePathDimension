@@ -135,7 +135,7 @@ namespace PuzzlePathDimension {
       //hard coded amount of additions.
       _additionsAllowed = 3;
 
-      typesAllowed = "RBHV";
+      typesAllowed = level.AllowedPlatTypes;
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
