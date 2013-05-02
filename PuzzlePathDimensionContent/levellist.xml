@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Levels xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Level path="Level1.xml" id="Level 1" />
+  <Level path="Level2.xml" id="Level 2" />
+  <Level path="Level3.xml" id="Level 3" />
+  <Level path="Level4.xml" id="Level 4" />
+  <Level path="Level5.xml" id="Level 5" />
+  <Level path="Level6.xml" id="Level 6" />
+  <Level path="Level7.xml" id="Level 7" />
+  <Level path="Level8.xml" id="Level 8" />
+  <Level path="Level9.xml" id="Level 9" />
+  <Level path="Level10.xml" id="Level 10" />
+  <Level path="Level11.xml" id="Level 11" />
+  <Level path="Level12.xml" id="Level 12" />
+  <Level path="Level13.xml" id="Level 13" />
+  <Level path="Level14.xml" id="Level 14" />
+  <Level path="Level15.xml" id="Level 15" />
+</Levels>
