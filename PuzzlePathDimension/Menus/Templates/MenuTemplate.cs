@@ -31,9 +31,12 @@ namespace PuzzlePathDimension {
     /// </summary>
     public int SelectedItem { get; set; }
 
+    private IList<Tuple<Rectangle, MenuButton>> ItemRects { get; set; }
+
 
     public MenuTemplate() {
       Items = new List<MenuButton>();
+      ItemRects = new List<Tuple<Rectangle, MenuButton>>();
       TransitionPosition = 1.0f;
     }
 
@@ -74,6 +77,8 @@ namespace PuzzlePathDimension {
         Title.Draw(spriteBatch, titleCursor, gameTime);
       }
 
+      ItemRects.Clear();
+
       // Draw the menu items
       cursor.Y = 175;
       for (var i = 0; i < Items.Count; ++i) {
@@ -87,7 +92,11 @@ namespace PuzzlePathDimension {
         buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
         // Draw the button.
-        cursor.Y += button.Draw(spriteBatch, buttonCursor, SelectedItem == i, gameTime);
+        Rectangle box = button.Draw(spriteBatch, buttonCursor, SelectedItem == i, gameTime);
+
+        ItemRects.Add(Tuple.Create(box, button));
+
+        cursor.Y += box.Height;
       }
 
       spriteBatch.End();
@@ -115,6 +124,26 @@ namespace PuzzlePathDimension {
     /// </summary>
     public void Confirm() {
       Items[SelectedItem].OnSelectEntry();
+    }
+
+    public void SelectAtPoint(Point pointer) {
+      MenuButton button = null;
+
+      foreach (var entry in ItemRects) {
+        Rectangle rect = entry.Item1;
+        if (rect.Contains(pointer)) {
+          button = entry.Item2;
+          break;
+        }
+      }
+
+      if (button == null)
+        return;
+
+      for (int i = 0; i < Items.Count; ++i) {
+        if (button == Items[i])
+          SelectedItem = i;
+      }
     }
   }
 }

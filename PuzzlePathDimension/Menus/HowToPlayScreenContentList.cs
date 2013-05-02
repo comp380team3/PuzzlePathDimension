@@ -82,6 +82,10 @@ namespace PuzzlePathDimension {
       }
     }
 
+    protected override void OnPointChanged(Point point) {
+      menuTemplate.SelectAtPoint(point);
+    }
+
     /// <summary>
     /// 
     /// </summary>

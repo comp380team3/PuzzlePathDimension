@@ -78,7 +78,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Draws the menu entry. This can be overridden to customize the appearance.
     /// </summary>
-    public virtual int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, bool isSelected, GameTime gameTime) {
+    public virtual Rectangle Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, bool isSelected, GameTime gameTime) {
       // Vertically center text on the middle of each line.
       Vector2 origin = new Vector2(0, Font.LineSpacing / 2);
 
@@ -95,7 +95,9 @@ namespace PuzzlePathDimension {
       spriteBatch.DrawString(Font, Text, cursor.Position, color, 0,
                              origin, cursor.Scaling, SpriteEffects.None, 0);
 
-      return Font.LineSpacing;
+      return new Rectangle(
+        (int)cursor.X, (int)(cursor.Y - Font.LineSpacing / 2),
+        (int)(scale * Font.MeasureString(Text).X), Font.LineSpacing);
     }
   }
 }

@@ -38,6 +38,8 @@ namespace PuzzlePathDimension {
     /// </summary>
     public IDictionary<Selection, MenuButton> Buttons { get; private set; }
 
+    private IList<Tuple<Rectangle, MenuButton>> ItemRects { get; set; }
+
     /// <summary>
     /// The title of the Message Box.
     /// </summary>
@@ -71,6 +73,7 @@ namespace PuzzlePathDimension {
     public MessageBoxTemplate(string message) {
       Lines = new List<IMenuLine>();
       Buttons = new Dictionary<Selection, MenuButton>();
+      ItemRects = new List<Tuple<Rectangle, MenuButton>>();
 
       RectangleXPosition = 50;
       RectangleYPosition = 200;
@@ -142,9 +145,10 @@ namespace PuzzlePathDimension {
       // Draw the buttons
       var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
 
+      ItemRects.Clear();
+
       cursor.X = backgroundRectangle.X + 100;
       cursor.Y = backgroundRectangle.Bottom - font.LineSpacing; // This was changed - Jorenz
-      
 
       foreach (Selection label in labels) {
         MenuButton button;
@@ -156,7 +160,9 @@ namespace PuzzlePathDimension {
           // Modify the alpha to fade text out during transitions.
           buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
-          button.Draw(spriteBatch, buttonCursor, label == SelectedItem, gameTime);
+          Rectangle box = button.Draw(spriteBatch, buttonCursor, label == SelectedItem, gameTime);
+
+          ItemRects.Add(Tuple.Create(box, button));
         }
 
         cursor.X += backgroundRectangle.Width / 3;
@@ -221,6 +227,29 @@ namespace PuzzlePathDimension {
         return;
 
       button.OnSelectEntry();
+    }
+
+    public void SelectAtPoint(Point pointer) {
+      MenuButton button = null;
+
+      foreach (var entry in ItemRects) {
+        Rectangle rect = entry.Item1;
+        if (rect.Contains(pointer)) {
+          button = entry.Item2;
+          break;
+        }
+      }
+
+      if (button == null)
+        return;
+
+      var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
+      foreach (Selection label in labels) {
+        MenuButton item;
+        Buttons.TryGetValue(label, out item);
+        if (button == item)
+          SelectedItem = label;
+      }
     }
   }
 }
