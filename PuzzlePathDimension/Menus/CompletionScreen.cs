@@ -5,12 +5,14 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 
 namespace PuzzlePathDimension {
   class CompletionScreen : GameScreen{
 
     DetailsTemplate detailsTemplate;
     LevelScoreData levelData;
+    LevelGroup levelSet;
 
     MenuButton nextLevelMenuEntry;
     MenuButton levelSelectMenuEntry;
@@ -36,8 +38,12 @@ namespace PuzzlePathDimension {
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
       int treasureScore = 500 * levelData.TreasuresCollected;
       int ballsLeftScore = 150 * levelData.BallsLeft;
+      string fullPath = Configuration.UserDataPath + Path.DirectorySeparatorChar + "levellist.xml";
 
       detailsTemplate = new DetailsTemplate();
+      Console.WriteLine(fullPath);
+      levelSet = LevelGroup.Load(fullPath);
+
 
       detailsTemplate.Title = new TextLine("Congratulations, Level Complete.", font, Color.White);
 
@@ -51,21 +57,25 @@ namespace PuzzlePathDimension {
       if (levelData.TimeSpent <= levelData.ParTime) {
         description.Add(new TextLine("Par time met! (+100)", font, Color.White));
       }
+
       description.Add(new TextLine("Your score is: " + levelData.Score, font, Color.White));
-
-      nextLevelMenuEntry = new MenuButton("Next Level", font);
-      nextLevelMenuEntry.Selected += NextLevelMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextLevelMenuEntry;
-      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
-
-      levelSelectMenuEntry = new MenuButton("Level Select", font);
-      levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
-      detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = levelSelectMenuEntry;
 
       retryMenuEntry = new MenuButton("Retry Level", font);
       retryMenuEntry.Selected += RetryMenuEntrySelected;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Left] = retryMenuEntry;
+
+      levelSelectMenuEntry = new MenuButton("Level Select", font);
+      levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
+      detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = levelSelectMenuEntry;
+      detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
+
+      if (levelSet.FindNextLevel(levelData.LevelName) != null) {
+        nextLevelMenuEntry = new MenuButton("Next Level", font);
+        nextLevelMenuEntry.Selected += NextLevelMenuEntrySelected;
+        detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextLevelMenuEntry;
+        detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
       }
+    }
 
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
@@ -113,8 +123,10 @@ namespace PuzzlePathDimension {
     /// Event handler for when the user selects the Nect level menu entry.
     /// </summary>
     void NextLevelMenuEntrySelected() {
-      LoadingScreen.Load(TopLevel, false, null, new BackgroundScreen(TopLevel),
-                                                     new MainMenuScreen(TopLevel));
+      LevelEntry nextLevel = levelSet.FindNextLevel(levelData.LevelName);
+      Console.WriteLine(nextLevel.FullPath);
+
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, nextLevel.FullPath));
     }
 
     /// <summary>
