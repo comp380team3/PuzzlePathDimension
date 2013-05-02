@@ -75,6 +75,8 @@ namespace PuzzlePathDimension {
         detailsTemplate.Buttons[DetailsTemplate.Selection.Right] = nextLevelMenuEntry;
         detailsTemplate.SelectedItem = DetailsTemplate.Selection.Right;
       }
+
+      SaveUserProgress();
     }
 
     protected override void OnButtonReleased(VirtualButtons button) {
@@ -147,7 +149,41 @@ namespace PuzzlePathDimension {
       simulation.Restart();
     }
 
-    public void saveUserProgress() {
+    /// <summary>
+    /// Saves the user progress.
+    /// </summary>
+    private void SaveUserProgress() {
+      string levelName = levelData.LevelName;
+      UserProfile profile = base.Profile;
+      SerializableDictionary<string, LevelStatus> progressInfo = base.Profile.Progress;
+
+      LevelStatus status;
+
+      // If the user has played the level before, get the info from the dictionary,
+      // and replace the score if it's better.
+      if (progressInfo.ContainsKey(levelName)) {
+        status = progressInfo[levelName];
+
+        status.Completed = true;
+
+        if (status.Score < levelData.Score) {
+          status.Score = levelData.Score;
+          status.FastestTimeInSeconds = levelData.TimeSpent;
+        }
+
+      } else {
+        // Otherwise, create a new LevelStatus object and insert it into
+        // the dictionary.
+        status = new LevelStatus();
+        status.Completed = true;
+        status.FastestTimeInSeconds = levelData.TimeSpent;
+        status.Score = levelData.Score;
+
+        progressInfo[levelName] = status;
+      }
+
+      // In either case, save the user's profile.
+      profile.Save(Configuration.UserDataPath + Path.DirectorySeparatorChar + "profile.xml");
     }
   }
 }
