@@ -10,13 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathUnitTests", "Puzz
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{B93B3C4A-AA51-46B1-9989-FB60BA6EB812}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject1", "ModelingProject1\ModelingProject1.modelproj", "{D1DAB873-1717-454E-9871-B180826E1AB0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C29B4446-67A8-4FFC-BE23-9359D64A53E4}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\Desktop\PuzzlePathDimension.vsd = ..\..\..\Desktop\PuzzlePathDimension.vsd
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,16 +63,6 @@ Global
 		{B93B3C4A-AA51-46B1-9989-FB60BA6EB812}.Release|Mixed Platforms.ActiveCfg = Release
 		{B93B3C4A-AA51-46B1-9989-FB60BA6EB812}.Release|x86.ActiveCfg = Release
 		{B93B3C4A-AA51-46B1-9989-FB60BA6EB812}.Release|x86.Build.0 = Release
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D1DAB873-1717-454E-9871-B180826E1AB0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
