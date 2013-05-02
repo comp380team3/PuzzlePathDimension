@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -11,11 +10,11 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The button that confirms something.
     /// </summary>
-    Confirm = 0,
+    Select = 0,
     /// <summary>
     /// The button that usually cancels something.
     /// </summary>
-    Back,
+    Delete,
     /// <summary>
     /// The button that has different functionality depending on the current
     /// state of the game.
@@ -25,6 +24,18 @@ namespace PuzzlePathDimension {
     /// The button that pauses the game.
     /// </summary>
     Pause,
+    /// <summary>
+    /// The button that switches between modes.
+    /// </summary>
+    Mode,
+    /// <summary>
+    /// The button that exposes debugging functionality.
+    /// </summary>
+    Debug,
+    /// <summary>
+    /// The button that does something silly.
+    /// </summary>
+    Easter,
     /// <summary>
     /// The button that represents the up direction.
     /// </summary>
@@ -40,16 +51,58 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// The button that represents the right direction.
     /// </summary>
-    Right
+    Right,
+  }
+
+  public struct VirtualControllerState {
+    public bool IsConnected { get; set; }
+
+    public Point Point { get; set; }
+    public bool Up { get; set; }
+    public bool Down { get; set; }
+    public bool Left { get; set; }
+    public bool Right { get; set; }
+
+    public bool Select { get; set; }
+    public bool Delete { get; set; }
+    public bool Context { get; set; }
+    public bool Mode { get; set; }
+    public bool Pause { get; set; }
+    public bool Debug { get; set; }
+
+    public bool Easter { get; set; }
+
+    public bool IsButtonPressed(VirtualButtons type) {
+      switch (type) {
+      case VirtualButtons.Up:
+        return Up;
+      case VirtualButtons.Down:
+        return Down;
+      case VirtualButtons.Left:
+        return Left;
+      case VirtualButtons.Right:
+        return Right;
+      case VirtualButtons.Select:
+        return Select;
+      case VirtualButtons.Delete:
+        return Delete;
+      case VirtualButtons.Context:
+        return Context;
+      case VirtualButtons.Mode:
+        return Mode;
+      case VirtualButtons.Pause:
+        return Pause;
+      case VirtualButtons.Debug:
+        return Debug;
+      case VirtualButtons.Easter:
+        return Easter;
+      default:
+        throw new ArgumentException("Invalid valud for type: " + type.ToString());
+      }
+    }
   }
 
   public interface VirtualController {
-    event Action Connected;
-    event Action Disconnected;
-    event Action<VirtualButtons> ButtonPressed;
-    event Action<VirtualButtons> ButtonReleased;
-    event Action<Point> PointChanged;
-
     InputType InputType { get; set; }
     bool IsConnected { get; }
     Point Point { get; }
@@ -63,13 +116,7 @@ namespace PuzzlePathDimension {
   public class WritableVirtualController : VirtualController {
     private static readonly int ButtonCount = Enum.GetNames(typeof(VirtualButtons)).Length;
 
-    public event Action Connected;
-    public event Action Disconnected;
     public event Action<InputType> InputTypeChanged;
-
-    public event Action<VirtualButtons> ButtonPressed;
-    public event Action<VirtualButtons> ButtonReleased;
-    public event Action<Point> PointChanged;
 
     private bool connected = false;
     private InputType inputType = InputType.KeyboardMouse;
@@ -84,18 +131,8 @@ namespace PuzzlePathDimension {
         inputType = value;
 
         if (InputTypeChanged != null)
-          InputTypeChanged(InputType);
+          InputTypeChanged(value);
       }
-    }
-
-    public WritableVirtualController() {
-    }
-
-    public WritableVirtualController(WritableVirtualController original) {
-      this.connected = original.connected;
-      this.inputType = original.inputType;
-      this.point = original.point;
-      this.buttons = (bool[])original.buttons.Clone();
     }
 
     /// <summary>
@@ -103,35 +140,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Point Point {
       get { return point; }
-      set {
-        if (point == value)
-          return;
-        point = value;
-
-        if (PointChanged != null)
-          PointChanged(value);
-      }
+      set { point = value; }
     }
 
     public bool IsButtonPressed(VirtualButtons button) {
       return buttons[(int)button];
     }
     public void SetButtonState(VirtualButtons button, bool state) {
-      int type = (int)button;
-
-      if (buttons[type] == state)
-        return;
-      buttons[type] = state;
-
-      if (state) {
-        Console.WriteLine("Something was pressed.");
-        if (ButtonPressed != null)
-          ButtonPressed(button);
-      } else {
-        Console.WriteLine("Something was released.");
-        if (ButtonReleased != null)
-          ButtonReleased(button);
-      }
+      buttons[(int)button] = state;
     }
 
     /// <summary>
@@ -140,19 +156,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public bool IsConnected {
       get { return connected; }
-      set {
-        if (connected == value)
-          return;
-        connected = value;
-
-        if (connected) {
-          if (Connected != null)
-            Connected();
-        } else {
-          if (Disconnected != null)
-            Disconnected();
-        }
-      }
+      set { connected = value; }
     }
   }
 }

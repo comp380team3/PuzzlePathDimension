@@ -75,7 +75,7 @@ namespace PuzzlePathDimension {
       case VirtualButtons.Right:
         detailsTemplate.SelectNext();
         break;
-      case VirtualButtons.Confirm:
+      case VirtualButtons.Select:
         detailsTemplate.Confirm();
         break;
       }
