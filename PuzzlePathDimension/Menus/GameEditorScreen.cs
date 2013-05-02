@@ -195,6 +195,7 @@ namespace PuzzlePathDimension {
       level.Treasures = editableLevel.Treasures;
       level.Launcher = editableLevel.Launcher;
       level.Attempts = editableLevel.Attempts;
+      level.ParTime = editableLevel.ParTime;
       foreach (Platform platform in editableLevel.Platforms) {
         level.Platforms.Add(platform);
       }
