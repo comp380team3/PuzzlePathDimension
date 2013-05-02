@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<level name="Level 15" balls="8" par-seconds="90">
+<level name="Level 15" balls="8" par-seconds="90" toolbox-types="RBHV">
   <platform breakable="false" x="545" y="5" width="25" height="100" />
   <platform breakable="false" x="100" y="5" width="25" height="100" />
   <platform breakable="false" x="100" y="495" width="25" height="100" />

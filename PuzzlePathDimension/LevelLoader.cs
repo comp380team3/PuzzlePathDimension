@@ -43,6 +43,14 @@ namespace PuzzlePathDimension {
         level.ParTime = Convert.ToInt16(levelNode.Attributes["par-seconds"].Value);
       }
 
+      if (levelNode.Attributes["toolbox-types"] == null) {
+        level.AllowedPlatTypes = "RBHV";
+        Console.WriteLine("Warning: the allowed platform types in the editor wasn't specified.");
+      } else {
+        Console.WriteLine("this was reached");
+        level.AllowedPlatTypes = Convert.ToString(levelNode.Attributes["toolbox-types"].Value);
+      }
+
       foreach (XmlElement node in doc.GetElementsByTagName("platform")) {
         level.Platforms.Add(LoadPlatform(node, Content));
       }
