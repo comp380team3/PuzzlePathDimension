@@ -14,6 +14,10 @@ namespace PuzzlePathDimension {
   /// </summary>
   public struct LevelScoreData {
     /// <summary>
+    /// The name of the level that was completed.
+    /// </summary>
+    public string LevelName { get; set; }
+    /// <summary>
     /// The number of treasures collected in the level.
     /// </summary>
     public int TreasuresCollected { get; set; }
@@ -82,6 +86,11 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
+    /// The name of the level that is being played.
+    /// </summary>
+    private string _name;
+
+    /// <summary>
     /// The simulation's ball.
     /// </summary>
     private Ball _ball;
@@ -112,6 +121,13 @@ namespace PuzzlePathDimension {
     /// The simulation's list of death traps.
     /// </summary>
     private List<DeathTrap> _deathTraps;
+
+    /// <summary>
+    /// Gets the name of the level being played.
+    /// </summary>
+    public string Name {
+      get { return _name; }
+    }
 
     /// <summary>
     /// Gets the simulation's ball.
@@ -299,6 +315,8 @@ namespace PuzzlePathDimension {
       _goal = level.Goal;
       _launcher = level.Launcher;
       _moveablePlatforms = new List<Platform>();
+
+      _name = level.Name;
 
       // Initialize various stats.
       _startingAttempts = level.Attempts;
@@ -494,6 +512,7 @@ namespace PuzzlePathDimension {
     private LevelScoreData CreateScoreData() {
       LevelScoreData clearData = new LevelScoreData();
 
+      clearData.LevelName = _name;
       clearData.TreasuresCollected = _collectedTreasures;
       clearData.TreasuresInLevel = _treasures.Count;
       clearData.BallsLeft = _attemptsLeft;

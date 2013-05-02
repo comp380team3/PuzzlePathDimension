@@ -29,6 +29,8 @@ namespace PuzzlePathDimension {
       
       XmlElement levelNode = (XmlElement)doc.GetElementsByTagName("level")[0];
 
+      level.Name = Convert.ToString(levelNode.Attributes["name"].Value);
+
       if (levelNode.Attributes["balls"] == null) { // Fall back
         level.Attempts = 3;
         Console.WriteLine("Warning: the number of attempts wasn't specified.");

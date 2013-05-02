@@ -190,6 +190,7 @@ namespace PuzzlePathDimension {
 
     private Level CreateLevel() {
       Level level = new Level();
+      level.Name = editableLevel.Name;
       level.Goal = editableLevel.Goal;
       level.DeathTraps = editableLevel.DeathTraps;
       level.Treasures = editableLevel.Treasures;
