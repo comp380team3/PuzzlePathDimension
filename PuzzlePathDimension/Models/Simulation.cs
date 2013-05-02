@@ -59,7 +59,7 @@ namespace PuzzlePathDimension {
     Failed
   }
 
-  class Simulation {
+  class Simulation : IRestartable {
     /// <summary>
     /// The width of the playing field, in pixels.
     /// </summary>
@@ -306,9 +306,10 @@ namespace PuzzlePathDimension {
       _attemptsLeft = _startingAttempts;
       _collectedTreasures = 0;
       _bounces = 0;
-
       //hard coded amount of additions.
       _additionsAllowed = 3;
+
+      Background = content.Load<Texture2D>("Texture/GameScreen");
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
@@ -581,33 +582,6 @@ namespace PuzzlePathDimension {
       }
     }
 
-    public Boolean FindCollision() {
-      List<Rectangle> rects = new List<Rectangle>();
-      foreach (Platform platform in _platforms) {
-        rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
-      }
-      foreach (Platform platform in _moveablePlatforms) {
-        rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
-      }
-      for (int i = 0; i < rects.Count; i++) {
-        for (int j = i + 1; j < rects.Count; j++) {
-          if (rects[i].Intersects(rects[j]))
-            return true;
-        }
-      }
-
-      //not accurate but it works for now.
-      Rectangle circle;
-      foreach (DeathTrap deathTrap in DeathTraps) {
-        circle = new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height);
-        foreach (Rectangle rect in rects) {
-          if (circle.Intersects(rect)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
 
   }
 }

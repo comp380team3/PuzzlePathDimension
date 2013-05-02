@@ -19,7 +19,7 @@ namespace PuzzlePathDimension {
   class GameplayScreen : GameScreen {
     ContentManager content;
     Simulation simulation;
-
+    Level level;
     SpriteFont font;
 
     public string LevelName { get; set; }
@@ -35,6 +35,15 @@ namespace PuzzlePathDimension {
     }
 
 
+    public GameplayScreen(TopLevelModel topLevel, Level level)
+      :base(topLevel) {
+
+        this.level = level;
+      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+    }
+
+
     /// <summary>
     /// Initializes the GamePlayScreen with a simulation already built.
     /// </summary>
@@ -44,6 +53,7 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       simulation = sim;
+
     }
 
     /// <summary>
@@ -58,7 +68,7 @@ namespace PuzzlePathDimension {
         content = new ContentManager(shared.ServiceProvider, "Content");
 
       font = shared.Load<SpriteFont>("Font/textfont");
-
+      simulation = new Simulation(level, content);
       // Create the hard-coded level.
       if (simulation == null) {
         simulation = CreateTestLevel();
@@ -72,6 +82,9 @@ namespace PuzzlePathDimension {
 
       // Set up the sounds.
       SetupSoundEvents();
+
+
+      
 
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that

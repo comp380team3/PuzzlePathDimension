@@ -15,7 +15,7 @@ namespace PuzzlePathDimension {
   /// </summary>
   public class GameEditorScreen : GameScreen {
     ContentManager content;
-    Simulation simulation;
+    EditableLevel editableLevel;
     MouseState previousMouseState;
     MouseState currentMouseState;
 
@@ -53,7 +53,7 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
-      simulation = LoadLevel(LevelName);
+      editableLevel = LoadLevel(LevelName);
 
       foundCollision = false;
     }
@@ -89,8 +89,8 @@ namespace PuzzlePathDimension {
       }
       if (addedPlatform != null) {
         Console.WriteLine(addedPlatform.Origin);
-        if (simulation.AdditionsLeft > 0) {
-          simulation.MoveablePlatforms.Add(addedPlatform);
+        if (editableLevel.AdditionsLeft > 0) {
+          editableLevel.MoveablePlatforms.Add(addedPlatform);
         }
         toolbox.ExitScreen();
         addedPlatform = null;
@@ -113,11 +113,11 @@ namespace PuzzlePathDimension {
 
       if (launchToolbox && !toolboxLaunched) {
         String message = "Select a platform to add to the level";
-        if (simulation.AdditionsLeft > 0) {
-          toolbox = new ToolboxScreen(TopLevel, message, false);
+        if (editableLevel.AdditionsLeft > 0) {
+          toolbox = new ToolboxScreen(TopLevel, editableLevel, message, false);
         } else {
-          message += "\n    Platform addition limit reached";
-          toolbox = new ToolboxScreen(TopLevel, message, true);
+          message = "Platform addition limit reached";
+          toolbox = new ToolboxScreen(TopLevel, editableLevel, message, true);
         }
         ScreenList.AddScreen(toolbox);
         launchToolbox = false;
@@ -129,7 +129,7 @@ namespace PuzzlePathDimension {
       UpdateMovement();
 
       //Check if there is collisions in the simulation. 
-      if (simulation.FindCollision()) {
+      if (editableLevel.FindCollision()) {
         foundCollision = true;
       } else {
         foundCollision = false;
@@ -143,18 +143,20 @@ namespace PuzzlePathDimension {
       if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
                       currentMouseState.LeftButton == ButtonState.Pressed) {
         target = FindTarget(currentMouseState);
-        simulation.MoveablePlatforms.Remove((Platform)target);
+        editableLevel.MoveablePlatforms.Remove((Platform)target);
       }
     }
 
+
     protected override void OnButtonReleased(VirtualButtons button) {
+      
       switch (button) {
       case VirtualButtons.Confirm:
-        if (!simulation.FindCollision())
-          ScreenList.AddScreen(new GameplayScreen(TopLevel, simulation));
+        if (!editableLevel.FindCollision())
+          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel()));
         break;
       case VirtualButtons.Back:
-        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel));
         break;
       }
     }
@@ -168,7 +170,7 @@ namespace PuzzlePathDimension {
       spriteBatch.Begin();
 
       // Draw the background.
-      spriteBatch.Draw(simulation.Background, Vector2.Zero, Color.White);
+      spriteBatch.Draw(editableLevel.Background, Vector2.Zero, Color.White);
       // Draw the walls.
       DrawWalls(spriteBatch);
       // Draw all the level objects.
@@ -186,6 +188,23 @@ namespace PuzzlePathDimension {
       }
     }
 
+
+    private Level CreateLevel() {
+      Level level = new Level();
+      level.Goal = editableLevel.Goal;
+      level.DeathTraps = editableLevel.DeathTraps;
+      level.Treasures = editableLevel.Treasures;
+      level.Launcher = editableLevel.Launcher;
+      level.Attempts = editableLevel.Attempts;
+      foreach (Platform platform in editableLevel.Platforms) {
+        level.Platforms.Add(platform);
+      }
+      foreach (Platform platform in editableLevel.MoveablePlatforms) {
+        level.Platforms.Add(platform);
+      }
+      return level;
+
+    }
 
     /// <summary>
     /// Draw the hard-coded walls.
@@ -207,30 +226,30 @@ namespace PuzzlePathDimension {
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the level objects.</param>
     private void DrawLevelObjects(SpriteBatch spriteBatch) {
       // Draw the goal onto the canvas.
-      simulation.Goal.Draw(spriteBatch);
+      editableLevel.Goal.Draw(spriteBatch);
 
 
 
 
       // Draw the treasures onto the canvas.
-      foreach (Treasure treasure in simulation.Treasures) {
+      foreach (Treasure treasure in editableLevel.Treasures) {
         treasure.Draw(spriteBatch);
       }
       // Draw the death traps onto the canvas
-      foreach (DeathTrap deathTrap in simulation.DeathTraps) {
+      foreach (DeathTrap deathTrap in editableLevel.DeathTraps) {
         deathTrap.Draw(spriteBatch);
       }
 
       // Draw the platforms onto the canvas.
-      foreach (Platform platform in simulation.Platforms) {
+      foreach (Platform platform in editableLevel.Platforms) {
         platform.Draw(spriteBatch);
       }
-      foreach (Platform platform in simulation.MoveablePlatforms) {
+      foreach (Platform platform in editableLevel.MoveablePlatforms) {
         platform.Draw(spriteBatch);
       }
 
       // Draw the launcher onto the canvas.
-      simulation.Launcher.Draw(spriteBatch);
+      editableLevel.Launcher.Draw(spriteBatch);
     }
 
     /// <summary>
@@ -239,7 +258,7 @@ namespace PuzzlePathDimension {
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
     private void DrawText(SpriteBatch spriteBatch) {
       // Draw the number of balls left.
-      string attemptsText = "Number of platforms available: " + simulation.AdditionsLeft;
+      string attemptsText = "Number of platforms available: " + editableLevel.AdditionsLeft;
       spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
 
 
@@ -253,8 +272,8 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
-    internal Simulation LoadLevel(string level) {
-      Simulation simulation = new Simulation(LevelLoader.Load(LevelName, content), content);
+    internal EditableLevel LoadLevel(string level) {
+      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName.Replace(" ", ""), content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
@@ -290,7 +309,7 @@ namespace PuzzlePathDimension {
     /// <param name="mousePosition"></param>
     /// <returns></returns>
     public ILevelObject FindTarget(MouseState mousePosition) {
-      foreach (Platform platform in simulation.MoveablePlatforms) {
+      foreach (Platform platform in editableLevel.MoveablePlatforms) {
         if (platform.IsSelected(mousePosition))
           return platform;
       }
