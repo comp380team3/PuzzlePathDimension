@@ -16,6 +16,12 @@ namespace PuzzlePathDimension {
     public List<Treasure> Treasures { get; set; }
     public List<DeathTrap> DeathTraps { get; set; }
 
+    /// <summary>
+    /// The string that represents the platform types that can
+    /// be used in the editor phase of gameplay.
+    /// </summary>
+    public string AllowedPlatTypes { get; set; }
+
     public Level() {
       Platforms = new List<Platform>();
       Treasures = new List<Treasure>();

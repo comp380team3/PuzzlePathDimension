@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<level name="Level 1" balls="3" par-seconds="15">
+<level name="Level 1" balls="3" par-seconds="15" toolbox-types="RHV">
   <platform breakable="false" x="600" y="200" width="25" height="200" />
   <goal x="370" y="100" />
   <launcher x="400" y="580" />
