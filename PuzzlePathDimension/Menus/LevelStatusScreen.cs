@@ -38,7 +38,7 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Return the time spent on completing a level with the highest score.
     /// </summary>
-    public string CompletionTime { get; private set; }
+    public int CompletionTime { get; private set; }
 
     public string LevelFileName { get; private set; }
 

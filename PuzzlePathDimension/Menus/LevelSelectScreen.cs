@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
       /// <summary>
       /// The time that the user spent to complete the current level.
       /// </summary>
-      public string CompletionTime { get; set; }
+      public int CompletionTime { get; set; }
     }
 
     /// <summary>
@@ -120,7 +120,33 @@ namespace PuzzlePathDimension {
     public LevelSelectScreen(TopLevelModel topLevel, ContentManager Content)
       : base(topLevel) {
 
-      XmlDocument doc;
+      levelSet = new List<LevelInfo>();
+
+      string levelListFile = Configuration.UserDataPath + Path.DirectorySeparatorChar + "levellist.xml";
+
+      LevelGroup levels = LevelGroup.Load(levelListFile);
+      SerializableDictionary<string, LevelStatus> progressInfo = base.Profile.Progress;
+
+      foreach (LevelEntry entry in levels.Entries) {
+        LevelInfo info = new LevelInfo();
+
+        info.FileName = entry.FullPath;
+        info.LevelName = entry.Id;
+
+        if (progressInfo.ContainsKey(info.LevelName)) {
+          info.CompletionTime = progressInfo[info.LevelName].FastestTimeInSeconds;
+          info.Completed = progressInfo[info.LevelName].Completed;
+          info.LevelScore = progressInfo[info.LevelName].Score;
+        } else {
+          info.CompletionTime = 3600;
+          info.Completed = false;
+          info.LevelScore = 0;
+        }
+
+        levelSet.Add(info);
+      }
+
+      /*XmlDocument doc;
       XmlElement node;
       Levels = Directory.GetFiles(Configuration.UserDataPath + "/Level");
       levelSet = new List<LevelInfo>();
@@ -147,7 +173,7 @@ namespace PuzzlePathDimension {
         levelInfo.CompletionTime = Convert.ToString(node.Attributes["time"].Value);
 
         levelSet.Add(levelInfo);
-      }
+      }*/
 
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
