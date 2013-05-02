@@ -54,7 +54,7 @@ namespace PuzzlePathDimension {
       levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
       items.Add(levelSelectMenuEntry);
 
-      MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
+      MenuButton quitGameMenuEntry = new MenuButton("Back to Main Menu", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       items.Add(quitGameMenuEntry);
     }

@@ -126,16 +126,6 @@ namespace PuzzlePathDimension {
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-      if (simulation.CurrentState == SimulationState.Completed) {
-        MessageBoxScreen completedMessageBox = new MessageBoxScreen(TopLevel, "Congratulations, Level Completed!",
-                                                                    "Retry", "Main Menu", "Level Select");
-        completedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
-        completedMessageBox.LeftButton += ConfirmRetryBoxAccepted;
-        completedMessageBox.RightButton += ConfirmLevelMessageBoxAccepted;
-
-        ScreenList.AddScreen(completedMessageBox);
-      }
-
       if (simulation.CurrentState == SimulationState.Failed) {
         MessageBoxScreen failedMessageBox = new MessageBoxScreen(TopLevel, "Level Failed. Please try again.",
                                                                  "Retry", "Main Menu", "Level Select");
@@ -285,7 +275,7 @@ namespace PuzzlePathDimension {
     /// Plays the launcher's sound effect.
     /// </summary>
     private void PlayLaunch() {
-      if (base.Prefs.PlaySounds) {
+      if (Profile.Prefs.PlaySounds) {
         SoundEffect launch = content.Load<SoundEffect>("Sound/launch");
         launch.Play();
       }
@@ -303,7 +293,7 @@ namespace PuzzlePathDimension {
     /// the PlatformTouched delegate.
     /// </summary>
     private void PlayBounce(bool breakable) {
-      if (base.Prefs.PlaySounds) {
+      if (base.Profile.Prefs.PlaySounds) {
         SoundEffect bounce = content.Load<SoundEffect>("Sound/bounce");
         bounce.Play();
       }
@@ -325,21 +315,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="clearData">A struct containing information about the user's performance.</param>
     void OnLevelCompletion(LevelScoreData clearData) {
-      // TODO: Michael should replace this with a call to the LevelComplete screen.
-      int treasureScore = 500 * clearData.TreasuresCollected;
-      int ballsLeftScore = 150 * clearData.BallsLeft;
-
-      Console.WriteLine("You're winner! (+42)");
-      Console.WriteLine("Treasures obtained: " + clearData.TreasuresCollected 
-        + "/" + clearData.TreasuresInLevel + " (+" + treasureScore + ")");
-      Console.WriteLine("Balls remaining: " + clearData.BallsLeft 
-        + " (+" + ballsLeftScore + ")");
-      Console.WriteLine("Time spent (seconds): " + clearData.TimeSpent);
-      Console.WriteLine("Par time (seconds): " + clearData.ParTime);
-      if (clearData.TimeSpent <= clearData.ParTime) {
-        Console.WriteLine("Par time met! (+100)");
-      }
-      Console.WriteLine("Your score is: " + clearData.Score);
+      ScreenList.AddScreen(new CompletionScreen(TopLevel,  clearData, simulation));
     }
 
     /// <summary>
