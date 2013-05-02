@@ -122,7 +122,7 @@ namespace PuzzlePathDimension {
 
       XmlDocument doc;
       XmlElement node;
-      Levels = Directory.GetFiles(Content.RootDirectory + "\\Level");
+      Levels = Directory.GetFiles(Configuration.UserDataPath + "/Levels");
       levelSet = new List<LevelInfo>();
       levelInfo = new LevelInfo();
       CurrentLevel = 0;

@@ -40,7 +40,7 @@ namespace PuzzlePathDimension {
     public void Save(string filename) {
       XmlSerializer serializer = new XmlSerializer(typeof(UserProfile));
 
-      using (XmlWriter writer = new XmlTextWriter("Content/profile.xml", System.Text.Encoding.UTF8)) {
+      using (XmlWriter writer = new XmlTextWriter(filename, System.Text.Encoding.UTF8)) {
         serializer.Serialize(writer, this);
       }
     }

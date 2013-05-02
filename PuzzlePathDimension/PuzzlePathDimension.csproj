@@ -83,6 +83,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Models\EditableLevel.cs" />
     <Compile Include="Models\IRestartable.cs" />
     <Compile Include="Menus\CompletionScreen.cs" />
