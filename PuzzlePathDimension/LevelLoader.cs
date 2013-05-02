@@ -47,7 +47,6 @@ namespace PuzzlePathDimension {
         level.AllowedPlatTypes = "RBHV";
         Console.WriteLine("Warning: the allowed platform types in the editor wasn't specified.");
       } else {
-        Console.WriteLine("this was reached");
         level.AllowedPlatTypes = Convert.ToString(levelNode.Attributes["toolbox-types"].Value);
       }
 
