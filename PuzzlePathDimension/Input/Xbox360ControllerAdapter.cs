@@ -4,29 +4,34 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PuzzlePathDimension {
   public class Xbox360ControllerAdapter : IVirtualAdapter {
-    /// <summary>
-    /// Gets whether the Xbox 360 controller is connected.
-    /// </summary>
-    public bool Connected {
-      get { return GamePad.GetState(PlayerIndex.One).IsConnected; }
-    }
+    public VirtualControllerState GetState(GameTime gameTime) {
+      VirtualControllerState state = new VirtualControllerState();
 
-    public void Update(WritableVirtualController controller, GameTime gameTime) {
-      controller.SetButtonState(VirtualButtons.Back, IsButtonDown(Buttons.B));
-      controller.SetButtonState(VirtualButtons.Confirm, IsButtonDown(Buttons.A));
-      controller.SetButtonState(VirtualButtons.Pause, IsButtonDown(Buttons.Start));
-      controller.SetButtonState(VirtualButtons.Up, IsButtonDown(Buttons.DPadUp) || IsButtonDown(Buttons.LeftThumbstickUp));
-      controller.SetButtonState(VirtualButtons.Down, IsButtonDown(Buttons.DPadDown) || IsButtonDown(Buttons.LeftThumbstickDown));
-      controller.SetButtonState(VirtualButtons.Left, IsButtonDown(Buttons.DPadLeft) || IsButtonDown(Buttons.LeftThumbstickLeft));
-      controller.SetButtonState(VirtualButtons.Right, IsButtonDown(Buttons.DPadRight) || IsButtonDown(Buttons.LeftThumbstickRight));
-      controller.SetButtonState(VirtualButtons.Context, IsButtonDown(Buttons.Y));
+      GamePadState pad = GamePad.GetState(PlayerIndex.One);
 
-      controller.Point = new Point(0, 0);
-    }
+      state.IsConnected = pad.IsConnected;
 
+      Point point = new Point(0, 0);
+      // TODO: Implement a virtualized pointer.
+      state.Point = point;
 
-    private bool IsButtonDown(Buttons button) {
-      return GamePad.GetState(PlayerIndex.One).IsButtonDown(button);
+      state.Up = pad.IsButtonDown(Buttons.DPadUp);
+      state.Down = pad.IsButtonDown(Buttons.DPadDown);
+      state.Left = pad.IsButtonDown(Buttons.DPadLeft);
+      state.Right = pad.IsButtonDown(Buttons.DPadRight);
+
+      state.Select = pad.IsButtonDown(Buttons.A);
+      state.Delete = pad.IsButtonDown(Buttons.B);
+      state.Context = pad.IsButtonDown(Buttons.Y);
+      state.Mode = pad.IsButtonDown(Buttons.X);
+      state.Pause = pad.IsButtonDown(Buttons.Start);
+      state.Debug = pad.IsButtonDown(Buttons.Back);
+
+      state.Easter =
+        pad.IsButtonDown(Buttons.LeftShoulder) && pad.IsButtonDown(Buttons.LeftShoulder) &&
+        pad.IsButtonDown(Buttons.LeftTrigger) && pad.IsButtonDown(Buttons.RightTrigger);
+
+      return state;
     }
   }
 }

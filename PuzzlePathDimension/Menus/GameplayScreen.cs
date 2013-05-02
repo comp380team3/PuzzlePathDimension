@@ -19,17 +19,28 @@ namespace PuzzlePathDimension {
   class GameplayScreen : GameScreen {
     ContentManager content;
     Simulation simulation;
-
+    Level level;
     SpriteFont font;
 
     public string LevelName { get; set; }
 
     float pauseAlpha;
 
+    private Vector2 launcherChange = new Vector2(0.0f, 0.0f);
+
     public GameplayScreen(TopLevelModel topLevel, string levelName)
       : base(topLevel) {
       LevelName = levelName;
 
+      base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+    }
+
+
+    public GameplayScreen(TopLevelModel topLevel, Level level)
+      :base(topLevel) {
+
+        this.level = level;
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -44,6 +55,7 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       simulation = sim;
+
     }
 
     /// <summary>
@@ -58,7 +70,7 @@ namespace PuzzlePathDimension {
         content = new ContentManager(shared.ServiceProvider, "Content");
 
       font = shared.Load<SpriteFont>("Font/textfont");
-
+      simulation = new Simulation(level, content);
       // Create the hard-coded level.
       if (simulation == null) {
         simulation = CreateTestLevel();
@@ -67,8 +79,14 @@ namespace PuzzlePathDimension {
       //Initialize the bodies in the simulation
       simulation.InitWorld();
 
+      // Set up the level completion event.
+      simulation.OnCompletion += OnLevelCompletion;
+
       // Set up the sounds.
       SetupSoundEvents();
+
+
+      
 
       // once the load has finished, we use ResetElapsedTime to tell the game's
       // timing mechanism that we have just finished a very long frame, and that
@@ -119,19 +137,12 @@ namespace PuzzlePathDimension {
       if (!IsActive)
         return;
 
+      Launcher launcher = simulation.Launcher;
+      launcher.AdjustAngle((float)Math.PI / 64 * launcherChange.X);
+      launcher.AdjustMagnitude(0.25f * launcherChange.Y);
 
       // Update the simulation's state.
       simulation.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-
-      if (simulation.CurrentState == SimulationState.Completed) {
-        MessageBoxScreen completedMessageBox = new MessageBoxScreen(TopLevel, "Congratulations, Level Completed!",
-                                                                    "Retry", "Main Menu", "Level Select");
-        completedMessageBox.MiddleButton += MainMenuMessageBoxAccepted;
-        completedMessageBox.LeftButton += ConfirmRetryBoxAccepted;
-        completedMessageBox.RightButton += ConfirmLevelMessageBoxAccepted;
-
-        ScreenList.AddScreen(completedMessageBox);
-      }
 
       if (simulation.CurrentState == SimulationState.Failed) {
         MessageBoxScreen failedMessageBox = new MessageBoxScreen(TopLevel, "Level Failed. Please try again.",
@@ -151,22 +162,6 @@ namespace PuzzlePathDimension {
     public override void HandleInput(VirtualController Controller) {
       base.HandleInput(Controller);
 
-      Launcher launcher = simulation.Launcher;
-
-      // Route user input to the appropriate action
-      if (Controller.IsButtonPressed(VirtualButtons.Left)) {
-        launcher.AdjustAngle((float)Math.PI / 64);
-      }
-      if (Controller.IsButtonPressed(VirtualButtons.Right)) {
-        launcher.AdjustAngle((float)-Math.PI / 64);
-      }
-      if (Controller.IsButtonPressed(VirtualButtons.Up)) {
-        launcher.AdjustMagnitude(0.25f);
-      }
-      if (Controller.IsButtonPressed(VirtualButtons.Down)) {
-        launcher.AdjustMagnitude(-0.25f);
-      }
-
       // TODO: Replace this restart mechanism
       if (Keyboard.GetState().IsKeyDown(Keys.R) ||
         GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
@@ -175,22 +170,44 @@ namespace PuzzlePathDimension {
       }
     }
 
-    /// <summary>
-    /// Lets the game respond to player input. Unlike the Update method,
-    /// this will only be called when the gameplay screen is active.
-    /// </summary>
-    protected override void OnButtonReleased(VirtualButtons button) {
-      // The game pauses either if the user presses the pause button, or if
-      // they unplug the active gamepad. This requires us to keep track of
-      // whether a gamepad was ever plugged in, because we don't want to pause
-      // on PC if they are playing with a keyboard and have no gamepad at all!
-
-      // Route user input to the appropriate action
+    protected override void OnButtonPressed(VirtualButtons button) {
       switch (button) {
-      case VirtualButtons.Back:
+      case VirtualButtons.Up:
+        launcherChange.Y += 1;
+        break;
+      case VirtualButtons.Down:
+        launcherChange.Y -= 1;
+        break;
+
+      case VirtualButtons.Left:
+        launcherChange.X += 1;
+        break;
+      case VirtualButtons.Right:
+        launcherChange.X -= 1;
+        break;
+      }
+    }
+
+    protected override void OnButtonReleased(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Up:
+        launcherChange.Y -= 1;
+        break;
+      case VirtualButtons.Down:
+        launcherChange.Y += 1;
+        break;
+
+      case VirtualButtons.Left:
+        launcherChange.X -= 1;
+        break;
+      case VirtualButtons.Right:
+        launcherChange.X += 1;
+        break;
+
+      case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
         break;
-      case VirtualButtons.Confirm:
+      case VirtualButtons.Select:
         simulation.HandleConfirm();
         break;
       }
@@ -262,10 +279,10 @@ namespace PuzzlePathDimension {
         deathTrap.Draw(spriteBatch);
       }
 
-      // Draw the ball onto the canvas.
-      simulation.Ball.Draw(spriteBatch);
       // Draw the launcher onto the canvas.
       simulation.Launcher.Draw(spriteBatch);
+      // Draw the ball onto the canvas.
+      simulation.Ball.Draw(spriteBatch);
     }
 
     /// <summary>
@@ -282,7 +299,7 @@ namespace PuzzlePathDimension {
     /// Plays the launcher's sound effect.
     /// </summary>
     private void PlayLaunch() {
-      if (base.Prefs.PlaySounds) {
+      if (Profile.Prefs.PlaySounds) {
         SoundEffect launch = content.Load<SoundEffect>("Sound/launch");
         launch.Play();
       }
@@ -300,7 +317,7 @@ namespace PuzzlePathDimension {
     /// the PlatformTouched delegate.
     /// </summary>
     private void PlayBounce(bool breakable) {
-      if (base.Prefs.PlaySounds) {
+      if (base.Profile.Prefs.PlaySounds) {
         SoundEffect bounce = content.Load<SoundEffect>("Sound/bounce");
         bounce.Play();
       }
@@ -317,6 +334,13 @@ namespace PuzzlePathDimension {
       return simulation;
     }
 
+    /// <summary>
+    /// Called when the level is completed.
+    /// </summary>
+    /// <param name="clearData">A struct containing information about the user's performance.</param>
+    void OnLevelCompletion(LevelScoreData clearData) {
+      ScreenList.AddScreen(new CompletionScreen(TopLevel,  clearData, simulation));
+    }
 
     /// <summary>
     /// Event handler for when the user selects ok on the level select

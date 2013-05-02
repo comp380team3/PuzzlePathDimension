@@ -9,6 +9,39 @@ using FarseerPhysics.Dynamics.Contacts;
 
 namespace PuzzlePathDimension {
   /// <summary>
+  /// The LevelScoreData structure contains data about the user's performance on
+  /// a given attempt of the level.
+  /// </summary>
+  public struct LevelScoreData {
+    /// <summary>
+    /// The number of treasures collected in the level.
+    /// </summary>
+    public int TreasuresCollected { get; set; }
+    /// <summary>
+    /// The total number of treasures, both collected and uncollected, that
+    /// are in the level.
+    /// </summary>
+    public int TreasuresInLevel { get; set; }
+    /// <summary>
+    /// The number of balls that the user had remaining when the level was
+    /// completed.
+    /// </summary>
+    public int BallsLeft { get; set; }
+    /// <summary>
+    /// The time spent in the simulation phase of the level, in seconds.
+    /// </summary>
+    public int TimeSpent { get; set; }
+    /// <summary>
+    /// The par time of the level, in seconds.
+    /// </summary>
+    public int ParTime { get; set; }
+    /// <summary>
+    /// The score that the user achieved on that level.
+    /// </summary>
+    public int Score { get; set; }
+  }
+
+  /// <summary>
   /// The current state of the simulation.
   /// </summary>
   public enum SimulationState {
@@ -26,7 +59,7 @@ namespace PuzzlePathDimension {
     Failed
   }
 
-  class Simulation {
+  class Simulation : IRestartable {
     /// <summary>
     /// The width of the playing field, in pixels.
     /// </summary>
@@ -180,14 +213,25 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// The time when the simulation started.
+    /// The time that elapsed since the start of the simulation phase.
     /// </summary>
-    private DateTime _startTime;
+    private float _elapsedTime;
     /// <summary>
-    /// Gets the time when the simulation started.
+    /// Gets the time that elapsed since the start of the simulation phase.
     /// </summary>
-    public DateTime StartTime {
-      get { return _startTime; }
+    public float ElapsedTime {
+      get { return _elapsedTime; }
+    }
+
+    /// <summary>
+    /// The par time of the level.
+    /// </summary>
+    private int _parTime;
+    /// <summary>
+    /// Gets the par time of the level.
+    /// </summary>
+    public int ParTime {
+      get { return _parTime; }
     }
 
     /// <summary>
@@ -213,22 +257,28 @@ namespace PuzzlePathDimension {
     private Texture2D _ballTex;
 
     /// <summary>
-    /// This delegate is usually called when the simulation's state is changed.
+    /// This delegate is called when the user completes a level.
     /// </summary>
-    /// <param name="simulation">The simulation object to pass.</param>
-    public delegate void SimulationStateChange(Simulation simulation);
+    /// <param name="scoreData">A structure containing information about
+    /// the user's performance.</param>
+    public delegate void LevelCompleted(LevelScoreData scoreData);
+    /// <summary>
+    /// This delegate is called when the user fails a level.
+    /// </summary>
+    public delegate void LevelFailed();
     /// <summary>
     /// This delegate is called when something touches a wall.
     /// </summary>
     public delegate void WallTouch();
+
     /// <summary>
     /// Occurs when the level has been completed.
     /// </summary>
-    public event SimulationStateChange OnCompletion;
+    public event LevelCompleted OnCompletion;
     /// <summary>
     /// Occurs when the level has been failed.
     /// </summary>
-    public event SimulationStateChange OnFailure;
+    public event LevelFailed OnFailure;
     /// <summary>
     /// Occurs when a wall has been touched.
     /// </summary>
@@ -249,15 +299,17 @@ namespace PuzzlePathDimension {
       _goal = level.Goal;
       _launcher = level.Launcher;
       _moveablePlatforms = new List<Platform>();
-      // TODO: The attempts are hard-coded for now; this should be loaded from the level.
+
       // Initialize various stats.
       _startingAttempts = level.Attempts;
+      _parTime = level.ParTime;
       _attemptsLeft = _startingAttempts;
       _collectedTreasures = 0;
       _bounces = 0;
-
       //hard coded amount of additions.
       _additionsAllowed = 3;
+
+      Background = content.Load<Texture2D>("Texture/GameScreen");
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
@@ -266,7 +318,7 @@ namespace PuzzlePathDimension {
 
       // Allow the user to interact with the simulation, and start the timer.
       _currentState = SimulationState.Active;
-      _startTime = DateTime.Now;
+      _elapsedTime = 0f;
     }
 
     /// <summary>
@@ -388,6 +440,9 @@ namespace PuzzlePathDimension {
       // Let the World do stuff.
       _world.Step(time);
 
+      // Add to the timer.
+      _elapsedTime += time;
+
       // Checks if a launched ball has no velocity, which ends the current attempt.
       if (_ball.Velocity.Equals(Vector2.Zero) && !_launcher.Movable
         && _currentState == SimulationState.Active) {
@@ -425,19 +480,33 @@ namespace PuzzlePathDimension {
       _currentState = SimulationState.Completed;
       _ball.Stop(_world);
 
-      // Get the amount of time spent.
-      TimeSpan timeSpent = DateTime.Now - _startTime;
-
-      Console.WriteLine("You're winner!");
-      Console.WriteLine("Balls remaining: " + _attemptsLeft);
-      Console.WriteLine("Time spent (seconds): " + timeSpent.Seconds);
-      Console.WriteLine("Treasures obtained: " + _collectedTreasures + "/" + _treasures.Count);
-      Console.WriteLine("Ball bounces: " + _bounces);
-
       // Do anything that needs to be done when the level is completed.
       if (OnCompletion != null) {
-        OnCompletion(this);
+        OnCompletion(CreateScoreData());
       }
+    }
+
+    /// <summary>
+    /// Creates a LevelScoreData structure containing information about the
+    /// user's performance on a level.
+    /// </summary>
+    /// <returns>Information about the user's score.</returns>
+    private LevelScoreData CreateScoreData() {
+      LevelScoreData clearData = new LevelScoreData();
+
+      clearData.TreasuresCollected = _collectedTreasures;
+      clearData.TreasuresInLevel = _treasures.Count;
+      clearData.BallsLeft = _attemptsLeft;
+      clearData.TimeSpent = (int)_elapsedTime; // Cut off the fractional part
+      clearData.ParTime = _parTime;
+
+      // 500 per treasure, 150 per ball left, 100 for beating the par time, 42 for level completion
+      int treasureScore = 500 * _collectedTreasures;
+      int ballsLeftScore = 150 * _attemptsLeft;
+      int parTimeScore = clearData.TimeSpent <= clearData.ParTime ? 100 : 0;
+      clearData.Score = treasureScore + ballsLeftScore + parTimeScore + 42;
+
+      return clearData;
     }
 
     /// <summary>
@@ -468,7 +537,7 @@ namespace PuzzlePathDimension {
     public void Restart() {
       // Reset the number of attempts, the various statistics, and lets the user provide input again.
       _attemptsLeft = _startingAttempts;
-      _startTime = DateTime.Now;
+      _elapsedTime = 0f;
       _collectedTreasures = 0;
       _bounces = 0;
       _currentState = SimulationState.Active;
@@ -508,38 +577,11 @@ namespace PuzzlePathDimension {
 
         // Do anything that needs to be done when the level is failed.
         if (OnFailure != null) {
-          OnFailure(this);
+          OnFailure();
         }
       }
     }
 
-    public Boolean FindCollision() {
-      List<Rectangle> rects = new List<Rectangle>();
-      foreach (Platform platform in _platforms) {
-        rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
-      }
-      foreach (Platform platform in _moveablePlatforms) {
-        rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
-      }
-      for (int i = 0; i < rects.Count; i++) {
-        for (int j = i + 1; j < rects.Count; j++) {
-          if (rects[i].Intersects(rects[j]))
-            return true;
-        }
-      }
-
-      //not accurate but it works for now.
-      Rectangle circle;
-      foreach (DeathTrap deathTrap in DeathTraps) {
-        circle = new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height);
-        foreach (Rectangle rect in rects) {
-          if (circle.Intersects(rect)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
 
   }
 }

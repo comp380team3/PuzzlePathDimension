@@ -18,7 +18,8 @@ namespace PuzzlePathDimension {
   /// </summary>
   class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
-    Simulation simulation;
+
+    IRestartable restartable;
     ContentManager content;
 
     /// <summary>
@@ -29,7 +30,15 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-      this.simulation = simulation;
+      this.restartable = simulation;
+    }
+
+    public PauseMenuScreen(TopLevelModel topLevel, EditableLevel editableLevel)
+      : base(topLevel) {
+      base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
+      base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+      this.restartable = editableLevel;
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -54,7 +63,7 @@ namespace PuzzlePathDimension {
       levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
       items.Add(levelSelectMenuEntry);
 
-      MenuButton quitGameMenuEntry = new MenuButton("Quit Game", font);
+      MenuButton quitGameMenuEntry = new MenuButton("Back to Main Menu", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
       items.Add(quitGameMenuEntry);
     }
@@ -71,10 +80,10 @@ namespace PuzzlePathDimension {
       case VirtualButtons.Down:
         menuTemplate.SelectNext();
         break;
-      case VirtualButtons.Confirm:
+      case VirtualButtons.Select:
         menuTemplate.Confirm();
         break;
-      case VirtualButtons.Back:
+      case VirtualButtons.Delete:
         OnCancel();
         break;
       }
@@ -148,7 +157,7 @@ namespace PuzzlePathDimension {
     /// Event handler for when the user selects confirm when the Retry menu entry.
     /// </summary>
     void ConfirmRetryBoxAccepted() {
-      simulation.Restart();
+      restartable.Restart();
       ExitScreen();
     }
 

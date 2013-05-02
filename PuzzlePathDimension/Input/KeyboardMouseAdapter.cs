@@ -8,30 +8,34 @@ namespace PuzzlePathDimension {
   /// expected by the VirtualController.
   /// </summary>
   public class KeyboardMouseAdapter : IVirtualAdapter {
-    /// <summary>
-    /// Gets whether the keyboard and mouse are connected.
-    /// </summary>
-    public bool Connected {
-      // Assume that they always are connected.
-      get { return true; }
-    }
+    public VirtualControllerState GetState(GameTime gameTime) {
+      VirtualControllerState state = new VirtualControllerState();
 
-    public void Update(WritableVirtualController controller, GameTime gameTime) {
-      controller.SetButtonState(VirtualButtons.Back, IsKeyDown(Keys.Escape));
-      controller.SetButtonState(VirtualButtons.Confirm, IsKeyDown(Keys.Enter) || IsKeyDown(Keys.Space));
-      controller.SetButtonState(VirtualButtons.Pause, IsKeyDown(Keys.Pause) || IsKeyDown(Keys.Escape));
-      controller.SetButtonState(VirtualButtons.Up, IsKeyDown(Keys.Up));
-      controller.SetButtonState(VirtualButtons.Down, IsKeyDown(Keys.Down));
-      controller.SetButtonState(VirtualButtons.Left, IsKeyDown(Keys.Left));
-      controller.SetButtonState(VirtualButtons.Right, IsKeyDown(Keys.Right));
-      controller.SetButtonState(VirtualButtons.Context, Mouse.GetState().RightButton == ButtonState.Pressed);
+      KeyboardState kb = Keyboard.GetState();
+      MouseState mouse = Mouse.GetState();
 
-      controller.Point = new Point(Mouse.GetState().X, Mouse.GetState().Y);
-    }
+      state.IsConnected = true;
 
+      state.Point = new Point(mouse.X, mouse.Y);
 
-    private bool IsKeyDown(Keys key) {
-      return Keyboard.GetState().IsKeyDown(key);
+      state.Up = kb.IsKeyDown(Keys.Up);
+      state.Down = kb.IsKeyDown(Keys.Down);
+      state.Left = kb.IsKeyDown(Keys.Left);
+      state.Right = kb.IsKeyDown(Keys.Right);
+
+      state.Select = kb.IsKeyDown(Keys.Space) || mouse.LeftButton == ButtonState.Pressed;
+      state.Delete = kb.IsKeyDown(Keys.Back);
+      state.Context = kb.IsKeyDown(Keys.Enter);
+      state.Mode = kb.IsKeyDown(Keys.T) || mouse.RightButton == ButtonState.Pressed;
+      state.Pause = kb.IsKeyDown(Keys.Escape);
+      state.Debug = kb.IsKeyDown(Keys.LeftControl) && kb.IsKeyDown(Keys.OemTilde);
+
+      state.Easter =
+        kb.IsKeyDown(Keys.LeftShift) && kb.IsKeyDown(Keys.RightShift) &&
+        kb.IsKeyDown(Keys.LeftControl) && kb.IsKeyDown(Keys.RightControl) &&
+        kb.IsKeyDown(Keys.LeftAlt) && kb.IsKeyDown(Keys.RightAlt);
+
+      return state;
     }
   }
 }

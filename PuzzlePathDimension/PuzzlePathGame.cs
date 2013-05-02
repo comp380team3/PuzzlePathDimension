@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using System.Reactive;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
+
 namespace PuzzlePathDimension {
   /// <summary>
   /// This is the main type for your game
@@ -42,26 +46,49 @@ namespace PuzzlePathDimension {
     protected override void Initialize() {
       // Bootstrap the top-level context model
       TopLevel.Game = this;
-      TopLevel.Prefs = new UserPrefs();
+      TopLevel.Profile = UserProfile.Load("Content/profile.xml");
+
+      Scene scene = new Scene();
+      scene.AddScreen(new BackgroundScreen(TopLevel));
+      scene.AddScreen(new MainMenuScreen(TopLevel));
+      TopLevel.Scene = scene;
 
       WritableVirtualController controller = new WritableVirtualController();
       controller.InputType = InputType.KeyboardMouse;
       TopLevel.Controller = controller;
 
-      Scene scene = new Scene();
-      TopLevel.Scene = scene;
+      Subject<VirtualControllerState> input = new Subject<VirtualControllerState>();
+      input.Subscribe((state) => {
+        controller.IsConnected = state.IsConnected;
+        controller.Point = state.Point;
+
+        controller.SetButtonState(VirtualButtons.Up, state.Up);
+        controller.SetButtonState(VirtualButtons.Down, state.Down);
+        controller.SetButtonState(VirtualButtons.Left, state.Left);
+        controller.SetButtonState(VirtualButtons.Right, state.Right);
+        controller.SetButtonState(VirtualButtons.Select, state.Select);
+        controller.SetButtonState(VirtualButtons.Delete, state.Delete);
+        controller.SetButtonState(VirtualButtons.Context, state.Context);
+        controller.SetButtonState(VirtualButtons.Mode, state.Mode);
+        controller.SetButtonState(VirtualButtons.Pause, state.Pause);
+        controller.SetButtonState(VirtualButtons.Debug, state.Debug);
+        controller.SetButtonState(VirtualButtons.Easter, state.Easter);
+      });
+      TopLevel.Input = input;
+
 
       // Create the input component.
-      InputComponent input = new InputComponent(this, controller);
-      input.UpdateOrder = 0;
-      Components.Add(input);
+      InputComponent inputComponent = new InputComponent(this);
+      controller.InputTypeChanged += inputComponent.SetAdapter;
+      inputComponent.SetAdapter(controller.InputType);
+      inputComponent.InputStates.Subscribe(input);
+      inputComponent.UpdateOrder = 0;
+      Components.Add(inputComponent);
 
       // Create the graphical component.
-      RenderComponent menus = new RenderComponent(this, scene);
-      TopLevel.Scene.AddScreen(new BackgroundScreen(TopLevel));
-      TopLevel.Scene.AddScreen(new MainMenuScreen(TopLevel));
-      menus.UpdateOrder = 1;
-      Components.Add(menus);
+      RenderComponent renderComponent = new RenderComponent(this, scene);
+      renderComponent.UpdateOrder = 1;
+      Components.Add(renderComponent);
 
       // Initialize all sub-components.
       base.Initialize();
