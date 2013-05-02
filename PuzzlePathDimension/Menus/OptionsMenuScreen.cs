@@ -194,7 +194,7 @@ namespace PuzzlePathDimension {
         Controller.InputType = Profile.Prefs.ControllerType;
       }
 
-      Profile.Save("Content/profile.xml");
+      Profile.Save(Configuration.UserDataPath + "/profile.xml");
       ExitScreen();
     }
 

@@ -83,12 +83,14 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Models\EditableLevel.cs" />
     <Compile Include="Models\IRestartable.cs" />
     <Compile Include="Menus\CompletionScreen.cs" />
     <Compile Include="Menus\HowToPlayScreen5.cs" />
     <Compile Include="Menus\HowToPlayScreenContentList.cs" />
     <Compile Include="InputComponent.cs" />
+    <Compile Include="Models\LevelGroup.cs" />
     <Compile Include="Models\TopLevelModel.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="Models\UserProfile.cs" />
