@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Media;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.IO;
+using System.Xml;
 
 namespace PuzzlePathDimension {
   /// <summary>
