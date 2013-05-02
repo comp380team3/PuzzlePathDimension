@@ -42,10 +42,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Selection SelectedItem { get; set; }
 
+    private IList<Tuple<Rectangle, MenuButton>> ItemRects { get; set; }
+
 
     public DetailsTemplate() {
       Lines = new List<IMenuLine>();
       Buttons = new Dictionary<Selection, MenuButton>();
+      ItemRects = new List<Tuple<Rectangle, MenuButton>>();
       TransitionPosition = 1.0f;
     }
 
@@ -104,6 +107,8 @@ namespace PuzzlePathDimension {
       // Draw the buttons
       var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
 
+      ItemRects.Clear();
+
       cursor.X = origin.X / 3;
       cursor.Y = 550;
       foreach (Selection label in labels) {
@@ -116,7 +121,9 @@ namespace PuzzlePathDimension {
           // Modify the alpha to fade text out during transitions.
           buttonCursor = (new AlphaEffect(1.0f - TransitionPosition)).ApplyTo(buttonCursor);
 
-          button.Draw(spriteBatch, buttonCursor, label == SelectedItem, gameTime);
+          Rectangle box = button.Draw(spriteBatch, buttonCursor, label == SelectedItem, gameTime);
+
+          ItemRects.Add(Tuple.Create(box, button));
         }
 
         cursor.X += 2 * origin.X / 3;
@@ -182,6 +189,29 @@ namespace PuzzlePathDimension {
         return;
 
       button.OnSelectEntry();
+    }
+
+    public void SelectAtPoint(Point pointer) {
+      MenuButton button = null;
+
+      foreach (var entry in ItemRects) {
+        Rectangle rect = entry.Item1;
+        if (rect.Contains(pointer)) {
+          button = entry.Item2;
+          break;
+        }
+      }
+
+      if (button == null)
+        return;
+
+      var labels = new Selection[] { Selection.Left, Selection.Middle, Selection.Right };
+      foreach (Selection label in labels) {
+        MenuButton item;
+        Buttons.TryGetValue(label, out item);
+        if (button == item)
+          SelectedItem = label;
+      }
     }
   }
 }
