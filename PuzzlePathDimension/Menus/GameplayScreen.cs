@@ -255,10 +255,10 @@ namespace PuzzlePathDimension {
         deathTrap.Draw(spriteBatch);
       }
 
-      // Draw the ball onto the canvas.
-      simulation.Ball.Draw(spriteBatch);
       // Draw the launcher onto the canvas.
       simulation.Launcher.Draw(spriteBatch);
+      // Draw the ball onto the canvas.
+      simulation.Ball.Draw(spriteBatch);
     }
 
     /// <summary>
