@@ -69,11 +69,6 @@ namespace PuzzlePathDimension {
     TextLine secondWarningLine;
 
     /// <summary>
-    /// The user's preferences.
-    /// </summary>
-    UserPrefs prefs;
-
-    /// <summary>
     /// Constructor.
     /// </summary>
     public OptionsMenuScreen(TopLevelModel topLevel)
@@ -111,9 +106,8 @@ namespace PuzzlePathDimension {
       secondWarningLine = new TextLine("The change will not take effect.", font, Color.Black);
       
       // Get the current settings of the game.
-      prefs = base.Prefs;
-      sound = prefs.PlaySounds;
-      currentControllerType = (int)prefs.ControllerType;
+      sound = Profile.Prefs.PlaySounds;
+      currentControllerType = (int)Profile.Prefs.ControllerType;
       currentControllerConnected = true; // Well, it has to be to even open this menu (for now).
 
       SetMenuEntryText();
@@ -188,14 +182,15 @@ namespace PuzzlePathDimension {
 
     void OnApply() {
       // Apply any changes here.
-      prefs.PlaySounds = sound;
+      Profile.Prefs.PlaySounds = sound;
 
       // Make sure the user doesn't accidentally make the game unplayable.
       if (currentControllerConnected) {
-        prefs.ControllerType = (InputType)currentControllerType;
-        Controller.InputType = prefs.ControllerType;
+        Profile.Prefs.ControllerType = (InputType)currentControllerType;
+        Controller.InputType = Profile.Prefs.ControllerType;
       }
 
+      Profile.Save("Content/profile.xml");
       ExitScreen();
     }
 

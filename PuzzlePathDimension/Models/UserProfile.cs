@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace PuzzlePathDimension {
@@ -27,5 +28,21 @@ namespace PuzzlePathDimension {
 
     [XmlElement("Preferences")]
     public UserPrefs Prefs { get; set; }
+
+    public static UserProfile Load(string filename) {
+      XmlSerializer serializer = new XmlSerializer(typeof(UserProfile));
+
+      using (XmlReader reader = new XmlTextReader(filename)) {
+        return (UserProfile)serializer.Deserialize(reader);
+      }
+    }
+
+    public void Save(string filename) {
+      XmlSerializer serializer = new XmlSerializer(typeof(UserProfile));
+
+      using (XmlWriter writer = new XmlTextWriter("Content/profile.xml", System.Text.Encoding.UTF8)) {
+        serializer.Serialize(writer, this);
+      }
+    }
   }
 }

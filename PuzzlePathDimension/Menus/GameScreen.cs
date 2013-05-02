@@ -86,11 +86,8 @@ namespace PuzzlePathDimension {
       get { return TopLevel.Scene; }
     }
 
-    /// <summary>
-    /// Gets the user's set of preferences.
-    /// </summary>
-    public UserPrefs Prefs {
-      get { return TopLevel.Prefs; }
+    public UserProfile Profile {
+      get { return TopLevel.Profile; }
     }
 
     /// <summary>
