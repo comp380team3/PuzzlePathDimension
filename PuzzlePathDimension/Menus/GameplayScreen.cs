@@ -37,10 +37,11 @@ namespace PuzzlePathDimension {
     }
 
 
-    public GameplayScreen(TopLevelModel topLevel, Level level)
+    public GameplayScreen(TopLevelModel topLevel, Level level, string levelName)
       :base(topLevel) {
 
-        this.level = level;
+        LevelName = levelName;
+      this.level = level;
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
     }
@@ -205,7 +206,7 @@ namespace PuzzlePathDimension {
         break;
 
       case VirtualButtons.Pause:
-        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, simulation, LevelName));
         break;
       case VirtualButtons.Select:
         simulation.HandleConfirm();

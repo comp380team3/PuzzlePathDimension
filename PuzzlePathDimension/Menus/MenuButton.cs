@@ -34,6 +34,8 @@ namespace PuzzlePathDimension {
 
     public Color Color { get; set; }
 
+    public Color OriginalColor { get; set; }
+
     /// <summary>
     /// Event raised when the menu entry is selected.
     /// </summary>
@@ -55,6 +57,7 @@ namespace PuzzlePathDimension {
     public MenuButton(string text, SpriteFont font) {
       Text = text;
       Font = font;
+      OriginalColor = Color.White;
     }
 
 

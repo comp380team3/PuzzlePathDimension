@@ -152,10 +152,10 @@ namespace PuzzlePathDimension {
       switch (button) {
       case VirtualButtons.Context:
         if (!editableLevel.FindCollision())
-          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel()));
+          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel(), LevelName));
         break;
       case VirtualButtons.Pause:
-        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
         break;
       }
     }

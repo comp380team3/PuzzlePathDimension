@@ -21,24 +21,28 @@ namespace PuzzlePathDimension {
 
     IRestartable restartable;
     ContentManager content;
+    bool EditorMode { get; set; }
+    string LevelName { get; set; }
 
     /// <summary>
     /// Constructor.
     /// </summary>
-    public PauseMenuScreen(TopLevelModel topLevel, Simulation simulation)
+    public PauseMenuScreen(TopLevelModel topLevel, Simulation simulation, string levelName)
       : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
-
+      EditorMode = false;
       this.restartable = simulation;
+      LevelName = levelName;
     }
 
-    public PauseMenuScreen(TopLevelModel topLevel, EditableLevel editableLevel)
+    public PauseMenuScreen(TopLevelModel topLevel, EditableLevel editableLevel, string levelName)
       : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
-
+      EditorMode = true;
       this.restartable = editableLevel;
+      LevelName = levelName;
     }
 
     public override void LoadContent(ContentManager shared) {
@@ -55,13 +59,23 @@ namespace PuzzlePathDimension {
       resumeGameMenuEntry.Selected += OnCancel;
       items.Add(resumeGameMenuEntry);
 
-      MenuButton retryGameMenuEntry = new MenuButton("Retry Level", font);
-      retryGameMenuEntry.Selected += RetryGameMenuEntrySelected;
-      items.Add(retryGameMenuEntry);
+      MenuButton restartLevelEditor = new MenuButton("Restart Level Editor", font);
+      restartLevelEditor.Selected += RestartLevelEditorMenuEntrySelected;
+      items.Add(restartLevelEditor);
+
+      MenuButton restartLevelMenuEntry = new MenuButton("Restart Level", font);
+      restartLevelMenuEntry.Selected += RestartLevelMenuEntrySelected;
+      if (!EditorMode) {
+        items.Add(restartLevelMenuEntry);
+      }
 
       MenuButton levelSelectMenuEntry = new MenuButton("Level Select", font);
       levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
       items.Add(levelSelectMenuEntry);
+
+      MenuButton controlsMenuEntry = new MenuButton("Controls", font);
+      controlsMenuEntry.Selected += ControlsMenuEntrySelected;
+      items.Add(controlsMenuEntry);
 
       MenuButton quitGameMenuEntry = new MenuButton("Back to Main Menu", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
@@ -113,18 +127,30 @@ namespace PuzzlePathDimension {
       ExitScreen();
     }
 
+    void RestartLevelEditorMenuEntrySelected() {
+      const string message = "Are you sure you want to restart the editor?";
+
+      MessageBoxScreen confirmRestartLevelEditorMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmRestartLevelEditorMessageBox.RightButton += ConfirmRestartLevelEditorBoxAccepted;
+      ScreenList.AddScreen(confirmRestartLevelEditorMessageBox);
+    }
+
     /// <summary>
     /// Event handler for when the Retry Game menu entry is selected.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void RetryGameMenuEntrySelected() {
+    void RestartLevelMenuEntrySelected() {
       // Put what happens when the person clicks retry
       const string message = "Are you sure you want to restart this level?";
 
-      MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(TopLevel, message);
-      confirmRetryMessageBox.RightButton += ConfirmRetryBoxAccepted;
-      ScreenList.AddScreen(confirmRetryMessageBox);
+      MessageBoxScreen confirmRestartLevelMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmRestartLevelMessageBox.RightButton += ConfirmRestartLevelBoxAccepted;
+      ScreenList.AddScreen(confirmRestartLevelMessageBox);
+    }
+
+    void ControlsMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreen3(TopLevel));
     }
 
     /// <summary>
@@ -160,9 +186,13 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Event handler for when the user selects confirm when the Retry menu entry.
     /// </summary>
-    void ConfirmRetryBoxAccepted() {
+    void ConfirmRestartLevelBoxAccepted() {
       restartable.Restart();
       ExitScreen();
+    }
+
+    void ConfirmRestartLevelEditorBoxAccepted() {
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
     }
 
     /// <summary>

@@ -33,7 +33,6 @@ namespace PuzzlePathDimension {
 
     private IList<Tuple<Rectangle, MenuButton>> ItemRects { get; set; }
 
-
     public MenuTemplate() {
       Items = new List<MenuButton>();
       ItemRects = new List<Tuple<Rectangle, MenuButton>>();
@@ -47,8 +46,10 @@ namespace PuzzlePathDimension {
     public void Update(GameTime gameTime) {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
+        Color originalColor = button.OriginalColor;
+        
+        button.Color = (SelectedItem == i) ? Color.Yellow : button.OriginalColor;
 
-        button.Color = (SelectedItem == i) ? Color.Yellow : Color.White;
         button.Update(SelectedItem == i, gameTime);
       }
     }
