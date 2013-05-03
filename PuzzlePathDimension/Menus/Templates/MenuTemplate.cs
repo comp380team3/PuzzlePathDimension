@@ -48,6 +48,7 @@ namespace PuzzlePathDimension {
       for (var i = 0; i < Items.Count; ++i) {
         MenuButton button = Items[i];
 
+        button.Color = (SelectedItem == i) ? Color.Yellow : Color.White;
         button.Update(SelectedItem == i, gameTime);
       }
     }
