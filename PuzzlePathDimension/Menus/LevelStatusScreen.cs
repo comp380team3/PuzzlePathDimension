@@ -76,12 +76,8 @@ namespace PuzzlePathDimension {
 
       string minutes;
       string seconds;
-
-      if (numberOfMinutes < 10) {
-        minutes = "0" + numberOfMinutes;
-      } else {
-        minutes = Convert.ToString(numberOfMinutes);
-      }
+      
+      minutes = Convert.ToString(numberOfMinutes);
 
       if (numberOfSeconds < 10) {
         seconds = "0" + numberOfSeconds;

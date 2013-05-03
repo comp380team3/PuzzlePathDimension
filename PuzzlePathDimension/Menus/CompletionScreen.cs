@@ -39,6 +39,20 @@ namespace PuzzlePathDimension {
       int treasureScore = 500 * levelData.TreasuresCollected;
       int ballsLeftScore = 150 * levelData.BallsLeft;
       string fullPath = Configuration.UserDataPath + Path.DirectorySeparatorChar + "levellist.xml";
+      int timeSpentInSeconds = levelData.TimeSpent % 60;
+      int timeSpentInMinutes = levelData.TimeSpent / 60;
+      int parTimeInSeconds = levelData.ParTime % 60;
+      int parTimeInMinutes = levelData.ParTime / 60;
+      string timeSpentSeconds = Convert.ToString(timeSpentInSeconds);
+      string parTimeSeconds = Convert.ToString(parTimeInSeconds);
+
+      if (timeSpentInSeconds < 10) {
+        timeSpentSeconds = "0" + timeSpentInSeconds;
+      }
+
+      if (parTimeInSeconds < 10) {
+        parTimeSeconds = "0" + parTimeInSeconds;
+      }
 
       detailsTemplate = new DetailsTemplate();
       Console.WriteLine(fullPath);
@@ -52,8 +66,8 @@ namespace PuzzlePathDimension {
       description.Add(new TextLine("Treasures obtained: " + levelData.TreasuresCollected + "/" + levelData.TreasuresInLevel +
       " (+" + treasureScore + ")", font, Color.White));
       description.Add(new TextLine("Balls remaining: " + levelData.BallsLeft + " (+" + ballsLeftScore + ")", font, Color.White));
-      description.Add(new TextLine("Time spent (seconds): " + levelData.TimeSpent, font, Color.White));
-      description.Add(new TextLine("Par time (seconds): " + levelData.ParTime, font, Color.White));
+      description.Add(new TextLine("Time spent: " + timeSpentInMinutes + ":" + timeSpentSeconds, font, Color.White));
+      description.Add(new TextLine("Par time: " + parTimeInMinutes + ":" + parTimeSeconds, font, Color.White));
       if (levelData.TimeSpent <= levelData.ParTime) {
         description.Add(new TextLine("Par time met! (+100)", font, Color.White));
       }
