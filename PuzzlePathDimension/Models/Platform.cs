@@ -180,6 +180,13 @@ namespace PuzzlePathDimension {
       _size = size;
       _center = CalculateCenter();
 
+      if (position.X < 0 || position.Y < 0) {
+        throw new ArgumentOutOfRangeException("The position should not be negative.");
+      }
+      if (size.X < 1 || size.Y < 1) {
+        throw new ArgumentOutOfRangeException("Both compoments of the size vector need to be at least 1.");
+      }
+
       // Set the platform to be visible.
       _texture = texture;
       _visible = true;
@@ -189,8 +196,6 @@ namespace PuzzlePathDimension {
 
       // Leave the Body object uninitialized until a World object comes by to initialize it.
       _body = null;
-
-      // originalPosition = new Vector2(position.X, position.Y);
     }
 
     /// <summary>
