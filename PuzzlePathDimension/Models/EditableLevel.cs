@@ -95,6 +95,8 @@ namespace PuzzlePathDimension {
     private int _attempts;
     public int Attempts { get { return _attempts; } }
 
+    private int _parTime;
+    public int ParTime { get { return _parTime; } }
 
     /// <summary>
     /// Gets or sets the background of the playing field.
@@ -128,11 +130,12 @@ namespace PuzzlePathDimension {
       _moveablePlatforms = new List<Platform>();
 
       _attempts = level.Attempts;
+      _parTime = level.ParTime;
       
       //hard coded amount of additions.
       _additionsAllowed = 3;
 
-      typesAllowed = "RBHV";
+      typesAllowed = level.AllowedPlatTypes;
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");

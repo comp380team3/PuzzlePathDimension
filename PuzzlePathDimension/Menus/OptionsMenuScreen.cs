@@ -130,6 +130,10 @@ namespace PuzzlePathDimension {
       }
     }
 
+    protected override void OnPointChanged(Point point) {
+      menuTemplate.SelectAtPoint(point);
+    }
+
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -190,7 +194,7 @@ namespace PuzzlePathDimension {
         Controller.InputType = Profile.Prefs.ControllerType;
       }
 
-      Profile.Save("Content/profile.xml");
+      Profile.Save(Configuration.UserDataPath + "/profile.xml");
       ExitScreen();
     }
 

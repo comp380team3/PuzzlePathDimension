@@ -149,6 +149,10 @@ namespace PuzzlePathDimension {
       }
     }
 
+    protected override void OnPointChanged(Point point) {
+      messageBoxTemplate.SelectAtPoint(point);
+    }
+
     /*void ConfirmMenuEntrySelected() {
       if (LeftButton != null)
         LeftButton();

@@ -59,9 +59,6 @@ namespace PuzzlePathDimension {
     /// </summary>
     private Boolean _cantAdd;
 
-    //Mouse states to determine clicks.
-    private MouseState _previousMouseState;
-    private MouseState _currentMouseState;
     /// <summary>
     /// The new platform to be sent to the emuator
     /// </summary>
@@ -95,6 +92,7 @@ namespace PuzzlePathDimension {
       _cantAdd = limitReached;
       //initializa the position of regular platforms
       _platforms = new List<Rectangle>();
+
       if (level.TypesAllowed.Contains("R")) {
         if (level.TypesAllowed.Contains("H")) {
           _platforms.Add(new Rectangle(100, 130, 100, 25));
@@ -121,7 +119,6 @@ namespace PuzzlePathDimension {
           _breakablePlatforms.Add(new Rectangle(675, 210, 25, 200));
         }
       }
-      _previousMouseState = _currentMouseState = Mouse.GetState();
 
       base.IsPopup = true;
       base.TransitionOnTime = TimeSpan.FromSeconds(0.2);

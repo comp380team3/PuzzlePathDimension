@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimension", "Puzz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathDimensionContent", "PuzzlePathDimensionContent\PuzzlePathDimensionContent.contentproj", "{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics XNA", "Farseer Physics Engine 3.3 XNA\Farseer Physics XNA.csproj", "{0A850700-1ABB-4288-A391-6726B90EBEB9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuzzlePathUnitTests", "PuzzlePathUnitTests\PuzzlePathUnitTests.csproj", "{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{B93B3C4A-AA51-46B1-9989-FB60BA6EB812}"
@@ -37,14 +35,6 @@ Global
 		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Release|x86.ActiveCfg = Release|x86
 		{657F40EF-1F09-4A28-ADD4-41C5EDBF0212}.Release|x86.Build.0 = Release|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Debug|x86.ActiveCfg = Debug|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Debug|x86.Build.0 = Debug|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Release|Any CPU.ActiveCfg = Release|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Release|x86.ActiveCfg = Release|x86
-		{0A850700-1ABB-4288-A391-6726B90EBEB9}.Release|x86.Build.0 = Release|x86
 		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF3D90D3-0904-4A8B-8B83-CAAC6D32196B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

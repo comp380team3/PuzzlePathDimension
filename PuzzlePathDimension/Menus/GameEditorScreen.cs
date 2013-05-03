@@ -149,7 +149,6 @@ namespace PuzzlePathDimension {
 
 
     protected override void OnButtonReleased(VirtualButtons button) {
-      
       switch (button) {
       case VirtualButtons.Context:
         if (!editableLevel.FindCollision())
@@ -196,6 +195,7 @@ namespace PuzzlePathDimension {
       level.Treasures = editableLevel.Treasures;
       level.Launcher = editableLevel.Launcher;
       level.Attempts = editableLevel.Attempts;
+      level.ParTime = editableLevel.ParTime;
       foreach (Platform platform in editableLevel.Platforms) {
         level.Platforms.Add(platform);
       }
