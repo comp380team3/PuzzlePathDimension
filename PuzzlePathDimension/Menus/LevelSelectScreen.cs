@@ -142,38 +142,8 @@ namespace PuzzlePathDimension {
           info.Completed = false;
           info.LevelScore = 0;
         }
-
         levelSet.Add(info);
       }
-
-      /*XmlDocument doc;
-      XmlElement node;
-      Levels = Directory.GetFiles(Configuration.UserDataPath + "/Level");
-      levelSet = new List<LevelInfo>();
-      levelInfo = new LevelInfo();
-      CurrentLevel = 0;
-
-      // go through all the levels in the file
-      foreach (string name in Levels) {
-        doc = new XmlDocument();
-        doc.Load(name);
-
-        levelInfo.FileName = name;
-
-        node = (XmlElement)doc.GetElementsByTagName("level")[0];
-        levelInfo.LevelName = Convert.ToString(node.Attributes["name"].Value);
-
-        node = (XmlElement)doc.GetElementsByTagName("score")[0];
-        levelInfo.LevelScore = Convert.ToInt16(node.Attributes["value"].Value);
-
-        node = (XmlElement)doc.GetElementsByTagName("completed")[0];
-        levelInfo.Completed = Convert.ToBoolean(node.Attributes["value"].Value);
-
-        node = (XmlElement)doc.GetElementsByTagName("completionTime")[0];
-        levelInfo.CompletionTime = Convert.ToString(node.Attributes["time"].Value);
-
-        levelSet.Add(levelInfo);
-      }*/
 
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -206,11 +176,18 @@ namespace PuzzlePathDimension {
 
     private void UpdateCurrentPage() {
       items.Clear();
+      int previousLevel = 0;
       for (int count = 0; CurrentLevel < levelSet.Count && count < numberOfLevelsPerPage; count++) {
         levelInfo = levelSet.ElementAt<LevelInfo>(CurrentLevel);
         aLevelMenuEntry = new MenuButton(levelInfo.LevelName, font);
+        previousLevel = CurrentLevel - 1;
+        if (previousLevel < 0) {
+          previousLevel = 0;
+        }
+        if (levelSet[previousLevel].Completed) {
+          aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
+        }
         items.Add(aLevelMenuEntry);
-        aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
         CurrentLevel = CurrentLevel + 1;
         setOfLevels = count + 1;
       }

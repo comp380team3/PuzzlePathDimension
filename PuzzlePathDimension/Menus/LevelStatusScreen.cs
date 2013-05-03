@@ -71,6 +71,23 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       Font = shared.Load<SpriteFont>("Font/menufont");
+      int numberOfMinutes = CompletionTime / 60;
+      int numberOfSeconds = CompletionTime % 60;
+
+      string minutes;
+      string seconds;
+
+      if (numberOfMinutes < 10) {
+        minutes = "0" + numberOfMinutes;
+      } else {
+        minutes = Convert.ToString(numberOfMinutes);
+      }
+
+      if (numberOfSeconds < 10) {
+        seconds = "0" + numberOfSeconds;
+      } else {
+        seconds = Convert.ToString(numberOfSeconds);
+      }
 
       detailsTemplate.Title = new TextLine(LevelName, Font, new Color(192, 192, 192));
 
@@ -89,7 +106,7 @@ namespace PuzzlePathDimension {
 
       stats.Add(new TextLine("Status: " + (Completed ? "Completed" : "Incomplete"), Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
-      stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White));
+      stats.Add(new TextLine("Completion Time: " + minutes + ":" + seconds, Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
