@@ -135,6 +135,10 @@ namespace PuzzlePathDimension {
 
       // TODO: add texture dimensions check
 
+      if (position.X < 0 || position.Y < 0) {
+        throw new ArgumentOutOfRangeException("The position should not be negative.");
+      }
+
       // Set the launcher's position.
       _position = position;
 
@@ -151,11 +155,6 @@ namespace PuzzlePathDimension {
 
       // Position the ball.
       UpdateBallPos();
-    }
-
-    [Obsolete("This doesn't do anything anymore. Use the constructor! -Jorenz", true)]
-    public void Initialize(Texture2D texture, Vector2 position) {
-
     }
 
     /// <summary>
