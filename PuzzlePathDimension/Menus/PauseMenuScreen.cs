@@ -89,6 +89,13 @@ namespace PuzzlePathDimension {
       resumeGameMenuEntry.Selected += OnCancel;
       items.Add(resumeGameMenuEntry);
 
+      // Only allow the player to restart the level in simulation mode.
+      MenuButton restartLevelMenuEntry = new MenuButton("Restart Level", font);
+      restartLevelMenuEntry.Selected += RestartLevelMenuEntrySelected;
+      if (!EditorMode) {
+        items.Add(restartLevelMenuEntry);
+      }
+
       MenuButton restartLevelEditor;
       if (EditorMode) {
         restartLevelEditor = new MenuButton("Restart Level Editor", font);
@@ -98,20 +105,13 @@ namespace PuzzlePathDimension {
       restartLevelEditor.Selected += RestartLevelEditorMenuEntrySelected;
       items.Add(restartLevelEditor);
 
-      // Only allow the player to restart the level in simulation mode.
-      MenuButton restartLevelMenuEntry = new MenuButton("Restart Level", font);
-      restartLevelMenuEntry.Selected += RestartLevelMenuEntrySelected;
-      if (!EditorMode) {
-        items.Add(restartLevelMenuEntry);
-      }
-
-      MenuButton levelSelectMenuEntry = new MenuButton("Level Select", font);
-      levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
-      items.Add(levelSelectMenuEntry);
-
       MenuButton howToPlayMenuEntry = new MenuButton("How to Play", font);
       howToPlayMenuEntry.Selected += HowToPlayMenuEntrySelected;
       items.Add(howToPlayMenuEntry);
+
+      MenuButton levelSelectMenuEntry = new MenuButton("Back to Level Select", font);
+      levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
+      items.Add(levelSelectMenuEntry);
 
       MenuButton quitGameMenuEntry = new MenuButton("Back to Main Menu", font);
       quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
@@ -191,7 +191,7 @@ namespace PuzzlePathDimension {
     void RestartLevelEditorMenuEntrySelected() {
       string message = "Are you sure you want to restart the editor?";
       if (!EditorMode) {
-        message = "Are you sure you want to back to the editor?";
+        message = "Are you sure you want to go to the editor?";
       }
 
       MessageBoxScreen confirmRestartLevelEditorMessageBox = new MessageBoxScreen(TopLevel, message);

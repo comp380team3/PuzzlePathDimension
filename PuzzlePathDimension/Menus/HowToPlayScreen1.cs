@@ -25,7 +25,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     string[] gameDescription = new string[] {
       "The objective of this game is to find a path for a ball to reach ",
-      "the goal. You have to launch the ball from a launcher, utilize ",
+      "the goal. The player has to launch the ball from a launcher, utilize ",
       "the map's environment, and reach the goal in order to complete a ",
       "level. Platforms are your main tool to help you complete a level. ",
       "You can bounce the ball off the platforms to change the direction ",

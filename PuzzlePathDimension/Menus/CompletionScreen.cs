@@ -219,6 +219,7 @@ namespace PuzzlePathDimension {
     /// <param name="e"></param>
     void RetryMenuEntrySelected() {
       simulation.Restart();
+      ExitScreen();
     }
 
     /// <summary>
@@ -241,6 +242,10 @@ namespace PuzzlePathDimension {
         if (status.Score < levelData.Score) {
           status.Score = levelData.Score;
           status.FastestTimeInSeconds = levelData.TimeSpent;
+        } else if (status.Score == levelData.Score) {
+          if (status.FastestTimeInSeconds < status.FastestTimeInSeconds) {
+            status.FastestTimeInSeconds = levelData.TimeSpent;
+          }
         }
 
       } else {
