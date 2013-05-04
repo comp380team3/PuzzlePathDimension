@@ -29,11 +29,11 @@ namespace PuzzlePathDimension {
       "is to allow the player to create new paths in which the ball could ",
       "travel. The player is given a toolbox in which they could select from ",
       "a variety of platforms that would be added to the level. The player ",
-      "will be able to move the platforms around and placed them in a ",
+      "will be able to move the platforms around and place them in a ",
       "desired position within the boundaries of the level. This game ",
       "contains one custom level. The level is initialy blank and the player ",
-      "can create and store there own custom level. The player will be given ",
-      "a toolbox with more game elements such a treasures and deathtraps. "
+      "can create and store their own custom level. The player will be given ",
+      "a toolbox with more game elements such as treasures and deathtraps. "
     };
 
     /// <summary>

@@ -147,7 +147,10 @@ namespace PuzzlePathDimension {
       }
     }
 
-
+    /// <summary>
+    /// Handle user input.
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Context:

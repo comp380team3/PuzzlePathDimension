@@ -40,8 +40,14 @@ namespace PuzzlePathDimension {
     /// </summary>
     public int CompletionTime { get; private set; }
 
+    /// <summary>
+    /// Return the levels xml file name.
+    /// </summary>
     public string LevelFileName { get; private set; }
 
+    /// <summary>
+    /// The font the text will be displayed in.
+    /// </summary>
     private SpriteFont Font { get; set; }
 
 
@@ -107,6 +113,10 @@ namespace PuzzlePathDimension {
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
+    /// <summary>
+    /// Handle user input from the keyboard or xbox controller.
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Left:
@@ -124,6 +134,10 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Handle mouse input.
+    /// </summary>
+    /// <param name="point"></param>
     protected override void OnPointChanged(Point point) {
       detailsTemplate.SelectAtPoint(point);
     }
@@ -162,6 +176,9 @@ namespace PuzzlePathDimension {
       LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelFileName));
     }
 
+    /// <summary>
+    /// Event handler for when the Back menu entry is selected.
+    /// </summary>
     protected void OnCancel() {
       ExitScreen();
     }
