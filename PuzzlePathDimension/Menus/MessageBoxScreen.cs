@@ -144,6 +144,7 @@ namespace PuzzlePathDimension {
         messageBoxTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         messageBoxTemplate.Confirm();
         break;
       }

@@ -15,10 +15,10 @@ namespace PuzzlePathDimension {
       // TODO: Implement a virtualized pointer.
       state.Point = point;
 
-      state.Up = pad.IsButtonDown(Buttons.DPadUp);
-      state.Down = pad.IsButtonDown(Buttons.DPadDown);
-      state.Left = pad.IsButtonDown(Buttons.DPadLeft);
-      state.Right = pad.IsButtonDown(Buttons.DPadRight);
+      state.Up = pad.IsButtonDown(Buttons.DPadUp) || pad.IsButtonDown(Buttons.LeftThumbstickUp);
+      state.Down = pad.IsButtonDown(Buttons.DPadDown) || pad.IsButtonDown(Buttons.LeftThumbstickDown);
+      state.Left = pad.IsButtonDown(Buttons.DPadLeft) || pad.IsButtonDown(Buttons.LeftThumbstickLeft);
+      state.Right = pad.IsButtonDown(Buttons.DPadRight) || pad.IsButtonDown(Buttons.LeftThumbstickRight);
 
       state.Select = pad.IsButtonDown(Buttons.A);
       state.Delete = pad.IsButtonDown(Buttons.B);
