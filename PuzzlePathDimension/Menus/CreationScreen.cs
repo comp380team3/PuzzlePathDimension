@@ -155,7 +155,7 @@ namespace PuzzlePathDimension {
           LevelSaving.SaveLevel(editableLevel);
         break;
       case VirtualButtons.Pause:
-        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
         break;
       }
     }

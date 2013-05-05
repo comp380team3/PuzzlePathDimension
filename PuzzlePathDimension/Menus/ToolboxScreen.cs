@@ -192,17 +192,17 @@ namespace PuzzlePathDimension {
             }
           }
         }
+        if (editableLevel.Custom) {
+          if (Intersects(deathTrap, pointer)) {
+            editableLevel.DeathTraps.Add(deathTrap);
+            ExitScreen();
+          }
 
-        if (Intersects(deathTrap, pointer)) {
-          editableLevel.DeathTraps.Add(deathTrap);
-          ExitScreen();
+          if (Intersects(treasure, pointer)) {
+            editableLevel.Treasures.Add(treasure);
+            ExitScreen();
+          }
         }
-
-        if (Intersects(treasure, pointer)) {
-          editableLevel.Treasures.Add(treasure);
-          ExitScreen();
-        }
-
       }
 
       if (_cantAdd && Controller.IsButtonPressed(VirtualButtons.Select)) {
