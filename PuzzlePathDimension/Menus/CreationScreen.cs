@@ -308,6 +308,9 @@ namespace PuzzlePathDimension {
         if (treasure.IsSelected(mousePosition))
           return treasure;
       }
+      if (editableLevel.Launcher.IsSelected(mousePosition)) {
+        return editableLevel.Launcher;
+      }
       return null;
     }
 
