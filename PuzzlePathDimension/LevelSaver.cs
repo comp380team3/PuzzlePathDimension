@@ -52,18 +52,6 @@ namespace PuzzlePathDimension {
         writer.WriteEndElement();
       }
 
-      writer.WriteStartElement("score");
-      writer.WriteAttributeString("value", "0");
-      writer.WriteEndElement();
-
-      writer.WriteStartElement("completed");
-      writer.WriteAttributeString("value", "false");
-      writer.WriteEndElement();
-
-      writer.WriteStartElement("completionTime");
-      writer.WriteAttributeString("Time", "0:00");
-      writer.WriteEndElement();
-
       writer.WriteEndDocument();
       writer.Flush();
       writer.Close();
