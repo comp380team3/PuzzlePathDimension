@@ -174,7 +174,7 @@ namespace PuzzlePathDimension {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void StartMenuEntrySelected() {
-      LoadingScreen.Load(TopLevel, true, new CreationScreen(TopLevel, LevelFileName));
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelFileName));
     }
 
     /// <summary>
