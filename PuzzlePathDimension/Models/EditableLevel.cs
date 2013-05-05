@@ -164,6 +164,9 @@ namespace PuzzlePathDimension {
       //hard coded amount of additions.
       _additionsAllowed = 3;
 
+
+      Background = content.Load<Texture2D>("Texture/GameScreen");
+
       typesAllowed = level.AllowedPlatTypes;
 
       // Load the ball's texture and store it.

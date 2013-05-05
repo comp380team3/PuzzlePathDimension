@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
 
 namespace PuzzlePathDimension {
-  class CreationScreen:GameScreen {
-        ContentManager content;
+  class CreationScreen : GameScreen {
+    ContentManager content;
     EditableLevel editableLevel;
     MouseState previousMouseState;
     MouseState currentMouseState;
@@ -48,12 +48,13 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
-      editableLevel = new EditableLevel(content);
-      editableLevel.Goal = new Goal(content.Load<Texture2D>("Texture/goal"), new Vector2(300, 300));
-      Texture2D[] launcherTextures = {content.Load<Texture2D>("Texture/launcher"),
-                                      content.Load<Texture2D>("Texture/LauncherBase"),
-                                      content.Load<Texture2D>("Texture/power_meter")};
-      editableLevel.Launcher = new Launcher(launcherTextures, new Vector2(690, 580));
+      editableLevel = new EditableLevel(LevelLoader.Load("Content/Level/Custom.xml", shared), shared);
+      //editableLevel = new EditableLevel(content);
+      //editableLevel.Goal = new Goal(content.Load<Texture2D>("Texture/goal"), new Vector2(300, 300));
+      //Texture2D[] launcherTextures = {content.Load<Texture2D>("Texture/launcher"),
+      //                                content.Load<Texture2D>("Texture/LauncherBase"),
+      //                                content.Load<Texture2D>("Texture/power_meter")};
+      //editableLevel.Launcher = new Launcher(launcherTextures, new Vector2(690, 580));
       foundCollision = false;
     }
 
@@ -84,7 +85,7 @@ namespace PuzzlePathDimension {
 
 
     }
-    
+
     /// <summary>
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
@@ -93,7 +94,7 @@ namespace PuzzlePathDimension {
 
       // there was a bug where if you exit the toolbox without
       // selecting a platform the toolbox was unreachable.
-        //toolboxLaunched = false;
+      //toolboxLaunched = false;
 
       //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
       if (Controller.IsButtonPressed(VirtualButtons.Mode)) {
@@ -126,8 +127,34 @@ namespace PuzzlePathDimension {
 
       if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
                       currentMouseState.LeftButton == ButtonState.Pressed) {
-        target = FindTarget(currentMouseState);
-        editableLevel.MoveablePlatforms.Remove((Platform)target);
+        delete(currentMouseState);
+      }
+    }
+
+    public void delete(MouseState mousePosition) {
+      foreach (Platform platform in editableLevel.Platforms) {
+        if (platform.IsSelected(mousePosition)) {
+          editableLevel.Platforms.Remove(platform);
+          break;
+        }
+      }
+      foreach (Platform platform in editableLevel.MoveablePlatforms) {
+        if (platform.IsSelected(mousePosition)) {
+          editableLevel.MoveablePlatforms.Remove(platform);
+          break;
+        }
+      }
+      foreach (DeathTrap deathTrap in editableLevel.DeathTraps) {
+        if (deathTrap.IsSelected(mousePosition)) {
+          editableLevel.DeathTraps.Remove(deathTrap);
+          break;
+        }
+      }
+      foreach (Treasure treasure in editableLevel.Treasures) {
+        if (treasure.IsSelected(mousePosition)) {
+          editableLevel.Treasures.Remove(treasure);
+          break;
+        }
       }
     }
 
@@ -294,6 +321,10 @@ namespace PuzzlePathDimension {
     /// <returns></returns>
     public ILevelObject FindTarget(MouseState mousePosition) {
       foreach (Platform platform in editableLevel.MoveablePlatforms) {
+        if (platform.IsSelected(mousePosition))
+          return platform;
+      }
+      foreach (Platform platform in editableLevel.Platforms) {
         if (platform.IsSelected(mousePosition))
           return platform;
       }

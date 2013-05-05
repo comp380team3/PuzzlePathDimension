@@ -11,8 +11,9 @@ namespace PuzzlePathDimension {
     public static void SaveLevel(EditableLevel level) {
       XmlWriterSettings settings = new XmlWriterSettings();
       settings.Indent = true;
+      //String name = Configuration.UserDataPath + Path.DirectorySeparatorChar + "Level" + Path.DirectorySeparatorChar + "Custom.xml";
 
-      XmlWriter writer = XmlWriter.Create("Content/Level/CustomLevel.xml", settings);
+      XmlWriter writer = XmlWriter.Create("Content/Level/Custom.xml", settings);
       writer.WriteStartDocument();
       writer.WriteStartElement("level");
       writer.WriteAttributeString("name", "Custom");
