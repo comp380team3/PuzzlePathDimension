@@ -122,6 +122,7 @@ namespace PuzzlePathDimension {
         menuTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         menuTemplate.Confirm();
         break;
       case VirtualButtons.Delete:
