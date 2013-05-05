@@ -55,7 +55,7 @@ namespace PuzzlePathDimension {
       levelEditorDescriptionMenuEntry.Selected += LevelEditorDescriptionMenuEntrySelected;
       items.Add(levelEditorDescriptionMenuEntry);
 
-      MenuButton exitMenuEntry = new MenuButton("Exit How To Play", font);
+      MenuButton exitMenuEntry = new MenuButton("Back", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
     }

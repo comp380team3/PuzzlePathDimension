@@ -243,7 +243,7 @@ namespace PuzzlePathDimension {
           status.Score = levelData.Score;
           status.FastestTimeInSeconds = levelData.TimeSpent;
         } else if (status.Score == levelData.Score) {
-          if (status.FastestTimeInSeconds < status.FastestTimeInSeconds) {
+          if (status.FastestTimeInSeconds > levelData.TimeSpent) {
             status.FastestTimeInSeconds = levelData.TimeSpent;
           }
         }
