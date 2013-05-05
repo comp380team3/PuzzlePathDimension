@@ -49,12 +49,7 @@ namespace PuzzlePathDimension {
       launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
       editableLevel = new EditableLevel(LevelLoader.Load("Content/Level/Custom.xml", shared), shared);
-      //editableLevel = new EditableLevel(content);
-      //editableLevel.Goal = new Goal(content.Load<Texture2D>("Texture/goal"), new Vector2(300, 300));
-      //Texture2D[] launcherTextures = {content.Load<Texture2D>("Texture/launcher"),
-      //                                content.Load<Texture2D>("Texture/LauncherBase"),
-      //                                content.Load<Texture2D>("Texture/power_meter")};
-      //editableLevel.Launcher = new Launcher(launcherTextures, new Vector2(690, 580));
+      editableLevel.AdditionsLeft = 30;
       foundCollision = false;
     }
 

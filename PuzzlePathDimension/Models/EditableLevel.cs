@@ -96,7 +96,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     public int AdditionsLeft {
       get { return _additionsAllowed - _moveablePlatforms.Count; }
+      set { _additionsAllowed = value; }
     }
+
 
     private int _attempts;
     public int Attempts { get { return _attempts; } }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.IO;
 
 namespace PuzzlePathDimension {
   class LevelSaver {
@@ -11,9 +12,9 @@ namespace PuzzlePathDimension {
     public static void SaveLevel(EditableLevel level) {
       XmlWriterSettings settings = new XmlWriterSettings();
       settings.Indent = true;
-      //String name = Configuration.UserDataPath + Path.DirectorySeparatorChar + "Level" + Path.DirectorySeparatorChar + "Custom.xml";
+      String name = Configuration.UserDataPath + Path.DirectorySeparatorChar + "Level" + Path.DirectorySeparatorChar + "Custom.xml";
 
-      XmlWriter writer = XmlWriter.Create("Content/Level/Custom.xml", settings);
+      XmlWriter writer = XmlWriter.Create(name, settings);
       writer.WriteStartDocument();
       writer.WriteStartElement("level");
       writer.WriteAttributeString("name", "Custom");
@@ -21,6 +22,15 @@ namespace PuzzlePathDimension {
       writer.WriteAttributeString("par-seconds", level.ParTime.ToString());
       writer.WriteAttributeString("toolbox-types", "RBHV");
       foreach (Platform platform in level.MoveablePlatforms) {
+        writer.WriteStartElement("platform");
+        writer.WriteAttributeString("breakable", platform.Breakable.ToString());
+        writer.WriteAttributeString("x", platform.Origin.X.ToString());
+        writer.WriteAttributeString("y", platform.Origin.Y.ToString());
+        writer.WriteAttributeString("width", platform.Width.ToString());
+        writer.WriteAttributeString("height", platform.Height.ToString());
+        writer.WriteEndElement();
+      }
+      foreach (Platform platform in level.Platforms) {
         writer.WriteStartElement("platform");
         writer.WriteAttributeString("breakable", platform.Breakable.ToString());
         writer.WriteAttributeString("x", platform.Origin.X.ToString());
