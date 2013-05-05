@@ -12,7 +12,7 @@ namespace PuzzlePathDimension {
       XmlWriterSettings settings = new XmlWriterSettings();
       settings.Indent = true;
 
-      XmlWriter writer = XmlWriter.Create("CustomLevel.xml", settings);
+      XmlWriter writer = XmlWriter.Create("Content/Level/CustomLevel.xml", settings);
       writer.WriteStartDocument();
       writer.WriteStartElement("level");
       writer.WriteAttributeString("name", "Custom");
