@@ -26,7 +26,6 @@ namespace PuzzlePathDimension {
     ILevelObject target;
     SpriteFont font;
     Boolean foundCollision, launchToolbox, toolboxLaunched;
-    Platform addedPlatform;
     ToolboxScreen toolbox;
 
     float pauseAlpha;

@@ -22,7 +22,6 @@ namespace PuzzlePathDimension {
     ILevelObject target;
     SpriteFont font;
     Boolean foundCollision, launchToolbox, toolboxLaunched;
-    Platform addedPlatform;
     ToolboxScreen toolbox;
 
     float pauseAlpha;
@@ -137,7 +136,7 @@ namespace PuzzlePathDimension {
       switch (button) {
       case VirtualButtons.Context:
         if (!editableLevel.FindCollision())
-          LevelSaving.SaveLevel(editableLevel);
+          LevelSaver.SaveLevel(editableLevel);
         break;
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));

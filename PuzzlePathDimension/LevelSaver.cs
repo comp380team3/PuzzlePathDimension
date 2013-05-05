@@ -5,7 +5,9 @@ using System.Text;
 using System.Xml;
 
 namespace PuzzlePathDimension {
-  class LevelSaving {
+  class LevelSaver {
+
+    //long method i know i will shorten it soon
     public static void SaveLevel(EditableLevel level) {
       XmlWriterSettings settings = new XmlWriterSettings();
       settings.Indent = true;
