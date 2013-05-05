@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using System.Xml;
+using System.IO;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -11,11 +12,23 @@ namespace PuzzlePathDimension {
   /// </summary>
   public class LevelEntry {
     /// <summary>
-    /// The path to the level's file. For built-in levels, it's the file
-    /// name itself, so if needed, make sure to add Content/Level/ to it.
+    /// The level's filename. 
     /// </summary>
+    /// <remarks>
+    /// "path" is really a bad name for the XML attribute, but I don't
+    /// want to change it right now.
+    /// </remarks>
     [XmlAttribute("path")]
-    public string Path { get; set; }
+    public string FileName { get; set; }
+
+    /// <summary>
+    /// The full path to the level file.
+    /// </summary>
+    [XmlIgnore]
+    public string FullPath {
+      get { return Configuration.UserDataPath + Path.DirectorySeparatorChar + "Level" + Path.DirectorySeparatorChar + FileName; }
+    }
+
     /// <summary>
     /// The identifier of the level.
     /// </summary>
@@ -46,6 +59,39 @@ namespace PuzzlePathDimension {
     /// </summary>
     public LevelGroup() {
       Entries = new List<LevelEntry>();
+    }
+
+    /// <summary>
+    /// Given the name of the current level, find the next level in the
+    /// LevelGroup.
+    /// </summary>
+    /// <param name="levelName">The level id of the current level.</param>
+    /// <returns>The LevelEntry of the next level, or null if the
+    /// current level was the last level or if no LevelEntry with
+    /// the given levelName exists.</returns>
+    public LevelEntry FindNextLevel(string levelName) {
+      int currentLevelIndex = -1;
+
+      // Check each entry for a level entry that matches the current
+      // level's name.
+      for (int i = 0; i < Entries.Count; i++) {
+        LevelEntry entry = Entries[i];
+        if (entry.Id == levelName) {
+          currentLevelIndex = i;
+          break;
+        }
+      }
+
+      // The index of the next level is n + 1.
+      int nextLevelIndex = currentLevelIndex + 1;
+      // If there is no next level, or if the current level is not in the list,
+      // return null.
+      if (nextLevelIndex >= Entries.Count || nextLevelIndex == -1) {
+        return null;
+      } else {
+        // Otherwise, return the next level's LevelEntry.
+        return Entries[nextLevelIndex];
+      }
     }
 
     /// <summary>

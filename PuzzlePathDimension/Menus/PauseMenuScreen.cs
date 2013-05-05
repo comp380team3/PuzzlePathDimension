@@ -19,28 +19,60 @@ namespace PuzzlePathDimension {
   class PauseMenuScreen : GameScreen {
     MenuTemplate menuTemplate = new MenuTemplate();
 
+    /// <summary>
+    /// Determines if level is restarble.
+    /// </summary>
     IRestartable restartable;
-    ContentManager content;
 
     /// <summary>
-    /// Constructor.
+    /// Content manager for the screen.
     /// </summary>
-    public PauseMenuScreen(TopLevelModel topLevel, Simulation simulation)
+    ContentManager content;
+    
+    /// <summary>
+    /// Contains information on whether the user is in editor mode or simulation mode. 
+    /// </summary>
+    bool EditorMode { get; set; }
+
+    /// <summary>
+    /// The name of the current level.
+    /// </summary>
+    string LevelName { get; set; }
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="topLevel"></param>
+    /// <param name="simulation"></param>
+    /// <param name="levelName"></param>
+    public PauseMenuScreen(TopLevelModel topLevel, Simulation simulation, string levelName)
       : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
-
+      EditorMode = false;
       this.restartable = simulation;
+      LevelName = levelName;
     }
 
-    public PauseMenuScreen(TopLevelModel topLevel, EditableLevel editableLevel)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="topLevel"></param>
+    /// <param name="editableLevel"></param>
+    /// <param name="levelName"></param>
+    public PauseMenuScreen(TopLevelModel topLevel, EditableLevel editableLevel, string levelName)
       : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
-
+      EditorMode = true;
       this.restartable = editableLevel;
+      LevelName = levelName;
     }
 
+    /// <summary>
+    /// Load the content that will be displayed on the screen.
+    /// </summary>
+    /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
@@ -51,15 +83,33 @@ namespace PuzzlePathDimension {
 
       IList<MenuButton> items = menuTemplate.Items;
 
+      // Create new menu buttons and attach to them events.
+      // Add menu buttons the list that will be dislayed on the screen.
       MenuButton resumeGameMenuEntry = new MenuButton("Resume Game", font);
       resumeGameMenuEntry.Selected += OnCancel;
       items.Add(resumeGameMenuEntry);
 
-      MenuButton retryGameMenuEntry = new MenuButton("Retry Level", font);
-      retryGameMenuEntry.Selected += RetryGameMenuEntrySelected;
-      items.Add(retryGameMenuEntry);
+      // Only allow the player to restart the level in simulation mode.
+      MenuButton restartLevelMenuEntry = new MenuButton("Restart Level", font);
+      restartLevelMenuEntry.Selected += RestartLevelMenuEntrySelected;
+      if (!EditorMode) {
+        items.Add(restartLevelMenuEntry);
+      }
 
-      MenuButton levelSelectMenuEntry = new MenuButton("Level Select", font);
+      MenuButton restartLevelEditor;
+      if (EditorMode) {
+        restartLevelEditor = new MenuButton("Restart Level Editor", font);
+      } else {
+        restartLevelEditor = new MenuButton("Back to Level Editor", font);
+      }
+      restartLevelEditor.Selected += RestartLevelEditorMenuEntrySelected;
+      items.Add(restartLevelEditor);
+
+      MenuButton howToPlayMenuEntry = new MenuButton("How to Play", font);
+      howToPlayMenuEntry.Selected += HowToPlayMenuEntrySelected;
+      items.Add(howToPlayMenuEntry);
+
+      MenuButton levelSelectMenuEntry = new MenuButton("Back to Level Select", font);
       levelSelectMenuEntry.Selected += LevelSelectMenuEntrySelected;
       items.Add(levelSelectMenuEntry);
 
@@ -68,10 +118,17 @@ namespace PuzzlePathDimension {
       items.Add(quitGameMenuEntry);
     }
 
+    /// <summary>
+    /// Remove the content from the screen.
+    /// </summary>
     public override void UnloadContent() {
       base.UnloadContent();
     }
 
+    /// <summary>
+    /// Handle user input.
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Up:
@@ -89,10 +146,20 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Handle mouse input.
+    /// </summary>
+    /// <param name="point"></param>
     protected override void OnPointChanged(Point point) {
       menuTemplate.SelectAtPoint(point);
     }
 
+    /// <summary>
+    /// Update the current state of the game.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="otherScreenHasFocus"></param>
+    /// <param name="coveredByOtherScreen"></param>
     public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
@@ -100,6 +167,11 @@ namespace PuzzlePathDimension {
       menuTemplate.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw the content to the screen.
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="spriteBatch"></param>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       base.Draw(gameTime, spriteBatch);
 
@@ -107,10 +179,24 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Event handler when the exit menu entry is selected.
+    /// Event handler for when the Exit menu entry is selected.
     /// </summary>
     void OnCancel() {
       ExitScreen();
+    }
+
+    /// <summary>
+    /// Event handler for when the Restart level editor menu entry is selected.
+    /// </summary>
+    void RestartLevelEditorMenuEntrySelected() {
+      string message = "Are you sure you want to restart the editor?";
+      if (!EditorMode) {
+        message = "Are you sure you want to go to the editor?";
+      }
+
+      MessageBoxScreen confirmRestartLevelEditorMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmRestartLevelEditorMessageBox.RightButton += ConfirmRestartLevelEditorBoxAccepted;
+      ScreenList.AddScreen(confirmRestartLevelEditorMessageBox);
     }
 
     /// <summary>
@@ -118,13 +204,20 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void RetryGameMenuEntrySelected() {
+    void RestartLevelMenuEntrySelected() {
       // Put what happens when the person clicks retry
       const string message = "Are you sure you want to restart this level?";
 
-      MessageBoxScreen confirmRetryMessageBox = new MessageBoxScreen(TopLevel, message);
-      confirmRetryMessageBox.RightButton += ConfirmRetryBoxAccepted;
-      ScreenList.AddScreen(confirmRetryMessageBox);
+      MessageBoxScreen confirmRestartLevelMessageBox = new MessageBoxScreen(TopLevel, message);
+      confirmRestartLevelMessageBox.RightButton += ConfirmRestartLevelBoxAccepted;
+      ScreenList.AddScreen(confirmRestartLevelMessageBox);
+    }
+
+    /// <summary>
+    /// Event handler for when the Controls menu entry is selected.
+    /// </summary>
+    void HowToPlayMenuEntrySelected() {
+      ScreenList.AddScreen(new HowToPlayScreenContentList(TopLevel));
     }
 
     /// <summary>
@@ -158,11 +251,18 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Event handler for when the user selects confirm when the Retry menu entry.
+    /// Event handler for when the user selects confirm on the Restart level message box.
     /// </summary>
-    void ConfirmRetryBoxAccepted() {
+    void ConfirmRestartLevelBoxAccepted() {
       restartable.Restart();
       ExitScreen();
+    }
+
+    /// <summary>
+    /// Event handler for when the user selects confirm on the Restart editor Message Box.
+    /// </summary>
+    void ConfirmRestartLevelEditorBoxAccepted() {
+      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
     }
 
     /// <summary>

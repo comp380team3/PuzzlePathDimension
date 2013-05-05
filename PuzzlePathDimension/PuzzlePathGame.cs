@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.IO;
 
 namespace PuzzlePathDimension {
   /// <summary>
@@ -46,7 +47,7 @@ namespace PuzzlePathDimension {
     protected override void Initialize() {
       // Bootstrap the top-level context model
       TopLevel.Game = this;
-      TopLevel.Profile = UserProfile.Load(Configuration.UserDataPath + "/profile.xml");
+      TopLevel.Profile = UserProfile.Load(Configuration.UserDataPath + Path.DirectorySeparatorChar + "profile.xml");
 
       Scene scene = new Scene();
       scene.AddScreen(new BackgroundScreen(TopLevel));

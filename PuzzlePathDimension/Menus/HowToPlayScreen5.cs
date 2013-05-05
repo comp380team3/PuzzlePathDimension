@@ -23,14 +23,17 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Description of the concepts and objectives that surround Puzzle Path.
     /// </summary>
-    string[] gameDescription = new string[] { //Brian add description here, change this.
-      "The objective of this game is to find a path for a ball to reach ",
-      "the goal. You have to launch the ball from a launcher, utilize ",
-      "the map's environment, and reach the goal in order to complete a ",
-      "level. Platforms are your main tool to help you complete a level. ",
-      "You can bounce the ball off the platforms to change the direction ",
-      "of the ball. The number of balls used, time, and the number ",
-      "of treasures collected determine your score.",
+    string[] gameDescription = new string[] { 
+      "The level editor allows the player to modify existing levels ",
+      "by adding breakable and non-breakable platforms. The reason for this ",
+      "is to allow the player to create new paths in which the ball could ",
+      "travel. The player is given a toolbox in which they could select from ",
+      "a variety of platforms that would be added to the level. The player ",
+      "will be able to move the platforms around and place them in a ",
+      "desired position within the boundaries of the level. This game ",
+      "contains one custom level. The level is initialy blank and the player ",
+      "can create and store their own custom level. The player will be given ",
+      "a toolbox with more game elements such as treasures and deathtraps. "
     };
 
     /// <summary>
