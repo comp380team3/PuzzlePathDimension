@@ -107,6 +107,8 @@ namespace PuzzlePathDimension {
         }
         ScreenList.AddScreen(toolbox);
         launchToolbox = false;
+        if(editableLevel.FindCollision())
+           LevelSaver.SaveLevel(editableLevel);
         //toolboxLaunched = true;
         //Console.WriteLine(addedPlatform.Origin)
       }
@@ -160,7 +162,6 @@ namespace PuzzlePathDimension {
       case VirtualButtons.Context:
         if (!editableLevel.FindCollision()) {
           LevelSaver.SaveLevel(editableLevel);
-          ExitScreen();
         }
         break;
       case VirtualButtons.Pause:
@@ -308,6 +309,8 @@ namespace PuzzlePathDimension {
         }
         if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
           target = null;
+          if(!editableLevel.FindCollision())
+            LevelSaver.SaveLevel(editableLevel);
         }
       }
     }
