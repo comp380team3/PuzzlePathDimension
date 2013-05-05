@@ -158,8 +158,10 @@ namespace PuzzlePathDimension {
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Context:
-        if (!editableLevel.FindCollision())
+        if (!editableLevel.FindCollision()) {
           LevelSaver.SaveLevel(editableLevel);
+          ExitScreen();
+        }
         break;
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
