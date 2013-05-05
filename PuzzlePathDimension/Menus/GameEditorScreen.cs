@@ -83,20 +83,6 @@ namespace PuzzlePathDimension {
 
       // Bail early if this isn't the active screen.
 
-
-      if (toolboxLaunched) {
-        addedPlatform = toolbox.Selected;
-      }
-      if (addedPlatform != null) {
-        Console.WriteLine(addedPlatform.Origin);
-        if (editableLevel.AdditionsLeft > 0) {
-          editableLevel.MoveablePlatforms.Add(addedPlatform);
-        }
-        toolbox.ExitScreen();
-        addedPlatform = null;
-        toolboxLaunched = false;
-
-      }
     }
     
     /// <summary>
@@ -107,9 +93,7 @@ namespace PuzzlePathDimension {
 
       // there was a bug where if you exit the toolbox without
       // selecting a platform the toolbox was unreachable.
-      if (addedPlatform == null) {
-        toolboxLaunched = false;
-      }
+      //toolboxLaunched = false;
 
       //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
       if (Controller.IsButtonPressed(VirtualButtons.Mode)) {
@@ -126,7 +110,7 @@ namespace PuzzlePathDimension {
         }
         ScreenList.AddScreen(toolbox);
         launchToolbox = false;
-        toolboxLaunched = true;
+        //toolboxLaunched = true;
         //Console.WriteLine(addedPlatform.Origin)
       }
 

@@ -59,17 +59,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     private Boolean _cantAdd;
 
-    /// <summary>
-    /// The new platform to be sent to the emuator
-    /// </summary>
-    private Platform _selected;
 
-    /// <summary>
-    /// Returns the selected platform
-    /// </summary>
-    public Platform Selected {
-      get { return _selected; }
-    }
 
     private SpriteFont _font;
 
@@ -166,7 +156,7 @@ namespace PuzzlePathDimension {
     /// Responds to user input.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
-      if (Controller.IsButtonPressed(VirtualButtons.Select)) {
+      if (Controller.IsButtonPressed(VirtualButtons.Select) && !_cantAdd) {
         Point pointer = Controller.Point;
 
         foreach (Rectangle rect in _platforms) {
@@ -174,9 +164,8 @@ namespace PuzzlePathDimension {
             if (pointer.Y > rect.Y && pointer.Y < rect.Y + rect.Height) {
               Texture2D textureToUse = platformTextures[new Vector2(rect.Width, rect.Height)];
 
-              _selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false);
-              Console.WriteLine(_selected.Origin);
-              //ExitScreen();
+              editableLevel.MoveablePlatforms.Add(new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), false));
+              ExitScreen();
             }
           }
         }
@@ -186,8 +175,7 @@ namespace PuzzlePathDimension {
             if (pointer.Y > rect.Y && pointer.Y < rect.Y + rect.Height) {
               Texture2D textureToUse = breakablePlatformTextures[new Vector2(rect.Width, rect.Height)];
 
-              _selected = new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true);
-              Console.WriteLine(_selected.Origin);
+              editableLevel.MoveablePlatforms.Add(new Platform(textureToUse, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), true));
               ExitScreen();
             }
           }
