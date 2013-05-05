@@ -273,7 +273,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal EditableLevel LoadLevel(string level) {
-      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName.Replace(" ", ""), content), content);
+      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName, content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;
