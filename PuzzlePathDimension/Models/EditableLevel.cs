@@ -95,7 +95,13 @@ namespace PuzzlePathDimension {
     /// The number of platforms the player can still add.
     /// </summary>
     public int AdditionsLeft {
-      get { return _additionsAllowed - _moveablePlatforms.Count; }
+      get {
+        if (_custom)
+          return _additionsAllowed - _platforms.Count - _moveablePlatforms.Count -
+                _deathTraps.Count - _treasures.Count;
+        else
+          return _additionsAllowed - _moveablePlatforms.Count;
+      }
       set { _additionsAllowed = value; }
     }
 
@@ -115,6 +121,7 @@ namespace PuzzlePathDimension {
     private Boolean _custom;
     public Boolean Custom {
       get {return _custom;}
+      set { _custom = value; }
     }
 
     /// <summary>

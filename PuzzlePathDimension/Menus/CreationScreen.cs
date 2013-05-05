@@ -50,6 +50,7 @@ namespace PuzzlePathDimension {
       // Create the hard-coded level.
       editableLevel = new EditableLevel(LevelLoader.Load("Content/Level/Custom.xml", shared), shared);
       editableLevel.AdditionsLeft = 30;
+      editableLevel.Custom = true;
       foundCollision = false;
     }
 
