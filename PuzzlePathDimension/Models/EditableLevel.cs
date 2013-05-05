@@ -193,6 +193,16 @@ namespace PuzzlePathDimension {
       foreach (Platform platform in _moveablePlatforms) {
         rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
       }
+
+      //The detection for the circle objects is not accurate.
+      foreach (DeathTrap deathTrap in DeathTraps) {
+        rects.Add(new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height));
+      }
+      foreach (Treasure treasure in Treasures) {
+        rects.Add(new Rectangle((int)treasure.Origin.X, (int)treasure.Origin.Y, treasure.Width, treasure.Height));
+      }
+      rects.Add(new Rectangle((int)Goal.Origin.X, (int)Goal.Origin.Y, Goal.Width, Goal.Height));
+
       Rectangle launcherBoundingBox = new Rectangle((int)(_launcher.Position.X - 100), (int)(_launcher.Position.Y - 100), 200, 100);
       for (int i = 0; i < rects.Count; i++) {
         for (int j = i + 1; j < rects.Count; j++) {
@@ -201,19 +211,6 @@ namespace PuzzlePathDimension {
         }
         if (rects[i].Intersects(launcherBoundingBox))
           return true;
-      }
-
-
-
-      //not accurate but it works for now.
-      Rectangle circle;
-      foreach (DeathTrap deathTrap in DeathTraps) {
-        circle = new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height);
-        foreach (Rectangle rect in rects) {
-          if (circle.Intersects(rect)) {
-            return true;
-          }
-        }
       }
 
       return false;
