@@ -107,7 +107,7 @@ namespace PuzzlePathDimension {
       
       // Get the current settings of the game.
       sound = Profile.Prefs.PlaySounds;
-      currentControllerType = (int)Profile.Prefs.ControllerType;
+      currentControllerType = (int)Controller.InputType;
       currentControllerConnected = true; // Well, it has to be to even open this menu (for now).
 
       SetMenuEntryText();
@@ -122,6 +122,7 @@ namespace PuzzlePathDimension {
         menuTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         menuTemplate.Confirm();
         break;
       case VirtualButtons.Delete:
@@ -190,8 +191,7 @@ namespace PuzzlePathDimension {
 
       // Make sure the user doesn't accidentally make the game unplayable.
       if (currentControllerConnected) {
-        Profile.Prefs.ControllerType = (InputType)currentControllerType;
-        Controller.InputType = Profile.Prefs.ControllerType;
+        Controller.InputType = (InputType)currentControllerType;
       }
 
       Profile.Save(Configuration.UserDataPath + "/profile.xml");

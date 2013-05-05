@@ -15,11 +15,11 @@ namespace PuzzlePathDimension {
     /// List of Team members for Puzzle Path.
     /// </summary>
     string[] TeamMembers = new string[] {
-      "Chris Babayas",
       "Jonathan Castello",
-      "Brian Marroquin",
       "Jorenz Paragas",
+      "Brian Marroquin",
       "Michael Sandoval",
+      "Chris Babayas",
     };
 
     /// <summary>
@@ -89,6 +89,7 @@ namespace PuzzlePathDimension {
         detailsTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         detailsTemplate.Confirm();
         break;
       case VirtualButtons.Delete:

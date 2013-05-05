@@ -55,7 +55,7 @@ namespace PuzzlePathDimension {
       levelEditorDescriptionMenuEntry.Selected += LevelEditorDescriptionMenuEntrySelected;
       items.Add(levelEditorDescriptionMenuEntry);
 
-      MenuButton exitMenuEntry = new MenuButton("Back To Main Menu", font);
+      MenuButton exitMenuEntry = new MenuButton("Back", font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
     }
@@ -74,6 +74,7 @@ namespace PuzzlePathDimension {
         menuTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         menuTemplate.Confirm();
         break;
       case VirtualButtons.Delete:

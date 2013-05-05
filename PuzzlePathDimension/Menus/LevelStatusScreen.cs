@@ -38,10 +38,16 @@ namespace PuzzlePathDimension {
     /// <summary>
     /// Return the time spent on completing a level with the highest score.
     /// </summary>
-    public string CompletionTime { get; private set; }
+    public int CompletionTime { get; private set; }
 
+    /// <summary>
+    /// Return the levels xml file name.
+    /// </summary>
     public string LevelFileName { get; private set; }
 
+    /// <summary>
+    /// The font the text will be displayed in.
+    /// </summary>
     private SpriteFont Font { get; set; }
 
 
@@ -71,6 +77,19 @@ namespace PuzzlePathDimension {
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
       Font = shared.Load<SpriteFont>("Font/menufont");
+      int numberOfMinutes = CompletionTime / 60;
+      int numberOfSeconds = CompletionTime % 60;
+
+      string minutes;
+      string seconds;
+      
+      minutes = Convert.ToString(numberOfMinutes);
+
+      if (numberOfSeconds < 10) {
+        seconds = "0" + numberOfSeconds;
+      } else {
+        seconds = Convert.ToString(numberOfSeconds);
+      }
 
       detailsTemplate.Title = new TextLine(LevelName, Font, new Color(192, 192, 192));
 
@@ -89,11 +108,15 @@ namespace PuzzlePathDimension {
 
       stats.Add(new TextLine("Status: " + (Completed ? "Completed" : "Incomplete"), Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
-      stats.Add(new TextLine("Completion Time: " + CompletionTime, Font, Color.White));
+      stats.Add(new TextLine("Completion Time: " + minutes + ":" + seconds, Font, Color.White));
       stats.Add(new Spacer(Font.LineSpacing));
       stats.Add(new TextLine("Score: " + LevelScore, Font, Color.White));
     }
 
+    /// <summary>
+    /// Handle user input from the keyboard or xbox controller.
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Left:
@@ -103,6 +126,7 @@ namespace PuzzlePathDimension {
         detailsTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         detailsTemplate.Confirm();
         break;
       case VirtualButtons.Delete:
@@ -111,6 +135,10 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Handle mouse input.
+    /// </summary>
+    /// <param name="point"></param>
     protected override void OnPointChanged(Point point) {
       detailsTemplate.SelectAtPoint(point);
     }
@@ -149,6 +177,9 @@ namespace PuzzlePathDimension {
       LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelFileName));
     }
 
+    /// <summary>
+    /// Event handler for when the Back menu entry is selected.
+    /// </summary>
     protected void OnCancel() {
       ExitScreen();
     }

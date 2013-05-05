@@ -5,6 +5,8 @@ using System.Text;
 
 namespace PuzzlePathDimension {
   class Level {
+    public string Name { get; set; }
+
     public int Attempts { get; set; }
     public int ParTime { get; set; }
 

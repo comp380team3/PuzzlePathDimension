@@ -39,7 +39,7 @@ namespace PuzzlePathDimension {
       /// <summary>
       /// The time that the user spent to complete the current level.
       /// </summary>
-      public string CompletionTime { get; set; }
+      public int CompletionTime { get; set; }
     }
 
     /// <summary>
@@ -120,33 +120,31 @@ namespace PuzzlePathDimension {
     public LevelSelectScreen(TopLevelModel topLevel, ContentManager Content)
       : base(topLevel) {
 
-      XmlDocument doc;
-      XmlElement node;
-      Levels = Directory.GetFiles(Configuration.UserDataPath + "/Level");
+      // Create a list of all the levels and obtain the user progress for all existing levels.
       levelSet = new List<LevelInfo>();
-      levelInfo = new LevelInfo();
-      CurrentLevel = 0;
 
-      // go through all the levels in the file
-      foreach (string name in Levels) {
-        doc = new XmlDocument();
-        doc.Load(name);
+      string levelListFile = Configuration.UserDataPath + Path.DirectorySeparatorChar + "levellist.xml";
 
-        levelInfo.FileName = name;
+      LevelGroup levels = LevelGroup.Load(levelListFile);
+      SerializableDictionary<string, LevelStatus> progressInfo = base.Profile.Progress;
 
-        node = (XmlElement)doc.GetElementsByTagName("level")[0];
-        levelInfo.LevelName = Convert.ToString(node.Attributes["name"].Value);
+      // Go through the user progress data and display the correct information for each level.
+      foreach (LevelEntry entry in levels.Entries) {
+        LevelInfo info = new LevelInfo();
 
-        node = (XmlElement)doc.GetElementsByTagName("score")[0];
-        levelInfo.LevelScore = Convert.ToInt16(node.Attributes["value"].Value);
+        info.FileName = entry.FullPath;
+        info.LevelName = entry.Id;
 
-        node = (XmlElement)doc.GetElementsByTagName("completed")[0];
-        levelInfo.Completed = Convert.ToBoolean(node.Attributes["value"].Value);
-
-        node = (XmlElement)doc.GetElementsByTagName("completionTime")[0];
-        levelInfo.CompletionTime = Convert.ToString(node.Attributes["time"].Value);
-
-        levelSet.Add(levelInfo);
+        if (progressInfo.ContainsKey(info.LevelName)) {
+          info.CompletionTime = progressInfo[info.LevelName].FastestTimeInSeconds;
+          info.Completed = progressInfo[info.LevelName].Completed;
+          info.LevelScore = progressInfo[info.LevelName].Score;
+        } else {
+          info.CompletionTime = 3600;
+          info.Completed = false;
+          info.LevelScore = 0;
+        }
+        levelSet.Add(info);
       }
 
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
@@ -180,11 +178,26 @@ namespace PuzzlePathDimension {
 
     private void UpdateCurrentPage() {
       items.Clear();
+      int previousLevel = 0;
+
       for (int count = 0; CurrentLevel < levelSet.Count && count < numberOfLevelsPerPage; count++) {
         levelInfo = levelSet.ElementAt<LevelInfo>(CurrentLevel);
         aLevelMenuEntry = new MenuButton(levelInfo.LevelName, font);
+        aLevelMenuEntry.OriginalColor = Color.Gray;
+        previousLevel = CurrentLevel - 1;
+
+        if (previousLevel >= 0) {
+          if (levelSet[previousLevel].Completed) {
+            aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
+            aLevelMenuEntry.OriginalColor = Color.White;
+          }
+        } else {
+          previousLevel = 0;
+          aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
+          aLevelMenuEntry.OriginalColor = Color.White;
+        }
+
         items.Add(aLevelMenuEntry);
-        aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
         CurrentLevel = CurrentLevel + 1;
         setOfLevels = count + 1;
       }
@@ -200,6 +213,10 @@ namespace PuzzlePathDimension {
       items.Add(exitMenuEntry);
     }
 
+    /// <summary>
+    /// Handle User Input
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Up:
@@ -209,6 +226,7 @@ namespace PuzzlePathDimension {
         menuTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         menuTemplate.Confirm();
         break;
       case VirtualButtons.Delete:
@@ -217,6 +235,10 @@ namespace PuzzlePathDimension {
       }
     }
 
+    /// <summary>
+    /// Handle User input from the mouse.
+    /// </summary>
+    /// <param name="point"></param>
     protected override void OnPointChanged(Point point) {
       menuTemplate.SelectAtPoint(point);
     }
@@ -282,6 +304,11 @@ namespace PuzzlePathDimension {
 
     #endregion
 
+    /// <summary>
+    /// Display the next set of levels if the Next menu entry is selected. Display
+    /// the previous levels if the Back menu entry is selected.
+    /// </summary>
+    /// <param name="back"></param>
     private void turnPage(bool back) {
       if (back) {
         CurrentLevel = CurrentLevel - numberOfLevelsPerPage - setOfLevels;

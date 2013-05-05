@@ -19,12 +19,17 @@ namespace PuzzlePathDimension {
     /// Description for the Controls of the game.
     /// </summary>
     string[] ControlScheme = new string[] {
-      "Rotate Launcher Left:     Left Arrow Key/ Left on DPad",
-      "Rotate Launcher Right:    Right Arrow Key/ Right on DPad",
-      "Increase Magnitude:       Up Arrow Key/ Up on DPad",
-      "Decrease Magnitude:       Down Arrow Key/ Down on DPad",
-      "Launch Ball:              Space Bar/ A Button ",
-      "Pause Game:               Esc/ Start Button",
+      " Simulation ",
+      "Rotate Launcher Left:        Left Arrow Key/ Left on DPad",
+      "Rotate Launcher Right:       Right Arrow Key/ Right on DPad",
+      "Increase Magnitude:          Up Arrow Key/ Up on DPad",
+      "Decrease Magnitude:          Down Arrow Key/ Down on DPad",
+      "Launch Ball:                 Space Bar/ A Button ",
+      "Pause Game:                  Esc/ Start Button",
+      " Editor ",
+      "Open Toolbox :               Right Click on Mouse/ X Button",
+      "Select Platform:             Left Click on Mouse/ A Button ",
+      "Enter Simulation Mode:       Enter/Start                     ",
     };
 
 
@@ -68,6 +73,7 @@ namespace PuzzlePathDimension {
         detailsTemplate.SelectNext();
         break;
       case VirtualButtons.Select:
+      case VirtualButtons.Context:
         detailsTemplate.Confirm();
         break;
       case VirtualButtons.Delete:

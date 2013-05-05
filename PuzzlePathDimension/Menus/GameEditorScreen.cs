@@ -147,15 +147,18 @@ namespace PuzzlePathDimension {
       }
     }
 
-
+    /// <summary>
+    /// Handle user input.
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Context:
-        if (!editableLevel.FindCollision() && !foundCollision)
-          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel()));
+        if (!editableLevel.FindCollision())
+          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel(), LevelName));
         break;
       case VirtualButtons.Pause:
-        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel));
+        ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
         break;
       }
     }
@@ -190,6 +193,7 @@ namespace PuzzlePathDimension {
 
     private Level CreateLevel() {
       Level level = new Level();
+      level.Name = editableLevel.Name;
       level.Goal = editableLevel.Goal;
       level.DeathTraps = editableLevel.DeathTraps;
       level.Treasures = editableLevel.Treasures;
@@ -273,7 +277,7 @@ namespace PuzzlePathDimension {
     /// Sets up a hard-coded level. This is for testing purposes.
     /// </summary>
     internal EditableLevel LoadLevel(string level) {
-      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName.Replace(" ", ""), content), content);
+      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName, content), content);
       simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
 
       return simulation;

@@ -40,6 +40,10 @@ namespace PuzzlePathDimension {
     /// </summary>
     private List<DeathTrap> _deathTraps;
 
+    /// <summary>
+    /// Gets or sets the name of the level being edited.
+    /// </summary>
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets the simulation's launcher.
@@ -151,6 +155,8 @@ namespace PuzzlePathDimension {
       _goal = level.Goal;
       _launcher = level.Launcher;
       _moveablePlatforms = new List<Platform>();
+
+      Name = level.Name;
 
       _attempts = level.Attempts;
       _parTime = level.ParTime;

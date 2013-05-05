@@ -19,8 +19,4 @@
   <treasure x="385" y="30" />
   <treasure x="415" y="120" />
   <treasure x="725" y="535" />
-  
-  <score value="0" />
-  <completed value="false" />
-  <completionTime time="0:00" />
 </level>
