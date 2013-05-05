@@ -75,6 +75,8 @@ namespace PuzzlePathDimension {
 
     public event Action Accepted;
 
+    private DeathTrap deathTrap;
+    private Treasure treasure;
 
     ///// <summary>
     ///// Constructor automatically includes the standard "A=ok, B=cancel"
@@ -82,6 +84,8 @@ namespace PuzzlePathDimension {
     ///// </summary>
     //public ToolboxScreen(TopLevelModel topLevel, string message)
     //  : this(topLevel, message, true) { }
+
+    EditableLevel editableLevel;
 
     /// <summary>
     /// Constructor that includes a message to be displayed and Boolean to determine if more platforms can be added
@@ -92,6 +96,8 @@ namespace PuzzlePathDimension {
       _cantAdd = limitReached;
       //initializa the position of regular platforms
       _platforms = new List<Rectangle>();
+      editableLevel = level;
+
 
       if (level.TypesAllowed.Contains("R")) {
         if (level.TypesAllowed.Contains("H")) {
@@ -120,6 +126,8 @@ namespace PuzzlePathDimension {
         }
       }
 
+
+
       base.IsPopup = true;
       base.TransitionOnTime = TimeSpan.FromSeconds(0.2);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.2);
@@ -146,6 +154,10 @@ namespace PuzzlePathDimension {
       }
       foreach (Vector2 size in Platform.BreakablePlatNames.Keys) {
         breakablePlatformTextures.Add(size, shared.Load<Texture2D>(Platform.BreakablePlatNames[size]));
+      }
+      if (editableLevel.Custom) {
+        deathTrap = new DeathTrap(shared.Load<Texture2D>("Texture/deathtrap"), new Vector2(200, 400));
+        treasure = new Treasure(shared.Load<Texture2D>("Texture/treasure"), new Vector2(300, 400));
       }
     }
 
@@ -180,6 +192,17 @@ namespace PuzzlePathDimension {
             }
           }
         }
+
+        if (Intersects(deathTrap, pointer)) {
+          editableLevel.DeathTraps.Add(deathTrap);
+          ExitScreen();
+        }
+
+        if (Intersects(treasure, pointer)) {
+          editableLevel.Treasures.Add(treasure);
+          ExitScreen();
+        }
+
       }
 
       if (_cantAdd && Controller.IsButtonPressed(VirtualButtons.Select)) {
@@ -200,11 +223,17 @@ namespace PuzzlePathDimension {
     /// Determines if a mouse click intersects with a rectangle.
     /// </summary>
     /// <returns></returns>
-    private Boolean Intersects(Rectangle rectangle, MouseState mouseState) {
-      if (mouseState.X > rectangle.X && mouseState.X < rectangle.X + rectangle.Width) {
-        if (mouseState.Y > rectangle.Y && mouseState.Y < rectangle.Y + rectangle.Height) {
-          return true;
-        }
+    private Boolean Intersects(DeathTrap dt, Point ms) {
+      if(Vector2.Distance(dt.Center, new Vector2(ms.X, ms.Y)) 
+                < Vector2.Distance( dt.Center, dt.Center+new Vector2(0, dt.Width/2))){
+        return true;
+      }
+      return false;
+    }
+    private Boolean Intersects(Treasure t, Point ms) {
+      if (Vector2.Distance(t.Center, new Vector2(ms.X, ms.Y))
+                < Vector2.Distance(t.Center, t.Center + new Vector2(0, t.Width / 2))) {
+        return true;
       }
       return false;
     }
@@ -249,6 +278,12 @@ namespace PuzzlePathDimension {
         spriteBatch.Draw(textureToUse, new Vector2(rect.X, rect.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
       }
+
+      if (editableLevel.Custom) {
+        deathTrap.Draw(spriteBatch);
+        treasure.Draw(spriteBatch);
+      }
+
       // Draw the message box text.
       spriteBatch.DrawString(_font, _message, textPosition, color);
 

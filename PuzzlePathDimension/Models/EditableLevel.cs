@@ -46,6 +46,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Launcher Launcher {
       get { return _launcher; }
+      set { _launcher = value;}
     }
 
     /// <summary>
@@ -53,6 +54,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Goal Goal {
       get { return _goal; }
+      set { _goal = value;}
     }
 
     /// <summary>
@@ -103,6 +105,12 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Texture2D Background { get; set; }
 
+
+    private Boolean _custom;
+    public Boolean Custom {
+      get {return _custom;}
+    }
+
     /// <summary>
     /// The ball texture to use.
     /// </summary>
@@ -113,8 +121,23 @@ namespace PuzzlePathDimension {
     private String typesAllowed;
 
     public String TypesAllowed { get { return typesAllowed; } }
+
+    public EditableLevel(ContentManager content) {
+      _platforms = new List<Platform>();
+      _treasures = new List<Treasure>();
+      _deathTraps = new List<DeathTrap>();
+      _moveablePlatforms = new List<Platform>();
+      _attempts = 4;
+      _parTime = 1;
+      _additionsAllowed = 30;
+      typesAllowed = "RBHV";
+      _ballTex = content.Load<Texture2D>("Texture/ball");
+      Background = content.Load<Texture2D>("Texture/GameScreen");
+      _custom = true;
+    }
+
     /// <summary>
-    /// Constructs a Simulation object.
+    /// Constructs a EditableLevel object.
     /// </summary>
     /// <param name="level">The Level to use to create the simulation.</param>
     /// <param name="content">The ContentManager to use to load the ball texture.</param>
@@ -139,7 +162,7 @@ namespace PuzzlePathDimension {
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
-
+      _custom = false;
       // Allow the user to interact with the simulation, and start the timer.
       // _currentState = SimulationState.Active;
     }
@@ -186,6 +209,7 @@ namespace PuzzlePathDimension {
           }
         }
       }
+
       return false;
     }
 

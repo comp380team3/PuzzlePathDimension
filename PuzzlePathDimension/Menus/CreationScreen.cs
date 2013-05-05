@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -8,13 +8,9 @@ using FarseerPhysics.Dynamics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
 
-
 namespace PuzzlePathDimension {
-  /// <summary>
-  /// This is a game component that implements IUpdateable.
-  /// </summary>
-  public class GameEditorScreen : GameScreen {
-    ContentManager content;
+  class CreationScreen:GameScreen {
+        ContentManager content;
     EditableLevel editableLevel;
     MouseState previousMouseState;
     MouseState currentMouseState;
@@ -31,7 +27,7 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameEditorScreen(TopLevelModel topLevel, string levelName)
+    public CreationScreen(TopLevelModel topLevel, string levelName)
       : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -53,8 +49,12 @@ namespace PuzzlePathDimension {
       font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched = false;
       // Create the hard-coded level.
-      editableLevel = LoadLevel(LevelName);
-
+      editableLevel = new EditableLevel(content);
+      editableLevel.Goal = new Goal(content.Load<Texture2D>("Texture/goal"), new Vector2(300, 300));
+      Texture2D[] launcherTextures = {content.Load<Texture2D>("Texture/launcher"),
+                                      content.Load<Texture2D>("Texture/LauncherBase"),
+                                      content.Load<Texture2D>("Texture/power_meter")};
+      editableLevel.Launcher = new Launcher(launcherTextures, new Vector2(690, 580));
       foundCollision = false;
     }
 
@@ -151,8 +151,8 @@ namespace PuzzlePathDimension {
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Context:
-        if (!editableLevel.FindCollision() && !foundCollision)
-          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel()));
+        if (!editableLevel.FindCollision())
+          LevelSaving.SaveLevel(editableLevel);
         break;
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel));
@@ -313,8 +313,23 @@ namespace PuzzlePathDimension {
         if (platform.IsSelected(mousePosition))
           return platform;
       }
+      if (editableLevel.Goal.IsSelected(mousePosition)) {
+        return editableLevel.Goal;
+      }
+      foreach (DeathTrap deathTrap in editableLevel.DeathTraps) {
+        if (deathTrap.IsSelected(mousePosition))
+          return deathTrap;
+      }
+      foreach (Treasure treasure in editableLevel.Treasures) {
+        if (treasure.IsSelected(mousePosition))
+          return treasure;
+      }
       return null;
     }
+
+
+
+
 
   }
 }
