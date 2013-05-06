@@ -50,6 +50,7 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       EditorMode = false;
+      custom = false;
       this.restartable = simulation;
       LevelName = levelName;
     }
@@ -267,9 +268,8 @@ namespace PuzzlePathDimension {
     /// Event handler for when the user selects confirm on the Restart editor Message Box.
     /// </summary>
     void ConfirmRestartLevelEditorBoxAccepted() {
-      EditableLevel level = (EditableLevel)restartable;
-      if (level.Custom) {
-        level.Restart();
+      if (custom) {
+        restartable.Restart();
         ExitScreen();
       } else
         LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
