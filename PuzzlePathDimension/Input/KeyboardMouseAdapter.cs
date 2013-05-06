@@ -28,7 +28,7 @@ namespace PuzzlePathDimension {
       state.Context = kb.IsKeyDown(Keys.Enter);
       state.Mode = kb.IsKeyDown(Keys.T) || mouse.RightButton == ButtonState.Pressed;
       state.Pause = kb.IsKeyDown(Keys.Escape);
-      state.Debug = kb.IsKeyDown(Keys.LeftControl) && kb.IsKeyDown(Keys.OemTilde);
+      state.Debug = kb.IsKeyDown(Keys.D);
 
       state.Easter =
         kb.IsKeyDown(Keys.LeftShift) && kb.IsKeyDown(Keys.RightShift) &&

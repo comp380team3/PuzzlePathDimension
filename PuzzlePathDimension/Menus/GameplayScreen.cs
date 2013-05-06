@@ -156,21 +156,6 @@ namespace PuzzlePathDimension {
       }
     }
 
-    /// <summary>
-    /// Lets the game respond to player input. Unlike the Update method,
-    /// this will only be called when the gameplay screen is active.
-    /// </summary>
-    public override void HandleInput(VirtualController Controller) {
-      base.HandleInput(Controller);
-
-      // TODO: Replace this restart mechanism
-      if (Keyboard.GetState().IsKeyDown(Keys.R) ||
-        GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.X)) {
-        Console.WriteLine("Completely restarted.");
-        simulation.Restart();
-      }
-    }
-
     protected override void OnButtonPressed(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Up:
@@ -210,6 +195,11 @@ namespace PuzzlePathDimension {
         break;
       case VirtualButtons.Select:
         simulation.HandleConfirm();
+        break;
+
+      case VirtualButtons.Debug:
+        Console.WriteLine("Completely restarted.");
+        simulation.Restart();
         break;
       }
     }
