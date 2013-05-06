@@ -33,7 +33,7 @@ namespace PuzzlePathDimension {
     /// Contains information on whether the user is in editor mode or simulation mode. 
     /// </summary>
     bool EditorMode { get; set; }
-
+    bool custom;
     /// <summary>
     /// The name of the current level.
     /// </summary>
@@ -65,6 +65,7 @@ namespace PuzzlePathDimension {
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       EditorMode = true;
+      custom = editableLevel.Custom;
       this.restartable = editableLevel;
       LevelName = levelName;
     }
@@ -98,7 +99,10 @@ namespace PuzzlePathDimension {
 
       MenuButton restartLevelEditor;
       if (EditorMode) {
-        restartLevelEditor = new MenuButton("Restart Level Editor", font);
+        if (custom)
+          restartLevelEditor = new MenuButton("Empty Level", font);
+        else
+          restartLevelEditor = new MenuButton("Restart Level Editor", font);
       } else {
         restartLevelEditor = new MenuButton("Back to Level Editor", font);
       }
@@ -263,7 +267,12 @@ namespace PuzzlePathDimension {
     /// Event handler for when the user selects confirm on the Restart editor Message Box.
     /// </summary>
     void ConfirmRestartLevelEditorBoxAccepted() {
-      LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
+      EditableLevel level = (EditableLevel)restartable;
+      if (level.Custom) {
+        level.Restart();
+        ExitScreen();
+      } else
+        LoadingScreen.Load(TopLevel, true, new GameEditorScreen(TopLevel, LevelName));
     }
 
     /// <summary>

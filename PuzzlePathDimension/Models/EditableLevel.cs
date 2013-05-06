@@ -192,6 +192,12 @@ namespace PuzzlePathDimension {
     /// Remove all added platforms.
     /// </summary>
     public void Restart() {
+      if (Custom) {
+        _platforms = new List<Platform>();
+        _moveablePlatforms = new List<Platform>();
+        _deathTraps = new List<DeathTrap>();
+        _treasures = new List<Treasure>();
+      } else
       _moveablePlatforms = new List<Platform>();
     }
 
