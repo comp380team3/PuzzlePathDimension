@@ -17,7 +17,7 @@ namespace PuzzlePathDimension {
       XmlWriter writer = XmlWriter.Create(name, settings);
       writer.WriteStartDocument();
       writer.WriteStartElement("level");
-      writer.WriteAttributeString("name", "Custom");
+      writer.WriteAttributeString("name", "Custom Level");
       writer.WriteAttributeString("balls", level.Attempts.ToString());
       writer.WriteAttributeString("par-seconds", level.ParTime.ToString());
       writer.WriteAttributeString("toolbox-types", "RBHV");
