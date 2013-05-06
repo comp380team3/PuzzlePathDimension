@@ -126,7 +126,7 @@ namespace PuzzlePathDimension {
     }
 
     void creationModeMenuEntrySelected() {
-      ScreenList.AddScreen(new CreationScreen(TopLevel, ""));
+      LoadingScreen.Load(TopLevel, true, new CreationScreen(TopLevel, ""));
     }
 
 
