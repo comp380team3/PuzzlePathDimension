@@ -147,10 +147,36 @@ namespace PuzzlePathDimension {
         levelSet.Add(info);
       }
 
+      // Add the custom level's entry at the end of the list.
+      AddCustomLevel();
+
       base.TransitionOnTime = TimeSpan.FromSeconds(0.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
       
       items = menuTemplate.Items;
+    }
+
+    /// <summary>
+    /// Adds the hard-coded entry for the custom level.
+    /// </summary>
+    private void AddCustomLevel() {
+      LevelInfo customInfo = new LevelInfo();
+      SerializableDictionary<string, LevelStatus> progressInfo = base.Profile.Progress;
+
+      customInfo.FileName = Configuration.UserDataPath + Path.DirectorySeparatorChar
+        + "Level" + Path.DirectorySeparatorChar + "Custom.xml";
+      customInfo.LevelName = "Custom Level";
+
+      if (progressInfo.ContainsKey(customInfo.LevelName)) {
+        customInfo.CompletionTime = progressInfo[customInfo.LevelName].FastestTimeInSeconds;
+        customInfo.Completed = progressInfo[customInfo.LevelName].Completed;
+        customInfo.LevelScore = progressInfo[customInfo.LevelName].Score;
+      } else {
+        customInfo.CompletionTime = 3600;
+        customInfo.Completed = false;
+        customInfo.LevelScore = 0;
+      }
+      levelSet.Add(customInfo);
     }
 
     /// <summary>
@@ -187,7 +213,7 @@ namespace PuzzlePathDimension {
         previousLevel = CurrentLevel - 1;
 
         if (previousLevel >= 0) {
-          if (levelSet[previousLevel].Completed) {
+          if (levelSet[previousLevel].Completed || levelInfo.LevelName == "Custom Level") { // Meh. -Jorenz
             aLevelMenuEntry.Selected += () => ALevelMenuEntrySelected(menuTemplate.SelectedItem);
             aLevelMenuEntry.OriginalColor = Color.White;
           }
