@@ -50,6 +50,10 @@ namespace PuzzlePathDimension {
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       items.Add(playGameMenuEntry);
 
+      MenuButton creationModeMenuEntry = new MenuButton("Creation Mode", font);
+      creationModeMenuEntry.Selected += creationModeMenuEntrySelected;
+      items.Add(creationModeMenuEntry);
+
       MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       items.Add(howToPlayMenuEntry);
@@ -120,6 +124,11 @@ namespace PuzzlePathDimension {
     void PlayGameMenuEntrySelected() {
       ScreenList.AddScreen(new LevelSelectScreen(TopLevel, content));
     }
+
+    void creationModeMenuEntrySelected() {
+      ScreenList.AddScreen(new CreationScreen(TopLevel, ""));
+    }
+
 
     /// <summary>
     /// Event handler for when the How To Play menu entry is selected.
