@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_00EE891A81DD40D3824D65FC2AB72FA0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_01765413233B44DB82CDE6FAC82B4E0E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -22,6 +28,12 @@
         "Entry"
         {
         "MsmKey" = "8:_0375635DDE4A4FE9B6D3E74C66DA6FCE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_037C4AB6C228436BB6FC9E78A90A2098"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -482,6 +494,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_00EE891A81DD40D3824D65FC2AB72FA0"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Level\\Custom.xml"
+            "TargetName" = "8:Custom.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_9D4E354A23044B05906F9561D1F9C3A9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_01765413233B44DB82CDE6FAC82B4E0E"
             {
             "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\Font\\textFont.xnb"
@@ -508,6 +540,26 @@
             "TargetName" = "8:power_meter.xnb"
             "Tag" = "8:"
             "Folder" = "8:_F222F45689794319BF330A7774F7510A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_037C4AB6C228436BB6FC9E78A90A2098"
+            {
+            "SourcePath" = "8:..\\PuzzlePathDimension\\bin\\x86\\Release\\Content\\levellist.xml"
+            "TargetName" = "8:levellist.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_D185EB1455004243A045325D53CAC338"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1661,7 +1713,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Puzzle Path"
         "ProductCode" = "8:{C4699D07-FC2E-4735-BA1E-8685B2382646}"
-        "PackageCode" = "8:{7C761DA3-B4FB-46E5-BA28-0C03FE9CC905}"
+        "PackageCode" = "8:{7D9EE724-24BD-4E14-9956-18869F40312E}"
         "UpgradeCode" = "8:{A95B9942-1D59-4032-A105-B6B7F3AA052D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2196,7 +2248,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B33672D001A348CCBD3A3DC5452169A4"
             {
-            "SourcePath" = "8:..\\PuzzlePathDimension\\obj\\x86\\Debug\\PuzzlePathDimension.exe"
+            "SourcePath" = "8:..\\PuzzlePathDimension\\obj\\x86\\Release\\PuzzlePathDimension.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_93BF79065BCF4975B71D84E8A1FB629B"
