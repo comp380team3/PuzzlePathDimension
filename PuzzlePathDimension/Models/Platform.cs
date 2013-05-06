@@ -352,7 +352,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="ms"></param>
     /// <returns></returns>
-    public Boolean IsSelected(MouseState ms) {
+    public Boolean IsSelected(Point ms) {
       if (Origin.X <= ms.X && Origin.X + Width >= ms.X) {
         if (Origin.Y <= ms.Y && Origin.Y + Height >= ms.Y) {
           return true;

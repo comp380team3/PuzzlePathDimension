@@ -214,7 +214,7 @@ namespace PuzzlePathDimension {
     //Vector2 originalPosition;
     public enum Side { Top, Right, Bottom, Left, None };
 
-    public Boolean IsSelected(MouseState ms) {
+    public Boolean IsSelected(Point ms) {
       Vector2 mouse = new Vector2(ms.X, ms.Y);
       if (Vector2.Distance(Center, mouse) < Vector2.Distance(Center, Center + new Vector2(0, Height / 2)))
         return true;
