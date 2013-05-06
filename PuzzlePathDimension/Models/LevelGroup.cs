@@ -82,11 +82,15 @@ namespace PuzzlePathDimension {
         }
       }
 
+      // If a level with that name isn't found, end early and return null.
+      if (currentLevelIndex == -1) {
+        return null;
+      }
+
       // The index of the next level is n + 1.
       int nextLevelIndex = currentLevelIndex + 1;
-      // If there is no next level, or if the current level is not in the list,
-      // return null.
-      if (nextLevelIndex >= Entries.Count || nextLevelIndex == -1) {
+      // If there is no next level, return null.
+      if (nextLevelIndex >= Entries.Count) {
         return null;
       } else {
         // Otherwise, return the next level's LevelEntry.
