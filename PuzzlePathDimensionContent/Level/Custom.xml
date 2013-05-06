@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<level name="Custom" balls="4" par-seconds="1" toolbox-types="RBHV">
+  <goal x="300" y="300" />
+  <launcher x="249" y="580" />
+</level>

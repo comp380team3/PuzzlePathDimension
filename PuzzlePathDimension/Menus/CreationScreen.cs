@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.IO;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -8,12 +9,8 @@ using FarseerPhysics.Dynamics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
 
-
 namespace PuzzlePathDimension {
-  /// <summary>
-  /// This is a game component that implements IUpdateable.
-  /// </summary>
-  public class GameEditorScreen : GameScreen {
+  class CreationScreen : GameScreen {
     ContentManager content;
     EditableLevel editableLevel;
     MouseState previousMouseState;
@@ -30,7 +27,7 @@ namespace PuzzlePathDimension {
 
     float pauseAlpha;
 
-    public GameEditorScreen(TopLevelModel topLevel, string levelName)
+    public CreationScreen(TopLevelModel topLevel, string levelName)
       : base(topLevel) {
       base.TransitionOnTime = TimeSpan.FromSeconds(1.5);
       base.TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -51,9 +48,13 @@ namespace PuzzlePathDimension {
 
       font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched = false;
-      // Create the hard-coded level.
-      editableLevel = LoadLevel(LevelName);
+      String name = Configuration.UserDataPath + Path.DirectorySeparatorChar + "Level" + Path.DirectorySeparatorChar + "Custom.xml";
 
+      // Create the hard-coded level.
+      editableLevel = new EditableLevel(LevelLoader.Load(name, shared), shared);
+      editableLevel.AdditionsLeft = 30;
+      editableLevel.ParTime = 60;
+      editableLevel.Custom = true;
       foundCollision = false;
     }
 
@@ -66,6 +67,16 @@ namespace PuzzlePathDimension {
 
 
     /// <summary>
+    /// Sets up a hard-coded level. This is for testing purposes.
+    /// </summary>
+    internal EditableLevel LoadLevel(string level) {
+      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName.Replace(" ", ""), content), content);
+      simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
+
+      return simulation;
+    }
+
+    /// <summary>
     /// Updates the state of the game. This method checks the GameScreen.IsActive
     /// property, so the game will stop updating when the pause menu is active,
     /// or if you tab away to a different application.
@@ -73,26 +84,18 @@ namespace PuzzlePathDimension {
     public override void Update(GameTime gameTime, bool otherScreenHasFocus,
                                                    bool coveredByOtherScreen) {
       base.Update(gameTime, otherScreenHasFocus, false);
-
-      // Gradually fade in or out depending on whether we are covered by the pause screen.
       if (coveredByOtherScreen)
         pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
       else
         pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
-
-      // Bail early if this isn't the active screen.
-
     }
-    
+
     /// <summary>
     /// Lets the game respond to player input. Unlike the Update method,
     /// this will only be called when the gameplay screen is active.
     /// </summary>
     public override void HandleInput(VirtualController vtroller) {
 
-      // there was a bug where if you exit the toolbox without
-      // selecting a platform the toolbox was unreachable.
-      //toolboxLaunched = false;
 
       //I was going to handle launching the gameplayscreen here but im not sure how to. -Brian
       if (Controller.IsButtonPressed(VirtualButtons.Mode)) {
@@ -109,8 +112,8 @@ namespace PuzzlePathDimension {
         }
         ScreenList.AddScreen(toolbox);
         launchToolbox = false;
-        //toolboxLaunched = true;
-        //Console.WriteLine(addedPlatform.Origin)
+        if(!editableLevel.FindCollision())
+           LevelSaver.SaveLevel(editableLevel);
       }
 
       //Calls the UpdateMovement method to move object on the scree
@@ -123,22 +126,109 @@ namespace PuzzlePathDimension {
         foundCollision = false;
       }
 
+
+      //If left ctrl ad click then platform is erased
       if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
                       currentMouseState.LeftButton == ButtonState.Pressed) {
-        target = FindTarget(currentMouseState);
-        editableLevel.MoveablePlatforms.Remove((Platform)target);
+        delete(currentMouseState);
       }
     }
 
     /// <summary>
-    /// Handle user input.
+    /// Handles the movement of level objects
     /// </summary>
-    /// <param name="button"></param>
+    public void UpdateMovement() {
+      previousMouseState = currentMouseState;
+      currentMouseState = Mouse.GetState();
+
+      if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
+        target = FindTarget(currentMouseState);
+      }
+      if (target != null) {
+        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Pressed) {
+          float changeInX = currentMouseState.X - previousMouseState.X;
+          float changeInY = currentMouseState.Y - previousMouseState.Y;
+          target.Move(new Vector2(changeInX, changeInY));
+        }
+        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
+          target = null;
+          if (!editableLevel.FindCollision())
+            LevelSaver.SaveLevel(editableLevel);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Looks for a ILevelObject that intersects with a mouse click.
+    /// </summary>
+    /// <param name="mousePosition"></param>
+    /// <returns></returns>
+    private ILevelObject FindTarget(MouseState mousePosition) {
+      foreach (Platform platform in editableLevel.MoveablePlatforms) {
+        if (platform.IsSelected(mousePosition))
+          return platform;
+      }
+      foreach (Platform platform in editableLevel.Platforms) {
+        if (platform.IsSelected(mousePosition))
+          return platform;
+      }
+      if (editableLevel.Goal.IsSelected(mousePosition)) {
+        return editableLevel.Goal;
+      }
+      foreach (DeathTrap deathTrap in editableLevel.DeathTraps) {
+        if (deathTrap.IsSelected(mousePosition))
+          return deathTrap;
+      }
+      foreach (Treasure treasure in editableLevel.Treasures) {
+        if (treasure.IsSelected(mousePosition))
+          return treasure;
+      }
+      if (editableLevel.Launcher.IsSelected(mousePosition)) {
+        return editableLevel.Launcher;
+      }
+      return null;
+    }
+
+    /// <summary>
+    /// Deletes the top most object where the mouse click ovvured
+    /// </summary>
+    /// <param name="mousePosition"></param>
+    private void delete(MouseState mousePosition) {
+      //loops start at end since the last added to draw are the first ones to be deleted
+      for (int i = editableLevel.MoveablePlatforms.Count - 1; i >= 0; i--) {
+        if (editableLevel.MoveablePlatforms[i].IsSelected(mousePosition)) {
+          editableLevel.MoveablePlatforms.Remove(editableLevel.MoveablePlatforms[i]);
+          return;
+        }
+      }
+      foreach (Platform platform in editableLevel.Platforms) {
+        if (platform.IsSelected(mousePosition)) {
+          editableLevel.Platforms.Remove(platform);
+          return;
+        }
+      }
+      for (int i = editableLevel.DeathTraps.Count - 1; i >= 0; i--) {
+        if (editableLevel.DeathTraps[i].IsSelected(mousePosition)) {
+          editableLevel.DeathTraps.Remove(editableLevel.DeathTraps[i]);
+          return;
+        }
+      }
+
+      for (int i = editableLevel.Treasures.Count - 1; i >= 0; i--) {
+        if (editableLevel.Treasures[i].IsSelected(mousePosition)) {
+          editableLevel.Treasures.Remove(editableLevel.Treasures[i]);
+          return;
+        }
+      }
+    }
+
+
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Context:
-        if (!editableLevel.FindCollision())
-          ScreenList.AddScreen(new GameplayScreen(TopLevel, CreateLevel(), LevelName));
+        if (!editableLevel.FindCollision()) {
+          LevelSaver.SaveLevel(editableLevel);
+        }
         break;
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
@@ -147,7 +237,7 @@ namespace PuzzlePathDimension {
     }
 
     /// <summary>
-    /// Draws the gameplay screen.
+    /// Draws the screen.
     /// </summary>
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch) {
       spriteBatch.GraphicsDevice.Clear(ClearOptions.Target, Color.White, 0, 0);
@@ -176,7 +266,6 @@ namespace PuzzlePathDimension {
 
     private Level CreateLevel() {
       Level level = new Level();
-      level.Name = editableLevel.Name;
       level.Goal = editableLevel.Goal;
       level.DeathTraps = editableLevel.DeathTraps;
       level.Treasures = editableLevel.Treasures;
@@ -215,9 +304,6 @@ namespace PuzzlePathDimension {
       // Draw the goal onto the canvas.
       editableLevel.Goal.Draw(spriteBatch);
 
-
-
-
       // Draw the treasures onto the canvas.
       foreach (Treasure treasure in editableLevel.Treasures) {
         treasure.Draw(spriteBatch);
@@ -244,7 +330,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
     private void DrawText(SpriteBatch spriteBatch) {
-      // Draw the number of balls left.
+      // Draw the number ofadditions left.
       string attemptsText = "Number of platforms available: " + editableLevel.AdditionsLeft;
       spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
 
@@ -255,53 +341,6 @@ namespace PuzzlePathDimension {
       }
     }
 
-
-    /// <summary>
-    /// Sets up a hard-coded level. This is for testing purposes.
-    /// </summary>
-    internal EditableLevel LoadLevel(string level) {
-      EditableLevel simulation = new EditableLevel(LevelLoader.Load(LevelName, content), content);
-      simulation.Background = content.Load<Texture2D>("Texture/GameScreen");
-
-      return simulation;
-    }
-
-
-
-    /// <summary>
-    /// Handles the movement of level objects
-    /// </summary>
-    public void UpdateMovement() {
-      previousMouseState = currentMouseState;
-      currentMouseState = Mouse.GetState();
-
-      if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
-        target = FindTarget(currentMouseState);
-      }
-      if (target != null) {
-        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Pressed) {
-          float changeInX = currentMouseState.X - previousMouseState.X;
-          float changeInY = currentMouseState.Y - previousMouseState.Y;
-          target.Move(new Vector2(changeInX, changeInY));
-        }
-        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
-          target = null;
-        }
-      }
-    }
-
-    /// <summary>
-    /// Looks for a ILevelObject that intersects with a mouse click.
-    /// </summary>
-    /// <param name="mousePosition"></param>
-    /// <returns></returns>
-    public ILevelObject FindTarget(MouseState mousePosition) {
-      foreach (Platform platform in editableLevel.MoveablePlatforms) {
-        if (platform.IsSelected(mousePosition))
-          return platform;
-      }
-      return null;
-    }
 
   }
 }
