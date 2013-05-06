@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -47,8 +48,10 @@ namespace PuzzlePathDimension {
 
       font = shared.Load<SpriteFont>("Font/textfont");
       launchToolbox = toolboxLaunched = false;
+      String name = Configuration.UserDataPath + Path.DirectorySeparatorChar + "Level" + Path.DirectorySeparatorChar + "Custom.xml";
+
       // Create the hard-coded level.
-      editableLevel = new EditableLevel(LevelLoader.Load("Content/Level/Custom.xml", shared), shared);
+      editableLevel = new EditableLevel(LevelLoader.Load(name, shared), shared);
       editableLevel.AdditionsLeft = 30;
       editableLevel.Custom = true;
       foundCollision = false;
@@ -130,7 +133,7 @@ namespace PuzzlePathDimension {
     }
 
     public void delete(MouseState mousePosition) {
-      for (int i = editableLevel.MoveablePlatforms.Count - 1; i >= 0; i++) {
+      for (int i = editableLevel.MoveablePlatforms.Count - 1; i >= 0; i--) {
         if (editableLevel.MoveablePlatforms[i].IsSelected(mousePosition)) {
           editableLevel.MoveablePlatforms.Remove(editableLevel.MoveablePlatforms[i]);
           return;
@@ -142,14 +145,14 @@ namespace PuzzlePathDimension {
           return;
         }
       }
-      for (int i = editableLevel.DeathTraps.Count - 1; i >= 0; i++) {
+      for (int i = editableLevel.DeathTraps.Count - 1; i >= 0; i--) {
         if (editableLevel.DeathTraps[i].IsSelected(mousePosition)) {
           editableLevel.DeathTraps.Remove(editableLevel.DeathTraps[i]);
           return;
         }
       }
 
-      for (int i = editableLevel.Treasures.Count - 1; i >= 0; i++) {
+      for (int i = editableLevel.Treasures.Count - 1; i >= 0; i--) {
         if (editableLevel.Treasures[i].IsSelected(mousePosition)) {
           editableLevel.Treasures.Remove(editableLevel.Treasures[i]);
           return;
