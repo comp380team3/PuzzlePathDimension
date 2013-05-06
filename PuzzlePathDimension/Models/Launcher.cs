@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
-
 namespace PuzzlePathDimension {
   /// <summary>
   /// The Launcher class represents the level's launcher.
   /// </summary>
-  public class Launcher {
+  public class Launcher : ILevelObject {
     /// <summary>
     /// The hard-coded length of the launcher.
     /// </summary>
@@ -85,6 +85,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Vector2 Position {
       get { return _position; }
+      set{ _position = value;}
     }
 
     /// <summary>
@@ -221,7 +222,7 @@ namespace PuzzlePathDimension {
     /// <param name="ball">The ball that will be eventually launched.</param>
     public void LoadBall(Ball newBall) {
       if (_ball != null) {
-         throw new InvalidOperationException("There is already a ball that is ready to be launched.");
+        throw new InvalidOperationException("There is already a ball that is ready to be launched.");
       }
 
       // The launcher now contains the ball, and the user can now aim it.
@@ -244,8 +245,8 @@ namespace PuzzlePathDimension {
       _movable = false;
 
       // Calculate the velocity of the ball based on the launcher's angle and magnitude.
-      float xVelocity = _magnitude * (float) Math.Cos(-1 * _angle);
-      float yVelocity = _magnitude * (float) Math.Sin(-1 * _angle);
+      float xVelocity = _magnitude * (float)Math.Cos(-1 * _angle);
+      float yVelocity = _magnitude * (float)Math.Sin(-1 * _angle);
       _ball.Launch(xVelocity, yVelocity);
 
       // Call any methods that are waiting for the ball to launch.
@@ -317,8 +318,52 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <returns>Information about the launcher.</returns>
     public override string ToString() {
-      return "Tip position: " + _tip.X + ", " + _tip.Y + " | " 
+      return "Tip position: " + _tip.X + ", " + _tip.Y + " | "
         + "Angle: " + (_angle * 180 / Math.PI) + ", in radians: " + _angle;
     }
+
+    public Boolean IsSelected(MouseState ms) {
+      Rectangle launcherBoundingBox = new Rectangle((int)(Position.X - 100), (int)(Position.Y - 100), 200, 100);
+      if (ms.X > launcherBoundingBox.X && ms.X < launcherBoundingBox.X + 200) {
+        if (ms.Y > launcherBoundingBox.Y && ms.Y < launcherBoundingBox.Y + 100) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    private Side CheckLeftRight(Vector2 v) {
+      // Subtract 1 to account for the fact that the origin is at (0,0).
+      if (v.X - 100 < 5) {
+        return Side.Left;
+      }
+      if (v.X + 100 > Simulation.FieldWidth - 5) {
+        return Side.Right;
+      }
+      //else if(v.X >=5 && v.X+Width <= Simulation.FieldWidth - 5 && v.Y >= 5 && v.Y+Height <= Simulation.FieldHeight - 5)
+      //  return Side.None; 
+      return Side.None;
+    }
+    //Vector2 originalPosition;
+    public enum Side { Top, Right, Bottom, Left, None };
+
+
+    public void Move(Vector2 change) {
+      Vector2 newPosition = Position + change;
+      Side horizontal = CheckLeftRight(newPosition);
+
+      if (horizontal == Side.Left) {
+        change.X = 5 - Position.X + 100;
+      } else if (horizontal == Side.Right) {
+        change.X = (Simulation.FieldWidth - 5) - (Position.X + 100);
+      }
+
+      change.Y = 0;
+
+      Position = Position + change;
+
+    }
+
+
   }
 }

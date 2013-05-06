@@ -50,6 +50,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Launcher Launcher {
       get { return _launcher; }
+      set { _launcher = value;}
     }
 
     /// <summary>
@@ -57,6 +58,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Goal Goal {
       get { return _goal; }
+      set { _goal = value;}
     }
 
     /// <summary>
@@ -93,8 +95,16 @@ namespace PuzzlePathDimension {
     /// The number of platforms the player can still add.
     /// </summary>
     public int AdditionsLeft {
-      get { return _additionsAllowed - _moveablePlatforms.Count; }
+      get {
+        if (_custom)
+          return _additionsAllowed - _platforms.Count - _moveablePlatforms.Count -
+                _deathTraps.Count - _treasures.Count;
+        else
+          return _additionsAllowed - _moveablePlatforms.Count;
+      }
+      set { _additionsAllowed = value; }
     }
+
 
     private int _attempts;
     public int Attempts { get { return _attempts; } }
@@ -107,6 +117,13 @@ namespace PuzzlePathDimension {
     /// </summary>
     public Texture2D Background { get; set; }
 
+
+    private Boolean _custom;
+    public Boolean Custom {
+      get {return _custom;}
+      set { _custom = value; }
+    }
+
     /// <summary>
     /// The ball texture to use.
     /// </summary>
@@ -117,8 +134,23 @@ namespace PuzzlePathDimension {
     private String typesAllowed;
 
     public String TypesAllowed { get { return typesAllowed; } }
+
+    public EditableLevel(ContentManager content) {
+      _platforms = new List<Platform>();
+      _treasures = new List<Treasure>();
+      _deathTraps = new List<DeathTrap>();
+      _moveablePlatforms = new List<Platform>();
+      _attempts = 4;
+      _parTime = 1;
+      _additionsAllowed = 30;
+      typesAllowed = "RBHV";
+      _ballTex = content.Load<Texture2D>("Texture/ball");
+      Background = content.Load<Texture2D>("Texture/GameScreen");
+      _custom = true;
+    }
+
     /// <summary>
-    /// Constructs a Simulation object.
+    /// Constructs a EditableLevel object.
     /// </summary>
     /// <param name="level">The Level to use to create the simulation.</param>
     /// <param name="content">The ContentManager to use to load the ball texture.</param>
@@ -141,11 +173,14 @@ namespace PuzzlePathDimension {
       //hard coded amount of additions.
       _additionsAllowed = 3;
 
+
+      Background = content.Load<Texture2D>("Texture/GameScreen");
+
       typesAllowed = level.AllowedPlatTypes;
 
       // Load the ball's texture and store it.
       _ballTex = content.Load<Texture2D>("Texture/ball");
-
+      _custom = false;
       // Allow the user to interact with the simulation, and start the timer.
       // _currentState = SimulationState.Active;
     }
@@ -157,6 +192,12 @@ namespace PuzzlePathDimension {
     /// Remove all added platforms.
     /// </summary>
     public void Restart() {
+      if (Custom) {
+        _platforms = new List<Platform>();
+        _moveablePlatforms = new List<Platform>();
+        _deathTraps = new List<DeathTrap>();
+        _treasures = new List<Treasure>();
+      } else
       _moveablePlatforms = new List<Platform>();
     }
 
@@ -170,6 +211,16 @@ namespace PuzzlePathDimension {
       foreach (Platform platform in _moveablePlatforms) {
         rects.Add(new Rectangle((int)platform.Origin.X, (int)platform.Origin.Y, platform.Width, platform.Height));
       }
+
+      //The detection for the circle objects is not accurate.
+      foreach (DeathTrap deathTrap in DeathTraps) {
+        rects.Add(new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height));
+      }
+      foreach (Treasure treasure in Treasures) {
+        rects.Add(new Rectangle((int)treasure.Origin.X, (int)treasure.Origin.Y, treasure.Width, treasure.Height));
+      }
+      rects.Add(new Rectangle((int)Goal.Origin.X, (int)Goal.Origin.Y, Goal.Width, Goal.Height));
+
       Rectangle launcherBoundingBox = new Rectangle((int)(_launcher.Position.X - 100), (int)(_launcher.Position.Y - 100), 200, 100);
       for (int i = 0; i < rects.Count; i++) {
         for (int j = i + 1; j < rects.Count; j++) {
@@ -180,18 +231,6 @@ namespace PuzzlePathDimension {
           return true;
       }
 
-
-
-      //not accurate but it works for now.
-      Rectangle circle;
-      foreach (DeathTrap deathTrap in DeathTraps) {
-        circle = new Rectangle((int)deathTrap.Origin.X, (int)deathTrap.Origin.Y, deathTrap.Width, deathTrap.Height);
-        foreach (Rectangle rect in rects) {
-          if (circle.Intersects(rect)) {
-            return true;
-          }
-        }
-      }
       return false;
     }
 
