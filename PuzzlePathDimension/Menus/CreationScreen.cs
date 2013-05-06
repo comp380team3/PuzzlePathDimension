@@ -107,7 +107,7 @@ namespace PuzzlePathDimension {
         }
         ScreenList.AddScreen(toolbox);
         launchToolbox = false;
-        if(editableLevel.FindCollision())
+        if(!editableLevel.FindCollision())
            LevelSaver.SaveLevel(editableLevel);
         //toolboxLaunched = true;
         //Console.WriteLine(addedPlatform.Origin)
@@ -130,28 +130,29 @@ namespace PuzzlePathDimension {
     }
 
     public void delete(MouseState mousePosition) {
+      for (int i = editableLevel.MoveablePlatforms.Count - 1; i >= 0; i++) {
+        if (editableLevel.MoveablePlatforms[i].IsSelected(mousePosition)) {
+          editableLevel.MoveablePlatforms.Remove(editableLevel.MoveablePlatforms[i]);
+          return;
+        }
+      }
       foreach (Platform platform in editableLevel.Platforms) {
         if (platform.IsSelected(mousePosition)) {
           editableLevel.Platforms.Remove(platform);
-          break;
+          return;
         }
       }
-      foreach (Platform platform in editableLevel.MoveablePlatforms) {
-        if (platform.IsSelected(mousePosition)) {
-          editableLevel.MoveablePlatforms.Remove(platform);
-          break;
+      for (int i = editableLevel.DeathTraps.Count - 1; i >= 0; i++) {
+        if (editableLevel.DeathTraps[i].IsSelected(mousePosition)) {
+          editableLevel.DeathTraps.Remove(editableLevel.DeathTraps[i]);
+          return;
         }
       }
-      foreach (DeathTrap deathTrap in editableLevel.DeathTraps) {
-        if (deathTrap.IsSelected(mousePosition)) {
-          editableLevel.DeathTraps.Remove(deathTrap);
-          break;
-        }
-      }
-      foreach (Treasure treasure in editableLevel.Treasures) {
-        if (treasure.IsSelected(mousePosition)) {
-          editableLevel.Treasures.Remove(treasure);
-          break;
+
+      for (int i = editableLevel.Treasures.Count - 1; i >= 0; i++) {
+        if (editableLevel.Treasures[i].IsSelected(mousePosition)) {
+          editableLevel.Treasures.Remove(editableLevel.Treasures[i]);
+          return;
         }
       }
     }
