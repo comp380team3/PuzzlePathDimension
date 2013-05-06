@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace PuzzlePathDimension {
   public interface ILevelObject {
-    Boolean IsSelected(MouseState ms);
+    Boolean IsSelected(Point ms);
     /// <summary>
     /// Moves the LevelObject and makes sure it does not exit the screen.
     /// </summary>

@@ -13,8 +13,7 @@ namespace PuzzlePathDimension {
   class CreationScreen : GameScreen {
     ContentManager content;
     EditableLevel editableLevel;
-    MouseState previousMouseState;
-    MouseState currentMouseState;
+    Point prevPosition;
 
 
     string LevelName { get; set; }
@@ -125,36 +124,19 @@ namespace PuzzlePathDimension {
       } else {
         foundCollision = false;
       }
-
-
-      //If left ctrl ad click then platform is erased
-      if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
-                      currentMouseState.LeftButton == ButtonState.Pressed) {
-        delete(currentMouseState);
-      }
     }
 
     /// <summary>
     /// Handles the movement of level objects
     /// </summary>
     public void UpdateMovement() {
-      previousMouseState = currentMouseState;
-      currentMouseState = Mouse.GetState();
-
-      if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
-        target = FindTarget(currentMouseState);
-      }
       if (target != null) {
-        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Pressed) {
-          float changeInX = currentMouseState.X - previousMouseState.X;
-          float changeInY = currentMouseState.Y - previousMouseState.Y;
-          target.Move(new Vector2(changeInX, changeInY));
-        }
-        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
-          target = null;
-          if (!editableLevel.FindCollision())
-            LevelSaver.SaveLevel(editableLevel);
-        }
+        Point currPosition = Controller.Point;
+        float changeInX = currPosition.X - prevPosition.X;
+        float changeInY = currPosition.Y - prevPosition.Y;
+        prevPosition = currPosition;
+
+        target.Move(new Vector2(changeInX, changeInY));
       }
     }
 
@@ -163,7 +145,7 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="mousePosition"></param>
     /// <returns></returns>
-    private ILevelObject FindTarget(MouseState mousePosition) {
+    private ILevelObject FindTarget(Point mousePosition) {
       foreach (Platform platform in editableLevel.MoveablePlatforms) {
         if (platform.IsSelected(mousePosition))
           return platform;
@@ -193,29 +175,29 @@ namespace PuzzlePathDimension {
     /// Deletes the top most object where the mouse click ovvured
     /// </summary>
     /// <param name="mousePosition"></param>
-    private void delete(MouseState mousePosition) {
+    private void delete(Point mousePosition) {
       //loops start at end since the last added to draw are the first ones to be deleted
       for (int i = editableLevel.MoveablePlatforms.Count - 1; i >= 0; i--) {
-        if (editableLevel.MoveablePlatforms[i].IsSelected(mousePosition)) {
+        if (editableLevel.MoveablePlatforms[i].IsSelected(Controller.Point)) {
           editableLevel.MoveablePlatforms.Remove(editableLevel.MoveablePlatforms[i]);
           return;
         }
       }
       foreach (Platform platform in editableLevel.Platforms) {
-        if (platform.IsSelected(mousePosition)) {
+        if (platform.IsSelected(Controller.Point)) {
           editableLevel.Platforms.Remove(platform);
           return;
         }
       }
       for (int i = editableLevel.DeathTraps.Count - 1; i >= 0; i--) {
-        if (editableLevel.DeathTraps[i].IsSelected(mousePosition)) {
+        if (editableLevel.DeathTraps[i].IsSelected(Controller.Point)) {
           editableLevel.DeathTraps.Remove(editableLevel.DeathTraps[i]);
           return;
         }
       }
 
       for (int i = editableLevel.Treasures.Count - 1; i >= 0; i--) {
-        if (editableLevel.Treasures[i].IsSelected(mousePosition)) {
+        if (editableLevel.Treasures[i].IsSelected(Controller.Point)) {
           editableLevel.Treasures.Remove(editableLevel.Treasures[i]);
           return;
         }
@@ -223,15 +205,33 @@ namespace PuzzlePathDimension {
     }
 
 
+    protected override void OnButtonPressed(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Select:
+        prevPosition = Controller.Point;
+        target = FindTarget(Controller.Point);
+        break;
+      case VirtualButtons.Delete:
+        delete(Controller.Point);
+        break;
+      }
+    }
+
+    /// <summary>
+    /// Handle user input.
+    /// </summary>
+    /// <param name="button"></param>
     protected override void OnButtonReleased(VirtualButtons button) {
       switch (button) {
       case VirtualButtons.Context:
-        if (!editableLevel.FindCollision()) {
+        if (!editableLevel.FindCollision())
           LevelSaver.SaveLevel(editableLevel);
-        }
         break;
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
+        break;
+      case VirtualButtons.Select:
+        target = null;
         break;
       }
     }

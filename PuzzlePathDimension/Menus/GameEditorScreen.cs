@@ -16,8 +16,6 @@ namespace PuzzlePathDimension {
   public class GameEditorScreen : GameScreen {
     ContentManager content;
     EditableLevel editableLevel;
-    MouseState previousMouseState;
-    MouseState currentMouseState;
 
 
     string LevelName { get; set; }
@@ -29,6 +27,7 @@ namespace PuzzlePathDimension {
     ToolboxScreen toolbox;
 
     float pauseAlpha;
+    Point prevPosition;
 
     public GameEditorScreen(TopLevelModel topLevel, string levelName)
       : base(topLevel) {
@@ -122,11 +121,17 @@ namespace PuzzlePathDimension {
       } else {
         foundCollision = false;
       }
+    }
 
-      if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && previousMouseState.LeftButton == ButtonState.Released &&
-                      currentMouseState.LeftButton == ButtonState.Pressed) {
-        target = FindTarget(currentMouseState);
-        editableLevel.MoveablePlatforms.Remove((Platform)target);
+    protected override void OnButtonPressed(VirtualButtons button) {
+      switch (button) {
+      case VirtualButtons.Select:
+        prevPosition = Controller.Point;
+        target = FindTarget(Controller.Point);
+        break;
+      case VirtualButtons.Delete:
+        editableLevel.MoveablePlatforms.Remove((Platform)FindTarget(Controller.Point));
+        break;
       }
     }
 
@@ -142,6 +147,9 @@ namespace PuzzlePathDimension {
         break;
       case VirtualButtons.Pause:
         ScreenList.AddScreen(new PauseMenuScreen(TopLevel, editableLevel, LevelName));
+        break;
+      case VirtualButtons.Select:
+        target = null;
         break;
       }
     }
@@ -282,21 +290,13 @@ namespace PuzzlePathDimension {
     /// Handles the movement of level objects
     /// </summary>
     public void UpdateMovement() {
-      previousMouseState = currentMouseState;
-      currentMouseState = Mouse.GetState();
-
-      if (previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed) {
-        target = FindTarget(currentMouseState);
-      }
       if (target != null) {
-        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Pressed) {
-          float changeInX = currentMouseState.X - previousMouseState.X;
-          float changeInY = currentMouseState.Y - previousMouseState.Y;
-          target.Move(new Vector2(changeInX, changeInY));
-        }
-        if (previousMouseState.LeftButton == ButtonState.Pressed && currentMouseState.LeftButton == ButtonState.Released) {
-          target = null;
-        }
+        Point currPosition = Controller.Point;
+        float changeInX = currPosition.X - prevPosition.X;
+        float changeInY = currPosition.Y - prevPosition.Y;
+        prevPosition = currPosition;
+
+        target.Move(new Vector2(changeInX, changeInY));
       }
     }
 
@@ -305,9 +305,9 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="mousePosition"></param>
     /// <returns></returns>
-    public ILevelObject FindTarget(MouseState mousePosition) {
+    public ILevelObject FindTarget(Point position) {
       foreach (Platform platform in editableLevel.MoveablePlatforms) {
-        if (platform.IsSelected(mousePosition))
+        if (platform.IsSelected(position))
           return platform;
       }
       return null;

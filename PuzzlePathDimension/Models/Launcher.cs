@@ -322,7 +322,7 @@ namespace PuzzlePathDimension {
         + "Angle: " + (_angle * 180 / Math.PI) + ", in radians: " + _angle;
     }
 
-    public Boolean IsSelected(MouseState ms) {
+    public Boolean IsSelected(Point ms) {
       Rectangle launcherBoundingBox = new Rectangle((int)(Position.X - 100), (int)(Position.Y - 100), 200, 100);
       if (ms.X > launcherBoundingBox.X && ms.X < launcherBoundingBox.X + 200) {
         if (ms.Y > launcherBoundingBox.Y && ms.Y < launcherBoundingBox.Y + 100) {
