@@ -110,7 +110,10 @@ namespace PuzzlePathDimension {
     public int Attempts { get { return _attempts; } }
 
     private int _parTime;
-    public int ParTime { get { return _parTime; } }
+    public int ParTime { 
+      get { return _parTime; } 
+      set { _parTime = value;} 
+    }
 
     /// <summary>
     /// Gets or sets the background of the playing field.
@@ -135,19 +138,19 @@ namespace PuzzlePathDimension {
 
     public String TypesAllowed { get { return typesAllowed; } }
 
-    public EditableLevel(ContentManager content) {
-      _platforms = new List<Platform>();
-      _treasures = new List<Treasure>();
-      _deathTraps = new List<DeathTrap>();
-      _moveablePlatforms = new List<Platform>();
-      _attempts = 4;
-      _parTime = 1;
-      _additionsAllowed = 30;
-      typesAllowed = "RBHV";
-      _ballTex = content.Load<Texture2D>("Texture/ball");
-      Background = content.Load<Texture2D>("Texture/GameScreen");
-      _custom = true;
-    }
+    //public EditableLevel(ContentManager content) {
+    //  _platforms = new List<Platform>();
+    //  _treasures = new List<Treasure>();
+    //  _deathTraps = new List<DeathTrap>();
+    //  _moveablePlatforms = new List<Platform>();
+    //  _attempts = 4;
+    //  _parTime = 1;
+    //  _additionsAllowed = 30;
+    //  typesAllowed = "RBHV";
+    //  _ballTex = content.Load<Texture2D>("Texture/ball");
+    //  Background = content.Load<Texture2D>("Texture/GameScreen");
+    //  _custom = true;
+    //}
 
     /// <summary>
     /// Constructs a EditableLevel object.
