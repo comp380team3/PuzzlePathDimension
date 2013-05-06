@@ -291,8 +291,17 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
     private void DrawText(SpriteBatch spriteBatch) {
-      // Draw the number of balls left.
+      // Get the length of the string to be drawn.
       string attemptsText = "Balls left: " + simulation.AttemptsLeft;
+      Vector2 textLength = font.MeasureString(attemptsText);
+
+      // Draw a transparent white box underneath the text that is as long as the string (and a bit more).
+      Texture2D textTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+      textTexture.SetData<Color>(new Color[] { Color.FromNonPremultiplied(255, 255, 255, 192) });
+      spriteBatch.Draw(textTexture, new Rectangle(5, 570, (int)textLength.X + 15, 25),
+        null, Color.White);
+
+      // Draw the string on top of the box.
       spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
     }
 

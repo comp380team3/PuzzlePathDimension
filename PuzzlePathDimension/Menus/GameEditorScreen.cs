@@ -244,15 +244,25 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
     private void DrawText(SpriteBatch spriteBatch) {
-      // Draw the number of balls left.
-      string attemptsText = "Number of platforms available: " + editableLevel.AdditionsLeft;
-      spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
+      string platformsLeftText;
 
-
-      // If there is a collision this is where the message will be displayed
-      if (foundCollision) {
-        spriteBatch.DrawString(font, "Collision!", new Vector2(400f, 300f), Color.Black);
+      // Figure out what text to display, and calculate how long it is.
+      if (!foundCollision) {
+        platformsLeftText = "Number of platforms available: " + editableLevel.AdditionsLeft;
+      } else {
+        platformsLeftText = "Number of platforms available: " + editableLevel.AdditionsLeft +
+          " | Invalid platform placement detected.";
       }
+      Vector2 textLength = font.MeasureString(platformsLeftText);
+
+      // Draw a transparent white box underneath the text that is as long as the string (and a bit more).
+      Texture2D textTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+      textTexture.SetData<Color>(new Color[] { Color.FromNonPremultiplied(255, 255, 255, 192) });
+      spriteBatch.Draw(textTexture, new Rectangle(5, 570, (int)textLength.X + 15, 25),
+        null, Color.White);
+
+      // Draw the number of additions left.
+      spriteBatch.DrawString(font, platformsLeftText, new Vector2(10f, 570f), Color.Black);
     }
 
 

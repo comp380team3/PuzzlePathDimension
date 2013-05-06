@@ -75,7 +75,7 @@ namespace PuzzlePathDimension {
     }
 
     public int Draw(SpriteBatch spriteBatch, GraphicsCursor cursor, GameTime gameTime) {
-      spriteBatch.Draw(Image, cursor.Position, Color.White);
+      spriteBatch.Draw(Image, cursor.Position, Color.White * cursor.Alpha);
 
       cursor.Y += Image.Height / 2;
       cursor.X -= 20;

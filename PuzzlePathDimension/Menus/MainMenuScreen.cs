@@ -50,7 +50,7 @@ namespace PuzzlePathDimension {
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       items.Add(playGameMenuEntry);
 
-      MenuButton creationModeMenuEntry = new MenuButton("Creation Mode", font);
+      MenuButton creationModeMenuEntry = new MenuButton("Level Creator", font);
       creationModeMenuEntry.Selected += creationModeMenuEntrySelected;
       items.Add(creationModeMenuEntry);
 

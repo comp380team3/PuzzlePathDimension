@@ -103,11 +103,11 @@ namespace PuzzlePathDimension {
       }
 
       if (launchToolbox && !toolboxLaunched) {
-        String message = "Select a platform to add to the level";
+        String message = "Select an object to add to the level";
         if (editableLevel.AdditionsLeft > 0) {
           toolbox = new ToolboxScreen(TopLevel, editableLevel, message, false);
         } else {
-          message = "Platform addition limit reached";
+          message = "Object addition limit reached";
           toolbox = new ToolboxScreen(TopLevel, editableLevel, message, true);
         }
         ScreenList.AddScreen(toolbox);
@@ -330,17 +330,25 @@ namespace PuzzlePathDimension {
     /// </summary>
     /// <param name="spriteBatch">The SpriteBatch object to use when drawing the text.</param>
     private void DrawText(SpriteBatch spriteBatch) {
-      // Draw the number ofadditions left.
-      string attemptsText = "Number of platforms available: " + editableLevel.AdditionsLeft;
-      spriteBatch.DrawString(font, attemptsText, new Vector2(10f, 570f), Color.Black);
+      string objectsLeftText;
 
-
-      // If there is a collision this is where the message will be displayed
-      if (foundCollision) {
-        spriteBatch.DrawString(font, "Collision!", new Vector2(400f, 300f), Color.Black);
+      // Figure out what text to display, and calculate how long it is.
+      if (!foundCollision) {
+        objectsLeftText = "Number of objects available: " + editableLevel.AdditionsLeft;
+      } else {
+        objectsLeftText = "Number of objects available: " + editableLevel.AdditionsLeft + 
+          " | Invalid object placement detected.";
       }
+      Vector2 textLength = font.MeasureString(objectsLeftText);
+
+      // Draw a transparent white box underneath the text that is as long as the string (and a bit more).
+      Texture2D textTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+      textTexture.SetData<Color>(new Color[] { Color.FromNonPremultiplied(255, 255, 255, 192) });
+      spriteBatch.Draw(textTexture, new Rectangle(5, 570, (int)textLength.X + 15, 25), 
+        null, Color.White);
+
+      // Draw the number of additions left.
+      spriteBatch.DrawString(font, objectsLeftText, new Vector2(10f, 570f), Color.Black);
     }
-
-
   }
 }

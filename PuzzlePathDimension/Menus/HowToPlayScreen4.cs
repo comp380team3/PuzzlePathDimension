@@ -95,7 +95,10 @@ namespace PuzzlePathDimension {
 
       spriteBatch.Begin();
 
-      spriteBatch.Draw(helpImage, new Rectangle(100, 100, helpImage.Width - 175, helpImage.Height - 175), Color.White);
+      spriteBatch.Draw(
+        helpImage,
+        new Rectangle(100, 100, helpImage.Width - 175, helpImage.Height - 175),
+        Color.White * (1.0f - TransitionPosition));
 
       spriteBatch.End();
     }
