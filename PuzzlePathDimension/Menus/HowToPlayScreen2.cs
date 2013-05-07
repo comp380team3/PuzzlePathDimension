@@ -87,7 +87,7 @@ namespace PuzzlePathDimension {
         lines.Add(new ImageMenuLine(image, caption));
       }
 
-      exitMenuEntry = new MenuButton("Exit", Font);
+      exitMenuEntry = new MenuButton("Back", Font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
       detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;

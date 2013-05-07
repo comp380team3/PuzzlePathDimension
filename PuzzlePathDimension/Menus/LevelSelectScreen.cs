@@ -190,13 +190,13 @@ namespace PuzzlePathDimension {
 
       menuTemplate.Title = new TextLine("Select A Level", font, new Color(192, 192, 192));
 
-      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry = new MenuButton("Back to Main Menu", font);
       exitMenuEntry.Selected += OnCancel;
       
       nextMenuEntry = new MenuButton("Next", font);
       nextMenuEntry.Selected += NextMenuEntrySelected;
 
-      backMenuEntry = new MenuButton("Back", font);
+      backMenuEntry = new MenuButton("Previous", font);
       backMenuEntry.Selected += BackMenuEntrySelected;
 
       UpdateCurrentPage();

@@ -58,7 +58,7 @@ namespace PuzzlePathDimension {
       foreach (string name in gameDescription)
         description.Add(new TextLine(name, font, Color.Black, .75f));
 
-      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry = new MenuButton("Back", font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
       detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;

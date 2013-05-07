@@ -40,7 +40,7 @@ namespace PuzzlePathDimension {
 
       detailsTemplate.Title = new TextLine("How To Play", font, new Color(192, 192, 192));
 
-      exitMenuEntry = new MenuButton("Exit", font);
+      exitMenuEntry = new MenuButton("Back", font);
       exitMenuEntry.Selected += OnCancel;
       detailsTemplate.Buttons[DetailsTemplate.Selection.Middle] = exitMenuEntry;
       detailsTemplate.SelectedItem = DetailsTemplate.Selection.Middle;
