@@ -19,6 +19,7 @@ namespace PuzzlePathDimension {
     MenuTemplate menuTemplate = new MenuTemplate();
 
     ContentManager content;
+    SpriteFont Font { get; set; }
 
     /// <summary>
     /// Constructor
@@ -35,38 +36,38 @@ namespace PuzzlePathDimension {
     /// <param name="shared"></param>
     public override void LoadContent(ContentManager shared) {
       base.LoadContent(shared);
-      SpriteFont font = shared.Load<SpriteFont>("Font/menufont");
+      Font = shared.Load<SpriteFont>("Font/menufont");
 
       content = shared;
 
-      menuTemplate.Title = new TextLine("Puzzle Path", font, new Color(192, 192, 192));
+      menuTemplate.Title = new TextLine("Puzzle Path", Font, new Color(192, 192, 192));
 
       // List that contains the menu buttons
       IList<MenuButton> items = menuTemplate.Items;
 
       // Create the Menu Buttons, attach what happens for each entry,
       // and add the menu buttons to the list of buttons.
-      MenuButton playGameMenuEntry = new MenuButton("Play Game", font);
+      MenuButton playGameMenuEntry = new MenuButton("Play Game", Font);
       playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
       items.Add(playGameMenuEntry);
 
-      MenuButton creationModeMenuEntry = new MenuButton("Level Creator", font);
+      MenuButton creationModeMenuEntry = new MenuButton("Level Creator", Font);
       creationModeMenuEntry.Selected += creationModeMenuEntrySelected;
       items.Add(creationModeMenuEntry);
 
-      MenuButton howToPlayMenuEntry = new MenuButton("How To Play", font);
+      MenuButton howToPlayMenuEntry = new MenuButton("How To Play", Font);
       howToPlayMenuEntry.Selected += howToPlayMenuEntrySelected;
       items.Add(howToPlayMenuEntry);
 
-      MenuButton optionsMenuEntry = new MenuButton("Options", font);
+      MenuButton optionsMenuEntry = new MenuButton("Options", Font);
       optionsMenuEntry.Selected += OptionsMenuEntrySelected;
       items.Add(optionsMenuEntry);
 
-      MenuButton creditsMenuEntry = new MenuButton("Credits", font);
+      MenuButton creditsMenuEntry = new MenuButton("Credits", Font);
       creditsMenuEntry.Selected += CreditsMenuEntrySelected;
       items.Add(creditsMenuEntry);
 
-      MenuButton exitMenuEntry = new MenuButton("Exit", font);
+      MenuButton exitMenuEntry = new MenuButton("Exit", Font);
       exitMenuEntry.Selected += OnCancel;
       items.Add(exitMenuEntry);
     }
@@ -115,6 +116,10 @@ namespace PuzzlePathDimension {
       base.Draw(gameTime, spriteBatch);
 
       menuTemplate.Draw(spriteBatch, gameTime);
+
+      spriteBatch.Begin();
+      spriteBatch.DrawString(Font, "v1.0.0", new Vector2(0, 0), Color.White, 0.0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0.0f);
+      spriteBatch.End();
     }
 
 
