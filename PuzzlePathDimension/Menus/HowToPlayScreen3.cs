@@ -27,7 +27,7 @@ namespace PuzzlePathDimension {
       "Launch Ball:                 Space Bar/ A Button ",
       "Pause Game:                  Esc/ Start Button",
       " Editor ",
-      "Open Toolbox :               Right Click on Mouse/ X Button",
+      "Open Toolbox :                    T Key/ X Button        ",
       "Select Platform:             Left Click on Mouse/ A Button ",
       "Enter Simulation Mode:       Enter/Start                     ",
     };
